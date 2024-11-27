@@ -1,4 +1,4 @@
-// import Colors from "@/constants/Colors";
+import Colors from "@/lib/constants";
 import { Tabs } from "expo-router";
 import { Image, useColorScheme } from "react-native";
 
@@ -7,7 +7,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        // tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: Colors.NAV_THEME[colorScheme ?? "light"].tint,
         tabBarStyle: {
           height: 80,
           paddingTop: 10,
@@ -35,9 +35,27 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="home"
+        options={{
+          title: "House",
+          headerShown: false,
+          tabBarIcon: ({ color, focused }) => (
+            <Image
+              style={{ width: 28, height: 28, tintColor: color }}
+              source={{
+                uri: focused
+                  ? "https://api.iconify.design/mingcute:home-4-fill.svg"
+                  : "https://api.iconify.design/mingcute:home-4-line.svg",
+              }}
+              alt="google"
+            />
+          ),
+        }}
+      />
 
       <Tabs.Screen
-        name="roms"
+        name="rooms"
         options={{
           title: "Rooms",
           tabBarIcon: ({ color, focused }) => (
@@ -45,8 +63,8 @@ export default function TabLayout() {
               style={{ width: 28, height: 28, tintColor: color }}
               source={{
                 uri: focused
-                  ? "https://api.iconify.design/mingcute:chart-vertical-fill.svg"
-                  : "https://api.iconify.design/mingcute:chart-vertical-line.svg",
+                  ? "https://api.iconify.design/google-material-icons:round-meeting-room-fill.svg"
+                  : "https://api.iconify.design/google-material-icons:round-meeting-room.svg",
               }}
               alt="google"
             />

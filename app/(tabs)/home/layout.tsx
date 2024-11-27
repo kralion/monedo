@@ -8,9 +8,9 @@ export default function Layout() {
   return (
     <Stack>
       <Stack.Screen
-        name="index"
+        name="home"
         options={{
-          title: "Search Roomy",
+          title: "House Rooms",
           headerLargeTitle: true,
           headerTransparent: true,
           headerTitleStyle: {

@@ -62,10 +62,16 @@ const tokenCache = {
     }
   },
 };
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
+
+if (!publishableKey) {
+  throw new Error(
+    "Missing Publishable Key. Please set EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY in your .env"
+  );
+}
 
 // Prevent the splash screen from auto-hiding before getting the color scheme.
 SplashScreen.preventAutoHideAsync();
-const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 export default function RootLayout() {
   const { colorScheme, setColorScheme, isDarkColorScheme } = useColorScheme();
   const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
@@ -101,14 +107,14 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
-      <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-      <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
+    <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
+      <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
+        <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
         <ClerkLoaded>
           <Slot />
         </ClerkLoaded>
-      </ClerkProvider>
-      <PortalHost />
-    </ThemeProvider>
+        <PortalHost />
+      </ThemeProvider>
+    </ClerkProvider>
   );
 }

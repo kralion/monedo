@@ -38,7 +38,7 @@ export default function Screen() {
     <View className="flex-1 justify-center items-center gap-5 p-6 bg-secondary/30">
       <Card className="w-full max-w-sm p-6 rounded-2xl">
         <CardHeader className="items-center">
-          <Pressable onPress={() => router.push("/modal")}>
+          <Pressable onPress={() => router.push("/home/modal")}>
             <Avatar alt="Rick Sanchez's Avatar" className="w-24 h-24">
               <AvatarImage source={{ uri: GITHUB_AVATAR_URI }} />
               <AvatarFallback>
