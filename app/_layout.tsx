@@ -1,5 +1,6 @@
 import "~/global.css";
 
+import { ClerkLoaded, ClerkProvider } from "@clerk/clerk-expo";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   DarkTheme,
@@ -7,17 +8,15 @@ import {
   Theme,
   ThemeProvider,
 } from "@react-navigation/native";
-import { router, SplashScreen, Stack } from "expo-router";
+import { PortalHost } from "@rn-primitives/portal";
+import { Slot, SplashScreen } from "expo-router";
+import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
-import { Platform, Pressable } from "react-native";
+import { Platform } from "react-native";
+import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
 import { NAV_THEME } from "~/lib/constants";
 import { useColorScheme } from "~/lib/useColorScheme";
-import { PortalHost } from "@rn-primitives/portal";
-import { ThemeToggle } from "~/components/ThemeToggle";
-import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
-import { Button } from "~/components/ui/button";
-import { X } from "lucide-react-native";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -33,9 +32,40 @@ export {
   ErrorBoundary,
 } from "expo-router";
 
+export interface TokenCache {
+  getToken: (key: string) => Promise<string | undefined | null>;
+  saveToken: (key: string, token: string) => Promise<void>;
+  clearToken?: (key: string) => void;
+}
+
+const tokenCache = {
+  async getToken(key: string) {
+    try {
+      const item = await SecureStore.getItemAsync(key);
+      if (item) {
+        console.log(`${key} was used 🔐 \n`);
+      } else {
+        console.log("No values stored under key: " + key);
+      }
+      return item;
+    } catch (error) {
+      console.error("SecureStore get item error: ", error);
+      await SecureStore.deleteItemAsync(key);
+      return null;
+    }
+  },
+  async saveToken(key: string, value: string) {
+    try {
+      return SecureStore.setItemAsync(key, value);
+    } catch (err) {
+      return;
+    }
+  },
+};
+
 // Prevent the splash screen from auto-hiding before getting the color scheme.
 SplashScreen.preventAutoHideAsync();
-
+const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!;
 export default function RootLayout() {
   const { colorScheme, setColorScheme, isDarkColorScheme } = useColorScheme();
   const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
@@ -73,42 +103,11 @@ export default function RootLayout() {
   return (
     <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
       <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
-      <Stack>
-        <Stack.Screen
-          name="index"
-          options={{
-            title: "Search Roomy",
-            headerLargeTitle: true,
-            headerTransparent: true,
-            headerTitleStyle: {
-              fontWeight: "bold",
-              fontSize: 20,
-            },
-            headerSearchBarOptions: {
-              placeholder: "Search",
-              autoFocus: true,
-              cancelButtonText: "Cancelar",
-            },
-            headerRight: () => <ThemeToggle />,
-          }}
-        />
-        <Stack.Screen
-          name="modal"
-          options={{
-            presentation: "modal",
-            headerTitle: "Modal",
-            headerLargeTitle: true,
-            headerRight: () => (
-              <Pressable
-                className="shadow shadow-foreground/5"
-                onPress={() => router.back()}
-              >
-                <X size={24} className="w-4 h-4 text-foreground/70" />
-              </Pressable>
-            ),
-          }}
-        />
-      </Stack>
+      <ClerkProvider publishableKey={publishableKey} tokenCache={tokenCache}>
+        <ClerkLoaded>
+          <Slot />
+        </ClerkLoaded>
+      </ClerkProvider>
       <PortalHost />
     </ThemeProvider>
   );

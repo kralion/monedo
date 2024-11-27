@@ -1,11 +1,11 @@
+import { router } from "expo-router";
 import * as React from "react";
-import { Pressable, ScrollView, View } from "react-native";
+import { Pressable, View } from "react-native";
 import Animated, {
   FadeInUp,
   FadeOutDown,
   LayoutAnimationConfig,
 } from "react-native-reanimated";
-import { Info } from "~/lib/icons/Info";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Button } from "~/components/ui/button";
 import {
@@ -23,8 +23,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "~/components/ui/tooltip";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { Info } from "~/lib/icons/Info";
 
 const GITHUB_AVATAR_URI =
   "https://i.pinimg.com/originals/ef/a2/8d/efa28d18a04e7fa40ed49eeb0ab660db.jpg";
