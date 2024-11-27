@@ -1,4 +1,3 @@
-// import { TermsPolicyModal } from "@/components/popups/terms&policy";
 import { useOAuth, useSignUp } from "@clerk/clerk-expo";
 import * as Linking from "expo-linking";
 import { Link, useRouter } from "expo-router";
@@ -6,6 +5,7 @@ import * as WebBrowser from "expo-web-browser";
 import * as React from "react";
 import { Image, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { TermsPolicyModal } from "~/components/auth/terms&policy";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 
@@ -29,18 +29,18 @@ export default function SignUpScreen() {
 
   return (
     <ScrollView>
-      <SafeAreaView style={{ paddingHorizontal: 16, paddingTop: 16 }}>
-        <View className="flex flex-col gap-5 w-full">
-          <View className="flex flex-col align-middle gap-1">
+      <SafeAreaView className="p-4 ">
+        <View className="flex flex-col gap-12 w-full">
+          <View className="flex flex-col items-center gap-1">
             <Image
               style={{
-                width: 125,
-                height: 125,
+                width: 200,
+                height: 200,
               }}
               source={require("../../assets/logo.png")}
             />
-            <Text className="text-2xl font-bold"> Crea una cuenta</Text>
-            <View className="flex gap-1.5">
+            <Text className="text-4xl font-bold"> Crea una cuenta</Text>
+            <View className="flex gap-1.5 flex-row">
               <Text>Ya tienes una cuenta?</Text>
 
               <Text
@@ -52,40 +52,28 @@ export default function SignUpScreen() {
             </View>
           </View>
 
-          <View className="space-y-4">
+          <View className="flex flex-col gap-4">
             <SignInWithOAuthGoogle />
             <SignInWithOAuthFacebook />
             <SignInWithOAuthTiktok />
           </View>
-          <View className="space-y-6 align-middle">
-            <Text className="text-secondary text-sm text-center">
-              Al continuar aceptas los{" "}
-              <Text
-                className="text-primary active:underline active:opacity-80"
-                onPress={() => setShowTCModal(true)}
-              >
-                Términos y Condiciones{" "}
-              </Text>
+          <View className="flex flex-col  w-full">
+            <Text className=" text-sm ">
+              Al continuar aceptas las politicas de privacidad y demas clausulas
               , en estos se describen como usamos tus datos y como protegemos tu
               privacidad.
             </Text>
-            <View className="flex justify-center align-middle">
-              <Text className="text-sm">Copyright © 2024 </Text>
-              <Text className="text-sm text-primary active:underline">
-                <Link href="https://x.com/brayanpaucar_">Brayan</Link>
-              </Text>
-
-              <Text> & </Text>
-              <Text className="text-sm text-primary active:underline">
-                <Link href="https://x.com/MiguelParis11">Miguel</Link>
-              </Text>
-            </View>
+            <TermsPolicyModal />
+          </View>
+          <View className="flex flex-row justify-center align-middle absolute text-center w-full -bottom-36 ">
+            <Text className="text-sm ">
+              Copyright @ {new Date().getFullYear()} Roomy | Desarrollado por
+            </Text>
+            <Text className="text-sm text-primary active:underline">
+              <Link href="https://x.com/brayanpaucar_"> Brayan</Link>
+            </Text>
           </View>
         </View>
-        {/* <TermsPolicyModal
-          openModal={showTCModal}
-          setOpenModal={setShowTCModal}
-        /> */}
       </SafeAreaView>
     </ScrollView>
   );
@@ -113,7 +101,12 @@ export const SignInWithOAuthGoogle = () => {
   }, []);
 
   return (
-    <Button variant="outline" size="lg" onPress={onPress}>
+    <Button
+      className="flex flex-row gap-2 items-center"
+      variant="outline"
+      size="lg"
+      onPress={onPress}
+    >
       <Image
         style={{ width: 24, height: 24 }}
         source={{
@@ -121,7 +114,7 @@ export const SignInWithOAuthGoogle = () => {
         }}
         alt="google"
       />
-      Continuar con Google
+      <Text>Continuar con Google</Text>
     </Button>
   );
 };
@@ -147,7 +140,12 @@ export const SignInWithOAuthTiktok = () => {
   }, []);
 
   return (
-    <Button variant="outline" size="lg" onPress={onPress}>
+    <Button
+      className="flex flex-row gap-2 items-center"
+      variant="outline"
+      size="lg"
+      onPress={onPress}
+    >
       <Image
         style={{ width: 24, height: 24 }}
         source={{
@@ -155,7 +153,7 @@ export const SignInWithOAuthTiktok = () => {
         }}
         alt="tiktok"
       />
-      Continuar con TikTok
+      <Text>Continuar con TikTok</Text>
     </Button>
   );
 };
@@ -181,7 +179,12 @@ export const SignInWithOAuthFacebook = () => {
   }, []);
 
   return (
-    <Button variant="outline" size="lg" onPress={onPress}>
+    <Button
+      className="flex flex-row gap-2 items-center"
+      variant="outline"
+      size="lg"
+      onPress={onPress}
+    >
       <Image
         style={{ width: 24, height: 24 }}
         source={{
@@ -189,7 +192,7 @@ export const SignInWithOAuthFacebook = () => {
         }}
         alt="Facebook"
       />
-      Continuar con Facebook
+      <Text>Continuar con Facebook</Text>
     </Button>
   );
 };

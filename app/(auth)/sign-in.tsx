@@ -23,37 +23,28 @@ WebBrowser.maybeCompleteAuthSession();
 
 export default function SignInScreen() {
   return (
-    <SafeAreaView
-      style={{
-        paddingHorizontal: 16,
-        display: "flex",
-        height: "100%",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <View className="flex flex-col gap-5 w-full">
-        <View className="flex flex-col align-middle gap-1">
+    <SafeAreaView className="flex flex-col justify-center align-middle p-4 items-center h-[100vh]">
+      <View className="flex flex-col gap-16 w-full items-center">
+        <View className="flex flex-col items-center gap-1">
           <Image
             style={{
-              width: 125,
-              height: 125,
+              width: 200,
+              height: 200,
             }}
             source={require("../../assets/logo.png")}
           />
-          <Text className="text-2xl font-bold"> Inicia Sesión</Text>
+          <Text className="text-4xl font-bold"> Inicia Sesión</Text>
           <Text className="text-center">
             Para empezar a usar y disfrutar de Monex
           </Text>
         </View>
-        <View className="space-y-4">
+        <View className="flex flex-col gap-4 justify-center align-middle w-full">
           <SignInWithOAuthGoogle />
           <SignInWithOAuthFacebook />
           <SignInWithOAuthTiktok />
         </View>
 
-        <View className="flex gap-2 justify-center align-middle">
+        <View className="flex flex-row gap-2 justify-center align-middle w-full">
           <Text className="text-textmuted text-center">
             ¿No tienes una cuenta?
           </Text>
@@ -91,7 +82,12 @@ export const SignInWithOAuthGoogle = () => {
   }, []);
 
   return (
-    <Button variant="outline" size="lg" onPress={onPress}>
+    <Button
+      className="flex flex-row gap-2 items-center"
+      variant="outline"
+      size="lg"
+      onPress={onPress}
+    >
       <Image
         style={{ width: 24, height: 24 }}
         source={{
@@ -99,7 +95,7 @@ export const SignInWithOAuthGoogle = () => {
         }}
         alt="google"
       />
-      Continuar con Google
+      <Text>Continuar con Google</Text>
     </Button>
   );
 };
@@ -125,7 +121,12 @@ export const SignInWithOAuthTiktok = () => {
   }, []);
 
   return (
-    <Button variant="outline" size="lg" onPress={onPress}>
+    <Button
+      className="flex flex-row gap-2 items-center"
+      variant="outline"
+      size="lg"
+      onPress={onPress}
+    >
       <Image
         style={{ width: 24, height: 24 }}
         source={{
@@ -133,7 +134,7 @@ export const SignInWithOAuthTiktok = () => {
         }}
         alt="tiktok"
       />
-      Continuar con TikTok
+      <Text>Continuar con TikTok</Text>
     </Button>
   );
 };
@@ -159,7 +160,12 @@ export const SignInWithOAuthFacebook = () => {
   }, []);
 
   return (
-    <Button variant="outline" size="lg" onPress={onPress}>
+    <Button
+      className="flex flex-row gap-2 items-center"
+      variant="outline"
+      size="lg"
+      onPress={onPress}
+    >
       <Image
         style={{ width: 24, height: 24 }}
         source={{
@@ -167,7 +173,7 @@ export const SignInWithOAuthFacebook = () => {
         }}
         alt="Facebook"
       />
-      Continuar con Facebook
+      <Text>Continuar con Facebook</Text>
     </Button>
   );
 };
