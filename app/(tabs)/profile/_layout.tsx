@@ -13,15 +13,19 @@ export default function Layout() {
       <Stack.Screen
         name="membership"
         options={{
-          title: "Añadir una sala",
+          title: "Plan Actual",
           headerBackTitle: "Perfil",
+          headerTransparent: true,
+          headerLargeTitle: true,
         }}
       />
       <Stack.Screen
         name="personal-info"
         options={{
-          title: "",
+          title: "Datos Personales",
           headerBackTitle: "Perfil",
+          headerTransparent: true,
+          headerLargeTitle: true,
         }}
       />
       <Stack.Screen

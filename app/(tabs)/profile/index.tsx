@@ -7,9 +7,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Text } from "~/components/ui/text";
 import { Button } from "~/components/ui/button";
+import { Badge } from "~/components/ui/badge";
 
 export default function ProfileScreen() {
-  const { user: userData } = useUser();
+  const { user } = useUser();
   const { has, signOut } = useAuth();
   const router = useRouter();
 
@@ -20,22 +21,15 @@ export default function ProfileScreen() {
           <Avatar className="bg-teal-500 self-center w-36 h-36" alt="avatar">
             <AvatarImage
               accessibilityLabel="avatar"
-              src={userData?.imageUrl}
-              style={{
-                borderRadius: 100,
-                width: 100,
-                height: 100,
-              }}
+              source={{ uri: user?.imageUrl }}
             />
             <AvatarFallback className="rounded-xl bg-slate-500" />
           </Avatar>
 
           <View className="flex flex-col gap-1">
-            <Text>{`${userData?.firstName} ${userData?.lastName}`}</Text>
-            <Button
-              disabled
-              size="sm"
-              className={` text-white rounded-full
+            <Text className="font-bold text-2xl">{`${user?.firstName} ${user?.lastName}`}</Text>
+            <Badge
+              className={` text-white  rounded-full
                 bg-${
                   has?.({ permission: "premium:plan" })
                     ? "green-500"
@@ -43,10 +37,12 @@ export default function ProfileScreen() {
                 }
                 `}
             >
-              {`Cuenta ${
-                has?.({ permission: "premium:plan" }) ? "Premium" : "Free"
-              }`}
-            </Button>
+              <Text>
+                {`Cuenta ${
+                  has?.({ permission: "premium:plan" }) ? "Premium" : "Free"
+                }`}
+              </Text>
+            </Badge>
           </View>
         </View>
       </View>
@@ -55,7 +51,7 @@ export default function ProfileScreen() {
           onPress={() => router.push("/(tabs)/profile/personal-info")}
           size="lg"
           variant="ghost"
-          className="flex flex-row gap-2"
+          className="flex flex-row gap-3 px-5"
         >
           <User />
           <Text>Mis Datos</Text>
@@ -63,7 +59,7 @@ export default function ProfileScreen() {
         <Button
           onPress={() => router.push("/(tabs)/profile/membership")}
           size="lg"
-          className="flex flex-row gap-2"
+          className="flex flex-row gap-3 px-5"
           variant="ghost"
         >
           <UserSquare2 />
@@ -73,7 +69,7 @@ export default function ProfileScreen() {
           onPress={() => router.push("/(tabs)/profile/buy-premium")}
           size="lg"
           variant="ghost"
-          className="flex flex-row gap-2"
+          className="flex flex-row gap-3 px-5"
         >
           <Unlock />
           <Text>Adquirir Premium</Text>
@@ -82,7 +78,7 @@ export default function ProfileScreen() {
           onPress={() => router.push("/(tabs)/profile/notifications")}
           size="lg"
           variant="ghost"
-          className="flex flex-row gap-2"
+          className="flex flex-row gap-3 px-5"
         >
           <Bell />
           <Text>Notificaciones</Text>
@@ -94,9 +90,9 @@ export default function ProfileScreen() {
           }}
           size="lg"
           variant="ghost"
-          className="flex flex-row gap-2 "
+          className="flex flex-row gap-3  px-5"
         >
-          <LogOut />
+          <LogOut color="red" />
           <Text className="text-destructive">Salir</Text>
         </Button>
       </View>

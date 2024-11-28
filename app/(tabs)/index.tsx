@@ -100,12 +100,12 @@ export default function Home() {
       ) : (
         <>
           <View
-            className="pt-10 bg-green-500 rounded-b-2xl"
+            className="pt-16 bg-green-500 rounded-b-3xl"
             // bg="$green9Light" TODO: change color to yellow bg="yellow10Light"
           >
-            <View className="flex flex-row justify-between px-4 mx-4">
+            <View className="flex flex-row justify-between items-center px-4">
               <View className="flex flex-col">
-                <Text className="text-2xl">
+                <Text className="text-sm">
                   {capitalizeFirstLetter(
                     new Date().toLocaleDateString("es-ES", {
                       weekday: "long",
@@ -130,19 +130,16 @@ export default function Home() {
                 size="icon"
                 className="rounded-full bg-green-200 active:opacity-80"
               >
-                <Lock size="$1" />{" "}
+                <Lock size={20} />
               </Button>
             </View>
             <Card />
             <View style={{ height: 160 }} />
           </View>
 
-          <ScrollView
-            ref={scrollRef}
-            style={{ paddingHorizontal: 5, zIndex: -10 }}
-          >
+          <ScrollView ref={scrollRef} className="px-4 ">
             <View className="flex flex-col gap-4 pb-5">
-              <View className="flex flex-row justify-between items-center pt-12 px-4">
+              <View className="flex flex-row justify-between items-center pt-32 px-4">
                 <Text className="text-xl font-semibold">
                   Historial de Gastos
                 </Text>

@@ -6,6 +6,7 @@ import * as React from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Keyboard,
+  SafeAreaView,
   ScrollView,
   TouchableWithoutFeedback,
   View,
@@ -15,6 +16,7 @@ import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { Badge } from "~/components/ui/badge";
 
 interface FormData {
   name: string;
@@ -60,94 +62,92 @@ export default function PersonalInfo() {
     })();
   }, []);
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <ScrollView style={{ paddingTop: headerHeight }}>
-        <View className="flex flex-col gap-5 p-5">
-          <View className="flex flex-col items-center">
-            <View className="relative w-[100px] h-[100px]">
-              <Avatar
-                alt="profile"
-                className="rounded-full bg-teal-500 align-middle w-36 h-36"
-              >
-                <AvatarImage
-                  accessibilityLabel="avatar"
-                  src={userData?.imageUrl}
-                />
-                <AvatarFallback className="bg-slate-500" />
-              </Avatar>
-              <Button
-                onPress={pickImageAsync}
-                className="abosolute rounded-full bg-white/50 top-1/2 right-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 p-2 border-white border-2"
-                size="icon"
-              >
-                <Camera size="$1.5" />
-              </Button>
-              <Button
-                disabled
-                size="lg"
-                className={`
-                  ${
-                    has?.({ permission: "premium:plan" })
-                      ? "bg-green-900"
-                      : "bg-orange-10"
-                  }
-                    text-white mt-3 `}
-              >
-                {`Cuenta
-                ${has?.({ permission: "premium:plan" }) ? "Premium" : "Free"}`}
-              </Button>
-            </View>
-          </View>
-          <Text className="text-4xl font-bold mt-5">Información Básica</Text>
-          <View className="flex flex-col mt-3 gap-2">
-            <View className="flex flex-col items-center">
-              <Label className="text-sm" nativeID="firstName">
-                Nombres
-              </Label>
-              <Controller
-                control={control}
-                name="name"
-                render={({ ...field }) => (
-                  <Input value={userData?.firstName ?? ""} {...field} />
-                )}
-                rules={{
-                  required: { value: true, message: "Ingrese el nombre" },
-                  pattern: {
-                    value: /^\d+(\.\d*)?$/,
-                    message: "Solo se permiten números válidos",
-                  },
+    <SafeAreaView style={{ paddingTop: 16, height: "100%" }}>
+      <View className="flex flex-col gap-5 px-4 pt-10">
+        <View className="flex flex-col items-center">
+          <View className="relative  flex flex-col gap-3">
+            <Avatar
+              alt="profile"
+              className="rounded-full bg-teal-500 align-middle w-36 h-36"
+            >
+              <AvatarImage
+                accessibilityLabel="avatar"
+                source={{
+                  uri: userData?.imageUrl,
                 }}
               />
-            </View>
-            <View className="flex flex-col">
-              <Label className="text-sm" nativeID="lastName">
-                Apellidos
-              </Label>
-              <Controller
-                control={control}
-                name="lastName"
-                render={({ ...field }) => (
-                  <Input value={userData?.lastName ?? ""} {...field} />
-                )}
-                rules={{
-                  required: { value: true, message: "Ingrese los apellidos" },
-                  pattern: {
-                    value: /^\d+(\.\d*)?$/,
-                    message: "Solo se permiten números válidos",
-                  },
-                }}
-              />
-            </View>
+              <AvatarFallback className="bg-slate-500" />
+            </Avatar>
+            <Button
+              onPress={pickImageAsync}
+              className="absolute rounded-full  top-5 -right-5  w-12 h-12  border-white border-2"
+              size="icon"
+            >
+              <Camera color="white" />
+            </Button>
+            <Badge
+              className={`flex flex-row gap-1 py-2  justify-center bg-${
+                has?.({ permission: "premium:plan" })
+                  ? "green-500"
+                  : "orange-500"
+              }
+                    text-white `}
+            >
+              <Text className="text-md">
+                Cuenta{" "}
+                {has?.({ permission: "premium:plan" }) ? "Premium" : "Free"}
+              </Text>
+            </Badge>
           </View>
-          <Button
-            size="lg"
-            className="mt-10"
-            // onPress={handleSubmit(onSubmit)}
-          >
-            Actualizar Datos
-          </Button>
         </View>
-      </ScrollView>
-    </TouchableWithoutFeedback>
+        <View className="flex flex-col mt-3 gap-6">
+          <View className="flex flex-col  gap-2">
+            <Label className="text-sm" nativeID="firstName">
+              Nombres
+            </Label>
+            <Controller
+              control={control}
+              name="name"
+              render={({ ...field }) => (
+                <Input value={userData?.firstName ?? ""} {...field} />
+              )}
+              rules={{
+                required: { value: true, message: "Ingrese el nombre" },
+                pattern: {
+                  value: /^\d+(\.\d*)?$/,
+                  message: "Solo se permiten números válidos",
+                },
+              }}
+            />
+          </View>
+          <View className="flex flex-col gap-2">
+            <Label className="text-sm" nativeID="lastName">
+              Apellidos
+            </Label>
+            <Controller
+              control={control}
+              name="lastName"
+              render={({ ...field }) => (
+                <Input value={userData?.lastName ?? ""} {...field} />
+              )}
+              rules={{
+                required: { value: true, message: "Ingrese los apellidos" },
+                pattern: {
+                  value: /^\d+(\.\d*)?$/,
+                  message: "Solo se permiten números válidos",
+                },
+              }}
+            />
+          </View>
+        </View>
+        <Button
+          size="lg"
+          className="mt-10"
+          // onPress={handleSubmit(onSubmit)}
+        >
+          <Text>Actualizar Datos</Text>
+        </Button>
+      </View>
+    </SafeAreaView>
   );
 }

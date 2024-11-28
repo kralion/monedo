@@ -112,8 +112,10 @@ export default function Card() {
         >
           <View className="flex flex-row justify-between">
             <View>
-              <Text className="text-2xl text-white">Balance</Text>
-              <Text className="text-3xl text-white">S/. {balance}</Text>
+              <Text className="text-xl text-white">Balance</Text>
+              <Text className="text-3xl text-white font-bold">
+                S/. {balance}
+              </Text>
             </View>
             <BudgetLimitExceededModal
               setShowModal={setShowModal}
@@ -129,7 +131,11 @@ export default function Card() {
                 }
                 `}
             >
-              {has?.({ permission: "premium:plan" }) ? "Premium" : "Plan Free"}
+              <Text>
+                {has?.({ permission: "premium:plan" })
+                  ? "Cuenta Premium"
+                  : "Cuenta Free"}
+              </Text>
             </Button>
           </View>
           <View className="flex flex-row justify-between">
