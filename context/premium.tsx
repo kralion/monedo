@@ -1,5 +1,4 @@
-import { supabase } from "@/utils/supabase";
-import { useToastController } from "@tamagui/toast";
+import { supabase } from "@/lib/supabase";
 import { router } from "expo-router";
 import React, { createContext, useState } from "react";
 
@@ -17,7 +16,6 @@ export const PremiumContext = createContext<PremiumContextProps>({
 
 export function PremiumProvider({ children }: { children: React.ReactNode }) {
   const [isPremium, setIsPremium] = useState(false);
-  const toast = useToastController();
 
   async function getPremiumUserStatusById(id: string) {
     try {
@@ -27,14 +25,14 @@ export function PremiumProvider({ children }: { children: React.ReactNode }) {
         .update({ rol: newRol })
         .eq("id", id);
       if (error) {
-        toast.show("Error al actualizar el rol del usuario");
+        // toast.show("Error al actualizar el rol del usuario");
       } else {
-        toast.show("Ahora eres un usuario premium");
+        // toast.show("Ahora eres un usuario premium");
       }
     } catch (error) {
       console.log(error);
     } finally {
-      router.push("/(tabs)/");
+      router.push("/(tabs)");
     }
   }
   const value = {

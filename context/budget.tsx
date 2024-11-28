@@ -1,5 +1,5 @@
 import { IBudget, IBudgetContextProvider } from "@/interfaces";
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/lib/supabase";
 import { useUser } from "@clerk/clerk-expo";
 import * as React from "react";
 import { createContext, useContext } from "react";

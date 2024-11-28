@@ -1,8 +1,8 @@
 import { IBudget } from "@/interfaces";
-import { X } from "@tamagui/lucide-icons";
-import { Image } from "expo-image";
 import * as React from "react";
-import { Button, H2, H3, ListItem, Sheet, Text, YStack } from "tamagui";
+import { Image } from "react-native";
+import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
+import { Text } from "../ui/text";
 export function Budget({ budget }: { budget: IBudget }) {
   const { monto, fecha_final, descripcion, fecha_registro } = budget;
   const [openBudgetDetails, setOpenBudgetDetails] = React.useState(false);
@@ -10,48 +10,38 @@ export function Budget({ budget }: { budget: IBudget }) {
   const endDate = new Date(fecha_final);
 
   return (
-    <ListItem
-      onPress={() => {
-        setOpenBudgetDetails(true);
-      }}
-      pressTheme
-      pressStyle={{
-        opacity: 0.8,
-      }}
-      borderRadius="$5"
-      mb="$3"
-      title={
-        <Text fontSize="$5" fontWeight="700">
-          {date
-            .toLocaleDateString("es-ES", {
-              month: "long",
-            })
-            .toUpperCase()}
-        </Text>
-      }
-      icon={
-        <Image
-          source={{
-            uri: "https://img.icons8.com/?size=96&id=ci9FsQ29gcwi&format=png",
-          }}
-          style={{
-            width: 45,
-            height: 45,
-          }}
-        />
-      }
-      subTitle={
-        <Text>
-          {endDate.toLocaleDateString("es-ES", {
-            day: "numeric",
-            month: "2-digit",
-            year: "numeric",
-          })}
-        </Text>
-      }
-      iconAfter={<Text fontWeight="bold"> S/. {monto.toFixed(2)}</Text>}
-    >
-      <Sheet
+    <Card className="active:opacity-80 rounded-xl mb-3">
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle className="flex flex-row items-center gap-1">
+          <Image
+            source={{
+              uri: "https://img.icons8.com/?size=96&id=ci9FsQ29gcwi&format=png",
+            }}
+            style={{
+              width: 45,
+              height: 45,
+            }}
+          />
+          <Text className="text-lg font-bold">
+            {date
+              .toLocaleDateString("es-ES", {
+                month: "long",
+              })
+              .toUpperCase()}
+          </Text>
+        </CardTitle>
+        <CardDescription className="flex flex-row items-center gap-1">
+          <Text className="font-bold"> S/. {monto.toFixed(2)}</Text>
+          <Text className="text-sm text-foreground/70">
+            {endDate.toLocaleDateString("es-ES", {
+              month: "2-digit",
+              year: "numeric",
+              day: "numeric",
+            })}
+          </Text>
+        </CardDescription>
+      </CardHeader>
+      {/* <Sheet
         zIndex={100_000}
         snapPointsMode="fit"
         animation="medium"
@@ -110,7 +100,7 @@ export function Budget({ budget }: { budget: IBudget }) {
             Editar
           </Button>
         </Sheet.Frame>
-      </Sheet>
-    </ListItem>
+      </Sheet> */}
+    </Card>
   );
 }

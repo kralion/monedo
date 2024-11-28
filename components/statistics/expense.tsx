@@ -1,10 +1,11 @@
 import { expensesIdentifiers } from "@/constants/ExpensesIdentifiers";
 import { formatDate } from "@/helpers/dateFormatter";
 import { IExpense } from "@/interfaces";
-import { ChevronRight } from "@tamagui/lucide-icons";
+import { ChevronRight } from "lucide-react-native";
 import { router } from "expo-router";
-import { Image } from "react-native";
-import { H4, ListItem, Text, XStack } from "tamagui";
+import { Image, View } from "react-native";
+import { Card, CardHeader, CardTitle, CardDescription } from "../ui/card";
+import { Text } from "../ui/text";
 export function Expense({ expense }: { expense: IExpense }) {
   const { categoria, monto, fecha } = expense;
   const formattedDate = fecha
@@ -16,39 +17,34 @@ export function Expense({ expense }: { expense: IExpense }) {
     )?.iconHref ||
     "https://img.icons8.com/?size=160&id=MjAYkOMsbYOO&format=png";
   return (
-    <ListItem
-      onPress={() => {
-        console.log("Expense clicked", expense.monto);
-        router.push(`/(expenses)/details/${expense.id}`);
-      }}
-      borderRadius="$5"
-      pressStyle={{
-        opacity: 0.8,
-      }}
-      mb={12}
-      title={
-        <Text fontSize="$6" fontWeight="700">
-          {categoria}
-        </Text>
-      }
-      icon={
-        <Image
-          width={45}
-          height={45}
-          source={{
-            uri: assetIndentificador,
+    <Card className="mb-6 rounded-2xl active:opacity-80">
+      <CardHeader className="flex flex-row items-center justify-between">
+        <CardTitle
+          className="flex flex-row gap-1 items-center"
+          onPress={() => {
+            console.log("Expense clicked", expense.monto);
+            router.push(`/(expenses)/details/${expense.id}`);
           }}
-        />
-      }
-      subTitle={formattedDate}
-      iconAfter={
-        <XStack gap="$2" alignItems="center">
-          <Text fontSize="$6" fontWeight="bold" color="$red10">
+        >
+          <Image
+            width={45}
+            height={45}
+            source={{
+              uri: assetIndentificador,
+            }}
+          />
+          <View className="flex flex-col gap-1">
+            <Text className="text-xl font-semibold">{categoria}</Text>
+            <Text className="text-xs text-foreground/70">{formattedDate}</Text>
+          </View>
+        </CardTitle>
+        <CardDescription className="flex flex-row gap-2 items-center">
+          <Text className="text-3xl font-bold text-destructive">
             - S/. {monto}
           </Text>
-          <ChevronRight size={20} color="$gray8" />
-        </XStack>
-      }
-    />
+          <ChevronRight size={20} className="text-foreground/70" />
+        </CardDescription>
+      </CardHeader>
+    </Card>
   );
 }

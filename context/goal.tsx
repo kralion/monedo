@@ -1,5 +1,5 @@
 import { IGoal, IGoalContextProvider } from "@/interfaces";
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/lib/supabase";
 import * as React from "react";
 import { createContext, useContext } from "react";
 

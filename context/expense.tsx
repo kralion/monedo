@@ -1,4 +1,4 @@
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/lib/supabase";
 import { endOfMonth, formatISO, startOfMonth } from "date-fns";
 import * as React from "react";
 import { createContext, useContext } from "react";
