@@ -3,7 +3,7 @@ import * as Linking from "expo-linking";
 import { router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import React from "react";
-import { Image, View } from "react-native";
+import { Image, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
@@ -23,40 +23,42 @@ WebBrowser.maybeCompleteAuthSession();
 
 export default function SignInScreen() {
   return (
-    <SafeAreaView className="flex flex-col justify-center align-middle p-4 items-center h-[100vh]">
-      <View className="flex flex-col gap-16 w-full items-center">
-        <View className="flex flex-col items-center gap-1">
-          <Image
-            style={{
-              width: 200,
-              height: 200,
-            }}
-            source={require("../../assets/logo.png")}
-          />
-          <Text className="text-4xl font-bold"> Inicia Sesión</Text>
-          <Text className="text-center">
-            Para empezar a usar y disfrutar de Monex
-          </Text>
-        </View>
-        <View className="flex flex-col gap-4 justify-center align-middle w-full">
-          <SignInWithOAuthGoogle />
-          <SignInWithOAuthFacebook />
-          <SignInWithOAuthTiktok />
-        </View>
+    <ScrollView>
+      <SafeAreaView className="flex flex-col justify-center align-middle p-4 items-center h-[100vh]">
+        <View className="flex flex-col gap-16 w-full items-center">
+          <View className="flex flex-col items-center gap-1">
+            <Image
+              style={{
+                width: 125,
+                height: 125,
+              }}
+              source={require("../../assets/logo.png")}
+            />
+            <Text className="text-4xl font-bold"> Inicia Sesión</Text>
+            <Text className="text-center">
+              Para empezar a usar y disfrutar de Monedo
+            </Text>
+          </View>
+          <View className="flex flex-col gap-4 justify-center align-middle w-full">
+            <SignInWithOAuthGoogle />
+            <SignInWithOAuthFacebook />
+            <SignInWithOAuthTiktok />
+          </View>
 
-        <View className="flex flex-row gap-2 justify-center align-middle w-full">
-          <Text className="text-textmuted text-center">
-            ¿No tienes una cuenta?
-          </Text>
-          <Text
-            onPress={() => router.push("/(auth)/sign-up")}
-            className="text-primary active:underline"
-          >
-            Regístrate
-          </Text>
+          <View className="flex flex-row gap-2 justify-center align-middle w-full">
+            <Text className="text-textmuted text-center">
+              ¿No tienes una cuenta?
+            </Text>
+            <Text
+              onPress={() => router.push("/(auth)/sign-up")}
+              className="text-primary active:underline"
+            >
+              Regístrate
+            </Text>
+          </View>
         </View>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </ScrollView>
   );
 }
 

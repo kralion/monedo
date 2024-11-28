@@ -29,13 +29,13 @@ export default function SignUpScreen() {
 
   return (
     <ScrollView>
-      <SafeAreaView className="p-4 ">
-        <View className="flex flex-col gap-12 w-full">
+      <SafeAreaView className="flex flex-col justify-center align-middle p-4 items-center h-[100vh]">
+        <View className="flex flex-col gap-12 h-screen-safe justify-center">
           <View className="flex flex-col items-center gap-1">
             <Image
               style={{
-                width: 200,
-                height: 200,
+                width: 125,
+                height: 125,
               }}
               source={require("../../assets/logo.png")}
             />
@@ -65,9 +65,9 @@ export default function SignUpScreen() {
             </Text>
             <TermsPolicyModal />
           </View>
-          <View className="flex flex-row justify-center align-middle absolute text-center w-full -bottom-36 ">
+          <View className="flex flex-row justify-center align-middle absolute text-center w-full -bottom-24 ">
             <Text className="text-sm ">
-              Copyright @ {new Date().getFullYear()} Roomy | Desarrollado por
+              Copyright @ {new Date().getFullYear()} Monedo | Desarrollado por
             </Text>
             <Text className="text-sm text-primary active:underline">
               <Link href="https://x.com/brayanpaucar_"> Brayan</Link>
