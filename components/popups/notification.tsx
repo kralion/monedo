@@ -1,7 +1,7 @@
 import { INotification } from "@/interfaces/notification";
-import { Image } from "expo-image";
-import { ListItem, Text } from "tamagui";
-
+import { Card, CardHeader, CardTitle, CardDescription } from "../ui/card";
+import { Image, View } from "react-native";
+import { Text } from "../ui/text";
 const iconos = {
   INFO: "https://img.icons8.com/?size=48&id=63308&format=png",
   WARNING: "https://img.icons8.com/?size=48&id=12116&format=png",
@@ -42,32 +42,32 @@ export default function SingleNotification({
   };
 
   return (
-    <ListItem
-      borderRadius={14}
-      alignSelf="center"
-      mx={2}
-      mb={4}
-      mt="$3"
-      width="97%"
-      title={notification.titulo}
-      icon={
-        <Image
-          style={{
-            width: 40,
-            height: 40,
-          }}
-          source={{
-            uri:
-              notification.tipo === "INFO"
-                ? iconos.INFO
-                : notification.tipo === "WARNING"
-                ? iconos.WARNING
-                : iconos.ERROR,
-          }}
-        />
-      }
-      subTitle={descripcion}
-      iconAfter={<Text fontSize="$2">{formatDate(fecha)}</Text>}
-    />
+    <Card className="rounded-xl mx-2 mb-4 mt-3 w-full">
+      <CardHeader className="flex flex-row justify-between">
+        <CardTitle className="flex flex-row items-center gap-1">
+          <View className="flex flex-col gap-1">
+            <Text>{notification.titulo}</Text>
+            <Text>{descripcion}</Text>
+          </View>
+          <Image
+            style={{
+              width: 40,
+              height: 40,
+            }}
+            source={{
+              uri:
+                notification.tipo === "INFO"
+                  ? iconos.INFO
+                  : notification.tipo === "WARNING"
+                  ? iconos.WARNING
+                  : iconos.ERROR,
+            }}
+          />
+        </CardTitle>
+        <CardDescription>
+          <Text className="text-xs">{formatDate(fecha)}</Text>
+        </CardDescription>
+      </CardHeader>
+    </Card>
   );
 }

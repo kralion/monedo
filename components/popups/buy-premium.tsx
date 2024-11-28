@@ -1,9 +1,12 @@
 import BuyPremiumAsset from "@/assets/svgs/buy-premium.svg";
-import { X } from "@tamagui/lucide-icons";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, router } from "expo-router";
+import { X } from "lucide-react-native";
 import * as React from "react";
-import { Button, Dialog, H3, Text, YStack } from "tamagui";
+import { View } from "react-native";
+import { Button } from "../ui/button";
+import { Dialog, DialogContent } from "../ui/dialog";
+import { Text } from "../ui/text";
 type ModalProps = {
   openModal: boolean;
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -14,83 +17,57 @@ export default function BuyPremiumModal({
   setOpenModal,
 }: ModalProps) {
   return (
-    <Dialog modal open={openModal}>
-      <Dialog.Portal>
-        <Dialog.Overlay
-          key="overlay"
-          animation="quick"
-          opacity={1}
-          enterStyle={{ opacity: 0 }}
-          exitStyle={{ opacity: 0 }}
-        />
-        <Dialog.Content
-          width={"90%"}
-          p={0}
-          borderRadius={20}
-          elevate
-          key="content"
-          animateOnly={["transform", "opacity"]}
-          animation={[
-            "quicker",
-            {
-              opacity: {
-                overshootClamping: true,
-              },
-            },
-          ]}
-          enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
-          exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
-          gap="$4"
+    <Dialog open={openModal}>
+      <DialogContent
+        key="content"
+        className="rounded-full w-full flex flex-col py-4"
+      >
+        <LinearGradient
+          style={{
+            borderRadius: 20,
+            padding: 10,
+            shadowRadius: 10,
+            paddingHorizontal: 12,
+          }}
+          colors={["#10828d", "#a3e062"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
         >
-          <LinearGradient
-            style={{
-              borderRadius: 20,
-              padding: 10,
-              shadowRadius: 10,
-              paddingHorizontal: 12,
-            }}
-            colors={["#10828d", "#a3e062"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
-            <YStack gap="$4" alignItems="center">
-              <BuyPremiumAsset width={200} height={220} />
-              <H3>Desbloquea Ahora</H3>
-              <Text textAlign="center">
-                Con el plan <Text fontWeight="bold">Premium</Text> podrás
-                acceder a funcionalidades exclusivas.
-              </Text>
-              <Text textAlign="center" fontStyle="italic">
-                ¡Mejora tu experiencia hoy! y sácale el máximo provecho a{" "}
-                <Text fontWeight="bold">Monex</Text>
-                🚀
-              </Text>
-            </YStack>
-            <YStack gap="$4">
-              <Link href="/(modals)/buy-premium" asChild>
-                <Button
-                  mt="$5"
-                  size="$5"
-                  onPress={() => {
-                    setOpenModal(false), router.push("/(modals)/buy-premium");
-                  }}
-                >
-                  Adquiere Premium
-                </Button>
-              </Link>
-            </YStack>
-          </LinearGradient>
-          <Button
-            position="absolute"
-            top="$3"
-            right="$3"
-            size="$2"
-            circular
-            onPress={() => setOpenModal(false)}
-            icon={X}
-          />
-        </Dialog.Content>
-      </Dialog.Portal>
+          <View className="flex flex-col gap-4 items-center">
+            <BuyPremiumAsset width={200} height={220} />
+            <Text className="text-3xl">Desbloquea Ahora</Text>
+            <Text className="text-center">
+              Con el plan <Text className="font-bold">Premium</Text> podrás
+              acceder a funcionalidades exclusivas.
+            </Text>
+            <Text className="text-center italic">
+              ¡Mejora tu experiencia hoy! y sácale el máximo provecho a{" "}
+              <Text className="font-bold">Monedo</Text>
+              🚀
+            </Text>
+          </View>
+          <View className="flex flex-col gap-4">
+            <Link href="/(modals)/buy-premium" asChild>
+              <Button
+                className="mt-5"
+                size="lg"
+                onPress={() => {
+                  setOpenModal(false), router.push("/(modals)/buy-premium");
+                }}
+              >
+                Adquiere Premium
+              </Button>
+            </Link>
+          </View>
+        </LinearGradient>
+        <Button
+          className="absolute rounded-full top-5 right-5"
+          size="icon"
+          onPress={() => setOpenModal(false)}
+        >
+          <X />
+        </Button>
+      </DialogContent>
     </Dialog>
   );
 }

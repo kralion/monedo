@@ -1,13 +1,13 @@
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import React from "react";
+import { Pressable, View } from "react-native";
 import Animated, {
+  Easing,
+  useAnimatedStyle,
   useSharedValue,
   withTiming,
-  useAnimatedStyle,
-  Easing,
 } from "react-native-reanimated";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
-import { H4, Text, XStack } from "tamagui";
-import { Pressable, View } from "react-native";
+import { Text } from "../ui/text";
 
 type SectionProps = {
   title: string;
@@ -40,12 +40,12 @@ const Section: React.FC<SectionProps> = ({ title, content }) => {
           });
         }}
       >
-        <XStack gap="$2" alignItems="center" justifyContent="space-between">
-          <H4>{title}</H4>
+        <View className="flex flex-row gap-2 items-center justify-between">
+          <Text>{title}</Text>
           <Animated.View style={animatedStyles}>
             <FontAwesome name="chevron-down" size={14} color="black" />
           </Animated.View>
-        </XStack>
+        </View>
       </Pressable>
       <Animated.View style={animatedContentStyles}>
         <Text className="text-zinc-500">{content}</Text>

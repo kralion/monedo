@@ -1,8 +1,11 @@
-import { X } from "@tamagui/lucide-icons";
+import { X } from "lucide-react-native";
+import { Dialog, DialogClose, DialogContent } from "../ui/dialog";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, router } from "expo-router";
 import * as React from "react";
-import { Button, Dialog, H3, Text, YStack } from "tamagui";
+import { View } from "react-native";
+import { Button } from "../ui/button";
+import { Text } from "../ui/text";
 
 type TNotification = {
   setShowModal: React.Dispatch<React.SetStateAction<boolean>>;
@@ -14,85 +17,43 @@ export function BudgetLimitExceededModal({
   showModal,
 }: TNotification) {
   return (
-    <Dialog modal open={false}>
-      <Dialog.Portal>
-        <Dialog.Overlay
-          key="overlay"
-          animation="slow"
-          opacity={0.7}
-          enterStyle={{ opacity: 0 }}
-          exitStyle={{ opacity: 0 }}
-        />
-        <Dialog.Content
-          bordered
-          elevate
-          key="content"
-          animateOnly={["transform", "opacity"]}
-          animation={[
-            "quicker",
-            {
-              opacity: {
-                overshootClamping: true,
-              },
-            },
-          ]}
-          enterStyle={{
-            x: 0,
-            y: -20,
-            opacity: 0,
-            scale: 0.9,
-          }}
-          exitStyle={{
-            x: 0,
-            y: 10,
-            opacity: 0,
-            scale: 0.95,
-          }}
-          gap="$4"
+    <Dialog open={false}>
+      <DialogContent
+        key="content"
+        className="rounded-full w-full flex flex-col py-4"
+      >
+        <LinearGradient
+          style={{ borderRadius: 20, padding: 10, shadowRadius: 10 }}
+          colors={["#10828d", "#a3e062"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
         >
-          <LinearGradient
-            style={{ borderRadius: 20, padding: 10, shadowRadius: 10 }}
-            colors={["#10828d", "#a3e062"]}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-          >
-            <Dialog.Close asChild>
+          <DialogClose asChild>
+            <Button size="icon">
+              <X />
+            </Button>
+          </DialogClose>
+          <View className="flex flex-col gap-4 items-center">
+            {/* <BuyPremiumAsset width={200} height={220} /> */}
+            <Text className="text-3xl">Presupuesto Excedido</Text>
+            <Text>
+              Parece que ya has gastado todo el monto presupuesto para este mes.
+            </Text>
+          </View>
+          <View className="flex flex-col gap-4">
+            <Link href="/(modals)/buy-premium" asChild>
               <Button
-                position="absolute"
+                className="mt-5"
                 onPress={() => {
-                  setShowModal(false);
+                  setShowModal(false), router.push("/(modals)/buy-premium");
                 }}
-                top="$3"
-                right="$3"
-                size="$2"
-                circular
-                icon={X}
-              />
-            </Dialog.Close>
-            <YStack gap="$4" alignItems="center">
-              {/* <BuyPremiumAsset width={200} height={220} /> */}
-              <H3>Presupuesto Excedido</H3>
-              <Text>
-                Parece que ya has gastado todo el monto presupuesto para este
-                mes.
-              </Text>
-            </YStack>
-            <YStack gap="$4">
-              <Link href="/(modals)/buy-premium" asChild>
-                <Button
-                  mt="$5"
-                  height={12}
-                  onPress={() => {
-                    setShowModal(false), router.push("/(modals)/buy-premium");
-                  }}
-                >
-                  <Text className="font-semibold  ">Ver Estadísticas</Text>
-                </Button>
-              </Link>
-            </YStack>
-          </LinearGradient>
-        </Dialog.Content>
-      </Dialog.Portal>
+              >
+                <Text className="font-semibold  ">Ver Estadísticas</Text>
+              </Button>
+            </Link>
+          </View>
+        </LinearGradient>
+      </DialogContent>
     </Dialog>
   );
 }
