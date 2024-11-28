@@ -69,9 +69,10 @@ export const SignInWithOAuthGoogle = () => {
 
   const onPress = React.useCallback(async () => {
     try {
-      const { createdSessionId, setActive } = await startOAuthFlow({
-        redirectUrl: Linking.createURL("/(tabs)", { scheme: "roomy" }),
-      });
+      const { createdSessionId, signIn, signUp, setActive } =
+        await startOAuthFlow({
+          redirectUrl: Linking.createURL("/(tabs)", { scheme: "monedo" }),
+        });
 
       if (createdSessionId) {
         setActive!({ session: createdSessionId });
@@ -108,9 +109,10 @@ export const SignInWithOAuthTiktok = () => {
 
   const onPress = React.useCallback(async () => {
     try {
-      const { createdSessionId, setActive } = await startOAuthFlow({
-        redirectUrl: Linking.createURL("/(tabs)", { scheme: "roomy" }),
-      });
+      const { createdSessionId, signIn, signUp, setActive } =
+        await startOAuthFlow({
+          redirectUrl: Linking.createURL("/(tabs)", { scheme: "monedo" }),
+        });
 
       if (createdSessionId) {
         setActive!({ session: createdSessionId });
@@ -147,9 +149,10 @@ export const SignInWithOAuthFacebook = () => {
 
   const onPress = React.useCallback(async () => {
     try {
-      const { createdSessionId, setActive } = await startOAuthFlow({
-        redirectUrl: Linking.createURL("/(tabs)", { scheme: "roomy" }),
-      });
+      const { createdSessionId, signIn, signUp, setActive } =
+        await startOAuthFlow({
+          redirectUrl: Linking.createURL("/(tabs)", { scheme: "monedo" }),
+        });
 
       if (createdSessionId) {
         setActive!({ session: createdSessionId });

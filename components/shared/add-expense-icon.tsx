@@ -66,14 +66,8 @@ export default function AddExpenseIcon() {
         </Button>
       ) : (
         <Button
-          size="icon"
-          style={[
-            styles.customTabStyle,
-            {
-              backgroundColor: "#6366F1",
-              borderColor: "#979AEE",
-            },
-          ]}
+          size="sm"
+          className="absolute bottom-7 left-36 bg-purple-600 border border-purple-400"
           onPress={() => {
             if (blockRoute) {
               router.push("/(tabs)");
