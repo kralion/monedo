@@ -1,6 +1,8 @@
 import Colors from "@/lib/constants";
+import { Image } from "expo-image";
 import { Tabs } from "expo-router";
-import { Image, useColorScheme } from "react-native";
+import { useColorScheme, View } from "react-native";
+import AddExpenseIcon from "~/components/shared/add-expense-icon";
 import AppProvider from "~/context/provider";
 
 export default function TabLayout() {
@@ -37,18 +39,63 @@ export default function TabLayout() {
             ),
           }}
         />
+
         <Tabs.Screen
-          name="home"
+          name="statistics"
           options={{
-            title: "House",
-            headerShown: false,
+            title: "Reportes",
             tabBarIcon: ({ color, focused }) => (
               <Image
                 style={{ width: 28, height: 28, tintColor: color }}
                 source={{
                   uri: focused
-                    ? "https://api.iconify.design/mingcute:home-4-fill.svg"
-                    : "https://api.iconify.design/mingcute:home-4-line.svg",
+                    ? "https://api.iconify.design/mingcute:chart-vertical-fill.svg"
+                    : "https://api.iconify.design/mingcute:chart-vertical-line.svg",
+                }}
+                alt="google"
+              />
+            ),
+            headerShown: false,
+          }}
+        />
+        <Tabs.Screen
+          name="add-expense"
+          options={{
+            title: "",
+            headerShown: false,
+            tabBarIcon: () => <AddExpenseIcon />,
+          }}
+        />
+        <Tabs.Screen
+          name="wallet"
+          options={{
+            title: "Billetera",
+            tabBarIcon: ({ color, focused }) => (
+              <Image
+                style={{ width: 28, height: 28, tintColor: color }}
+                source={{
+                  uri: focused
+                    ? "https://api.iconify.design/mingcute:wallet-4-fill.svg"
+                    : "https://api.iconify.design/mingcute:wallet-4-line.svg",
+                }}
+                alt="google"
+              />
+            ),
+            headerShown: false,
+          }}
+        />
+        <Tabs.Screen
+          name="profile"
+          options={{
+            headerBackground: () => <View style={{ flex: 1 }} />,
+            title: "Perfil",
+            tabBarIcon: ({ color, focused }) => (
+              <Image
+                style={{ width: 28, height: 28, tintColor: color }}
+                source={{
+                  uri: focused
+                    ? "https://api.iconify.design/mingcute:user-3-fill.svg"
+                    : "https://api.iconify.design/mingcute:user-3-line.svg",
                 }}
                 alt="google"
               />

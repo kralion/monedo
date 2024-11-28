@@ -4,11 +4,9 @@ export default function Layout() {
   return (
     <Stack>
       <Stack.Screen
+        name="index"
         options={{
           title: "Presupuestos",
-          headerStyle: {
-            backgroundColor: "#F3F3F3",
-          },
           headerLargeTitle: true,
           headerShadowVisible: false,
           headerSearchBarOptions: {
@@ -19,7 +17,6 @@ export default function Layout() {
 
           headerLargeTitleShadowVisible: false,
         }}
-        name="index"
       />
     </Stack>
   );

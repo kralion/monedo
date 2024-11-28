@@ -32,7 +32,7 @@ export default function Membership() {
           <Avatar alt="profile" className="bg-teal-500 align-middle w-36 h-36">
             <AvatarImage
               accessibilityLabel="avatar"
-              src={require("../../assets/logo.png")}
+              src={require("../../../assets/logo.png")}
             />
             <AvatarFallback className="bg-slate-500" />
           </Avatar>

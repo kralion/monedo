@@ -73,22 +73,22 @@ export default function AddExpense() {
         <SafeAreaView style={{ paddingHorizontal: 16, paddingTop: 16 }}>
           <View className="flex flex-col gap-6">
             <View className="flex flex-col">
-              <Text className="text-3xl">Nuevo Gasto</Text>
+              <Text className="text-3xl font-bold">Nuevo Gasto</Text>
               <Text>Ingresa los detalles del gasto que hiciste</Text>
             </View>
-            <View className="flex flex-col gap-2">
+            <View className="flex flex-col gap-6">
               <Controller
                 name="categoria"
                 control={control}
                 render={({ field: { onChange, value } }) => (
-                  <View className="flex flex-col">
+                  <View className="flex flex-col gap-2">
                     <Label>Categoría</Label>
                     <Select onValueChange={onChange}>
                       <SelectTrigger>
                         <SelectValue placeholder="Selecciona" />
                       </SelectTrigger>
 
-                      <SelectContent>
+                      <SelectContent className="w-[90%]">
                         <SelectGroup>
                           {useMemo(
                             () =>
@@ -112,7 +112,7 @@ export default function AddExpense() {
                 )}
               />
 
-              <View className="flex flex-col">
+              <View className="flex flex-col gap-2">
                 <Label>Monto</Label>
 
                 <Controller
@@ -235,7 +235,7 @@ export default function AddExpense() {
                 {isLoading ? (
                   <Loader className="animate-spin text-white" size={20} />
                 ) : (
-                  "Registrar"
+                  <Text>Registrar</Text>
                 )}
               </Button>
             </View>

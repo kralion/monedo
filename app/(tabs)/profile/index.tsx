@@ -35,7 +35,7 @@ export default function ProfileScreen() {
             <Button
               disabled
               size="sm"
-              className={` text-white
+              className={` text-white rounded-full
                 bg-${
                   has?.({ permission: "premium:plan" })
                     ? "green-500"
@@ -50,38 +50,42 @@ export default function ProfileScreen() {
           </View>
         </View>
       </View>
-      <View className="flex flex-col mt-10 ml-3 items-start">
+      <View className="flex flex-col mt-10 items-start ml-4">
         <Button
-          onPress={() => router.push("/(modals)/personal-info")}
+          onPress={() => router.push("/(tabs)/profile/personal-info")}
           size="lg"
+          variant="ghost"
           className="flex flex-row gap-2"
         >
           <User />
-          Mis Datos
+          <Text>Mis Datos</Text>
         </Button>
         <Button
-          onPress={() => router.push("/(modals)/membership")}
+          onPress={() => router.push("/(tabs)/profile/membership")}
           size="lg"
           className="flex flex-row gap-2"
+          variant="ghost"
         >
           <UserSquare2 />
-          Membresía
+          <Text>Membresía</Text>
         </Button>
         <Button
-          onPress={() => router.push("/(modals)/buy-premium")}
+          onPress={() => router.push("/(tabs)/profile/buy-premium")}
           size="lg"
+          variant="ghost"
           className="flex flex-row gap-2"
         >
           <Unlock />
-          Adquirir Premium
+          <Text>Adquirir Premium</Text>
         </Button>
         <Button
-          onPress={() => router.push("/(modals)/notifications")}
+          onPress={() => router.push("/(tabs)/profile/notifications")}
           size="lg"
+          variant="ghost"
           className="flex flex-row gap-2"
         >
           <Bell />
-          Notificaciones
+          <Text>Notificaciones</Text>
         </Button>
         <Button
           onPress={() => {
@@ -89,11 +93,11 @@ export default function ProfileScreen() {
             router.replace("/(auth)/sign-in");
           }}
           size="lg"
-          variant="destructive"
+          variant="ghost"
           className="flex flex-row gap-2 "
         >
           <LogOut />
-          Salir
+          <Text className="text-destructive">Salir</Text>
         </Button>
       </View>
 

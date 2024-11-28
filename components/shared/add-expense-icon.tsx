@@ -62,7 +62,7 @@ export default function AddExpenseIcon() {
             }
           }}
         >
-          <Plus color="white" size={40} />{" "}
+          <Plus color="white" size={40} />
         </Button>
       ) : (
         <Button
@@ -83,7 +83,7 @@ export default function AddExpenseIcon() {
             }
           }}
         >
-          <Plus color="white" size={40} />{" "}
+          <Plus color="white" size={40} />
         </Button>
       )}
     </View>

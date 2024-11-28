@@ -93,12 +93,13 @@ export default function Wallet() {
         }}
       >
         <View className="flex flex-col gap-3 rounded-b-xl ">
-          //TODO: Put this form in a modal.
+          //TODO: Hide this Form if the user has already budgeted for the
+          current month.
           {budgetFormAvailable && (
             <>
               <View className="flex flex-col gap-3 mt-5">
-                <View className="flex flex-row justify-between">
-                  <Label className="text-md">Monto : </Label>
+                <View className="flex flex-col gap-2">
+                  <Label className="text-md">Monto </Label>
                   <View className="flex flex-col ">
                     <Controller
                       control={control}
@@ -116,8 +117,8 @@ export default function Wallet() {
                       render={({ field: { onChange, value } }) => (
                         <Input
                           autoCapitalize="none"
+                          className="w-full"
                           onChangeText={onChange}
-                          value={String(value)}
                           placeholder="650.00"
                           keyboardType="decimal-pad"
                         />
@@ -155,7 +156,7 @@ export default function Wallet() {
                   {isLoading ? (
                     <Loader className="animate-spin text-white" size={20} />
                   ) : (
-                    "Registrar"
+                    <Text>Registrar</Text>
                   )}
                 </Button>
               </View>
