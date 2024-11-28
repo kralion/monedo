@@ -1,22 +1,15 @@
 import { usePremiumStatusContext } from "@/context";
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/lib/supabase";
 import { useUser } from "@clerk/clerk-expo";
-import { CreditCard } from "@tamagui/lucide-icons";
-import { useRouter } from "expo-router";
+import { Loader } from "lucide-react-native";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
+import { View } from "react-native";
 import ConfettiCannon from "react-native-confetti-cannon";
-import {
-  Button,
-  Input,
-  SizableText,
-  Spinner,
-  Text,
-  XStack,
-  YStack,
-  styled,
-  useTheme,
-} from "tamagui";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Text } from "../ui/text";
+import { router } from "expo-router";
 
 interface ICard {
   cardNumber: string;
@@ -29,12 +22,9 @@ interface ICard {
 
 export default function Stripe() {
   const { setIsPremium } = usePremiumStatusContext();
-  const router = useRouter();
   const [showConfetti, setShowConfetti] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const { user: userData } = useUser();
-  const { theme } = useTheme();
-  const isDarkMode = theme?.name === "dark";
   const {
     control,
     handleSubmit,
@@ -45,16 +35,7 @@ export default function Stripe() {
       divisa: "pen",
     },
   });
-  const StyledXStack = styled(XStack, {
-    backgroundColor: isDarkMode ? "$gray8" : "$gray4",
-    borderRadius: "$4",
-    alignItems: "center",
-    px: "$2",
-    mt: "$2",
-    pr: "$4",
-  });
-  const inputIconColor = isDarkMode ? "$gray5" : "$gray9";
-  const placeholderTextColor = isDarkMode ? "$gray5" : "$gray9";
+
   async function updateUserRole(userId: string | undefined) {
     const { error } = await supabase
       .from("usuarios")
@@ -86,17 +67,17 @@ export default function Stripe() {
     setIsLoading(false);
     setShowConfetti(true);
     setTimeout(() => {
-      router.push("/(monex)");
+      router.push("/(tabs)");
     }, 3000);
   }
 
   return (
-    <YStack py="$3" gap="$4">
+    <View className="flex flex-col py-3 gap-4">
       {showConfetti && (
         <ConfettiCannon autoStart count={200} origin={{ x: 50, y: 50 }} />
       )}
-      <YStack gap="$3">
-        <YStack gap="$1">
+      <View className="flex flex-col gap-3">
+        <View className="flex flex-col gap-1">
           <Text>Número de Tarjeta</Text>
 
           <Controller
@@ -113,56 +94,37 @@ export default function Stripe() {
             }}
             control={control}
             render={({ field }) => (
-              <StyledXStack>
-                <Input
-                  size="$5"
-                  autoCapitalize="none"
-                  borderRadius={0}
-                  placeholder="1234 1234 1234 1234"
-                  py={3}
-                  placeholderTextColor={placeholderTextColor}
-                  flex={1}
-                  {...field}
-                  backgroundColor="transparent"
-                  keyboardType="number-pad"
-                />
-                <XStack opacity={0.5}>
-                  <SizableText color={inputIconColor}>
-                    <CreditCard />
-                  </SizableText>
-                </XStack>
-              </StyledXStack>
+              <Input
+                autoCapitalize="none"
+                className="py-3 flex-1"
+                placeholder="1234 1234 1234 1234"
+                {...field}
+                keyboardType="number-pad"
+              />
             )}
           />
-        </YStack>
+        </View>
 
-        <YStack gap="$1">
+        <View className="flex flex-col gap-1">
           <Text>CVC / CVV</Text>
 
           <Controller
             control={control}
             render={({ field: { onChange, value } }) => (
-              <StyledXStack>
-                <Input
-                  onChangeText={(value) => {
-                    if (value.length === 2 && !value.includes("/")) {
-                      onChange(value + "/");
-                    } else {
-                      onChange(value);
-                    }
-                  }}
-                  value={value}
-                  placeholder="123"
-                  size="$5"
-                  autoCapitalize="none"
-                  borderRadius={0}
-                  py={3}
-                  placeholderTextColor={placeholderTextColor}
-                  flex={1}
-                  backgroundColor="transparent"
-                  keyboardType="number-pad"
-                />
-              </StyledXStack>
+              <Input
+                onChangeText={(value) => {
+                  if (value.length === 2 && !value.includes("/")) {
+                    onChange(value + "/");
+                  } else {
+                    onChange(value);
+                  }
+                }}
+                value={value}
+                placeholder="123"
+                autoCapitalize="none"
+                className="py-3 flex-1"
+                keyboardType="number-pad"
+              />
             )}
             name="cvc"
             rules={{
@@ -176,8 +138,8 @@ export default function Stripe() {
               },
             }}
           />
-        </YStack>
-        <YStack gap="$1">
+        </View>
+        <View className="flex flex-col gap-1">
           <Text>Fecha Expiración</Text>
           <Controller
             name="expiracion"
@@ -193,55 +155,35 @@ export default function Stripe() {
             }}
             control={control}
             render={({ field: { onChange, value } }) => (
-              <StyledXStack>
-                <Input
-                  onChangeText={(value) => {
-                    if (value.length === 2 && !value.includes("/")) {
-                      onChange(value + "/");
-                    } else {
-                      onChange(value);
-                    }
-                  }}
-                  value={value}
-                  placeholder="MM/YY"
-                  size="$5"
-                  autoCapitalize="none"
-                  borderRadius={0}
-                  py={3}
-                  placeholderTextColor={placeholderTextColor}
-                  flex={1}
-                  backgroundColor="transparent"
-                  keyboardType="number-pad"
-                />
-              </StyledXStack>
+              <Input
+                onChangeText={(value) => {
+                  if (value.length === 2 && !value.includes("/")) {
+                    onChange(value + "/");
+                  } else {
+                    onChange(value);
+                  }
+                }}
+                value={value}
+                placeholder="MM/YY"
+                autoCapitalize="none"
+                className="py-3 flex-1"
+                keyboardType="number-pad"
+              />
             )}
           />
-        </YStack>
-        <Button
-          disabled
-          chromeless
-          variant="outlined"
-          size="$5"
-          fontWeight="bold"
-        >
+        </View>
+        <Button variant="outline" className="font-bold" size="lg">
           S/. 15.00
         </Button>
-      </YStack>
+      </View>
 
-      <Button
-        onPress={() => setShowConfetti(true)}
-        size="$5"
-        bg="$green9Light"
-        color="$white1"
-        mt="$5"
-        mb="$12"
-      >
+      <Button onPress={() => setShowConfetti(true)} size="lg" className="mt-5">
         {isLoading ? (
-          <Spinner size="small" color="$white1" />
+          <Loader className="animate-spin text-white" size={20} />
         ) : (
           "Realizar Compra"
         )}
       </Button>
-    </YStack>
+    </View>
   );
 }

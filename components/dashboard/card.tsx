@@ -1,5 +1,5 @@
 import { useExpenseContext } from "@/context";
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/lib/supabase";
 import * as React from "react";
 import { Alert, Pressable, StyleSheet, View } from "react-native";
 import Animated, {
@@ -12,8 +12,9 @@ import Animated, {
 import { BudgetLimitExceededModal } from "../popups/budget-limit-exceeded";
 import BuyPremiumModal from "../popups/buy-premium";
 import { LinearGradient } from "expo-linear-gradient";
-import { Button, H3, H4, XStack, YStack, Text } from "tamagui";
 import { useAuth, useUser } from "@clerk/clerk-expo";
+import { Text } from "../ui/text";
+import { Button } from "../ui/button";
 
 export default function Card() {
   const flip = useSharedValue(0);
@@ -109,45 +110,45 @@ export default function Card() {
           end={{ x: 1, y: 1 }}
           style={styles.cardStyle}
         >
-          <XStack justifyContent="space-between">
+          <View className="flex flex-row justify-between">
             <View>
-              <H4 color="$white1">Balance</H4>
-              <H3 color="$white1">S/. {balance}</H3>
+              <Text className="text-2xl text-white">Balance</Text>
+              <Text className="text-3xl text-white">S/. {balance}</Text>
             </View>
             <BudgetLimitExceededModal
               setShowModal={setShowModal}
               showModal={showModal}
             />
             <Button
-              size="$2.5"
-              borderRadius="$7"
-              bg={
-                has?.({ permission: "premium:plan" })
-                  ? "$yellow10"
-                  : "$orange10"
-              }
+              size="sm"
+              className={` rounded-full
+                bg-${
+                  has?.({ permission: "premium:plan" })
+                    ? "yellow-500"
+                    : "orange-500"
+                }
+                `}
             >
-              <Text color="$white1">
-                {has?.({ permission: "premium:plan" })
-                  ? "Premium"
-                  : "Plan Free"}
-              </Text>
+              {has?.({ permission: "premium:plan" }) ? "Premium" : "Plan Free"}
             </Button>
-          </XStack>
-          <XStack justifyContent="space-between">
-            <YStack>
-              <XStack>
-                <Text color="$white1">Gastos</Text>
-              </XStack>
-              <H4 color="$white1">S/. {totalMonthExpenses}</H4>
-            </YStack>
-            <YStack>
-              <XStack>
-                <Text color="$white1">Presupuesto</Text>
-              </XStack>
-              <H4 color="$white1">S/. {presupuesto}</H4>
-            </YStack>
-          </XStack>
+          </View>
+          <View className="flex flex-row justify-between">
+            <View className="flex flex-col ">
+              <View className="flex flex-row">
+                <Text className="text-white">Gastos</Text>
+              </View>
+              <Text className="text-xl text-white">
+                S/. {totalMonthExpenses}
+              </Text>
+            </View>
+
+            <View className="flex flex-col">
+              <View className="flex flex-row">
+                <Text className="text-white">Presupuesto</Text>
+              </View>
+              <Text className="text-xl text-white">S/. {presupuesto}</Text>
+            </View>
+          </View>
         </LinearGradient>
       </Pressable>
     </Animated.View>
