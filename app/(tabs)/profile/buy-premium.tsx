@@ -1,9 +1,9 @@
 import Stripe from "@/components/payment/stripe";
 import Yape from "@/components/payment/yape";
 import { useAuth, useUser } from "@clerk/clerk-expo";
-import { X } from "lucide-react-native";
 import { router } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { X } from "lucide-react-native";
 import * as React from "react";
 import {
   Animated as AnimatedRN,
@@ -17,14 +17,27 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-
-import { Button } from "~/components/ui/button";
-import { Text } from "~/components/ui/text";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "~/components/ui/card";
+import { Input } from "~/components/ui/input";
+import { Label } from "~/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { Badge } from "~/components/ui/badge";
+import { Button } from "~/components/ui/button";
+import { Separator } from "~/components/ui/separator";
+import { Text } from "~/components/ui/text";
 export default function BuyPremiumModal() {
   const [yapePaymentMethod, setYapePaymentMethod] = React.useState(false);
   const [cardPaymentMethod, setCardPaymentMethod] = React.useState(true);
+  const [value, setValue] = React.useState("card");
   const screenWidth = Dimensions.get("window").width;
   const { user: userData } = useUser();
   const { has } = useAuth();
@@ -66,102 +79,71 @@ export default function BuyPremiumModal() {
   };
 
   return (
-    <ScrollView>
-      <SafeAreaView className="p-4 flex-1">
-        <View className="flex flex-col gap-4">
-          <View className="flex flex-row justify-between items-center">
-            <Text className="font-bold text-4xl">Información de Compra</Text>
-            <Button variant="ghost" onPress={() => router.back()} size="icon">
-              <X size="$1" />
-            </Button>
-          </View>
-
-          <View className="flex flex-row gap-2 items-center">
-            <Avatar alt="profile" className="bg-teal-600 w-36 h-36">
-              <AvatarImage
-                accessibilityLabel="avatar"
-                src={userData?.imageUrl}
-                style={{
-                  borderRadius: 100,
-                  width: 100,
-                  height: 100,
-                }}
-              />
-              <AvatarFallback className="bg-slate-500" />
-            </Avatar>
-            <View className="flex flex-col gap-4">
-              <Text className="font-bold text-4xl">
-                {userData?.firstName} {userData?.lastName}
-              </Text>
-              <Button
-                disabled={!has?.({ permission: "free:plan" })}
-                size="lg"
-                className={`
+    <SafeAreaView className="p-4">
+      <View className="flex flex-col gap-6 pt-16">
+        <View className="flex flex-row justify-between items-center">
+          <Button variant="ghost" onPress={() => router.back()} size="icon">
+            <X size="$1" />
+          </Button>
+        </View>
+        <View className="flex flex-row gap-4 items-center">
+          <Avatar alt="profile" className="bg-teal-600 w-32 h-32">
+            <AvatarImage
+              accessibilityLabel="avatar"
+              source={{ uri: userData?.imageUrl }}
+            />
+            <AvatarFallback className="bg-slate-500" />
+          </Avatar>
+          <View className="flex flex-col gap-2">
+            <Text className="font-bold text-2xl">
+              {userData?.firstName} {userData?.lastName}
+            </Text>
+            <Badge
+              className={`
                   ${
                     has?.({ permission: "free:plan" })
-                      ? "bg-orange-10"
-                      : "bg-green-900"
+                      ? "bg-primary"
+                      : "bg-orange-500"
                   }
-                  text-white
+                  text-white py-2
                   `}
-              >
+            >
+              <Text className="text-md">
                 {has?.({ permission: "free:plan" })
                   ? "Cuenta Premium"
                   : "Cuenta Free"}
-              </Button>
-            </View>
+              </Text>
+            </Badge>
           </View>
-          {/* <Separator borderColor="$gray5" /> */}
-
-          <Text className="text-3xl ">Método de Pago</Text>
-          <View className="flex flex-row gap-2 items-center">
-            <View className="flex flex-row gap-2 items-center">
-              <Animated.View
-                style={[
-                  {
-                    position: "absolute",
-                    top: 4,
-                    left: 4,
-                    width: "50%",
-                    borderRadius: 7,
-                    height: "100%",
-                  },
-                  useAnimatedStyle(() => {
-                    return {
-                      transform: [{ translateX: animation.value }],
-                    };
-                  }),
-                ]}
-              />
-              <Button
-                className="w-1/2 p-2"
-                variant="ghost"
-                onPress={handleCardPayment}
-              >
-                Tarjeta Bancaria
-              </Button>
-              <Button
-                className="w-1/2 p-2"
-                variant="ghost"
-                onPress={handleYapePayment}
-              >
-                Yape
-              </Button>
-            </View>
-
-            {cardPaymentMethod ? (
-              <AnimatedRN.View style={{ opacity: fadeAnimCard }}>
-                <Stripe />
-              </AnimatedRN.View>
-            ) : (
-              <AnimatedRN.View style={{ opacity: fadeAnimYape }}>
-                <Yape />
-              </AnimatedRN.View>
-            )}
-          </View>
-          <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
         </View>
-      </SafeAreaView>
-    </ScrollView>
+        <Separator className="text-gray-500" />
+        <ScrollView>
+          <Text className="text-2xl font-bold ">Método de Pago</Text>
+          <View className="flex-1 justify-center  py-6">
+            <Tabs
+              value={value}
+              onValueChange={setValue}
+              className="w-full max-w-[400px] mx-auto flex-col gap-1.5"
+            >
+              <TabsList className="flex-row w-full rounded-lg">
+                <TabsTrigger value="card" className="flex-1 rounded-lg">
+                  <Text>Tarjeta</Text>
+                </TabsTrigger>
+                <TabsTrigger value="yape" className="flex-1 rounded-lg">
+                  <Text>Yape</Text>
+                </TabsTrigger>
+              </TabsList>
+              <TabsContent value="card">
+                <Stripe />
+              </TabsContent>
+              <TabsContent value="yape">
+                <Yape />
+              </TabsContent>
+            </Tabs>
+          </View>
+        </ScrollView>
+        <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
+      </View>
+    </SafeAreaView>
   );
 }

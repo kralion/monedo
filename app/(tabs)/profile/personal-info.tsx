@@ -62,7 +62,7 @@ export default function PersonalInfo() {
     })();
   }, []);
   return (
-    <SafeAreaView style={{ paddingTop: 16, height: "100%" }}>
+    <SafeAreaView>
       <View className="flex flex-col gap-5 px-4 pt-10">
         <View className="flex flex-col items-center">
           <View className="relative  flex flex-col gap-3">

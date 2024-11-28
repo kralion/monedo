@@ -173,7 +173,7 @@ export default function Stripe() {
           />
         </View>
         <Button variant="outline" className="font-bold" size="lg">
-          S/. 15.00
+          <Text>S/. 15.00</Text>
         </Button>
       </View>
 
@@ -181,7 +181,7 @@ export default function Stripe() {
         {isLoading ? (
           <Loader className="animate-spin text-white" size={20} />
         ) : (
-          "Realizar Compra"
+          <Text>Realizar Compra</Text>
         )}
       </Button>
     </View>

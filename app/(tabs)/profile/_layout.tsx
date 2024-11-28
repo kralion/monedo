@@ -31,8 +31,10 @@ export default function Layout() {
       <Stack.Screen
         name="buy-premium"
         options={{
-          title: "",
+          title: "Adquirir Premium",
           headerBackTitle: "Perfil",
+          headerTransparent: true,
+          headerLargeTitle: true,
         }}
       />
       <Stack.Screen

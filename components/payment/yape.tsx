@@ -8,14 +8,14 @@ export default function Yape() {
       <View className="flex flex-col gap-2">
         <Text>Número de Teléfono</Text>
         <Button variant="outline" size="lg" className="font-bold">
-          914 019 629
+          <Text> 914 019 629</Text>
         </Button>
       </View>
       <View className="flex flex-col gap-2">
         <Text>Monto de yapeo</Text>
 
         <Button variant="outline" size="lg" className="font-bold">
-          S/. 15.00
+          <Text> S/. 15.00</Text>
         </Button>
       </View>
       <Text className="text-sm text-foreground">
@@ -24,7 +24,7 @@ export default function Yape() {
         <Text className="font-bold text-primary"> 914 019 929</Text>
       </Text>
       <Button size="lg" className="bg-purple-600 mt-5 text-white">
-        Abrir Yape
+        <Text> Abrir Yape</Text>
       </Button>
     </View>
   );
