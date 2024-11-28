@@ -1,24 +1,22 @@
 import NoDataAsset from "@/assets/svgs/no-data.svg";
 import { useExpenseContext } from "@/context";
-import { supabase } from "@/utils/supabase";
+import { supabase } from "@/lib/supabase";
 import { useUser } from "@clerk/clerk-expo";
-import { useToastController } from "@tamagui/toast";
 import {
   endOfDay,
   endOfMonth,
   endOfWeek,
   endOfYear,
   format,
-  parseISO,
   startOfDay,
   startOfMonth,
   startOfWeek,
   startOfYear,
 } from "date-fns";
 import React from "react";
-import { Dimensions } from "react-native";
-import { LineChart } from "react-native-chart-kit";
-import { Text, YStack } from "tamagui";
+import { Dimensions, View } from "react-native";
+import { LineChart } from "react-native-gifted-charts";
+import { Text } from "../ui/text";
 
 async function getExpensesDataByTimelineQuery(timelineQuery: string) {
   let startDate, endDate;
@@ -57,8 +55,13 @@ async function getExpensesDataByTimelineQuery(timelineQuery: string) {
 
 export default function Chart({ timelineQuery }: { timelineQuery: string }) {
   const screenWidth = Dimensions.get("window").width;
-  const toast = useToastController();
   const { user: userData } = useUser();
+  const dataSample = [
+    { value: 15 },
+    { value: 30 },
+    { value: 26 },
+    { value: 40 },
+  ];
   const { expenses, getExpensesByUser } = useExpenseContext();
   React.useEffect(() => {
     if (userData) {
@@ -94,55 +97,35 @@ export default function Chart({ timelineQuery }: { timelineQuery: string }) {
   });
   if (data.length === 0) {
     return (
-      <YStack gap="$4" justifyContent="center" alignItems="center">
+      <View className="flex flex-col gap-4 justify-center items-center">
         <NoDataAsset width={200} height={200} />
-        <Text textAlign="center" px="$5">
+        <Text className="text-center px-5">
           Aún no tienes gastos registrados para este nivel de periodicidad
         </Text>
-      </YStack>
+      </View>
     );
   }
 
   return (
     <LineChart
-      data={{
-        labels: labels,
-        datasets: [
-          {
-            data: data,
-          },
-        ],
-      }}
+      areaChart
+      curved
+      data={dataSample}
+      showVerticalLines
+      spacing={44}
+      initialSpacing={0}
+      color1="skyblue"
+      color2="orange"
+      textColor1="green"
+      hideDataPoints
+      dataPointsColor1="blue"
+      dataPointsColor2="red"
+      startFillColor1="skyblue"
+      startFillColor2="orange"
+      startOpacity={0.8}
+      endOpacity={0.3}
       width={450}
-      style={{
-        marginLeft: -35,
-        marginBottom: -5,
-      }}
       height={250}
-      yAxisInterval={1}
-      chartConfig={{
-        backgroundColor: "#e26a00",
-        backgroundGradientFrom: "#73B78F",
-        backgroundGradientTo: "#73B78F",
-
-        backgroundGradientFromOpacity: 0,
-        backgroundGradientToOpacity: 0,
-        decimalPlaces: 0,
-        color: (opacity = 1) => `rgba(54, 137, 131, ${opacity})`,
-        labelColor: (opacity = 1) => `rgba(109, 104, 104, ${opacity})`,
-        strokeWidth: 4,
-        propsForBackgroundLines: {
-          opacity: 0.1,
-        },
-
-        propsForDots: {
-          r: "4",
-          strokeWidth: 0,
-          stroke: "#FEFED5",
-          fill: "#368983",
-        },
-      }}
-      bezier
     />
   );
 }

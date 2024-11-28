@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import { Text, View, Button, Platform } from "react-native";
 import * as Device from "expo-device";
 import * as Notifications from "expo-notifications";
-import { Subscription } from "expo-notifications";
+import { EventSubscription } from "expo-notifications";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -15,8 +15,8 @@ Notifications.setNotificationHandler({
 export default function PushNotification() {
   const [expoPushToken, setExpoPushToken] = useState("");
   const [notification, setNotification] = useState(false);
-  const notificationListener = useRef<Subscription | null>(null);
-  const responseListener = useRef<Subscription | null>(null);
+  const notificationListener = useRef<EventSubscription | null>(null);
+  const responseListener = useRef<EventSubscription | null>(null);
 
   useEffect(() => {
     registerForPushNotificationsAsync().then((token) => {
@@ -63,23 +63,25 @@ export default function PushNotification() {
       <Button
         title="Press to schedule a notification"
         onPress={async () => {
-          await schedulePushNotification();
+          // await schedulePushNotification();
+          console.log("Pressed");
         }}
       />
     </View>
   );
 }
 
-async function schedulePushNotification() {
-  await Notifications.scheduleNotificationAsync({
-    content: {
-      title: "You've got mail! 📬",
-      body: "Here is the notification body",
-      data: { data: "goes here" },
-    },
-    trigger: { seconds: 2 },
-  });
-}
+// async function schedulePushNotification() {
+//   await Notifications.scheduleNotificationAsync({
+//     content: {
+//       title: "You've got mail! 📬",
+//       body: "Here is the notification body",
+//       data: { data: "goes here", test: { test1: "more data" } },
+//     },
+//     trigger: { seconds: 2 },
+
+//   });
+// }
 
 async function registerForPushNotificationsAsync() {
   let token;

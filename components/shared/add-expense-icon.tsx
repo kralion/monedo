@@ -1,13 +1,11 @@
 import { useExpenseContext } from "@/context";
-import { supabase } from "@/utils/supabase";
-import { useAuth, useUser } from "@clerk/clerk-expo";
-import { Entypo } from "@expo/vector-icons";
-import { Plus } from "@tamagui/lucide-icons";
-import { useToastController } from "@tamagui/toast";
-import { Button } from "tamagui";
+import { supabase } from "@/lib/supabase";
+import { useAuth } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
+import { Plus } from "lucide-react-native";
 import React from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import { Button } from "../ui/button";
 
 export default function AddExpenseIcon() {
   const router = useRouter();
@@ -15,7 +13,6 @@ export default function AddExpenseIcon() {
   const [presupuesto, setPresupuesto] = React.useState(0);
   // TODO: get this from the actual month
   const { sumOfAllOfExpensesMonthly } = useExpenseContext();
-  const toast = useToastController();
   const [blockRoute, setBlockRoute] = React.useState(false);
   async function fetchExpenses() {
     const totalExpenses = await sumOfAllOfExpensesMonthly();
@@ -48,8 +45,7 @@ export default function AddExpenseIcon() {
     <View>
       {has?.({ permission: "premium:plan" }) ? (
         <Button
-          unstyled
-          icon={<Plus color="white" size={40} />}
+          size="icon"
           style={[
             styles.customTabStyle,
             {
@@ -59,17 +55,18 @@ export default function AddExpenseIcon() {
           ]}
           onPress={() => {
             if (blockRoute) {
-              router.push("/(monex)");
-              toast.show("No puedes añadir gastos tu balance es cero.");
+              router.push("/(tabs)");
+              // toast.show("No puedes añadir gastos tu balance es cero.");
             } else {
-              router.push("/(monex)/add-expense");
+              router.push("/(tabs)/add-expense");
             }
           }}
-        />
+        >
+          <Plus color="white" size={40} />{" "}
+        </Button>
       ) : (
         <Button
-          unstyled
-          icon={<Plus color="white" size={40} />}
+          size="icon"
           style={[
             styles.customTabStyle,
             {
@@ -79,13 +76,15 @@ export default function AddExpenseIcon() {
           ]}
           onPress={() => {
             if (blockRoute) {
-              router.push("/(monex)");
-              toast.show("No puedes añadir gastos tu balance es cero.");
+              router.push("/(tabs)");
+              // toast.show("No puedes añadir gastos tu balance es cero.");
             } else {
-              router.push("/(monex)/add-expense");
+              router.push("/(tabs)/add-expense");
             }
           }}
-        />
+        >
+          <Plus color="white" size={40} />{" "}
+        </Button>
       )}
     </View>
   );
