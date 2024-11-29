@@ -30,7 +30,11 @@ export default function Notifications() {
   }, [notifications]);
 
   return (
-    <ScrollView style={{ paddingTop: headerHeight }}>
+    <ScrollView
+      style={{ paddingTop: headerHeight }}
+      contentInsetAdjustmentBehavior="automatic"
+      keyboardDismissMode="on-drag"
+    >
       <FlashList
         data={notifications}
         renderItem={({ item }) => <SingleNotification notification={item} />}

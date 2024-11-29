@@ -1,14 +1,12 @@
 import { useAuth, useUser } from "@clerk/clerk-expo";
-import { Bell, LogOut, Unlock, User, UserSquare2 } from "lucide-react-native";
 import { useRouter } from "expo-router";
+import { Bell, LogOut, Unlock, User, UserSquare2 } from "lucide-react-native";
 import { View } from "react-native";
-
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { Text } from "~/components/ui/text";
-import { Button } from "~/components/ui/button";
 import { Badge } from "~/components/ui/badge";
-
+import { Button } from "~/components/ui/button";
+import { Text } from "~/components/ui/text";
 export default function ProfileScreen() {
   const { user } = useUser();
   const { has, signOut } = useAuth();
@@ -29,7 +27,7 @@ export default function ProfileScreen() {
           <View className="flex flex-col gap-1">
             <Text className="font-bold text-2xl">{`${user?.firstName} ${user?.lastName}`}</Text>
             <Badge
-              className={` text-white  rounded-full
+              className={` text-white py-2  rounded-full
                 bg-${
                   has?.({ permission: "premium:plan" })
                     ? "green-500"
@@ -37,7 +35,7 @@ export default function ProfileScreen() {
                 }
                 `}
             >
-              <Text>
+              <Text className="text-md">
                 {`Cuenta ${
                   has?.({ permission: "premium:plan" }) ? "Premium" : "Free"
                 }`}
@@ -53,7 +51,7 @@ export default function ProfileScreen() {
           variant="ghost"
           className="flex flex-row gap-3 px-5"
         >
-          <User />
+          <User color="black" />
           <Text>Mis Datos</Text>
         </Button>
         <Button
@@ -62,7 +60,7 @@ export default function ProfileScreen() {
           className="flex flex-row gap-3 px-5"
           variant="ghost"
         >
-          <UserSquare2 />
+          <UserSquare2 color="black" />
           <Text>Membresía</Text>
         </Button>
         <Button
@@ -71,7 +69,7 @@ export default function ProfileScreen() {
           variant="ghost"
           className="flex flex-row gap-3 px-5"
         >
-          <Unlock />
+          <Unlock color="black" />
           <Text>Adquirir Premium</Text>
         </Button>
         <Button
@@ -80,7 +78,7 @@ export default function ProfileScreen() {
           variant="ghost"
           className="flex flex-row gap-3 px-5"
         >
-          <Bell />
+          <Bell color="black" />
           <Text>Notificaciones</Text>
         </Button>
         <Button
@@ -97,11 +95,11 @@ export default function ProfileScreen() {
         </Button>
       </View>
 
-      <View className="absolute bottom-[70px] right-[-50px] w-[150px] h-[300px] rounded-[10px] rotate-[-20deg] bg-black shadow-lg" />
+      <View className="absolute bottom-[70px] right-[-50px] w-[150px] h-[300px] rounded-xl rotate-[-25deg] bg-black shadow-lg" />
 
-      <View className="absolute bottom-[30px] right-[-50px] w-[150px] h-[300px] rounded-[10px] rotate-[-30deg] bg-orange-500 shadow-lg" />
+      <View className="absolute bottom-[30px] right-[-50px] w-[150px] h-[300px] rounded-xl rotate-[-35deg] bg-orange-500 shadow-lg" />
 
-      <View className="absolute bottom-[-10px] right-[-50px] w-[150px] h-[300px] rounded-[10px] rotate-[-40deg] bg-green-400 shadow-lg" />
+      <View className="absolute bottom-[-10px] right-[-50px] w-[150px] h-[300px] rounded-xl rotate-[-45deg] bg-green-400 shadow-lg" />
     </SafeAreaView>
   );
 }

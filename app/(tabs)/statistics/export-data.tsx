@@ -12,8 +12,9 @@ export default function Export() {
     <ScrollView style={{ paddingTop: headerHeight }}>
       <View className="flex justify-end flex-row w-full">
         <Button
-          variant="outline"
-          className="rounded-full px-0 w-fit  my-2 mx-1"
+          variant="ghost"
+          size="icon"
+          className="rounded-full   m-3"
           onPress={() => router.back()}
         >
           <X />
@@ -22,7 +23,7 @@ export default function Export() {
       <View className="flex flex-col gap-6 p-4 items-center">
         <ExportAsset width={300} height={300} />
         <View className="flex flex-col gap-2">
-          <Text className="text-2xl font-bold text-center px-5">
+          <Text className="text-2xl font-bold text-center px-5 ">
             Formatos de exportación
           </Text>
           <Text className="text-md text-muted-foreground text-center px-5">
@@ -34,6 +35,7 @@ export default function Export() {
         <View className="flex flex-col mt-10 gap-3 w-full">
           <Button
             size="lg"
+            variant="secondary"
             className="flex flex-row gap-2 items-center"
             onPress={() =>
               Alert.alert("Exportación", "Se exportó correctamente")
@@ -50,6 +52,7 @@ export default function Export() {
           <Button
             size="lg"
             className="flex flex-row gap-2 items-center"
+            variant="secondary"
             onPress={() =>
               Alert.alert("Exportación", "Se exportó correctamente")
             }
@@ -66,6 +69,7 @@ export default function Export() {
           <Button
             size="lg"
             className="flex flex-row gap-2 items-center"
+            variant="secondary"
             onPress={() =>
               Alert.alert("Exportación", "Se exportó correctamente")
             }

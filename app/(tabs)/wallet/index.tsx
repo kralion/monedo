@@ -94,8 +94,8 @@ export default function Wallet() {
         }}
       >
         <View className="flex flex-col gap-3 rounded-b-xl ">
-          //TODO: Hide this Form if the user has already budgeted for the
-          current month.
+          {/* TODO: Hide this Form if the user has already budgeted for the
+          current month. */}
           {budgetFormAvailable && (
             <>
               <View className="flex flex-col gap-6 ">

@@ -20,12 +20,8 @@ export default function BuyPremiumModal() {
 
   return (
     <SafeAreaView className="p-4">
-      <View className="flex flex-col gap-6 pt-16">
-        <View className="flex flex-row justify-between items-center">
-          <Button variant="ghost" onPress={() => router.back()} size="icon">
-            <X size="$1" />
-          </Button>
-        </View>
+      <View className="flex flex-col gap-6 ">
+
         <View className="flex flex-row gap-4 items-center">
           <Avatar alt="profile" className="bg-teal-600 w-32 h-32">
             <AvatarImage

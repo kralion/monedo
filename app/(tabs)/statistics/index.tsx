@@ -136,7 +136,7 @@ export default function Statistics() {
                 onPress={() => {
                   setShowAll(true);
                 }}
-                className="active:opacity-80"
+                className="active:opacity-80 text-muted-foreground"
               >
                 Ver Todo
               </Text>
@@ -166,11 +166,11 @@ export default function Statistics() {
               </Button>
               <View className="flex flex-col">
                 <Select>
-                  <SelectTrigger className="px-4">
+                  <SelectTrigger className="px-4 gap-4">
                     <SelectValue placeholder="Recientes" />
                   </SelectTrigger>
 
-                  <SelectContent className="w-[95%]">
+                  <SelectContent className="w-1/2 ">
                     <SelectGroup>
                       {React.useMemo(
                         () =>

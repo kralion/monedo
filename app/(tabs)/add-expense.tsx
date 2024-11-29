@@ -70,11 +70,13 @@ export default function AddExpense() {
           openModal={openModal}
           setOpenModal={setOpenModal}
         />
-        <SafeAreaView style={{ paddingHorizontal: 16, paddingTop: 16 }}>
+        <SafeAreaView className="p-4">
           <View className="flex flex-col gap-6">
             <View className="flex flex-col">
-              <Text className="text-3xl font-bold">Nuevo Gasto</Text>
-              <Text>Ingresa los detalles del gasto que hiciste</Text>
+              <Text className="text-4xl font-bold">Nuevo Gasto</Text>
+              <Text className="text-muted-foreground">
+                Ingresa los detalles del gasto que hiciste
+              </Text>
             </View>
             <View className="flex flex-col gap-6">
               <Controller
@@ -227,11 +229,7 @@ export default function AddExpense() {
                 name="periodicidad"
                 defaultValue={false}
               /> */}
-              <Button
-                onPress={handleSubmit(onSubmit)}
-                size="lg"
-                className="mt-5"
-              >
+              <Button onPress={handleSubmit(onSubmit)} size="lg">
                 {isLoading ? (
                   <Loader className="animate-spin text-white" size={20} />
                 ) : (

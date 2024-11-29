@@ -1,6 +1,6 @@
 import "~/global.css";
 
-import { ClerkLoaded, ClerkProvider } from "@clerk/clerk-expo";
+import { ClerkLoaded, ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   DarkTheme,
@@ -9,14 +9,16 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { PortalHost } from "@rn-primitives/portal";
-import { Slot, SplashScreen } from "expo-router";
+import { router, SplashScreen, Stack } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
+import { X } from "lucide-react-native";
 import * as React from "react";
-import { Platform } from "react-native";
+import { Platform, TouchableOpacity } from "react-native";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
 import { NAV_THEME } from "~/lib/constants";
 import { useColorScheme } from "~/lib/useColorScheme";
+import { Button } from "~/components/ui/button";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -111,10 +113,46 @@ export default function RootLayout() {
       <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
         <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
         <ClerkLoaded>
-          <Slot />
+          <RootLayoutNav />
         </ClerkLoaded>
         <PortalHost />
       </ThemeProvider>
     </ClerkProvider>
+  );
+}
+
+function RootLayoutNav() {
+  const { isLoaded, isSignedIn } = useAuth();
+
+  // Automatically open login if user is not authenticated
+  React.useEffect(() => {
+    if (isLoaded && !isSignedIn) {
+      router.push("/(auth)/sign-in");
+    }
+  }, [isLoaded]);
+
+  return (
+    <Stack>
+      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      {/* <Stack.Screen name="listing/[id]" options={{ headerTitle: "" }} /> */}
+      <Stack.Screen
+        name="(modals)/buy-premium"
+        options={{
+          presentation: "modal",
+          title: "Adquirir Premium",
+          headerRight: () => (
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-full  "
+              onPress={() => router.back()}
+            >
+              <X />
+            </Button>
+          ),
+        }}
+      />
+    </Stack>
   );
 }
