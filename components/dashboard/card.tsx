@@ -164,6 +164,7 @@ const styles = StyleSheet.create({
   cardStyle: {
     width: "100%",
     height: 200,
+    zIndex: 100,
     position: "absolute",
     top: 60,
     flexDirection: "column",

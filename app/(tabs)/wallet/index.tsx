@@ -1,14 +1,15 @@
 import { SavingGoalModal } from "@/components/popups/save-goals";
+import NoDataSvg from "@/assets/svgs/no-data.svg";
 import { Budget } from "@/components/wallet/budget";
 import { useBudgetContext } from "@/context";
 import { IBudget } from "@/interfaces";
 import { useUser } from "@clerk/clerk-expo";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { FlashList } from "@shopify/flash-list";
-import { ChevronUp, Info, Loader } from "lucide-react-native";
-import { useEffect, useState } from "react";
+import { ChevronUp, Inbox, Info, Loader } from "lucide-react-native";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { ScrollView, View } from "react-native";
+import { ActivityIndicator, ScrollView, View } from "react-native";
 import Animated, {
   useAnimatedRef,
   useAnimatedStyle,
@@ -97,8 +98,8 @@ export default function Wallet() {
           current month.
           {budgetFormAvailable && (
             <>
-              <View className="flex flex-col gap-3 mt-5">
-                <View className="flex flex-col gap-2">
+              <View className="flex flex-col gap-6 ">
+                <View className="flex flex-col gap-1">
                   <Label className="text-md">Monto </Label>
                   <View className="flex flex-col ">
                     <Controller
@@ -148,13 +149,9 @@ export default function Wallet() {
                     </View>
                   )}
                 </View>
-                <Button
-                  onPress={handleSubmit(onSubmit)}
-                  size="lg"
-                  className="mt-5"
-                >
+                <Button onPress={handleSubmit(onSubmit)} size="lg">
                   {isLoading ? (
-                    <Loader className="animate-spin text-white" size={20} />
+                    <ActivityIndicator size={20} color="white" />
                   ) : (
                     <Text>Registrar</Text>
                   )}
@@ -167,11 +164,31 @@ export default function Wallet() {
               />
             </>
           )}
-          <FlashList
-            data={budgets}
-            estimatedItemSize={100}
-            renderItem={({ item }) => <Budget budget={item} />}
-          />
+          <React.Suspense
+            fallback={
+              <ActivityIndicator size="large" className="mx-auto mt-5 " />
+            }
+          >
+            {budgets && budgets.length > 0 ? (
+              <FlashList
+                data={budgets}
+                estimatedItemSize={100}
+                renderItem={({ item }) => <Budget budget={item} />}
+              />
+            ) : (
+              <View className="flex flex-col items-center justify-center gap-2 mt-10">
+                <Inbox size={100} color="gray" strokeWidth={1} />
+                <View>
+                  <Text className="text-center text-xl text-muted-foreground">
+                    No hay presupuestos
+                  </Text>
+                  <Text className="text-center text-sm text-muted-foreground">
+                    Completa el formulario y registra uno.
+                  </Text>
+                </View>
+              </View>
+            )}
+          </React.Suspense>
         </View>
       </ScrollView>
       <Animated.View

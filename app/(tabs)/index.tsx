@@ -1,13 +1,28 @@
 import Card from "@/components/dashboard/card";
+import NoDataSvg from "@/assets/svgs/no-data.svg";
 import { Expense } from "@/components/dashboard/expense";
 import BuyPremiumModal from "@/components/popups/buy-premium";
 import { useExpenseContext } from "@/context";
 import { useUser } from "@clerk/clerk-expo";
 import { FlashList } from "@shopify/flash-list";
 import { router } from "expo-router";
-import { ChevronUp, Loader, Lock } from "lucide-react-native";
+import {
+  ChevronUp,
+  ListCollapse,
+  Loader,
+  Lock,
+  Maximize,
+  Maximize2,
+  Minimize,
+  Minimize2,
+} from "lucide-react-native";
 import * as React from "react";
-import { Animated as AnimatedRN, ScrollView, View } from "react-native";
+import {
+  ActivityIndicator,
+  Animated as AnimatedRN,
+  ScrollView,
+  View,
+} from "react-native";
 import Animated, {
   useAnimatedRef,
   useAnimatedStyle,
@@ -24,7 +39,6 @@ export default function Home() {
   const { user: userData, isSignedIn } = useUser();
   const [showAll, setShowAll] = React.useState(false);
   const [showBuyPremiumModal, setShowBuyPremiumModal] = React.useState(false);
-  // REVIEW: CODE fot the user with expenses '9e683f71-8a18-4a91-a596-c956813405e9'
   if (!userData) {
     return null;
   }
@@ -65,7 +79,8 @@ export default function Home() {
   return (
     <View>
       {showAll ? (
-        <Animated.View style={{ opacity: fadeAnim }}>
+        //TODO: Change the opacity to another value, primarily it was fadeAnim but it was causing bugs
+        <Animated.View style={{ opacity: 80 }}>
           <SafeAreaView
             style={{
               paddingTop: 14,
@@ -75,24 +90,46 @@ export default function Home() {
           >
             <View className="flex flex-col gap-5">
               <View className="flex flex-row justify-between items-center">
-                <Text className="text-xl font-semibold">Gastos Recientes</Text>
-                <Text
+                <Text className="text-3xl font-bold">Gastos Recientes</Text>
+                <Button
                   onPress={() => {
                     setShowAll(false);
                   }}
-                  className="active:opacity-80"
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full"
                 >
-                  Ver Menos
-                </Text>
+                  <Minimize2 size={20} />
+                </Button>
               </View>
               <ScrollView>
-                <FlashList
-                  data={expenses}
-                  estimatedItemSize={200}
-                  renderItem={({ item: expense }) => {
-                    return <Expense expense={expense} />;
-                  }}
-                />
+                <React.Suspense
+                  fallback={
+                    <ActivityIndicator size="large" className="mx-auto mt-5" />
+                  }
+                >
+                  {expenses && expenses.length > 0 ? (
+                    <FlashList
+                      data={expenses}
+                      estimatedItemSize={200}
+                      renderItem={({ item: expense }) => (
+                        <Expense expense={expense} />
+                      )}
+                    />
+                  ) : (
+                    <View className="flex flex-col items-center justify-center gap-5 h-screen-safe">
+                      <NoDataSvg width={250} height={250} />
+                      <View>
+                        <Text className="text-center text-xl text-muted-foreground">
+                          No tienes gastos aún
+                        </Text>
+                        <Text className="text-center text-sm text-muted-foreground">
+                          Añade un gasto haciendo tap en el botón "+"
+                        </Text>
+                      </View>
+                    </View>
+                  )}
+                </React.Suspense>
               </ScrollView>
             </View>
           </SafeAreaView>
@@ -138,35 +175,46 @@ export default function Home() {
           </View>
 
           <ScrollView ref={scrollRef} className="px-4 h-full">
-            <View className="flex flex-col gap-4 pb-5">
-              <View className="flex flex-row justify-between items-center pt-32 px-4">
-                <Text className="text-xl font-semibold">
-                  Historial de Gastos
-                </Text>
+            <View className="flex flex-col gap-4 pb-5 items-center justify-center">
+              <View className="flex flex-row justify-between items-center pt-32 px-4 w-full">
+                <Text className="text-2xl font-bold">Historial de Gastos</Text>
 
-                <Text
+                <Button
                   onPress={() => {
                     setShowAll(true);
                   }}
-                  className="active:opacity-80"
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full"
                 >
-                  Ver Todo
-                </Text>
+                  <Maximize2 size={20} />
+                </Button>
               </View>
-              {expenses && expenses.length === 0 && (
-                <View className="flex flex-col items-center justify-center min-h-100">
-                  <Loader className="animate-spin" size={24} />
-                  <Text className="text-foreground">Cargando...</Text>
-                </View>
-              )}
-
-              <FlashList
-                data={expenses}
-                estimatedItemSize={200}
-                renderItem={({ item: expense }) => (
-                  <Expense expense={expense} />
+              <React.Suspense
+                fallback={<ActivityIndicator size="large" className="mt-5" />}
+              >
+                {expenses && expenses.length > 0 ? (
+                  <FlashList
+                    data={expenses}
+                    estimatedItemSize={200}
+                    renderItem={({ item: expense }) => (
+                      <Expense expense={expense} />
+                    )}
+                  />
+                ) : (
+                  <View className="flex flex-col items-center justify-center mt-5 gap-5">
+                    <NoDataSvg width={200} height={200} />
+                    <View>
+                      <Text className="text-center text-xl text-muted-foreground">
+                        No tienes gastos aún
+                      </Text>
+                      <Text className="text-center text-sm text-muted-foreground">
+                        Añade un gasto haciendo tap en el botón "+"
+                      </Text>
+                    </View>
+                  </View>
                 )}
-              />
+              </React.Suspense>
             </View>
           </ScrollView>
           <Animated.View

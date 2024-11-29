@@ -17,6 +17,7 @@ import React from "react";
 import { View } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
 import { Text } from "../ui/text";
+import { LineChartIcon } from "lucide-react-native";
 
 async function getExpensesDataByTimelineQuery(timelineQuery: string) {
   let startDate, endDate;
@@ -96,11 +97,16 @@ export default function Chart({ timelineQuery }: { timelineQuery: string }) {
   });
   if (data.length === 0) {
     return (
-      <View className="flex flex-col gap-4 justify-center items-center mt-16">
-        {/* <NoDataAsset width={200} height={200} /> */}
-        <Text className="text-center px-5">
-          Aún no tienes gastos registrados para este nivel de periodicidad
-        </Text>
+      <View className="flex flex-col items-center justify-center gap-5  ">
+        <LineChartIcon size={100} color="gray" strokeWidth={1} />
+        <View>
+          <Text className="text-center text-xl text-muted-foreground">
+            No hay gastos registrados
+          </Text>
+          <Text className="text-center text-sm text-muted-foreground">
+            Añade un gasto haciendo tap en el botón "+"
+          </Text>
+        </View>
       </View>
     );
   }

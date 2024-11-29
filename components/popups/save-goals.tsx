@@ -4,7 +4,6 @@ import { X } from "lucide-react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { router } from "expo-router";
 import { Dialog, DialogClose, DialogContent } from "../ui/dialog";
-
 import * as React from "react";
 import { Button } from "../ui/button";
 import { View } from "react-native";
