@@ -32,16 +32,20 @@ import Animated, {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
+import { createClerkSupabaseClient } from "~/lib/supabase";
+import { IExpense, IExpenseGET } from "~/interfaces";
 
 export default function Home() {
   const fadeAnim = React.useRef(new AnimatedRN.Value(1)).current;
-  const { getExpensesByUser, expenses } = useExpenseContext();
-  const { user: userData, isSignedIn } = useUser();
+  const { expenses } = useExpenseContext();
+  const { user, isSignedIn } = useUser();
   const [showAll, setShowAll] = React.useState(false);
   const [showBuyPremiumModal, setShowBuyPremiumModal] = React.useState(false);
-  if (!userData) {
+  const supabase = createClerkSupabaseClient();
+  if (!user) {
     return null;
   }
+
   React.useEffect(() => {
     AnimatedRN.timing(fadeAnim, {
       toValue: showAll ? 1 : 0,
@@ -61,12 +65,6 @@ export default function Home() {
   function scrollToTop() {
     scrollRef.current?.scrollTo({ x: 0, y: 0, animated: true });
   }
-
-  React.useEffect(() => {
-    if (userData) {
-      getExpensesByUser(userData.id);
-    }
-  }, [userData, getExpensesByUser, expenses]);
 
   function capitalizeFirstLetter(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
@@ -102,34 +100,18 @@ export default function Home() {
                   <Minimize2 size={20} />
                 </Button>
               </View>
-              <ScrollView>
-                <React.Suspense
-                  fallback={
-                    <ActivityIndicator size="large" className="mx-auto mt-5" />
-                  }
-                >
-                  {expenses && expenses.length > 0 ? (
-                    <FlashList
-                      data={expenses}
-                      estimatedItemSize={200}
-                      renderItem={({ item: expense }) => (
-                        <Expense expense={expense} />
-                      )}
-                    />
-                  ) : (
-                    <View className="flex flex-col items-center justify-center gap-5 h-screen-safe">
-                      <NoDataSvg width={250} height={250} />
-                      <View>
-                        <Text className="text-center text-xl text-muted-foreground">
-                          No tienes gastos aún
-                        </Text>
-                        <Text className="text-center text-sm text-muted-foreground">
-                          Añade un gasto haciendo tap en el botón "+"
-                        </Text>
-                      </View>
-                    </View>
-                  )}
-                </React.Suspense>
+              <ScrollView className="h-screen-safe">
+                {expenses && expenses.length > 0 ? (
+                  <FlashList
+                    data={expenses}
+                    estimatedItemSize={200}
+                    renderItem={({ item: expense }) => (
+                      <Expense expense={expense} />
+                    )}
+                  />
+                ) : (
+                  <ActivityIndicator size="large" className="mx-auto mt-5" />
+                )}
               </ScrollView>
             </View>
           </SafeAreaView>
@@ -153,7 +135,7 @@ export default function Home() {
                   )}
                 </Text>
                 <Text className="font-bold text-xl">
-                  Hola, {userData?.firstName} 👋
+                  Hola, {user?.firstName} 👋
                 </Text>
               </View>
               <BuyPremiumModal
@@ -174,10 +156,10 @@ export default function Home() {
             <View style={{ height: 160 }} />
           </View>
 
-          <ScrollView ref={scrollRef} className="px-4 h-full">
-            <View className="flex flex-col gap-4 pb-5 items-center justify-center">
-              <View className="flex flex-row justify-between items-center pt-32 px-4 w-full">
-                <Text className="text-2xl font-bold">Historial de Gastos</Text>
+          <ScrollView ref={scrollRef} className="px-4 h-screen-safe ">
+            <View>
+              <View className="flex flex-row justify-between items-center pt-32 px-4 w-full pb-8">
+                <Text className="text-2xl font-bold">Gastos Recientes</Text>
 
                 <Button
                   onPress={() => {
@@ -190,31 +172,29 @@ export default function Home() {
                   <Maximize2 size={20} />
                 </Button>
               </View>
-              <React.Suspense
-                fallback={<ActivityIndicator size="large" className="mt-5" />}
-              >
-                {expenses && expenses.length > 0 ? (
-                  <FlashList
-                    data={expenses}
-                    estimatedItemSize={200}
-                    renderItem={({ item: expense }) => (
-                      <Expense expense={expense} />
-                    )}
-                  />
-                ) : (
-                  <View className="flex flex-col items-center justify-center mt-5 gap-5">
-                    <NoDataSvg width={200} height={200} />
-                    <View>
-                      <Text className="text-center text-xl text-muted-foreground">
-                        No tienes gastos aún
-                      </Text>
-                      <Text className="text-center text-sm text-muted-foreground">
-                        Añade un gasto haciendo tap en el botón "+"
-                      </Text>
-                    </View>
-                  </View>
-                )}
-              </React.Suspense>
+
+              {expenses && expenses.length > 0 ? (
+                <FlashList
+                  data={expenses}
+                  estimatedItemSize={200}
+                  renderItem={({ item: expense }) => (
+                    <Expense expense={expense} />
+                  )}
+                />
+              ) : (
+                // <View className="flex flex-col items-center justify-center mt-5 gap-5">
+                //   <NoDataSvg width={200} height={200} />
+                //   <View>
+                //     <Text className="text-center text-xl text-muted-foreground">
+                //       No tienes gastos aún
+                //     </Text>
+                //     <Text className="text-center text-sm text-muted-foreground">
+                //       Añade un gasto haciendo tap en el botón "+"
+                //     </Text>
+                //   </View>
+                // </View>
+                <ActivityIndicator size="large" className="mt-5" />
+              )}
             </View>
           </ScrollView>
           <Animated.View

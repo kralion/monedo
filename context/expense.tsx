@@ -1,9 +1,9 @@
-import { supabase } from "@/lib/supabase";
 import { endOfMonth, formatISO, startOfMonth } from "date-fns";
 import * as React from "react";
 import { createContext, useContext } from "react";
 import { IExpenseContextProvider, IExpense } from "@/interfaces";
 import { useUser } from "@clerk/clerk-expo";
+import { createClerkSupabaseClient } from "~/lib/supabase";
 
 export const ExpenseContext = createContext<IExpenseContextProvider>({
   addExpense: () => {},
@@ -26,17 +26,18 @@ export const ExpenseContextProvider = ({
 }) => {
   const [expenses, setExpenses] = React.useState<IExpense[]>([]);
   const [expense, setExpense] = React.useState<IExpense>({} as IExpense);
-  const { user: userData } = useUser();
+  const supabase = createClerkSupabaseClient();
+  const { user } = useUser();
 
   const addExpense = async (expense: IExpense) => {
     await supabase.from("expenses").insert(expense);
   };
 
-  async function getExpensesByUser(usuario_id: string) {
+  async function getExpensesByUser(id: string) {
     const { data, error } = await supabase
       .from("expenses")
       .select("*")
-      .eq("usuario_id", usuario_id);
+      .eq("user_id", id);
     if (error) throw error;
     setExpenses(JSON.parse(JSON.stringify(data)));
     return data;
@@ -53,14 +54,14 @@ export const ExpenseContextProvider = ({
 
     const { data } = await supabase
       .from("expenses")
-      .select("monto")
-      .eq("usuario_id", userData?.id)
-      .gte("fecha", startOfThisMonth)
-      .lte("fecha", endOfThisMonth);
+      .select("amount")
+      .eq("user_id", user?.id)
+      .gte("date", startOfThisMonth)
+      .lte("date", endOfThisMonth);
 
     if (data) {
       const sum = data.reduce(
-        (total, expense) => total + Number(expense.monto),
+        (total, expense) => total + Number(expense.amount),
         0
       );
       return sum;
@@ -82,8 +83,8 @@ export const ExpenseContextProvider = ({
     const { data: expenses, error } = await supabase
       .from("expenses")
       .select("*")
-      .eq("usuario_id", userData?.id)
-      .order("monto", { ascending: false })
+      .eq("user_id", user?.id)
+      .order("amount", { ascending: false })
       .limit(15);
     if (!expenses) return [];
     return expenses;
@@ -92,8 +93,8 @@ export const ExpenseContextProvider = ({
     const { data: expenses, error } = await supabase
       .from("expenses")
       .select("*")
-      .eq("usuario_id", userData?.id)
-      .order("fecha", { ascending: false })
+      .eq("user_id", user?.id)
+      .order("date", { ascending: false })
       .limit(15);
     if (!expenses) return [];
     return expenses;
@@ -102,8 +103,8 @@ export const ExpenseContextProvider = ({
     const { data: expenses, error } = await supabase
       .from("expenses")
       .select("*")
-      .eq("usuario_id", userData?.id)
-      .eq("periodicidad", true)
+      .eq("user_id", user?.id)
+      .eq("periodicity", true)
       .limit(15);
     if (!expenses) return [];
     return expenses;

@@ -1,9 +1,6 @@
 import AddExpenseSuccesModal from "@/components/popups/add-expense-sucess";
-import { useExpenseContext } from "@/context";
-import { IExpense } from "@/interfaces";
-import { useUser } from "@clerk/clerk-expo";
-import { Loader, Scroll } from "lucide-react-native";
-import React, { useMemo } from "react";
+import { useHeaderHeight } from "@react-navigation/elements";
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
@@ -17,22 +14,19 @@ import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
-import { Switch } from "~/components/ui/switch";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import { Separator } from "~/components/ui/separator";
+import { Switch } from "~/components/ui/switch";
 import { Text } from "~/components/ui/text";
 import { Textarea } from "~/components/ui/textarea";
-import { useHeaderHeight } from "@react-navigation/elements";
 import { createClerkSupabaseClient } from "~/lib/supabase";
-import { router } from "expo-router";
-import { Separator } from "~/components/ui/separator";
 
 interface IGasto {
   description: string;
@@ -46,12 +40,14 @@ interface IGasto {
 }
 
 const items = [
-  { name: "Alimentacion" },
-  { name: "Bebidas" },
-  { name: "Alquiler" },
+  { name: "Hogar" },
   { name: "Transporte" },
-  { name: "Servicios" },
-  { name: "Otros" },
+  { name: "Salud" },
+  { name: "Alimentacion" },
+  { name: "Finanzas" },
+  { name: "Educación" },
+  { name: "Personal" },
+  { name: "Casuales" },
 ];
 
 export default function AddExpense() {

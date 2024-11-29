@@ -44,6 +44,7 @@ export default function Statistics() {
   } = useExpenseContext();
   const [showAll, setShowAll] = React.useState(false);
   const fadeAnim = React.useRef(new Animated.Value(1)).current;
+
   const fetchRecentExpenses = async () => {
     await getRecentExpenses();
   };
@@ -128,7 +129,7 @@ export default function Statistics() {
           </SafeAreaView>
         </Animated.View>
       ) : (
-        <SafeAreaView className="py-4">
+        <SafeAreaView className="p-4">
           <View className="flex flex-col gap-4 mb-2">
             <View className="flex flex-row items-center justify-between px-4">
               <Text className="text-4xl font-bold">Estadísticas</Text>

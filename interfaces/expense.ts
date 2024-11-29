@@ -9,6 +9,15 @@ export interface IExpense {
   monto: number;
   assetIdentificador?: string;
 }
+export interface IExpenseGET {
+  description: string;
+  id: string;
+  amount: number;
+  date: Date;
+  category: string;
+  periodicity: boolean;
+  currency: string;
+}
 export interface IGoal {
   id?: string;
   presupuesto_id: string;
@@ -36,7 +45,7 @@ export interface IExpenseContextProvider {
   addExpense: (expense: IExpense) => void;
   deleteExpense: (id: string) => void;
   expense: IExpense;
-  expenses: IExpense[];
+  expenses: IExpenseGET[];
   getExpenseById: (id: string) => Promise<IExpense>;
   updateExpense: (expense: IExpense) => void;
   getExpensesByUser: (id: string) => Promise<IExpense[]>;
