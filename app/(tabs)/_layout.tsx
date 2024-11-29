@@ -62,7 +62,6 @@ export default function TabLayout() {
           name="add-expense"
           options={{
             title: "",
-            headerShown: false,
             tabBarIcon: () => <AddExpenseIcon />,
           }}
         />

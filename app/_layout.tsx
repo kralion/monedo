@@ -19,6 +19,8 @@ import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
 import { NAV_THEME } from "~/lib/constants";
 import { useColorScheme } from "~/lib/useColorScheme";
 import { Button } from "~/components/ui/button";
+import { Button as NativeButton } from "react-native";
+import { Text } from "~/components/ui/text";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -135,12 +137,30 @@ function RootLayoutNav() {
     <Stack>
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      {/* <Stack.Screen name="listing/[id]" options={{ headerTitle: "" }} /> */}
+      <Stack.Screen
+        name="(modals)/details/[id]"
+        options={{
+          headerLargeTitle: true,
+          title: "Detalles",
+          headerTransparent: true,
+        }}
+      />
+      <Stack.Screen
+        name="(modals)/edit/[id]"
+        options={{
+          title: "Editar",
+          presentation: "modal",
+          headerRight: () => (
+            <NativeButton title="Cancelar" onPress={() => router.back()} />
+          ),
+        }}
+      />
       <Stack.Screen
         name="(modals)/buy-premium"
         options={{
           presentation: "modal",
           title: "Adquirir Premium",
+
           headerRight: () => (
             <Button
               variant="ghost"

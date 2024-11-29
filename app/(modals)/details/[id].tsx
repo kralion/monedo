@@ -20,6 +20,8 @@ import {
 import { Button } from "~/components/ui/button";
 import { Progress } from "~/components/ui/progress";
 import { Separator } from "~/components/ui/separator";
+import { useHeaderHeight } from "@react-navigation/elements";
+
 import { Text } from "~/components/ui/text";
 
 export default function ExpenseDetails() {
@@ -27,13 +29,14 @@ export default function ExpenseDetails() {
   const { deleteExpense } = useExpenseContext();
   const [expense, setExpense] = React.useState({} as IExpense);
   const [isOpen, setIsOpen] = React.useState(false);
+  const headerHeight = useHeaderHeight();
   const params = useLocalSearchParams<{ id: string }>();
   const handleDeleteExpense = async (id: string) => {
     setIsLoading(true);
     deleteExpense(id);
     setIsLoading(false);
     // toast.show("Gasto eliminado");
-    router.push("/(tabs)/home");
+    router.push("/(tabs)");
     setIsOpen(false);
   };
 
@@ -60,7 +63,10 @@ export default function ExpenseDetails() {
   const totalPercentageExpensed =
     (monto_gastado ?? 100 / monto_presupuestado) * 100;
   return (
-    <ScrollView>
+    <ScrollView
+      style={{ paddingTop: headerHeight }}
+      contentInsetAdjustmentBehavior="automatic"
+    >
       {expense.monto ? (
         <View className="flex flex-col gap-4">
           <AlertDialog open={isOpen}>

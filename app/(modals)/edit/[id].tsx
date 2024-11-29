@@ -103,99 +103,95 @@ export default function EditExpense() {
     "https://img.icons8.com/?size=160&id=MjAYkOMsbYOO&format=png";
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <ScrollView className="p-4">
-        {expense.monto ? (
-          <View className="flex flex-col gap-5">
-            <View className="flex flex-col gap-1">
-              <View className="flex flex-row gap-1">
-                <Image
-                  width={45}
-                  height={45}
-                  source={{
-                    uri: assetIndentificador,
-                  }}
-                />
-
-                <Text className="pt-1">Gasto en {expense.categoria}</Text>
-              </View>
-              <Text className="ml-1.5">
-                Modifica los detalles del gasto seleccionado
-              </Text>
-            </View>
-            <View>
-              <Controller
-                name="categoria"
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <View className="flex flex-col">
-                    <Label className="text-foreground" nativeID="categoria">
-                      Categoría
-                    </Label>
-                    <Select
-                      defaultValue={{
-                        label: expense.categoria,
-                        value: expense.categoria,
-                      }}
-                    >
-                      <SelectTrigger className="w-[250px]">
-                        <SelectValue placeholder="Selecciona" />
-                      </SelectTrigger>
-
-                      <SelectContent
-                        insets={contentInsets}
-                        className="w-[250px]"
-                      >
-                        <SelectGroup>
-                          <SelectLabel>Categoria</SelectLabel>
-                          {useMemo(
-                            () =>
-                              items.map((item, i) => {
-                                return (
-                                  <SelectItem
-                                    label="Categoria"
-                                    key={item.name}
-                                    value={item.name.toLowerCase()}
-                                  >
-                                    {item.name}
-                                  </SelectItem>
-                                );
-                              }),
-                            [items]
-                          )}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </View>
-                )}
+    <ScrollView className="p-4 min-h-screen-safe">
+      {expense.monto ? (
+        <View className="flex flex-col gap-5">
+          <View className="flex flex-col gap-1">
+            <View className="flex flex-row gap-1">
+              <Image
+                width={45}
+                height={45}
+                source={{
+                  uri: assetIndentificador,
+                }}
               />
 
-              <View>
-                <Label nativeID="monto" className="text-foreground">
-                  Monto
-                </Label>
+              <Text className="pt-1">Gasto en {expense.categoria}</Text>
+            </View>
+            <Text className="ml-1.5">
+              Modifica los detalles del gasto seleccionado
+            </Text>
+          </View>
+          <View>
+            <Controller
+              name="categoria"
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <View className="flex flex-col">
+                  <Label className="text-foreground" nativeID="categoria">
+                    Categoría
+                  </Label>
+                  <Select
+                    defaultValue={{
+                      label: expense.categoria,
+                      value: expense.categoria,
+                    }}
+                  >
+                    <SelectTrigger className="w-[250px]">
+                      <SelectValue placeholder="Selecciona" />
+                    </SelectTrigger>
 
-                <Controller
-                  control={control}
-                  name="monto"
-                  render={({ ...field }) => (
-                    <Input
-                      inputMode="decimal"
-                      value={String(expense.monto)}
-                      placeholder="65.00"
-                      {...field}
-                    />
-                  )}
-                  rules={{
-                    required: { value: true, message: "Ingrese el monto" },
-                    pattern: {
-                      value: /^\d+(\.\d*)?$/,
-                      message: "Solo se permiten números válidos",
-                    },
-                  }}
-                />
-              </View>
-              {/* <YStack>
+                    <SelectContent insets={contentInsets} className="w-[250px]">
+                      <SelectGroup>
+                        <SelectLabel>Categoria</SelectLabel>
+                        {useMemo(
+                          () =>
+                            items.map((item, i) => {
+                              return (
+                                <SelectItem
+                                  label="Categoria"
+                                  key={item.name}
+                                  value={item.name.toLowerCase()}
+                                >
+                                  {item.name}
+                                </SelectItem>
+                              );
+                            }),
+                          [items]
+                        )}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </View>
+              )}
+            />
+
+            <View>
+              <Label nativeID="monto" className="text-foreground">
+                Monto
+              </Label>
+
+              <Controller
+                control={control}
+                name="monto"
+                render={({ ...field }) => (
+                  <Input
+                    inputMode="decimal"
+                    value={String(expense.monto)}
+                    placeholder="65.00"
+                    {...field}
+                  />
+                )}
+                rules={{
+                  required: { value: true, message: "Ingrese el monto" },
+                  pattern: {
+                    value: /^\d+(\.\d*)?$/,
+                    message: "Solo se permiten números válidos",
+                  },
+                }}
+              />
+            </View>
+            {/* <YStack>
               <Label>Divisa</Label>
 
               <Controller
@@ -230,25 +226,25 @@ export default function EditExpense() {
                   )}
                 />
             </YStack> */}
-              <View className="flex flex-col">
-                <Label className="text-foreground">Descripción</Label>
-                <Controller
-                  control={control}
-                  name="descripcion"
-                  render={({ field: { onChange, value, ref } }) => (
-                    <Textarea
-                      ref={ref}
-                      autoCapitalize="none"
-                      placeholder="Descripción..."
-                      value={value}
-                      onChangeText={onChange}
-                      aria-labelledby="descripcion"
-                    />
-                  )}
-                  defaultValue={expense.descripcion}
-                />
-              </View>
-              {/* <Controller
+            <View className="flex flex-col">
+              <Label className="text-foreground">Descripción</Label>
+              <Controller
+                control={control}
+                name="descripcion"
+                render={({ field: { onChange, value, ref } }) => (
+                  <Textarea
+                    ref={ref}
+                    autoCapitalize="none"
+                    placeholder="Descripción..."
+                    value={value}
+                    onChangeText={onChange}
+                    aria-labelledby="descripcion"
+                  />
+                )}
+                defaultValue={expense.descripcion}
+              />
+            </View>
+            {/* <Controller
                 control={control}
                 render={({ field: { onChange, value } }) => (
                   <YStack space={3}>
@@ -291,27 +287,22 @@ export default function EditExpense() {
                 name="periodicidad"
                 defaultValue={false}
               /> */}
-              <Button
-                onPress={handleSubmit(onSubmit)}
-                size="lg"
-                className="mt-6"
-              >
-                {isLoading ? (
-                  <Loader className="animate-spin text-white" size={20} />
-                ) : (
-                  "Actualizar"
-                )}
-              </Button>
-            </View>
+            <Button onPress={handleSubmit(onSubmit)} size="lg" className="mt-6">
+              {isLoading ? (
+                <Loader className="animate-spin text-white" size={20} />
+              ) : (
+                "Actualizar"
+              )}
+            </Button>
           </View>
-        ) : (
-          <View className="flex-1 justify-center items-center min-h-full">
-            <Loader className="animate-spin text-white" size={20} />
-            <Text className="text-foreground">Cargando...</Text>
-          </View>
-        )}
-      </ScrollView>
-    </TouchableWithoutFeedback>
+        </View>
+      ) : (
+        <View className="flex-1 justify-center items-center min-h-full">
+          <Loader className="animate-spin text-white" size={20} />
+          <Text className="text-foreground">Cargando...</Text>
+        </View>
+      )}
+    </ScrollView>
 
     //   {/* TODO: Probar esto solo el los dispositivos, en los emuladores no funciona
     // <PushNotification /> */}

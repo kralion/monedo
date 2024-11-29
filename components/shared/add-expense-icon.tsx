@@ -46,13 +46,7 @@ export default function AddExpenseIcon() {
       {has?.({ permission: "premium:plan" }) ? (
         <Button
           size="icon"
-          style={[
-            styles.customTabStyle,
-            {
-              backgroundColor: "#FFD700",
-              borderColor: "#FFE455",
-            },
-          ]}
+          className="absolute -bottom-2 -right-9 rounded-full bg-yellow-500  h-auto w-auto p-4 shadow"
           onPress={() => {
             if (blockRoute) {
               router.push("/(tabs)");
@@ -62,12 +56,12 @@ export default function AddExpenseIcon() {
             }
           }}
         >
-          <Plus color="white" size={40} />
+          <Plus strokeWidth={2.5} color="white" size={40} />
         </Button>
       ) : (
         <Button
           size="icon"
-          className="absolute -bottom-3 -right-9 rounded-full  bg-purple-600 border-2 border-purple-500 h-auto w-auto p-4 shadow-lg"
+          className="absolute -bottom-2 -right-9 rounded-full  h-auto w-auto p-4 shadow"
           onPress={() => {
             if (blockRoute) {
               router.push("/(tabs)");
@@ -77,7 +71,7 @@ export default function AddExpenseIcon() {
             }
           }}
         >
-          <Plus color="white" size={40} />
+          <Plus strokeWidth={2.5} color="white" size={40} />
         </Button>
       )}
     </View>

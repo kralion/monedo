@@ -2,10 +2,11 @@ import AddExpenseSuccesModal from "@/components/popups/add-expense-sucess";
 import { useExpenseContext } from "@/context";
 import { IExpense } from "@/interfaces";
 import { useUser } from "@clerk/clerk-expo";
-import { Loader } from "lucide-react-native";
+import { Loader, Scroll } from "lucide-react-native";
 import React, { useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
+  ActivityIndicator,
   Keyboard,
   ScrollView,
   TouchableWithoutFeedback,
@@ -15,16 +16,34 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
+import { Switch } from "~/components/ui/switch";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
+  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
 import { Text } from "~/components/ui/text";
 import { Textarea } from "~/components/ui/textarea";
+import { useHeaderHeight } from "@react-navigation/elements";
+import { createClerkSupabaseClient } from "~/lib/supabase";
+import { router } from "expo-router";
+import { Separator } from "~/components/ui/separator";
+
+interface IGasto {
+  description: string;
+  amount: number;
+  category: {
+    label: string;
+    value: string;
+  };
+  periodicity: boolean;
+  currency: string;
+}
 
 const items = [
   { name: "Alimentacion" },
@@ -34,53 +53,65 @@ const items = [
   { name: "Servicios" },
   { name: "Otros" },
 ];
+
 export default function AddExpense() {
-  const { user: userData } = useUser();
-  const { addExpense } = useExpenseContext();
+  const supabase = createClerkSupabaseClient();
   const [openModal, setOpenModal] = React.useState(false);
   const [expensePrice, setExpensePrice] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
+  const headerHeight = useHeaderHeight();
   const {
     control,
     handleSubmit,
     formState: { errors },
     reset,
     setValue,
-  } = useForm<IExpense>();
+  } = useForm<IGasto>();
 
-  async function onSubmit(data: IExpense) {
+  async function onSubmit(data: IGasto) {
     setIsLoading(true);
-    addExpense({
-      ...data,
-      usuario_id: userData?.id,
+    try {
+      await supabase.from("expenses").insert({
+        ...data,
+        category: data.category.value,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+    setValue("category", {
+      label: "",
+      value: "",
     });
-    setExpensePrice(data.monto.toString());
-    reset();
-
-    setValue("categoria", "");
+    setValue("amount", 0);
+    setValue("currency", "Soles");
+    setValue("periodicity", false);
     setIsLoading(false);
-    setOpenModal(true);
+    // setOpenModal(true);
   }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <ScrollView>
+      <SafeAreaView style={{ paddingTop: headerHeight }}>
         <AddExpenseSuccesModal
           expensePrice={expensePrice}
           openModal={openModal}
           setOpenModal={setOpenModal}
         />
-        <SafeAreaView className="p-4">
+
+        <View className="flex flex-col">
           <View className="flex flex-col gap-6">
-            <View className="flex flex-col">
-              <Text className="text-4xl font-bold">Nuevo Gasto</Text>
+            <View className="flex flex-col px-4">
+              <Text className="text-4xl font-bold mt-8">Nuevo Gasto</Text>
               <Text className="text-muted-foreground">
                 Ingresa los detalles del gasto que hiciste
               </Text>
             </View>
-            <View className="flex flex-col gap-6">
+            <Separator className="text-muted-foreground " />
+          </View>
+          <ScrollView className="h-screen-safe-offset-2 px-4">
+            <View className="flex flex-col gap-6 pt-6">
               <Controller
-                name="categoria"
+                name="category"
                 control={control}
                 render={({ field: { onChange, value } }) => (
                   <View className="flex flex-col gap-2">
@@ -92,21 +123,17 @@ export default function AddExpense() {
 
                       <SelectContent className="w-[90%]">
                         <SelectGroup>
-                          {useMemo(
-                            () =>
-                              items.map((item, i) => {
-                                return (
-                                  <SelectItem
-                                    label={item.name}
-                                    key={item.name}
-                                    value={item.name.toLowerCase()}
-                                  >
-                                    {item.name}
-                                  </SelectItem>
-                                );
-                              }),
-                            [items]
-                          )}
+                          {items.map((item, i) => {
+                            return (
+                              <SelectItem
+                                label={item.name}
+                                key={item.name}
+                                value={item.name.toLowerCase()}
+                              >
+                                {item.name}
+                              </SelectItem>
+                            );
+                          })}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -116,12 +143,17 @@ export default function AddExpense() {
 
               <View className="flex flex-col gap-2">
                 <Label>Monto</Label>
-
                 <Controller
                   control={control}
-                  name="monto"
-                  render={({ ...field }) => (
-                    <Input inputMode="decimal" placeholder="65.00" {...field} />
+                  name="amount"
+                  render={({ field: { onChange, value } }) => (
+                    <Input
+                      inputMode="decimal"
+                      onChangeText={onChange}
+                      value={String(value)}
+                      defaultValue=""
+                      placeholder="65.00"
+                    />
                   )}
                   rules={{
                     required: { value: true, message: "Ingrese el monto" },
@@ -132,50 +164,42 @@ export default function AddExpense() {
                   }}
                 />
               </View>
-              {/* <YStack>
-                <Label color="$gray10">Divisa</Label>
-
+              <View className="flex flex-col gap-2">
+                <Label>Divisa</Label>
                 <Controller
-                  name="divisa"
+                  name="currency"
                   control={control}
                   render={({ field: { onChange, value } }) => (
-                    <RadioGroup value={value} name="currency">
-                      <XStack gap="$6">
-                        <XStack alignItems="center" gap="$2">
-                          <RadioGroup.Item value="pen" id="pen">
-                            <RadioGroup.Indicator />
-                          </RadioGroup.Item>
-
-                          <Label htmlFor="pen" color="$gray10">
-                            Soles
-                          </Label>
-                        </XStack>
-                        <XStack alignItems="center" gap="$2">
-                          <RadioGroup.Item value="usd" id="usd">
-                            <RadioGroup.Indicator />
-                          </RadioGroup.Item>
-
-                          <Label htmlFor="pen" color="$gray10">
-                            Dólares
-                          </Label>
-                        </XStack>
-                        <XStack alignItems="center" gap="$2">
-                          <RadioGroup.Item value="eur" id="eur">
-                            <RadioGroup.Indicator />
-                          </RadioGroup.Item>
-
-                          <Label htmlFor="eur" color="$gray10">
-                            Euros
-                          </Label>
-                        </XStack>
-                      </XStack>
+                    <RadioGroup
+                      value={value}
+                      onValueChange={onChange}
+                      className="flex flex-row gap-3"
+                    >
+                      <RadioGroupItemWithLabel
+                        value="Soles"
+                        onLabelPress={() => {
+                          setValue("currency", "Soles");
+                        }}
+                      />
+                      <RadioGroupItemWithLabel
+                        value="Dólares"
+                        onLabelPress={() => {
+                          setValue("currency", "Dólares");
+                        }}
+                      />
+                      <RadioGroupItemWithLabel
+                        value="Euros"
+                        onLabelPress={() => {
+                          setValue("currency", "Euros");
+                        }}
+                      />
                     </RadioGroup>
                   )}
                 />
-              </YStack> */}
+              </View>
               <Controller
                 control={control}
-                name="descripcion"
+                name="description"
                 render={({ field: { onChange, value } }) => (
                   <Textarea
                     autoCapitalize="none"
@@ -186,62 +210,74 @@ export default function AddExpense() {
                 )}
                 defaultValue=""
               />
-              {/* <Controller
+              <Controller
                 control={control}
+                name="periodicity"
                 render={({ field: { onChange, value } }) => (
-                  <YStack space={3}>
-                    <XStack
-                      gap="$4"
-                      alignItems="center"
-                      justifyContent="space-between"
-                    >
-                      <Text> Es un gasto recurrente ?</Text>
-                      <XStack width={200} alignItems="center" gap="$4">
-                        <Label
-                          paddingRight="$0"
-                          minWidth={90}
-                          justifyContent="flex-end"
-                          htmlFor="recurrent"
-                        >
-                          Accept
-                        </Label>
-                        <Separator minHeight={20} vertical />
-                        <Switch id="recurrent">
-                          <Switch.Thumb animation="quicker" />
-                        </Switch>
-                      </XStack>
-                    </XStack>
+                  <View className="flex flex-col gap-4">
+                    <View className="flex-row items-center gap-4">
+                      <Label
+                        nativeID="periodicity"
+                        className="tracking-tight"
+                        onPress={() => {
+                          onChange(!value);
+                        }}
+                      >
+                        Gasto Recurrente
+                      </Label>
+                      <Switch
+                        checked={value}
+                        onCheckedChange={onChange}
+                        nativeID="airplane-mode"
+                      />
+                    </View>
                     {value && (
-                      <Text className="text-textmuted text-xs">
+                      <Text className="text-muted-foreground text-sm">
                         La recurrencia del gasto se hará efectivo cada mes en la
                         fecha en la que fue creado inicialmente, en este caso
                         cada{" "}
-                        <Text className="font-bold text-black">
+                        <Text className="font-bold ">
                           {new Date().toLocaleDateString("es-PE", {
                             day: "numeric",
                           })}
                         </Text>{" "}
-                        de cada mes
+                        de cada mes.
                       </Text>
                     )}
-                  </YStack>
+                  </View>
                 )}
-                name="periodicidad"
                 defaultValue={false}
-              /> */}
+              />
               <Button onPress={handleSubmit(onSubmit)} size="lg">
                 {isLoading ? (
-                  <Loader className="animate-spin text-white" size={20} />
+                  <ActivityIndicator size={20} color="white" />
                 ) : (
                   <Text>Registrar</Text>
                 )}
               </Button>
             </View>
-          </View>
-          {/* TODO: Probar esto solo el los dispositivos, en los emuladores no funciona
+          </ScrollView>
+        </View>
+        {/* TODO: Probar esto solo el los dispositivos, en los emuladores no funciona
       <PushNotification /> */}
-        </SafeAreaView>
-      </ScrollView>
+      </SafeAreaView>
     </TouchableWithoutFeedback>
+  );
+}
+
+function RadioGroupItemWithLabel({
+  value,
+  onLabelPress,
+}: {
+  value: string;
+  onLabelPress: () => void;
+}) {
+  return (
+    <View className="flex-row gap-2 items-center">
+      <RadioGroupItem aria-labelledby={`label-for-${value}`} value={value} />
+      <Label nativeID={`label-for-${value}`} onPress={onLabelPress}>
+        {value}
+      </Label>
+    </View>
   );
 }
