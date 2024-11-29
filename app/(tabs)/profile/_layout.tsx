@@ -33,8 +33,11 @@ export default function Layout() {
         options={{
           title: "Adquirir Premium",
           headerBackTitle: "Perfil",
+          headerBlurEffect: "regular",
           headerTransparent: true,
-          headerLargeTitle: true,
+          headerStyle: {
+            backgroundColor: "transparent",
+          },
         }}
       />
       <Stack.Screen

@@ -1,5 +1,8 @@
 import { useExpenseContext } from "@/context";
 import { supabase } from "@/lib/supabase";
+import { useAuth, useUser } from "@clerk/clerk-expo";
+import { LinearGradient } from "expo-linear-gradient";
+import { router } from "expo-router";
 import * as React from "react";
 import { Alert, Pressable, StyleSheet, View } from "react-native";
 import Animated, {
@@ -10,11 +13,8 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { BudgetLimitExceededModal } from "../popups/budget-limit-exceeded";
-import BuyPremiumModal from "../popups/buy-premium";
-import { LinearGradient } from "expo-linear-gradient";
-import { useAuth, useUser } from "@clerk/clerk-expo";
-import { Text } from "../ui/text";
 import { Button } from "../ui/button";
+import { Text } from "../ui/text";
 
 export default function Card() {
   const flip = useSharedValue(0);
@@ -86,7 +86,6 @@ export default function Card() {
   }, [balance]);
   return (
     <Animated.View style={[styles.cardStyle, animatedStyles]}>
-      <BuyPremiumModal setOpenModal={setOpenModal} openModal={openModal} />
       <Pressable
         onPress={() => {
           if (has?.({ permission: "premium:plan" })) {
@@ -95,7 +94,7 @@ export default function Card() {
               "Ya eres usuario premium, tienes acceso a todas las funcionalidades."
             );
           } else {
-            setOpenModal(true);
+            router.push("/(modals)/buy-premium");
           }
         }}
         style={styles.shadowContainer}

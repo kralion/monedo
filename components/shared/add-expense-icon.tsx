@@ -67,7 +67,7 @@ export default function AddExpenseIcon() {
       ) : (
         <Button
           size="icon"
-          className="absolute bottom-0 -right-9 rounded-full  bg-purple-600 border-2 border-purple-500 h-auto w-auto p-4 shadow-lg"
+          className="absolute -bottom-3 -right-9 rounded-full  bg-purple-600 border-2 border-purple-500 h-auto w-auto p-4 shadow-lg"
           onPress={() => {
             if (blockRoute) {
               router.push("/(tabs)");

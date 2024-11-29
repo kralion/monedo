@@ -2,37 +2,22 @@ import Stripe from "@/components/payment/stripe";
 import Yape from "@/components/payment/yape";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { router } from "expo-router";
-import { StatusBar } from "expo-status-bar";
 import { X } from "lucide-react-native";
 import * as React from "react";
+import { useHeaderHeight } from "@react-navigation/elements";
 import {
   Animated as AnimatedRN,
   Dimensions,
-  Platform,
   ScrollView,
   View,
 } from "react-native";
-import Animated, {
-  useAnimatedStyle,
-  useSharedValue,
-  withTiming,
-} from "react-native-reanimated";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "~/components/ui/card";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
+import { useSharedValue, withTiming } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Text } from "~/components/ui/text";
 export default function BuyPremiumModal() {
   const [yapePaymentMethod, setYapePaymentMethod] = React.useState(false);
@@ -77,15 +62,11 @@ export default function BuyPremiumModal() {
     setCardPaymentMethod(true);
     handlePress(0);
   };
+  const headerHeight = useHeaderHeight();
 
   return (
-    <SafeAreaView className="p-4">
-      <View className="flex flex-col gap-6 pt-16">
-        <View className="flex flex-row justify-between items-center">
-          <Button variant="ghost" onPress={() => router.back()} size="icon">
-            <X size="$1" />
-          </Button>
-        </View>
+    <ScrollView className="px-4" style={{ paddingTop: headerHeight + 16 }}>
+      <View className="flex flex-col gap-6 ">
         <View className="flex flex-row gap-4 items-center">
           <Avatar alt="profile" className="bg-teal-600 w-32 h-32">
             <AvatarImage
@@ -95,7 +76,7 @@ export default function BuyPremiumModal() {
             <AvatarFallback className="bg-slate-500" />
           </Avatar>
           <View className="flex flex-col gap-2">
-            <Text className="font-bold text-2xl">
+            <Text className="font-bold text-xl">
               {userData?.firstName} {userData?.lastName}
             </Text>
             <Badge
@@ -117,33 +98,44 @@ export default function BuyPremiumModal() {
           </View>
         </View>
         <Separator className="text-gray-500" />
-        <ScrollView>
-          <Text className="text-2xl font-bold ">Método de Pago</Text>
-          <View className="flex-1 justify-center  py-6">
-            <Tabs
-              value={value}
-              onValueChange={setValue}
-              className="w-full max-w-[400px] mx-auto flex-col gap-1.5"
+        <Text className="text-2xl font-bold ">Método de Pago</Text>
+        <Tabs
+          value={value}
+          onValueChange={setValue}
+          className="w-full max-w-[400px] mx-auto flex-col gap-1.5"
+        >
+          <TabsList className="flex-row w-full rounded-lg">
+            <TabsTrigger
+              onPress={handleCardPayment}
+              value="card"
+              className="flex-1 rounded-lg"
             >
-              <TabsList className="flex-row w-full rounded-lg">
-                <TabsTrigger value="card" className="flex-1 rounded-lg">
-                  <Text>Tarjeta</Text>
-                </TabsTrigger>
-                <TabsTrigger value="yape" className="flex-1 rounded-lg">
-                  <Text>Yape</Text>
-                </TabsTrigger>
-              </TabsList>
-              <TabsContent value="card">
+              <Text>Tarjeta</Text>
+            </TabsTrigger>
+            <TabsTrigger
+              onPress={handleYapePayment}
+              value="yape"
+              className="flex-1 rounded-lg"
+            >
+              <Text>Yape</Text>
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value="card">
+            {cardPaymentMethod && (
+              <AnimatedRN.View style={{ opacity: fadeAnimCard }}>
                 <Stripe />
-              </TabsContent>
-              <TabsContent value="yape">
+              </AnimatedRN.View>
+            )}
+          </TabsContent>
+          <TabsContent value="yape">
+            {yapePaymentMethod && (
+              <AnimatedRN.View style={{ opacity: fadeAnimYape }}>
                 <Yape />
-              </TabsContent>
-            </Tabs>
-          </View>
-        </ScrollView>
-        <StatusBar style={Platform.OS === "ios" ? "light" : "auto"} />
+              </AnimatedRN.View>
+            )}
+          </TabsContent>
+        </Tabs>
       </View>
-    </SafeAreaView>
+    </ScrollView>
   );
 }

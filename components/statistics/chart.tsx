@@ -1,4 +1,4 @@
-import NoDataAsset from "@/assets/svgs/no-data.svg";
+// import NoDataAsset from "@/assets/svgs/no-data.svg";
 import { useExpenseContext } from "@/context";
 import { supabase } from "@/lib/supabase";
 import { useUser } from "@clerk/clerk-expo";
@@ -14,7 +14,7 @@ import {
   startOfYear,
 } from "date-fns";
 import React from "react";
-import { Dimensions, View } from "react-native";
+import { View } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
 import { Text } from "../ui/text";
 
@@ -54,7 +54,6 @@ async function getExpensesDataByTimelineQuery(timelineQuery: string) {
 }
 
 export default function Chart({ timelineQuery }: { timelineQuery: string }) {
-  const screenWidth = Dimensions.get("window").width;
   const { user: userData } = useUser();
   const dataSample = [
     { value: 15 },
@@ -97,8 +96,8 @@ export default function Chart({ timelineQuery }: { timelineQuery: string }) {
   });
   if (data.length === 0) {
     return (
-      <View className="flex flex-col gap-4 justify-center items-center">
-        <NoDataAsset width={200} height={200} />
+      <View className="flex flex-col gap-4 justify-center items-center mt-16">
+        {/* <NoDataAsset width={200} height={200} /> */}
         <Text className="text-center px-5">
           Aún no tienes gastos registrados para este nivel de periodicidad
         </Text>

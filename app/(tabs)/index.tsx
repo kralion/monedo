@@ -88,7 +88,7 @@ export default function Home() {
               <ScrollView>
                 <FlashList
                   data={expenses}
-                  estimatedItemSize={50}
+                  estimatedItemSize={200}
                   renderItem={({ item: expense }) => {
                     return <Expense expense={expense} />;
                   }}
@@ -137,7 +137,7 @@ export default function Home() {
             <View style={{ height: 160 }} />
           </View>
 
-          <ScrollView ref={scrollRef} className="px-4 ">
+          <ScrollView ref={scrollRef} className="px-4 h-full">
             <View className="flex flex-col gap-4 pb-5">
               <View className="flex flex-row justify-between items-center pt-32 px-4">
                 <Text className="text-xl font-semibold">
@@ -162,7 +162,7 @@ export default function Home() {
 
               <FlashList
                 data={expenses}
-                estimatedItemSize={50}
+                estimatedItemSize={200}
                 renderItem={({ item: expense }) => (
                   <Expense expense={expense} />
                 )}
