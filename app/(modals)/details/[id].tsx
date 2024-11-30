@@ -45,6 +45,7 @@ export default function ExpenseDetails() {
   };
 
   async function getExpenseById(id: string) {
+    setIsLoading(true);
     const { data, error } = await supabase
       .from("expenses")
       .select("*")
@@ -52,6 +53,7 @@ export default function ExpenseDetails() {
       .single();
     if (error) throw error;
     setExpense(data);
+    setIsLoading(false);
     return data;
   }
   const assetIndentificador =
@@ -68,11 +70,10 @@ export default function ExpenseDetails() {
 
   if (!expense) return null;
 
-  const monto_gastado = expense.amount;
   //TODO: Cambiar este valor por el monto presupuestado del mes actual
   const monto_presupuestado = 1000;
   const totalPercentageExpensed =
-    (monto_gastado ?? 100 / monto_presupuestado) * 100;
+    (expense.amount ?? 100 / monto_presupuestado) * 100;
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <View className="flex flex-col gap-4 p-4">
@@ -100,88 +101,87 @@ export default function ExpenseDetails() {
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
-        {expense ? (
-          <ScrollView>
-            <View className="flex flex-col gap-8">
-              <View className="flex flex-col gap-4">
-                <Image
-                  width={100}
-                  height={100}
-                  source={{
-                    uri: assetIndentificador,
-                  }}
-                />
-                <View className="flex flex-col">
-                  <Text className="text-5xl tracking-tight font-bold">
-                    S/. {expense.amount}
-                  </Text>
-                  <Text className="text-lg text-muted-foreground ">
-                    {expense.description}
-                  </Text>
-                </View>
-              </View>
-
-              <Separator className="text-muted-foreground" />
-              <View className="flex flex-col gap-2">
-                <View className="flex flex-col gap-2">
-                  <View className="flex flex-row justify-between items-center">
-                    <Text className="text-muted-foreground">Fecha</Text>
-                    <Text className="font-bold">
-                      {new Date(expense.date).toLocaleDateString("es-PE", {
-                        month: "long",
-                        day: "numeric",
-                      })}
-                    </Text>
-                  </View>
-                  <View className="flex flex-row justify-between items-center">
-                    <Text className="text-muted-foreground">Hora</Text>
-                    <Text className="font-bold">
-                      {new Date(expense.date).toLocaleTimeString("es-PE", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                        hour12: true,
-                      })}
-                    </Text>
-                  </View>
-                  <View className="flex flex-row justify-between items-center">
-                    <Text className="text-muted-foreground">Categoria</Text>
-                    <Badge className="py-1 px-2" variant="outline">
-                      <Text className="text-md">{expense.category}</Text>
-                    </Badge>
-                  </View>
-                </View>
-              </View>
-              <Separator className="text-muted-foreground" />
-              <View className="flex flex-col gap-3">
-                {/* //TODO: Cambiar este valor por el monto porcentual del mes actual */}
-                <Progress className=" web:w-[60%]" value={70} max={100} />
-
-                <View className="flex flex-row justify-between items-center">
-                  <Text>0</Text>
-                  {/* //TODO: Cambiar este valor por el monto presupuestado del mes actual */}
-                  <Text>1000</Text>
-                </View>
-              </View>
-
-              <Button
-                onPress={() => setIsOpen(true)}
-                size="lg"
-                variant="destructive"
-              >
-                {isLoading ? (
-                  <ActivityIndicator color="white" />
-                ) : (
-                  <Text>Eliminar</Text>
-                )}
-              </Button>
+        <ScrollView>
+          {isLoading && (
+            <View className="flex flex-col justify-center items-center min-h-full">
+              <ActivityIndicator size="large" />
+              <Text className="text-muted-foreground">Cargando...</Text>
             </View>
-          </ScrollView>
-        ) : (
-          <View className="flex flex-col justify-center items-center min-h-full">
-            <ActivityIndicator size="large" />
-            <Text className="text-muted-foreground">Cargando...</Text>
+          )}
+          <View className="flex flex-col gap-8">
+            <View className="flex flex-col gap-4">
+              <Image
+                width={100}
+                height={100}
+                source={{
+                  uri: assetIndentificador,
+                }}
+              />
+              <View className="flex flex-col">
+                <Text className="text-5xl tracking-tighter font-bold">
+                  S/. {expense.amount}
+                </Text>
+                <Text className="text-lg text-muted-foreground ">
+                  {expense.description}
+                </Text>
+              </View>
+            </View>
+
+            <Separator className="text-muted-foreground" />
+            <View className="flex flex-col gap-2">
+              <View className="flex flex-col gap-2">
+                <View className="flex flex-row justify-between items-center">
+                  <Text className="text-muted-foreground">Fecha</Text>
+                  <Text className="font-bold">
+                    {new Date(expense.date).toLocaleDateString("es-PE", {
+                      month: "long",
+                      day: "numeric",
+                    })}
+                  </Text>
+                </View>
+                <View className="flex flex-row justify-between items-center">
+                  <Text className="text-muted-foreground">Hora</Text>
+                  <Text className="font-bold">
+                    {new Date(expense.date).toLocaleTimeString("es-PE", {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      hour12: true,
+                    })}
+                  </Text>
+                </View>
+                <View className="flex flex-row justify-between items-center">
+                  <Text className="text-muted-foreground">Categoria</Text>
+                  <Badge className="py-1 px-2" variant="outline">
+                    <Text className="text-md">{expense.category}</Text>
+                  </Badge>
+                </View>
+              </View>
+            </View>
+            <Separator className="text-muted-foreground" />
+            <View className="flex flex-col gap-3">
+              {/* //TODO: Cambiar este valor por el monto porcentual del mes actual */}
+              <Progress className=" web:w-[60%]" value={70} max={100} />
+
+              <View className="flex flex-row justify-between items-center">
+                <Text>0</Text>
+                {/* //TODO: Cambiar este valor por el monto presupuestado del mes actual */}
+                <Text>1000</Text>
+              </View>
+            </View>
+
+            <Button
+              onPress={() => setIsOpen(true)}
+              size="lg"
+              variant="destructive"
+            >
+              {isLoading ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <Text>Eliminar</Text>
+              )}
+            </Button>
           </View>
-        )}
+        </ScrollView>
       </View>
     </ScrollView>
   );

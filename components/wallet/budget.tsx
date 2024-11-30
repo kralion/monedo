@@ -4,10 +4,21 @@ import { Image } from "react-native";
 import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Text } from "../ui/text";
 export function Budget({ budget }: { budget: IBudget }) {
-  const { monto, fecha_final, descripcion, fecha_registro } = budget;
   const [openBudgetDetails, setOpenBudgetDetails] = React.useState(false);
-  const date = new Date(fecha_final);
-  const endDate = new Date(fecha_final);
+  const date = new Date(budget.created_At); // Parse the original date
+  const date2 = new Date(budget.created_At); // Parse the original date
+  const formattedDate2 = date.toLocaleDateString("es-ES", {
+    month: "2-digit",
+    year: "numeric",
+    day: "numeric",
+  });
+
+  date.setDate(date.getDate() + 30); // Add 30 days
+  const formattedDate = date.toLocaleDateString("es-ES", {
+    month: "2-digit",
+    year: "numeric",
+    day: "numeric",
+  });
 
   return (
     <Card className="active:opacity-80 rounded-xl mb-3">
@@ -22,23 +33,11 @@ export function Budget({ budget }: { budget: IBudget }) {
               height: 45,
             }}
           />
-          <Text className="text-lg font-bold">
-            {date
-              .toLocaleDateString("es-ES", {
-                month: "long",
-              })
-              .toUpperCase()}
-          </Text>
+          <Text className="text-lg font-bold">{formattedDate2}</Text>
         </CardTitle>
         <CardDescription className="flex flex-row items-center gap-1">
-          <Text className="font-bold"> S/. {monto.toFixed(2)}</Text>
-          <Text className="text-sm text-foreground/70">
-            {endDate.toLocaleDateString("es-ES", {
-              month: "2-digit",
-              year: "numeric",
-              day: "numeric",
-            })}
-          </Text>
+          <Text className="font-bold"> S/. {budget.amount}</Text>
+          <Text className="text-sm text-foreground/70">{formattedDate}</Text>
         </CardDescription>
       </CardHeader>
       {/* <Sheet

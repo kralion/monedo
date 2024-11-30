@@ -146,6 +146,7 @@ function RootLayoutNav() {
           headerBlurEffect: "regular",
           headerTransparent: true,
           headerShadowVisible: false,
+
           headerRight: () => (
             <NativeButton
               title="Editar"
@@ -160,13 +161,8 @@ function RootLayoutNav() {
         options={{
           title: "",
           presentation: "modal",
-          headerRight: () => (
-            <NativeButton
-              title="Cancelar"
-              color="black"
-              onPress={() => router.back()}
-            />
-          ),
+          headerShown: false,
+
         }}
       />
       <Stack.Screen
@@ -174,7 +170,9 @@ function RootLayoutNav() {
         options={{
           presentation: "modal",
           title: "Adquirir Premium",
-
+          headerTransparent: true,
+          headerBlurEffect: "regular",
+          headerShadowVisible: false,
           headerRight: () => (
             <Button
               variant="ghost"

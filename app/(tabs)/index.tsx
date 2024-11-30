@@ -1,21 +1,11 @@
 import Card from "@/components/dashboard/card";
-import NoDataSvg from "@/assets/svgs/no-data.svg";
 import { Expense } from "@/components/dashboard/expense";
 import BuyPremiumModal from "@/components/popups/buy-premium";
 import { useExpenseContext } from "@/context";
-import { useUser } from "@clerk/clerk-expo";
+import { useAuth, useUser } from "@clerk/clerk-expo";
 import { FlashList } from "@shopify/flash-list";
 import { router } from "expo-router";
-import {
-  ChevronUp,
-  ListCollapse,
-  Loader,
-  Lock,
-  Maximize,
-  Maximize2,
-  Minimize,
-  Minimize2,
-} from "lucide-react-native";
+import { ChevronUp, Lock, Maximize2, Minimize2 } from "lucide-react-native";
 import * as React from "react";
 import {
   ActivityIndicator,
@@ -32,16 +22,15 @@ import Animated, {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
-import { createClerkSupabaseClient } from "~/lib/supabase";
-import { IExpense, IExpenseGET } from "~/interfaces";
 
 export default function Home() {
   const fadeAnim = React.useRef(new AnimatedRN.Value(1)).current;
-  const { expenses } = useExpenseContext();
+  const { expenses, getExpensesByUser } = useExpenseContext();
+  const [isLoading, setIsLoading] = React.useState(false);
   const { user, isSignedIn } = useUser();
+  const { has } = useAuth();
   const [showAll, setShowAll] = React.useState(false);
   const [showBuyPremiumModal, setShowBuyPremiumModal] = React.useState(false);
-  const supabase = createClerkSupabaseClient();
   if (!user) {
     return null;
   }
@@ -53,6 +42,12 @@ export default function Home() {
       useNativeDriver: true,
     }).start();
   }, [showAll]);
+
+  React.useEffect(() => {
+    setIsLoading(true);
+    getExpensesByUser(user.id);
+    setIsLoading(false);
+  }, [expenses, user]);
 
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollHandler = useScrollViewOffset(scrollRef);
@@ -101,17 +96,13 @@ export default function Home() {
                 </Button>
               </View>
               <ScrollView className="h-screen-safe">
-                {expenses && expenses.length > 0 ? (
-                  <FlashList
-                    data={expenses}
-                    estimatedItemSize={200}
-                    renderItem={({ item: expense }) => (
-                      <Expense expense={expense} />
-                    )}
-                  />
-                ) : (
-                  <ActivityIndicator size="large" className="mx-auto mt-5" />
-                )}
+                <FlashList
+                  data={expenses}
+                  estimatedItemSize={200}
+                  renderItem={({ item: expense }) => (
+                    <Expense expense={expense} />
+                  )}
+                />
               </ScrollView>
             </View>
           </SafeAreaView>
@@ -119,8 +110,12 @@ export default function Home() {
       ) : (
         <>
           <View
-            className="pt-16 bg-green-500 rounded-b-3xl"
-            // bg="$green9Light" TODO: change color to yellow bg="yellow10Light"
+            className={`pt-16  rounded-b-3xl
+             bg-${
+               has?.({ permission: "premium:plan" }) ? "yellow-500" : "primary"
+             }
+
+              `}
           >
             <View className="flex flex-row justify-between items-center px-4">
               <View className="flex flex-col">
@@ -138,14 +133,9 @@ export default function Home() {
                   Hola, {user?.firstName} 👋
                 </Text>
               </View>
-              <BuyPremiumModal
-                setOpenModal={setShowBuyPremiumModal}
-                openModal={showBuyPremiumModal}
-              />
+
               <Button
-                onPress={() => {
-                  setShowBuyPremiumModal(true);
-                }}
+                onPress={() => router.push("/(modals)/buy-premium")}
                 size="icon"
                 className="rounded-full bg-green-200 active:opacity-80"
               >
@@ -173,28 +163,14 @@ export default function Home() {
                 </Button>
               </View>
 
-              {expenses && expenses.length > 0 ? (
-                <FlashList
-                  data={expenses}
-                  estimatedItemSize={200}
-                  renderItem={({ item: expense }) => (
-                    <Expense expense={expense} />
-                  )}
-                />
-              ) : (
-                // <View className="flex flex-col items-center justify-center mt-5 gap-5">
-                //   <NoDataSvg width={200} height={200} />
-                //   <View>
-                //     <Text className="text-center text-xl text-muted-foreground">
-                //       No tienes gastos aún
-                //     </Text>
-                //     <Text className="text-center text-sm text-muted-foreground">
-                //       Añade un gasto haciendo tap en el botón "+"
-                //     </Text>
-                //   </View>
-                // </View>
-                <ActivityIndicator size="large" className="mt-5" />
-              )}
+              {isLoading && <ActivityIndicator size="large" className="mt-5" />}
+              <FlashList
+                data={expenses}
+                estimatedItemSize={200}
+                renderItem={({ item: expense }) => (
+                  <Expense expense={expense} />
+                )}
+              />
             </View>
           </ScrollView>
           <Animated.View

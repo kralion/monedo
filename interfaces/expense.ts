@@ -25,12 +25,11 @@ export interface IGoal {
   meta_ahorro: number;
 }
 export interface IBudget {
-  id?: string;
-  usuario_id: string;
-  fecha_registro: Date;
-  fecha_final: Date;
-  descripcion?: string;
-  monto: number;
+  id: string;
+  user_id: string;
+  created_At: Date;
+  description: string;
+  amount: number;
 }
 
 export interface IBudgetContextProvider {

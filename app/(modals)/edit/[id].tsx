@@ -3,8 +3,8 @@ import { useExpenseContext } from "@/context";
 import { IExpense, IExpenseGET, IExpensePOST } from "@/interfaces";
 import { createClerkSupabaseClient } from "@/lib/supabase";
 import { useUser } from "@clerk/clerk-expo";
-import { useLocalSearchParams } from "expo-router";
-import { Loader } from "lucide-react-native";
+import { router, useLocalSearchParams } from "expo-router";
+import { Loader, X } from "lucide-react-native";
 import React, { useEffect, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -139,11 +139,21 @@ export default function EditExpense() {
 
         <View className="flex flex-col">
           <View className="flex flex-col gap-6">
-            <View className="flex flex-col px-4">
-              <Text className="text-4xl font-bold mt-8">Editar Gasto</Text>
-              <Text className="text-muted-foreground">
-                Modifica los detalles del gasto que hiciste
-              </Text>
+            <View className="flex flex-row justify-between ">
+              <View className="flex flex-col px-4">
+                <Text className="text-4xl font-bold mt-8">Editar Gasto</Text>
+                <Text className="text-muted-foreground">
+                  Modifica los detalles del gasto que hiciste
+                </Text>
+              </View>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full m-3"
+                onPress={() => router.back()}
+              >
+                <X color="black" />
+              </Button>
             </View>
             <Separator className="text-muted-foreground " />
           </View>
@@ -291,13 +301,26 @@ export default function EditExpense() {
                 )}
                 defaultValue={false}
               />
-              <Button onPress={handleSubmit(onSubmit)} size="lg">
-                {isLoading ? (
-                  <ActivityIndicator size={20} color="white" />
-                ) : (
-                  <Text>Registrar</Text>
-                )}
-              </Button>
+              <View className="flex flex-col gap-3 mt-4">
+                <Button onPress={handleSubmit(onSubmit)} size="lg">
+                  {isLoading ? (
+                    <ActivityIndicator size={20} color="white" />
+                  ) : (
+                    <Text>Guardar Cambios</Text>
+                  )}
+                </Button>
+                <Button
+                  onPress={handleSubmit(onSubmit)}
+                  size="lg"
+                  variant="destructive"
+                >
+                  {isLoading ? (
+                    <ActivityIndicator size={20} color="white" />
+                  ) : (
+                    <Text>Eliminar</Text>
+                  )}
+                </Button>
+              </View>
             </View>
           </ScrollView>
         </View>

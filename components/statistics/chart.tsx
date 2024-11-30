@@ -1,6 +1,5 @@
 // import NoDataAsset from "@/assets/svgs/no-data.svg";
 import { useExpenseContext } from "@/context";
-import { supabase } from "@/lib/supabase";
 import { useUser } from "@clerk/clerk-expo";
 import {
   endOfDay,
@@ -18,8 +17,10 @@ import { View } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
 import { Text } from "../ui/text";
 import { LineChartIcon } from "lucide-react-native";
+import { createClerkSupabaseClient } from "~/lib/supabase";
 
 async function getExpensesDataByTimelineQuery(timelineQuery: string) {
+  const supabase = createClerkSupabaseClient();
   let startDate, endDate;
   switch (timelineQuery) {
     case "hoy":
@@ -57,11 +58,17 @@ async function getExpensesDataByTimelineQuery(timelineQuery: string) {
 export default function Chart({ timelineQuery }: { timelineQuery: string }) {
   const { user: userData } = useUser();
   const dataSample = [
-    { value: 15 },
-    { value: 30 },
-    { value: 26 },
-    { value: 40 },
+    { value: 15, label: "L" },
+
+    { value: 30, label: "M" },
+
+    { value: 26, label: "X" },
+    { value: 40, label: "J" },
+    { value: 30, label: "V" },
+    { value: 26, label: "S" },
+    { value: 40, label: "D" },
   ];
+
   const { expenses, getExpensesByUser } = useExpenseContext();
   React.useEffect(() => {
     if (userData) {
@@ -71,7 +78,7 @@ export default function Chart({ timelineQuery }: { timelineQuery: string }) {
   let labels;
   switch (timelineQuery) {
     case "hoy":
-      labels = ["08:00", "11:00", "13:00", "17:00", "20:00", "24:00"];
+      labels = ["05:00", "08:00", "11:00", "13:00", "17:00", "20:00", "24:00"];
       break;
     case "diario":
       labels = ["L", "M", "X", "J", "V", "S", "D"];
@@ -80,19 +87,19 @@ export default function Chart({ timelineQuery }: { timelineQuery: string }) {
       labels = ["S1", "S2", "S3", "S4"];
       break;
     case "mensual":
-      labels = ["E", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
+      labels = ["Ene", "Mar", "Abr", "Jul", "Ago", "Sep", "Dic"];
       break;
 
     default:
       labels = expenses.map((expense) => {
-        const date = new Date(expense.fecha);
+        const date = new Date(expense.date);
         return format(date, "MMMM"); // e.g., May
       });
       break;
   }
 
   const data = expenses.map((expense) => {
-    const monto = isFinite(expense.monto) ? expense.monto : 0;
+    const monto = isFinite(expense.amount) ? expense.amount : 0;
     return monto;
   });
   if (data.length === 0) {
@@ -116,19 +123,18 @@ export default function Chart({ timelineQuery }: { timelineQuery: string }) {
       areaChart
       curved
       data={dataSample}
-      showVerticalLines
-      spacing={44}
+      spacing={55}
       initialSpacing={0}
-      color1="skyblue"
-      color2="orange"
-      textColor1="green"
-      hideDataPoints
-      dataPointsColor1="blue"
-      dataPointsColor2="red"
-      startFillColor1="skyblue"
-      startFillColor2="orange"
+      endSpacing={0}
+      yAxisColor="gray"
+      xAxisColor="gray"
+      yAxisThickness={0.2}
+      color1="teal"
+      dataPointsColor1="teal"
+      hideRules
+      startFillColor1="teal"
       startOpacity={0.8}
-      endOpacity={0.3}
+      endOpacity={0.5}
       width={450}
       height={250}
     />

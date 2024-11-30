@@ -11,16 +11,8 @@ import {
   CardTitle,
 } from "~/components/ui/card";
 import { Text } from "~/components/ui/text";
-interface IGasto {
-  description: string;
-  id: string;
-  amount: number;
-  date: Date;
-  category: string;
-  periodicity: boolean;
-  currency: string;
-}
-export function Expense({ expense }: { expense: IGasto }) {
+
+export function Expense({ expense }: { expense: IExpense }) {
   const { category, amount, date } = expense;
   const formattedDate = date ? formatDate(new Date(date)) : "No date provided";
   const assetIndentificador =

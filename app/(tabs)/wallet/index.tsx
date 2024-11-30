@@ -1,15 +1,12 @@
-import { SavingGoalModal } from "@/components/popups/save-goals";
-import NoDataSvg from "@/assets/svgs/no-data.svg";
 import { Budget } from "@/components/wallet/budget";
 import { useBudgetContext } from "@/context";
-import { IBudget } from "@/interfaces";
 import { useUser } from "@clerk/clerk-expo";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { FlashList } from "@shopify/flash-list";
-import { ChevronUp, Inbox, Info, Loader } from "lucide-react-native";
+import { ChevronUp, Inbox, Info } from "lucide-react-native";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { ActivityIndicator, ScrollView, View } from "react-native";
+import { ActivityIndicator, Alert, ScrollView, View } from "react-native";
 import Animated, {
   useAnimatedRef,
   useAnimatedStyle,
@@ -21,54 +18,44 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Text } from "~/components/ui/text";
 import { Textarea } from "~/components/ui/textarea";
+import { createClerkSupabaseClient } from "~/lib/supabase";
 
-interface Item extends IBudget {
-  duration: string;
-}
+type TBudget = {
+  amount: number;
+  description: string;
+};
 
 export default function Wallet() {
   const [showSavingGoalModal, setShowSavingGoalModal] = useState(false);
-  const { budgets, addBudget, getRecentBudgets } = useBudgetContext();
+  const { budgets, getRecentBudgets } = useBudgetContext();
+  const supabase = createClerkSupabaseClient();
   const {
     control,
     handleSubmit,
     formState: { errors },
+    setValue,
     reset,
-  } = useForm<Item>();
+  } = useForm<TBudget>();
 
   const [isLoading, setIsLoading] = useState(false);
-  const { user: userData } = useUser();
+  const { user } = useUser();
 
-  async function onSubmit(data: IBudget) {
+  async function onSubmit(data: TBudget) {
     setIsLoading(true);
-    let date = new Date();
-    date.setDate(date.getDate() + 30);
-    let fecha_final = date;
-    addBudget({
-      ...data,
-      usuario_id: userData?.id ?? "9e683f71-8a18-4a91-a596-c956813405e9",
-      fecha_registro: new Date(),
-      fecha_final,
-    });
+    await supabase.from("budgets").insert(data);
     setIsLoading(false);
     // toast.show("Meta registrada correctamente");
     reset();
+    setValue;
   }
 
   useEffect(() => {
-    if (userData) {
-      getRecentBudgets(userData.id);
+    if (user) {
+      getRecentBudgets(user.id);
     }
-  }, [userData, getRecentBudgets]);
+  }, [user, getRecentBudgets]);
 
   const [budgetFormAvailable, setBudgetFormAvailable] = useState(true);
-  const [walletText, setWalletText] = useState(
-    `Crea un presupuesto para ${new Date()
-      .toLocaleDateString("es-ES", {
-        month: "long",
-      })
-      .toUpperCase()}`
-  );
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollHandler = useScrollViewOffset(scrollRef);
 
@@ -114,11 +101,12 @@ export default function Wallet() {
                           message: "Solo números",
                         },
                       }}
-                      name="monto"
+                      name="amount"
                       render={({ field: { onChange, value } }) => (
                         <Input
                           autoCapitalize="none"
                           className="w-full"
+                          value={String(value)}
                           onChangeText={onChange}
                           placeholder="650.00"
                           keyboardType="decimal-pad"
@@ -130,7 +118,7 @@ export default function Wallet() {
                 <View className="flex flex-col">
                   <Controller
                     control={control}
-                    name="descripcion"
+                    name="description"
                     render={({ field: { onChange, value } }) => (
                       <Textarea
                         autoCapitalize="none"
@@ -140,11 +128,11 @@ export default function Wallet() {
                       />
                     )}
                   />
-                  {errors.descripcion && (
+                  {errors.description && (
                     <View className="flex flex-row gap-1.5 ml-2 mt-2 items-center">
                       <Info color="$red9Light" size={15} />
                       <Text className="text-sm text-destructive">
-                        {errors.descripcion.message}
+                        {errors.description.message}
                       </Text>
                     </View>
                   )}
@@ -158,10 +146,10 @@ export default function Wallet() {
                 </Button>
               </View>
 
-              <SavingGoalModal
+              {/* <SavingGoalModal
                 openModal={showSavingGoalModal}
                 setOpenModal={setShowSavingGoalModal}
-              />
+              /> */}
             </>
           )}
           <React.Suspense
