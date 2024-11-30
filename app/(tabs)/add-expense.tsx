@@ -26,18 +26,8 @@ import { Separator } from "~/components/ui/separator";
 import { Switch } from "~/components/ui/switch";
 import { Text } from "~/components/ui/text";
 import { Textarea } from "~/components/ui/textarea";
+import { IExpensePOST } from "~/interfaces";
 import { createClerkSupabaseClient } from "~/lib/supabase";
-
-interface IGasto {
-  description: string;
-  amount: number;
-  category: {
-    label: string;
-    value: string;
-  };
-  periodicity: boolean;
-  currency: string;
-}
 
 const items = [
   { name: "Hogar" },
@@ -62,9 +52,9 @@ export default function AddExpense() {
     formState: { errors },
     reset,
     setValue,
-  } = useForm<IGasto>();
+  } = useForm<IExpensePOST>();
 
-  async function onSubmit(data: IGasto) {
+  async function onSubmit(data: IExpensePOST) {
     setIsLoading(true);
     try {
       await supabase.from("expenses").insert({

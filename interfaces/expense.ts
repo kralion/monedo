@@ -1,18 +1,18 @@
-export interface IExpense {
-  id?: string;
-  fecha: Date;
-  descripcion?: string;
-  usuario_id?: string;
-  periodicidad?: boolean;
-  numeroGasto: number;
-  categoria: string;
-  monto: number;
-  assetIdentificador?: string;
+export interface IExpensePOST {
+  description: string;
+  amount: number;
+  category: {
+    label: string;
+    value: string;
+  };
+  periodicity: boolean;
+  currency: string;
 }
-export interface IExpenseGET {
+export interface IExpense {
   description: string;
   id: string;
   amount: number;
+  number: number;
   date: Date;
   category: string;
   periodicity: boolean;
@@ -45,7 +45,7 @@ export interface IExpenseContextProvider {
   addExpense: (expense: IExpense) => void;
   deleteExpense: (id: string) => void;
   expense: IExpense;
-  expenses: IExpenseGET[];
+  expenses: IExpense[];
   getExpenseById: (id: string) => Promise<IExpense>;
   updateExpense: (expense: IExpense) => void;
   getExpensesByUser: (id: string) => Promise<IExpense[]>;
