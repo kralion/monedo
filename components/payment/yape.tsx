@@ -21,10 +21,10 @@ export default function Yape() {
       <Text className="text-sm text-foreground">
         El último paso es mandarnos una captura al WhatsApp del yapeo a este
         número
-        <Text className="font-bold text-primary"> 914 019 929</Text>
+        <Text className="text-primary"> 914 019 929</Text>
       </Text>
       <Button size="lg" className="bg-purple-600 mt-5 text-white">
-        <Text> Abrir Yape</Text>
+        <Text className="text-white"> Abrir Yape</Text>
       </Button>
     </View>
   );

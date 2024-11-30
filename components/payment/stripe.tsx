@@ -76,7 +76,7 @@ export default function Stripe() {
       {showConfetti && (
         <ConfettiCannon autoStart count={200} origin={{ x: 50, y: 50 }} />
       )}
-      <View className="flex flex-col gap-3">
+      <View className="flex flex-col gap-3 ">
         <View className="flex flex-col gap-1">
           <Text>Número de Tarjeta</Text>
 

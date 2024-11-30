@@ -92,7 +92,7 @@ export default function Home() {
                   size="icon"
                   className="rounded-full"
                 >
-                  <Minimize2 size={20} />
+                  <Minimize2 color="black" size={20} />
                 </Button>
               </View>
               <ScrollView className="h-screen-safe">
@@ -139,7 +139,7 @@ export default function Home() {
                 size="icon"
                 className="rounded-full bg-green-200 active:opacity-80"
               >
-                <Lock size={20} />
+                <Lock color="black" size={20} />
               </Button>
             </View>
             <Card />
@@ -159,7 +159,7 @@ export default function Home() {
                   size="icon"
                   className="rounded-full"
                 >
-                  <Maximize2 size={20} />
+                  <Maximize2 color="black" size={20} />
                 </Button>
               </View>
 

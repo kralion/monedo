@@ -17,7 +17,7 @@ export default function Export() {
           className="rounded-full   m-3"
           onPress={() => router.back()}
         >
-          <X />
+          <X color="black" />
         </Button>
       </View>
       <View className="flex flex-col gap-6 p-4 items-center">
@@ -35,7 +35,7 @@ export default function Export() {
         <View className="flex flex-col mt-10 gap-3 w-full">
           <Button
             size="lg"
-            variant="secondary"
+            variant="outline"
             className="flex flex-row gap-2 items-center"
             onPress={() =>
               Alert.alert("Exportación", "Se exportó correctamente")
@@ -52,7 +52,7 @@ export default function Export() {
           <Button
             size="lg"
             className="flex flex-row gap-2 items-center"
-            variant="secondary"
+            variant="outline"
             onPress={() =>
               Alert.alert("Exportación", "Se exportó correctamente")
             }
@@ -69,7 +69,7 @@ export default function Export() {
           <Button
             size="lg"
             className="flex flex-row gap-2 items-center"
-            variant="secondary"
+            variant="outline"
             onPress={() =>
               Alert.alert("Exportación", "Se exportó correctamente")
             }

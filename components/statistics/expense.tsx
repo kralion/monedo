@@ -10,7 +10,8 @@ import {
   CardHeader,
   CardTitle,
 } from "~/components/ui/card";
-import { Text } from "~/components/ui/text";
+import { Text } from "../ui/text";
+import { Button } from "../ui/button";
 
 export function Expense({ expense }: { expense: IExpense }) {
   const { category, amount, date } = expense;
@@ -21,41 +22,41 @@ export function Expense({ expense }: { expense: IExpense }) {
     )?.iconHref ||
     "https://img.icons8.com/?size=160&id=MjAYkOMsbYOO&format=png";
   return (
-    <Pressable
-      onPress={() => {
-        router.push(`/(modals)/details/${expense.id}`);
-      }}
-    >
-      <Card className=" active:opacity-80 rounded-xl mb-5">
-        <CardHeader className="flex flex-row justify-between items-center p-3">
-          <CardTitle>
-            <View className="flex flex-row items-center gap-2">
-              <Image
-                width={45}
-                height={45}
-                source={{
-                  uri: assetIndentificador,
-                }}
-              />
-              <View className="flex flex-col ">
-                <Text className="text-xl font-semibold">{category}</Text>
+    <Card className=" active:opacity-80 rounded-xl mb-5">
+      <CardHeader className="flex flex-row justify-between items-center p-3">
+        <CardTitle
+          onPress={() => {
+            router.push(`/(modals)/details/${expense.id}`);
+          }}
+        >
+          <View className="flex flex-row items-center gap-2">
+            <Image
+              width={45}
+              height={45}
+              source={{
+                uri: assetIndentificador,
+              }}
+            />
+            <View className="flex flex-col ">
+              <Text className="text-xl font-semibold">{category}</Text>
 
-                <Text className="text-xs text-muted-foreground">
-                  {formattedDate}
-                </Text>
-              </View>
-            </View>
-          </CardTitle>
-          <CardDescription className="flex flex-row items-center justify-between">
-            <View className="flex flex-row gap-2 items-center">
-              <Text className="text-xl font-bold text-red-500">
-                - S/. {amount}
+              <Text className="text-xs text-muted-foreground">
+                {formattedDate}
               </Text>
-              <ChevronRight size={20} color="gray" />
             </View>
-          </CardDescription>
-        </CardHeader>
-      </Card>
-    </Pressable>
+          </View>
+        </CardTitle>
+        <CardDescription className="flex flex-row items-center justify-between">
+          <View className="flex flex-row gap-2 items-center">
+            <Text className="text-xl font-bold text-red-500">
+              - S/. {amount}
+            </Text>
+            <Button variant="ghost" size="icon">
+              <ChevronRight size={20} color="gray" />
+            </Button>
+          </View>
+        </CardDescription>
+      </CardHeader>
+    </Card>
   );
 }

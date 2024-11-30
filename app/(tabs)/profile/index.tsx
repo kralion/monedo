@@ -95,11 +95,11 @@ export default function ProfileScreen() {
         </Button>
       </View>
 
-      <View className="absolute bottom-[70px] right-[-50px] w-[150px] h-[300px] rounded-xl rotate-[-25deg] bg-black shadow-lg" />
+      <View className="absolute bottom-[70px] right-[-70px] w-[200px] h-[300px] rounded-xl rotate-[-30deg] bg-yellow-400 shadow-lg" />
 
-      <View className="absolute bottom-[30px] right-[-50px] w-[150px] h-[300px] rounded-xl rotate-[-35deg] bg-orange-500 shadow-lg" />
+      <View className="absolute bottom-[30px] right-[-70px] w-[200px] h-[300px] rounded-xl rotate-[-40deg] bg-orange-500 shadow-lg" />
 
-      <View className="absolute bottom-[-10px] right-[-50px] w-[150px] h-[300px] rounded-xl rotate-[-45deg] bg-green-400 shadow-lg" />
+      <View className="absolute bottom-[-10px] right-[-70px] w-[200px] h-[300px] rounded-xl rotate-[-50deg] bg-primary shadow-lg" />
     </SafeAreaView>
   );
 }

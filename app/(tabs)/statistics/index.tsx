@@ -5,7 +5,7 @@ import { useExpenseContext } from "@/context";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
 import { Link, router } from "expo-router";
-import { FileLineChart, Inbox } from "lucide-react-native";
+import { Download, FileLineChart, Inbox } from "lucide-react-native";
 import * as React from "react";
 import { useState } from "react";
 import {
@@ -27,6 +27,7 @@ import {
   SelectValue,
 } from "~/components/ui/select";
 import { Text } from "~/components/ui/text";
+import { Separator } from "~/components/ui/separator";
 
 const items = [
   { name: "Top Gastos" },
@@ -80,80 +81,56 @@ export default function Statistics() {
   ];
 
   return (
-    <SafeAreaView className="p-4">
-      <View className="flex flex-col gap-4 mb-2">
-        <View className="flex flex-row items-center justify-between">
-          <Text className="text-4xl font-bold">Estadísticas</Text>
-          <NativeButton
-            title="Exportar"
-            color="black"
+    <SafeAreaView className="py-4">
+      <View className="flex flex-col gap-8">
+        <View className="flex flex-row  justify-between px-4">
+          <View className="flex flex-col ">
+            <Text className="text-4xl font-bold ">Estadísticas</Text>
+            <Text className="text-muted-foreground">
+              Tus analíticas de los gastos registrados
+            </Text>
+          </View>
+          <Button
             onPress={() => {
               router.push("/(tabs)/statistics/export-data");
             }}
-          />
+            variant="secondary"
+            size="icon"
+            className="rounded-full"
+          >
+            <Download color="black" size={20} />
+          </Button>
         </View>
-
-        <FlashList
-          data={queryFilters}
-          renderItem={({ item }) => (
-            <Button className="rounded-full ml-4 px-6" size="sm">
-              <Text>{item.label}</Text>
-            </Button>
-          )}
-          estimatedItemSize={16}
-          horizontal
-          showsHorizontalScrollIndicator={false}
-        />
+        <View className="flex flex-col gap-5">
+          <FlashList
+            data={queryFilters}
+            renderItem={({ item }) => (
+              <Button className="rounded-full ml-4 px-6" size="sm">
+                <Text>{item.label}</Text>
+              </Button>
+            )}
+            estimatedItemSize={16}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+          />
+          <Separator className="text-muted-foreground" />
+        </View>
       </View>
       <ScrollView>
-        {/* <View className="flex flex-row items-center justify-between my-4">
-              <Button
-                variant="outline"
-                onPress={() => {
-                  router.push("/(tabs)/statistics/export-data");
-                }}
-              >
-                <FileLineChart size={20} />
-              </Button>
-              <View className="flex flex-col">
-                <Select>
-                  <SelectTrigger className="px-4 gap-4">
-                    <SelectValue placeholder="Recientes" />
-                  </SelectTrigger>
-
-                  <SelectContent className="w-1/2 ">
-                    <SelectGroup>
-                      {React.useMemo(
-                        () =>
-                          items.map((item, i) => {
-                            return (
-                              <SelectItem
-                                label={item.name}
-                                key={item.name}
-                                value={item.name.toLowerCase()}
-                              >
-                                <Text>{item.name}</Text>
-                              </SelectItem>
-                            );
-                          }),
-                        [items]
-                      )}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-              </View>
-            </View> */}
-        <View className="h-screen-safe-offset-0 flex flex-col gap-7 justify-center mt-10">
+        <View className="flex flex-col gap-10 justify-center mt-10">
           <Chart timelineQuery={timelineQuery} />
-          <Text className="text-xl font-bold">Historial de Gastos</Text>
+          {/* TODO: Change the height of the view correctly */}
+          <View className="p-4 flex flex-col gap-4 h-screen-safe">
+            <Text className="text-xl font-bold">Historial de Gastos</Text>
 
-          <FlashList
-            data={expenses}
-            renderItem={({ item: expense }) => {
-              return <Expense expense={expense} />;
-            }}
-            estimatedItemSize={100}
-          />
+            <FlashList
+              data={expenses}
+              renderItem={({ item: expense }) => {
+                return <Expense expense={expense} />;
+              }}
+              estimatedItemSize={100}
+            />
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>

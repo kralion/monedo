@@ -59,9 +59,7 @@ export default function Chart({ timelineQuery }: { timelineQuery: string }) {
   const { user: userData } = useUser();
   const dataSample = [
     { value: 15, label: "L" },
-
     { value: 30, label: "M" },
-
     { value: 26, label: "X" },
     { value: 40, label: "J" },
     { value: 30, label: "V" },
@@ -124,10 +122,9 @@ export default function Chart({ timelineQuery }: { timelineQuery: string }) {
       curved
       data={dataSample}
       spacing={55}
-      initialSpacing={0}
-      endSpacing={0}
+      initialSpacing={5}
       yAxisColor="gray"
-      xAxisColor="gray"
+      xAxisColor="white"
       yAxisThickness={0.2}
       color1="teal"
       dataPointsColor1="teal"
