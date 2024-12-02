@@ -87,14 +87,14 @@ export default function TabLayout() {
           name="profile"
           options={{
             headerBackground: () => <View style={{ flex: 1 }} />,
-            title: "Perfil",
+            title: "Cuenta",
             tabBarIcon: ({ color, focused }) => (
               <Image
                 style={{ width: 28, height: 28, tintColor: color }}
                 source={{
                   uri: focused
-                    ? "https://api.iconify.design/mingcute:user-3-fill.svg"
-                    : "https://api.iconify.design/mingcute:user-3-line.svg",
+                    ? "https://api.iconify.design/mingcute:user-setting-fill.svg"
+                    : "https://api.iconify.design/mingcute:user-setting-line.svg",
                 }}
                 alt="google"
               />
