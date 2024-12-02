@@ -20,7 +20,7 @@ import { Text } from "~/components/ui/text";
 import { useBudgetContext } from "~/context";
 import { IBudget } from "~/interfaces";
 
-export default function ExpenseDetails() {
+export default function BudgetDetails() {
   const [isLoading, setIsLoading] = React.useState(false);
   const supabase = createClerkSupabaseClient();
   const { deleteBudget } = useBudgetContext();
@@ -89,7 +89,6 @@ export default function ExpenseDetails() {
           {isLoading && (
             <View className="flex flex-col justify-center items-center min-h-full">
               <ActivityIndicator size="large" />
-              <Text className="text-muted-foreground">Cargando...</Text>
             </View>
           )}
           <View className="flex flex-col gap-8">

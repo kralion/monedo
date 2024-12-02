@@ -26,7 +26,6 @@ import { Text } from "~/components/ui/text";
 export default function Home() {
   const fadeAnim = React.useRef(new AnimatedRN.Value(1)).current;
   const { expenses, getExpensesByUser } = useExpenseContext();
-  const [isLoading, setIsLoading] = React.useState(false);
   const { user, isSignedIn } = useUser();
   const { has } = useAuth();
   const [showAll, setShowAll] = React.useState(false);
@@ -44,9 +43,7 @@ export default function Home() {
   }, [showAll]);
 
   React.useEffect(() => {
-    setIsLoading(true);
     getExpensesByUser(user.id);
-    setIsLoading(false);
   }, [expenses, user]);
 
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
@@ -73,7 +70,7 @@ export default function Home() {
     <View>
       {showAll ? (
         //TODO: Change the opacity to another value, primarily it was fadeAnim but it was causing bugs
-        <Animated.View style={{ opacity: 80 }}>
+        <Animated.View style={{ opacity: 60 }}>
           <SafeAreaView
             style={{
               paddingTop: 14,
@@ -162,8 +159,9 @@ export default function Home() {
                   <Maximize2 color="black" size={20} />
                 </Button>
               </View>
+              {/* TODO: Add loading indicator */}
 
-              {isLoading && <ActivityIndicator size="large" className="mt-5" />}
+              {/* {isLoading && <ActivityIndicator size="large" className="mt-5" />} */}
               <FlashList
                 data={expenses}
                 estimatedItemSize={200}

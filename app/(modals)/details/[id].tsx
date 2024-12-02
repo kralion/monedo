@@ -1,12 +1,9 @@
 import { useExpenseContext } from "@/context";
-import { IExpense, IExpenseGET } from "@/interfaces";
+import { IExpenseGET } from "@/interfaces";
 import { createClerkSupabaseClient } from "@/lib/supabase";
 import { router, useLocalSearchParams } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import { Loader, Loader2 } from "lucide-react-native";
 import * as React from "react";
-import { Image, Platform, ScrollView, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Image, ScrollView, View } from "react-native";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -20,11 +17,10 @@ import {
 import { Button } from "~/components/ui/button";
 import { Progress } from "~/components/ui/progress";
 import { Separator } from "~/components/ui/separator";
-import { useHeaderHeight } from "@react-navigation/elements";
 
-import { Text } from "~/components/ui/text";
 import { ActivityIndicator } from "react-native";
 import { Badge } from "~/components/ui/badge";
+import { Text } from "~/components/ui/text";
 import { expensesIdentifiers } from "~/constants/ExpensesIdentifiers";
 
 export default function ExpenseDetails() {
@@ -33,7 +29,6 @@ export default function ExpenseDetails() {
   const { deleteExpense } = useExpenseContext();
   const [expense, setExpense] = React.useState({} as IExpenseGET);
   const [isOpen, setIsOpen] = React.useState(false);
-  const headerHeight = useHeaderHeight();
   const params = useLocalSearchParams<{ id: string }>();
   const handleDeleteExpense = async (id: string) => {
     setIsLoading(true);
@@ -105,9 +100,9 @@ export default function ExpenseDetails() {
           {isLoading && (
             <View className="flex flex-col justify-center items-center min-h-full">
               <ActivityIndicator size="large" />
-              <Text className="text-muted-foreground">Cargando...</Text>
             </View>
           )}
+
           <View className="flex flex-col gap-8">
             <View className="flex flex-col gap-4">
               <Image
