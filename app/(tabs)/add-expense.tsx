@@ -201,7 +201,7 @@ export default function AddExpense() {
                 name="periodicity"
                 render={({ field: { onChange, value } }) => (
                   <View className="flex flex-col gap-4">
-                    <View className="flex-row items-center gap-4">
+                    <View className="flex-row justify-between items-center ">
                       <Label
                         nativeID="periodicity"
                         className="tracking-tight"
@@ -211,11 +211,16 @@ export default function AddExpense() {
                       >
                         Gasto Recurrente
                       </Label>
-                      <Switch
-                        checked={value}
-                        onCheckedChange={onChange}
-                        nativeID="airplane-mode"
-                      />
+                      <View className="flex flex-row items-center gap-2">
+                        <Text className="text-muted-foreground">No</Text>
+
+                        <Switch
+                          checked={value}
+                          onCheckedChange={onChange}
+                          nativeID="periodicity"
+                        />
+                        <Text className="text-muted-foreground">Sí</Text>
+                      </View>
                     </View>
                     {value && (
                       <Text className="text-muted-foreground text-sm">
