@@ -1,4 +1,5 @@
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
+import { Alert, Button } from "react-native";
 
 export default function Layout() {
   return (
@@ -26,6 +27,20 @@ export default function Layout() {
           headerBackTitle: "Perfil",
           headerTransparent: true,
           headerLargeTitle: true,
+          headerRight: () => (
+            <Button
+              title="Guardar"
+              color="#27BE8B"
+              onPress={
+                () =>
+                  Alert.alert(
+                    "Guardar Cambios",
+                    "Actualizar los datos modificados"
+                  )
+                // router.back();
+              }
+            />
+          ),
         }}
       />
       <Stack.Screen

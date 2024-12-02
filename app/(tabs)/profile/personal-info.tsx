@@ -17,6 +17,8 @@ import { Text } from "~/components/ui/text";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Badge } from "~/components/ui/badge";
+import { ActivityIndicator } from "react-native";
+import { Alert } from "react-native";
 
 interface FormData {
   name: string;
@@ -26,6 +28,7 @@ interface FormData {
 
 export default function PersonalInfo() {
   const { user: userData } = useUser();
+  const [isLoading, setIsLoading] = React.useState(false);
   const { has } = useAuth();
   const headerHeight = useHeaderHeight();
 
@@ -141,11 +144,20 @@ export default function PersonalInfo() {
           </View>
         </View>
         <Button
+          onPress={() =>
+            Alert.alert(
+              "Eliminar Cuenta",
+              "Todos los datos relacionados a esta cuenta serán eliminados"
+            )
+          }
           size="lg"
-          className="mt-10"
-          // onPress={handleSubmit(onSubmit)}
+          variant="destructive"
         >
-          <Text>Actualizar Datos</Text>
+          {isLoading ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Text>Eliminar Cuenta</Text>
+          )}
         </Button>
       </View>
     </SafeAreaView>
