@@ -55,15 +55,6 @@ export default function ProfileScreen() {
           <Text>Mis Datos</Text>
         </Button>
         <Button
-          onPress={() => router.push("/(tabs)/profile/membership")}
-          size="lg"
-          className="flex flex-row gap-3 px-5"
-          variant="ghost"
-        >
-          <UserSquare2 color="black" />
-          <Text>Membresía</Text>
-        </Button>
-        <Button
           onPress={() => router.push("/(tabs)/profile/buy-premium")}
           size="lg"
           variant="ghost"
@@ -72,6 +63,16 @@ export default function ProfileScreen() {
           <Unlock color="black" />
           <Text>Adquirir Premium</Text>
         </Button>
+        <Button
+          onPress={() => router.push("/(tabs)/profile/membership")}
+          size="lg"
+          className="flex flex-row gap-3 px-5"
+          variant="ghost"
+        >
+          <UserSquare2 color="black" />
+          <Text>Membresía</Text>
+        </Button>
+
         <Button
           onPress={() => router.push("/(tabs)/profile/notifications")}
           size="lg"
@@ -95,11 +96,15 @@ export default function ProfileScreen() {
         </Button>
       </View>
 
-      <View className="absolute bottom-[70px] right-[-70px] w-[200px] h-[300px] rounded-xl rotate-[-30deg] bg-yellow-400 shadow-lg" />
+      <Text className="text-muted-foreground opacity-40  mt-44 mx-auto">
+        Versión 3.15.1
+      </Text>
 
-      <View className="absolute bottom-[30px] right-[-70px] w-[200px] h-[300px] rounded-xl rotate-[-40deg] bg-orange-500 shadow-lg" />
+      <View className="absolute bottom-[100px] right-[-70px] w-[200px] h-[300px] rounded-xl rotate-[-30deg] bg-yellow-400 shadow-lg" />
 
-      <View className="absolute bottom-[-10px] right-[-70px] w-[200px] h-[300px] rounded-xl rotate-[-50deg] bg-primary shadow-lg" />
+      <View className="absolute bottom-[50px] right-[-70px] w-[200px] h-[300px] rounded-xl rotate-[-40deg] bg-orange-500 shadow-lg" />
+
+      <View className="absolute bottom-[10px] right-[-70px] w-[200px] h-[300px] rounded-xl rotate-[-50deg] bg-primary shadow-lg" />
     </SafeAreaView>
   );
 }
