@@ -86,7 +86,7 @@ export default function Statistics() {
         <View className="flex flex-row  justify-between px-4">
           <View className="flex flex-col ">
             <Text className="text-4xl font-bold ">Estadísticas</Text>
-            <Text className="text-muted-foreground">
+            <Text className="text-muted-foreground opacity-80">
               Tus analíticas de los gastos registrados
             </Text>
           </View>

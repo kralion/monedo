@@ -1,18 +1,12 @@
 import Card from "@/components/dashboard/card";
 import { Expense } from "@/components/dashboard/expense";
-import BuyPremiumModal from "@/components/popups/buy-premium";
 import { useExpenseContext } from "@/context";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { FlashList } from "@shopify/flash-list";
 import { router } from "expo-router";
-import { ChevronUp, Lock, Maximize2, Minimize2 } from "lucide-react-native";
+import { ChevronUp, Lock } from "lucide-react-native";
 import * as React from "react";
-import {
-  ActivityIndicator,
-  Animated as AnimatedRN,
-  ScrollView,
-  View,
-} from "react-native";
+import { Animated as AnimatedRN, ScrollView, View } from "react-native";
 import Animated, {
   useAnimatedRef,
   useAnimatedStyle,
@@ -81,16 +75,14 @@ export default function Home() {
             <View className="flex flex-col gap-5">
               <View className="flex flex-row justify-between items-center">
                 <Text className="text-3xl font-bold">Gastos Recientes</Text>
-                <Button
+                <Text
                   onPress={() => {
                     setShowAll(false);
                   }}
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full"
+                  className="text-muted-foreground px-1.5 opacity-50 "
                 >
-                  <Minimize2 color="black" size={20} />
-                </Button>
+                  Ver Menos
+                </Text>
               </View>
               <ScrollView className="h-screen-safe">
                 <FlashList
@@ -146,19 +138,17 @@ export default function Home() {
 
           <ScrollView ref={scrollRef} className="px-4 h-screen-safe ">
             <View>
-              <View className="flex flex-row justify-between items-center pt-32 px-4 w-full pb-8">
+              <View className="flex flex-row justify-between items-center pt-32  w-full pb-8">
                 <Text className="text-2xl font-bold">Gastos Recientes</Text>
 
-                <Button
+                <Text
                   onPress={() => {
                     setShowAll(true);
                   }}
-                  variant="ghost"
-                  size="icon"
-                  className="rounded-full"
+                  className="text-muted-foreground px-1.5 opacity-50 "
                 >
-                  <Maximize2 color="black" size={20} />
-                </Button>
+                  Ver Todos
+                </Text>
               </View>
               {/* TODO: Add loading indicator */}
 
