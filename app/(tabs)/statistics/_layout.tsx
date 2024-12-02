@@ -1,4 +1,5 @@
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
+import { Button } from "react-native";
 
 export default function Layout() {
   return (
@@ -13,9 +14,16 @@ export default function Layout() {
       <Stack.Screen
         name="export-data"
         options={{
-          title: "Exportar mis datos",
-          headerShown: false,
+          title: "",
+          headerShadowVisible: false,
           presentation: "modal",
+          headerRight: () => (
+            <Button
+              title="Cancelar"
+              color="#27BE8B"
+              onPress={() => router.back()}
+            />
+          ),
         }}
       />
     </Stack>

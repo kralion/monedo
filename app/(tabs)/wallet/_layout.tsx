@@ -34,7 +34,7 @@ export default function Layout() {
           headerRight: () => (
             <Button
               title="Editar"
-              color="black"
+              color="#27BE8B"
               onPress={() => router.push("/(tabs)/wallet/edit/[id]")}
             />
           ),
@@ -43,9 +43,21 @@ export default function Layout() {
       <Stack.Screen
         name="edit/[id]"
         options={{
-          title: "",
-          presentation: "modal",
-          headerShown: false,
+          title: "Editar Presupuesto",
+          headerBackTitle: "Detalles",
+          headerLargeTitle: true,
+          headerBlurEffect: "regular",
+          headerBackVisible: true,
+          headerTransparent: true,
+          headerShadowVisible: false,
+          presentation: "card",
+          headerRight: () => (
+            <Button
+              title="Eliminar"
+              color="#FF453A"
+              onPress={() => router.back()}
+            />
+          ),
         }}
       />
     </Stack>

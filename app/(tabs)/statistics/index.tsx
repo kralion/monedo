@@ -94,11 +94,11 @@ export default function Statistics() {
             onPress={() => {
               router.push("/(tabs)/statistics/export-data");
             }}
-            variant="secondary"
+            variant="ghost"
             size="icon"
             className="rounded-full"
           >
-            <Download color="black" size={20} />
+            <Download color="#27BE8B" size={20} />
           </Button>
         </View>
         <View className="flex flex-col gap-5">

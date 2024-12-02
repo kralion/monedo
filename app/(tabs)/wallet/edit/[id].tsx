@@ -2,8 +2,8 @@ import { useBudgetContext } from "@/context";
 import { IBudget } from "@/interfaces";
 import { createClerkSupabaseClient } from "@/lib/supabase";
 import { useHeaderHeight } from "@react-navigation/elements";
-import { router, useLocalSearchParams } from "expo-router";
-import { Info, X } from "lucide-react-native";
+import { useLocalSearchParams } from "expo-router";
+import { Info } from "lucide-react-native";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -17,7 +17,6 @@ import {
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { Separator } from "~/components/ui/separator";
 import { Text } from "~/components/ui/text";
 import { Textarea } from "~/components/ui/textarea";
 
@@ -75,36 +74,18 @@ export default function EditExpense() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <SafeAreaView style={{ paddingTop: headerHeight }}>
-        {/* <AddExpenseSuccesModal
+      <ScrollView
+        className="h-screen-safe-offset-2 p-4"
+        contentInsetAdjustmentBehavior="automatic"
+      >
+        <SafeAreaView style={{ paddingTop: headerHeight }}>
+          {/* <AddExpenseSuccesModal
           expensePrice={expensePrice}
           openModal={openModal}
           setOpenModal={setOpenModal}
         /> */}
 
-        <View className="flex flex-col">
-          <View className="flex flex-col gap-6 ">
-            <View className="flex flex-row justify-between ">
-              <View className="flex flex-col px-4">
-                <Text className="text-4xl font-bold mt-8">
-                  Editar Presupuesto
-                </Text>
-                <Text className="text-muted-foreground">
-                  Modifica los detalles del presupuesto registrado
-                </Text>
-              </View>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full m-3"
-                onPress={() => router.back()}
-              >
-                <X color="black" />
-              </Button>
-            </View>
-            <Separator className="text-muted-foreground " />
-          </View>
-          <ScrollView className="h-screen-safe-offset-2 p-4">
+          <View className="flex flex-col">
             <View className="flex flex-col gap-6 ">
               <View className="flex flex-col gap-1">
                 <Label className="text-md">Monto </Label>
@@ -165,9 +146,9 @@ export default function EditExpense() {
                 )}
               </Button>
             </View>
-          </ScrollView>
-        </View>
-      </SafeAreaView>
+          </View>
+        </SafeAreaView>
+      </ScrollView>
     </TouchableWithoutFeedback>
 
     //   {/* TODO: Probar esto solo el los dispositivos, en los emuladores no funciona

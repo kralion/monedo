@@ -150,7 +150,7 @@ function RootLayoutNav() {
           headerRight: () => (
             <NativeButton
               title="Editar"
-              color="black"
+              color="#27BE8B"
               onPress={() => router.push("/(modals)/edit/[id]")}
             />
           ),
@@ -159,10 +159,21 @@ function RootLayoutNav() {
       <Stack.Screen
         name="(modals)/edit/[id]"
         options={{
-          title: "",
-          presentation: "modal",
-          headerShown: false,
-
+          title: "Editar Gasto",
+          headerBackTitle: "Detalles",
+          headerLargeTitle: true,
+          headerBlurEffect: "regular",
+          headerBackVisible: true,
+          headerTransparent: true,
+          headerShadowVisible: false,
+          presentation: "card",
+          headerRight: () => (
+            <NativeButton
+              title="Eliminar"
+              color="#FF453A"
+              onPress={() => router.back()}
+            />
+          ),
         }}
       />
       <Stack.Screen
@@ -171,6 +182,7 @@ function RootLayoutNav() {
           presentation: "modal",
           title: "Adquirir Premium",
           headerTransparent: true,
+          headerShown: true,
           headerBlurEffect: "regular",
           headerShadowVisible: false,
           headerRight: () => (

@@ -130,34 +130,18 @@ export default function EditExpense() {
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <SafeAreaView style={{ paddingTop: headerHeight }}>
-        {/* <AddExpenseSuccesModal
+      <ScrollView
+        className="h-screen-safe-offset-2 px-4"
+        contentInsetAdjustmentBehavior="automatic"
+      >
+        <SafeAreaView>
+          {/* <AddExpenseSuccesModal
           expensePrice={expensePrice}
           openModal={openModal}
           setOpenModal={setOpenModal}
         /> */}
 
-        <View className="flex flex-col">
-          <View className="flex flex-col gap-6">
-            <View className="flex flex-row justify-between ">
-              <View className="flex flex-col px-4">
-                <Text className="text-4xl font-bold mt-8">Editar Gasto</Text>
-                <Text className="text-muted-foreground">
-                  Modifica los detalles del gasto que hiciste
-                </Text>
-              </View>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full m-3"
-                onPress={() => router.back()}
-              >
-                <X color="black" />
-              </Button>
-            </View>
-            <Separator className="text-muted-foreground " />
-          </View>
-          <ScrollView className="h-screen-safe-offset-2 px-4">
+          <View className="flex flex-col">
             <View className="flex flex-col gap-6 pt-6">
               <Controller
                 name="category"
@@ -309,24 +293,13 @@ export default function EditExpense() {
                     <Text>Guardar Cambios</Text>
                   )}
                 </Button>
-                <Button
-                  onPress={handleSubmit(onSubmit)}
-                  size="lg"
-                  variant="destructive"
-                >
-                  {isLoading ? (
-                    <ActivityIndicator size={20} color="white" />
-                  ) : (
-                    <Text>Eliminar</Text>
-                  )}
-                </Button>
               </View>
             </View>
-          </ScrollView>
-        </View>
-        {/* TODO: Probar esto solo el los dispositivos, en los emuladores no funciona
+          </View>
+          {/* TODO: Probar esto solo el los dispositivos, en los emuladores no funciona
       <PushNotification /> */}
-      </SafeAreaView>
+        </SafeAreaView>
+      </ScrollView>
     </TouchableWithoutFeedback>
 
     //   {/* TODO: Probar esto solo el los dispositivos, en los emuladores no funciona

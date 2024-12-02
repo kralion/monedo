@@ -134,9 +134,10 @@ export default function Home() {
               <Button
                 onPress={() => router.push("/(modals)/buy-premium")}
                 size="icon"
-                className="rounded-full bg-green-200 active:opacity-80"
+                variant="secondary"
+                className="rounded-full"
               >
-                <Lock color="black" size={20} />
+                <Lock color="#27BE8B" size={20} />
               </Button>
             </View>
             <Card />
