@@ -126,7 +126,7 @@ export default function Wallet() {
                         autoCapitalize="none"
                         value={value}
                         onChangeText={onChange}
-                        placeholder="Descripció..."
+                        placeholder="Descripción..."
                       />
                     )}
                   />

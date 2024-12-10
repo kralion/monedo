@@ -1,9 +1,23 @@
-import { router } from "expo-router";
-import { Stack } from "expo-router";
-import { X } from "lucide-react-native";
-import { Button } from "react-native";
+import { router, Stack } from "expo-router";
+import { Alert, Button } from "react-native";
+import { useExpenseContext } from "~/context";
 
 export default function Layout() {
+  const { deleteExpense } = useExpenseContext();
+  const onDelete = (id: string) => {
+    Alert.alert("Eliminar gasto", "¿Estás seguro?", [
+      {
+        text: "Sí",
+        onPress: () => {
+          deleteExpense(id);
+        },
+      },
+      {
+        text: "No",
+        style: "cancel",
+      },
+    ]);
+  };
   return (
     <Stack>
       <Stack.Screen
@@ -42,22 +56,24 @@ export default function Layout() {
       />
       <Stack.Screen
         name="edit/[id]"
-        options={{
-          title: "Editar",
-          headerBackTitle: "Detalles",
-          headerLargeTitle: true,
-          headerBlurEffect: "regular",
-          headerBackVisible: true,
-          headerTransparent: true,
-          headerShadowVisible: false,
-          presentation: "card",
-          headerRight: () => (
-            <Button
-              title="Eliminar"
-              color="#FF453A"
-              onPress={() => router.back()}
-            />
-          ),
+        options={({ route }) => {
+          const { id } = route.params as { id: string };
+          return {
+            title: "Editar",
+            headerBackTitle: "Detalles",
+            headerBlurEffect: "regular",
+            headerBackVisible: true,
+            headerTransparent: true,
+            headerShadowVisible: false,
+            presentation: "modal",
+            headerRight: () => (
+              <Button
+                title="Eliminar"
+                color="#FF453A"
+                onPress={() => onDelete(id)}
+              />
+            ),
+          };
         }}
       />
     </Stack>

@@ -7,9 +7,7 @@ import { Button } from "../ui/button";
 import { ChevronRight } from "lucide-react-native";
 import { router } from "expo-router";
 export function Budget({ budget }: { budget: IBudget }) {
-  const [openBudgetDetails, setOpenBudgetDetails] = React.useState(false);
   const date = new Date(budget.created_At); // Parse the original date
-  const date2 = new Date(budget.created_At); // Parse the original date
   const formattedDate = date.toLocaleDateString("es-ES", {
     month: "2-digit",
     year: "numeric",

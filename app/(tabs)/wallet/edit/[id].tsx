@@ -1,5 +1,5 @@
 import { useBudgetContext } from "@/context";
-import { IBudget } from "@/interfaces";
+import { IBudget, IExpense } from "@/interfaces";
 import { createClerkSupabaseClient } from "@/lib/supabase";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { useLocalSearchParams } from "expo-router";
@@ -107,9 +107,8 @@ export default function EditExpense() {
                       <Input
                         autoCapitalize="none"
                         className="w-full"
-                        value={String(value)}
+                        // value={String(value)}
                         onChangeText={onChange}
-                        placeholder="650.00"
                         keyboardType="decimal-pad"
                       />
                     )}
@@ -125,7 +124,7 @@ export default function EditExpense() {
                       autoCapitalize="none"
                       value={value}
                       onChangeText={onChange}
-                      placeholder="Descripcion sobre el presupuesto del mes"
+                      placeholder={expense}
                     />
                   )}
                 />
