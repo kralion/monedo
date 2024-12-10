@@ -10,6 +10,8 @@ export const ExpenseContext = createContext<IExpenseContextProvider>({
   updateExpense: () => {},
   sumOfAllOfExpensesMonthly: async () => 0,
   getExpenseById: async (id: string): Promise<IExpense> => ({} as IExpense),
+  weeklyExpenses: [],
+  getWeeklyExpenses: async (): Promise<IExpense[]> => [],
   getExpensesByUser: async (id: string) => [],
   expenses: [],
   expense: {} as IExpense,
@@ -27,6 +29,7 @@ export const ExpenseContextProvider = ({
   const [expenses, setExpenses] = React.useState<IExpense[]>([]);
   const [expense, setExpense] = React.useState<IExpense>({} as IExpense);
   const supabase = createClerkSupabaseClient();
+  const [weeklyExpenses, setWeeklyExpenses] = React.useState<IExpense[]>([]);
   const { user } = useUser();
 
   const addExpense = async (expense: IExpense) => {
@@ -40,6 +43,18 @@ export const ExpenseContextProvider = ({
       .eq("user_id", id);
     if (error) throw error;
     setExpenses(JSON.parse(JSON.stringify(data)));
+    return data;
+  }
+
+  async function getWeeklyExpenses() {
+    const { data, error } = await supabase
+      .from("expenses")
+      .select("*")
+      .eq("user_id", user?.id)
+      .order("date", { ascending: false });
+    // .limit(7);
+    if (error) throw error;
+    setWeeklyExpenses(data);
     return data;
   }
 
@@ -126,6 +141,8 @@ export const ExpenseContextProvider = ({
         getExpensesByUser,
         expenses,
         deleteExpense,
+        weeklyExpenses,
+        getWeeklyExpenses,
         getExpenseById,
         addExpense,
         sumOfAllOfExpensesMonthly,
