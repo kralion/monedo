@@ -1,165 +1,146 @@
-import { useAuth, useUser } from "@clerk/clerk-expo";
-import { useHeaderHeight } from "@react-navigation/elements";
-import { Camera } from "lucide-react-native";
-import * as ImagePicker from "expo-image-picker";
+import { useUser } from "@clerk/clerk-expo";
 import * as React from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-  Keyboard,
+  ActivityIndicator,
   SafeAreaView,
-  ScrollView,
-  TouchableWithoutFeedback,
   View,
+  Alert,
+  TouchableWithoutFeedback,
+  Keyboard,
 } from "react-native";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
+import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
-import { Text } from "~/components/ui/text";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { Badge } from "~/components/ui/badge";
-import { ActivityIndicator } from "react-native";
-import { Alert } from "react-native";
+import { Text } from "~/components/ui/text";
 
-interface FormData {
-  name: string;
+type FormData = {
+  firstName: string;
   lastName: string;
-  imageUrl: string;
-}
+};
 
-export default function PersonalInfo() {
-  const { user: userData } = useUser();
-  const [isLoading, setIsLoading] = React.useState(false);
-  const { has } = useAuth();
-  const headerHeight = useHeaderHeight();
+export default function PersonalInfoScreen() {
+  const { user, isLoaded } = useUser();
+  const [isUpdating, setIsUpdating] = React.useState(false);
+
+  if (!isLoaded) {
+    return null;
+  }
+  if (!user) return null;
 
   const {
     control,
     handleSubmit,
-    setValue,
     formState: { errors },
-  } = useForm({
+    reset,
+  } = useForm<FormData>({
     defaultValues: {
-      name: userData?.firstName,
-      lastName: userData?.lastName,
-      imageUrl: userData?.imageUrl,
+      firstName: user.firstName || "",
+      lastName: user.lastName || "",
     },
   });
 
-  const pickImageAsync = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      quality: 1,
-    });
-    if (!result.canceled && result.assets && result.assets[0]) {
-      setValue("imageUrl", result.assets[0].uri);
+  const onSubmit = async (data: FormData) => {
+    setIsUpdating(true);
+    try {
+      await user.update(data);
+      alert("Profile updated successfully!");
+      reset();
+    } catch (err) {
+      console.error("Error updating user:", err);
     }
+    setIsUpdating(false);
   };
 
-  React.useEffect(() => {
-    (async () => {
-      const { granted } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (!granted) {
-        alert("Aceptar los permisos para acceder a la galería");
-      }
-    })();
-  }, []);
   return (
-    <SafeAreaView>
-      <View className="flex flex-col gap-5 px-4 pt-10">
-        <View className="flex flex-col items-center">
-          <View className="relative  flex flex-col gap-3">
-            <Avatar
-              alt="profile"
-              className="rounded-full bg-teal-500 align-middle w-36 h-36"
-            >
-              <AvatarImage
-                accessibilityLabel="avatar"
-                source={{
-                  uri: userData?.imageUrl,
-                }}
-              />
-              <AvatarFallback className="bg-slate-500" />
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+      <SafeAreaView className="flex-1">
+        <View className="flex-1 px-4 pt-10">
+          {/* Profile Avatar Section */}
+          <View className="items-center mb-6">
+            <Avatar alt="profile" className="w-36 h-36 rounded-full">
+              <AvatarImage source={{ uri: user.imageUrl }} />
+              <AvatarFallback />
             </Avatar>
-            <Button
-              onPress={pickImageAsync}
-              className="absolute rounded-full  top-5 -right-5  w-12 h-12  border-white border-2"
-              size="icon"
-            >
-              <Camera color="white" />
-            </Button>
-            <Badge
-              className={`flex flex-row gap-1 py-2  justify-center bg-${
-                has?.({ permission: "premium:plan" })
-                  ? "green-500"
-                  : "orange-500"
-              }
-                    text-white `}
-            >
-              <Text className="text-md">
-                Cuenta{" "}
-                {has?.({ permission: "premium:plan" }) ? "Premium" : "Free"}
+
+            <Badge className="mt-4 px-4 py-2 border border-blue-200 bg-blue-100">
+              <Text className="text-blue-500 text-md">
+                {user.primaryEmailAddress?.emailAddress}
               </Text>
             </Badge>
           </View>
-        </View>
-        <View className="flex flex-col mt-3 gap-6">
-          <View className="flex flex-col  gap-2">
-            <Label className="text-sm" nativeID="firstName">
-              Nombres
-            </Label>
-            <Controller
-              control={control}
-              name="name"
-              render={({ ...field }) => (
-                <Input value={userData?.firstName ?? ""} {...field} />
+
+          {/* Profile Update Form */}
+          <View className="flex flex-col gap-8 mt-6">
+            {/* First Name Input */}
+            <View className="flex flex-col gap-2 ">
+              <Label>Nombres</Label>
+              <Controller
+                control={control}
+                name="firstName"
+                rules={{
+                  required: "El nombre es requerido",
+                  pattern: {
+                    value: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
+                    message: "Solo se permiten letras",
+                  },
+                }}
+                render={({ field: { onChange, value } }) => (
+                  <Input
+                    value={value}
+                    onChangeText={onChange}
+                    placeholder="Ingresa tu nombre"
+                  />
+                )}
+              />
+              {errors.firstName && (
+                <Text className="text-red-500 mt-1">
+                  {errors.firstName.message}
+                </Text>
               )}
-              rules={{
-                required: { value: true, message: "Ingrese el nombre" },
-                pattern: {
-                  value: /^\d+(\.\d*)?$/,
-                  message: "Solo se permiten números válidos",
-                },
-              }}
-            />
-          </View>
-          <View className="flex flex-col gap-2">
-            <Label className="text-sm" nativeID="lastName">
-              Apellidos
-            </Label>
-            <Controller
-              control={control}
-              name="lastName"
-              render={({ ...field }) => (
-                <Input value={userData?.lastName ?? ""} {...field} />
+            </View>
+
+            {/* Last Name Input */}
+            <View className="flex flex-col gap-2">
+              <Label>Apellidos</Label>
+              <Controller
+                control={control}
+                name="lastName"
+                rules={{
+                  required: "Los apellidos son requeridos",
+                  pattern: {
+                    value: /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/,
+                    message: "Solo se permiten letras",
+                  },
+                }}
+                render={({ field: { onChange, value } }) => (
+                  <Input
+                    value={value}
+                    onChangeText={onChange}
+                    placeholder="Ingresa tus apellidos"
+                  />
+                )}
+              />
+              {errors.lastName && (
+                <Text className="text-red-500 mt-1">
+                  {errors.lastName.message}
+                </Text>
               )}
-              rules={{
-                required: { value: true, message: "Ingrese los apellidos" },
-                pattern: {
-                  value: /^\d+(\.\d*)?$/,
-                  message: "Solo se permiten números válidos",
-                },
-              }}
-            />
+            </View>
+
+            {/* Submit Button */}
+            <Button onPress={handleSubmit(onSubmit)} disabled={isUpdating}>
+              {isUpdating ? (
+                <ActivityIndicator color="white" />
+              ) : (
+                <Text>Guardar Cambios</Text>
+              )}
+            </Button>
           </View>
         </View>
-        <Button
-          onPress={() =>
-            Alert.alert(
-              "Eliminar Cuenta",
-              "Todos los datos relacionados a esta cuenta serán eliminados"
-            )
-          }
-          size="lg"
-          variant="destructive"
-        >
-          {isLoading ? (
-            <ActivityIndicator color="white" />
-          ) : (
-            <Text>Eliminar Cuenta</Text>
-          )}
-        </Button>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </TouchableWithoutFeedback>
   );
 }

@@ -1,7 +1,41 @@
+import { useAuth, useUser } from "@clerk/clerk-expo";
 import { router, Stack } from "expo-router";
+import React from "react";
 import { Alert, Button } from "react-native";
 
 export default function Layout() {
+  const { user } = useUser();
+  const { signOut } = useAuth();
+
+  const deleteAccount = async () => {
+    try {
+      await user?.delete();
+      await signOut();
+      alert("Se ha cerrado la sesión");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
+
+  const handleDeleteAccount = () => {
+    Alert.alert(
+      "¿Estás seguro?",
+      "Esta acción eliminará todos los datos de tu cuenta y no se puede deshacer",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Eliminar cuenta",
+          onPress: deleteAccount,
+          style: "destructive",
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
   return (
     <Stack>
       <Stack.Screen
@@ -29,16 +63,9 @@ export default function Layout() {
           headerLargeTitle: true,
           headerRight: () => (
             <Button
-              title="Guardar"
-              color="#27BE8B"
-              onPress={
-                () =>
-                  Alert.alert(
-                    "Guardar Cambios",
-                    "Actualizar los datos modificados"
-                  )
-                // router.back();
-              }
+              title="Eliminar"
+              color="red"
+              onPress={handleDeleteAccount}
             />
           ),
         }}
@@ -67,7 +94,6 @@ export default function Layout() {
             hideWhenScrolling: false,
             cancelButtonText: "Cancelar",
           },
-
           headerLargeTitleShadowVisible: false,
         }}
       />
