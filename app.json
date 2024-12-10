@@ -28,16 +28,7 @@
       "output": "static",
       "favicon": "./assets/images/favicon.png"
     },
-    "plugins": [
-      "expo-router",
-      "expo-secure-store",
-      [
-        "expo-image-picker",
-        {
-          "photosPermission": "La aplicación necesita permisos para acceder a tu galeria"
-        }
-      ]
-    ],
+    "plugins": ["expo-router", "expo-secure-store"],
     "experiments": {
       "typedRoutes": true
     }
