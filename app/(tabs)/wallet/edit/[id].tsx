@@ -142,7 +142,7 @@ export default function EditExpense() {
                 {isLoading ? (
                   <ActivityIndicator size={20} color="white" />
                 ) : (
-                  <Text>Registrar</Text>
+                  <Text>Guardar Cambios</Text>
                 )}
               </Button>
             </View>

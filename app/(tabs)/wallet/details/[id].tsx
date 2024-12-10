@@ -58,6 +58,15 @@ export default function BudgetDetails() {
 
   if (!budget) return null;
 
+  const createdDate = new Date(budget.created_At);
+  const futureDate = new Date(createdDate);
+  futureDate.setDate(createdDate.getDate() + 30);
+
+  const formattedDate = futureDate.toLocaleDateString("es-PE", {
+    month: "long",
+    day: "numeric",
+  });
+
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <View className="flex flex-col gap-4 p-4">
@@ -104,18 +113,19 @@ export default function BudgetDetails() {
                 <Text className="text-5xl tracking-tighter font-bold">
                   S/. {budget.amount}
                 </Text>
-                <Text className="text-lg text-muted-foreground ">
-                  {budget.description}
-                </Text>
               </View>
+              <Separator className="text-muted-foreground" />
+              <Text className="text-lg text-muted-foreground ">
+                {budget.description}
+              </Text>
             </View>
 
             <Separator className="text-muted-foreground" />
             <View className="flex flex-col gap-2">
-              <View className="flex flex-col gap-2">
+              <View className="flex flex-col gap-4">
                 <View className="flex flex-row justify-between items-center">
                   <Text className="text-muted-foreground">Fecha Registro</Text>
-                  <Text className="font-bold">
+                  <Text>
                     {new Date(budget.created_At).toLocaleDateString("es-PE", {
                       month: "long",
                       day: "numeric",
@@ -123,8 +133,14 @@ export default function BudgetDetails() {
                   </Text>
                 </View>
                 <View className="flex flex-row justify-between items-center">
+                  <Text className="text-muted-foreground">
+                    Fecha Expiración
+                  </Text>
+                  <Text>{formattedDate}</Text>
+                </View>
+                <View className="flex flex-row justify-between items-center">
                   <Text className="text-muted-foreground">Hora</Text>
-                  <Text className="font-bold">
+                  <Text>
                     {new Date(budget.created_At).toLocaleTimeString("es-PE", {
                       hour: "2-digit",
                       minute: "2-digit",
@@ -134,19 +150,6 @@ export default function BudgetDetails() {
                 </View>
               </View>
             </View>
-            <Separator className="text-muted-foreground" />
-
-            <Button
-              onPress={() => setIsOpen(true)}
-              size="lg"
-              variant="destructive"
-            >
-              {isLoading ? (
-                <ActivityIndicator color="white" />
-              ) : (
-                <Text>Eliminar</Text>
-              )}
-            </Button>
           </View>
         </ScrollView>
       </View>

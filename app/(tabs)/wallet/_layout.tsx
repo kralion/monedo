@@ -25,7 +25,7 @@ export default function Layout() {
         name="details/[id]"
         options={{
           headerLargeTitle: true,
-          title: "Detalles",
+          title: "Presupuesto",
           headerBackTitle: "Atrás",
           headerBlurEffect: "regular",
           headerTransparent: true,
@@ -43,7 +43,7 @@ export default function Layout() {
       <Stack.Screen
         name="edit/[id]"
         options={{
-          title: "Editar Presupuesto",
+          title: "Editar",
           headerBackTitle: "Detalles",
           headerLargeTitle: true,
           headerBlurEffect: "regular",

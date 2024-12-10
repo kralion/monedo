@@ -116,18 +116,19 @@ export default function ExpenseDetails() {
                 <Text className="text-5xl tracking-tighter font-bold">
                   S/. {expense.amount}
                 </Text>
-                <Text className="text-lg text-muted-foreground ">
-                  {expense.description}
-                </Text>
               </View>
+              <Separator className="text-muted-foreground" />
+              <Text className="text-lg text-muted-foreground ">
+                {expense.description}
+              </Text>
             </View>
 
             <Separator className="text-muted-foreground" />
             <View className="flex flex-col gap-2">
-              <View className="flex flex-col gap-2">
+              <View className="flex flex-col gap-3">
                 <View className="flex flex-row justify-between items-center">
                   <Text className="text-muted-foreground">Fecha</Text>
-                  <Text className="font-bold">
+                  <Text>
                     {new Date(expense.date).toLocaleDateString("es-PE", {
                       month: "long",
                       day: "numeric",
@@ -136,7 +137,7 @@ export default function ExpenseDetails() {
                 </View>
                 <View className="flex flex-row justify-between items-center">
                   <Text className="text-muted-foreground">Hora</Text>
-                  <Text className="font-bold">
+                  <Text>
                     {new Date(expense.date).toLocaleTimeString("es-PE", {
                       hour: "2-digit",
                       minute: "2-digit",
@@ -147,7 +148,7 @@ export default function ExpenseDetails() {
                 <View className="flex flex-row justify-between items-center">
                   <Text className="text-muted-foreground">Categoria</Text>
                   <Badge className="py-1 px-2" variant="outline">
-                    <Text className="text-md">{expense.category}</Text>
+                    <Text>{expense.category}</Text>
                   </Badge>
                 </View>
               </View>
@@ -155,26 +156,19 @@ export default function ExpenseDetails() {
             <Separator className="text-muted-foreground" />
             <View className="flex flex-col gap-3">
               {/* //TODO: Cambiar este valor por el monto porcentual del mes actual */}
-              <Progress className=" web:w-[60%]" value={70} max={100} />
+              <Progress className=" web:w-[60%] " value={70} max={100} />
 
               <View className="flex flex-row justify-between items-center">
                 <Text>0</Text>
                 {/* //TODO: Cambiar este valor por el monto presupuestado del mes actual */}
                 <Text>1000</Text>
               </View>
-            </View>
 
-            <Button
-              onPress={() => setIsOpen(true)}
-              size="lg"
-              variant="destructive"
-            >
-              {isLoading ? (
-                <ActivityIndicator color="white" />
-              ) : (
-                <Text>Eliminar</Text>
-              )}
-            </Button>
+              <Text className="text-muted-foreground text-sm text-center">
+                Consumido <Text className="font-bold text-primary"> 67%</Text>{" "}
+                del presupuesto para el mes actual.
+              </Text>
+            </View>
           </View>
         </ScrollView>
       </View>

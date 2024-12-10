@@ -140,7 +140,6 @@ function RootLayoutNav() {
       <Stack.Screen
         name="(modals)/details/[id]"
         options={{
-          headerLargeTitle: true,
           title: "Detalles",
           headerBackTitle: "Gastos",
           headerBlurEffect: "regular",

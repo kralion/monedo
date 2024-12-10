@@ -35,7 +35,12 @@ export default function Wallet() {
     formState: { errors },
     setValue,
     reset,
-  } = useForm<TBudget>();
+  } = useForm<TBudget>({
+    defaultValues: {
+      amount: 0,
+      description: "",
+    },
+  });
 
   const [isLoading, setIsLoading] = useState(false);
   const { user } = useUser();
@@ -92,13 +97,10 @@ export default function Wallet() {
                     <Controller
                       control={control}
                       rules={{
-                        required: {
-                          value: true,
-                          message: "Ingrese el monto",
-                        },
+                        required: true,
                         pattern: {
-                          value: /^\d+(\.\d*)?$/,
-                          message: "Solo números",
+                          value: /^(?:[1-9]\d*|\d+\.\d+|\d+\.\d*[1-9])$/,
+                          message: "Monto inválido",
                         },
                       }}
                       name="amount"
@@ -106,7 +108,7 @@ export default function Wallet() {
                         <Input
                           autoCapitalize="none"
                           className="w-full"
-                          value={String(value)}
+                          // value={String(value)}
                           onChangeText={onChange}
                           placeholder="650.00"
                           keyboardType="decimal-pad"
@@ -124,7 +126,7 @@ export default function Wallet() {
                         autoCapitalize="none"
                         value={value}
                         onChangeText={onChange}
-                        placeholder="Descripcion sobre el presupuesto del mes"
+                        placeholder="Descripció..."
                       />
                     )}
                   />

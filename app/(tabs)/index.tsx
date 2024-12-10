@@ -136,7 +136,7 @@ export default function Home() {
             <View style={{ height: 160 }} />
           </View>
 
-          <ScrollView ref={scrollRef} className="px-4 h-screen-safe ">
+          <ScrollView ref={scrollRef} className="px-4 ">
             <View>
               <View className="flex flex-row justify-between items-center pt-32  w-full pb-8">
                 <Text className="text-2xl font-bold">Gastos Recientes</Text>
@@ -162,6 +162,8 @@ export default function Home() {
               />
             </View>
           </ScrollView>
+          {/*
+          // TODO: Add scroll to top button
           <Animated.View
             style={[
               buttonStyle,
@@ -179,7 +181,7 @@ export default function Home() {
             >
               <ChevronUp />
             </Button>
-          </Animated.View>
+          </Animated.View> */}
         </>
       )}
     </View>

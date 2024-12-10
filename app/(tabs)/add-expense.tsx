@@ -28,6 +28,7 @@ import { Text } from "~/components/ui/text";
 import { Textarea } from "~/components/ui/textarea";
 import { IExpensePOST } from "~/interfaces";
 import { createClerkSupabaseClient } from "~/lib/supabase";
+import Toast from "~/components/shared/toast";
 
 const items = [
   { name: "Hogar" },
@@ -42,8 +43,7 @@ const items = [
 
 export default function AddExpense() {
   const supabase = createClerkSupabaseClient();
-  const [openModal, setOpenModal] = React.useState(false);
-  const [expensePrice, setExpensePrice] = React.useState("");
+  const [toastVisible, setToastVisible] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
   const headerHeight = useHeaderHeight();
   const {
@@ -52,38 +52,52 @@ export default function AddExpense() {
     formState: { errors },
     reset,
     setValue,
-  } = useForm<IExpensePOST>();
+  } = useForm<IExpensePOST>({
+    defaultValues: {
+      currency: "Soles",
+      amount: 0,
+      periodicity: false,
+      description: "",
+    },
+  });
 
   async function onSubmit(data: IExpensePOST) {
     setIsLoading(true);
+    const TOAST_DISPLAY_DURATION = 2500;
     try {
-      await supabase.from("expenses").insert({
+      const { error } = await supabase.from("expenses").insert({
         ...data,
+        amount: Number(data.amount),
         category: data.category.value,
       });
-    } catch (error) {
-      console.log(error);
+
+      if (error) {
+        alert("Datos inválidos");
+      } else {
+        setToastVisible(true);
+        setTimeout(() => setToastVisible(false), TOAST_DISPLAY_DURATION);
+        reset();
+      }
+    } catch (error: any) {
+      alert(error.message || "Ocurrió un error inesperado.");
+    } finally {
+      setIsLoading(false);
     }
-    setValue("category", {
-      label: "",
-      value: "",
-    });
-    setValue("amount", 0);
-    setValue("currency", "Soles");
-    setValue("periodicity", false);
-    setIsLoading(false);
-    // setOpenModal(true);
   }
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={{ paddingTop: headerHeight }}>
-        <AddExpenseSuccesModal
+        {/* <AddExpenseSuccesModal
           expensePrice={expensePrice}
           openModal={openModal}
           setOpenModal={setOpenModal}
+        /> */}
+        <Toast
+          message="Gasto agregado exitosamente"
+          visible={toastVisible}
+          type="success"
         />
-
         <View className="flex flex-col">
           <View className="flex flex-col gap-6">
             <View className="flex flex-col px-4">
@@ -99,6 +113,7 @@ export default function AddExpense() {
               <Controller
                 name="category"
                 control={control}
+                rules={{ required: true }}
                 render={({ field: { onChange, value } }) => (
                   <View className="flex flex-col gap-2">
                     <Label>Categoría</Label>
@@ -123,6 +138,11 @@ export default function AddExpense() {
                         </SelectGroup>
                       </SelectContent>
                     </Select>
+                    {errors.category && (
+                      <Text className="text-red-500 text-xs">
+                        {errors.category.message}
+                      </Text>
+                    )}
                   </View>
                 )}
               />
@@ -137,18 +157,22 @@ export default function AddExpense() {
                       inputMode="decimal"
                       onChangeText={onChange}
                       value={String(value)}
-                      defaultValue=""
                       placeholder="65.00"
                     />
                   )}
                   rules={{
-                    required: { value: true, message: "Ingrese el monto" },
+                    required: true,
                     pattern: {
-                      value: /^\d+(\.\d*)?$/,
-                      message: "Solo se permiten números válidos",
+                      value: /^(?:[1-9]\d*|\d+\.\d+|\d+\.\d*[1-9])$/,
+                      message: "Monto inválido",
                     },
                   }}
                 />
+                {errors.amount && (
+                  <Text className="text-red-500 text-xs">
+                    {errors.amount.message}
+                  </Text>
+                )}
               </View>
               <View className="flex flex-col gap-2">
                 <Label>Divisa</Label>
