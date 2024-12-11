@@ -31,7 +31,6 @@ export const ExpenseContextProvider = ({
   const supabase = createClerkSupabaseClient();
   const [weeklyExpenses, setWeeklyExpenses] = React.useState<IExpense[]>([]);
   const { user } = useUser();
-
   const addExpense = async (expense: IExpense) => {
     await supabase.from("expenses").insert(expense);
   };

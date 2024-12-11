@@ -1,5 +1,5 @@
 import { router, Stack } from "expo-router";
-import { Alert, Button } from "react-native";
+import { Alert, Button, Platform } from "react-native";
 import { useExpenseContext } from "~/context";
 
 export default function Layout() {
@@ -26,12 +26,8 @@ export default function Layout() {
           title: "Presupuestos",
           headerLargeTitle: true,
           headerShadowVisible: false,
-          headerSearchBarOptions: {
-            placeholder: "Buscar ...",
-            hideWhenScrolling: false,
-            cancelButtonText: "Cancelar",
-          },
-
+          headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
+          headerTransparent: Platform.OS === "android" ? false : true,
           headerLargeTitleShadowVisible: false,
         }}
       />
@@ -41,8 +37,8 @@ export default function Layout() {
           headerLargeTitle: true,
           title: "Presupuesto",
           headerBackTitle: "Atrás",
-          headerBlurEffect: "regular",
-          headerTransparent: true,
+          headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
+          headerTransparent: Platform.OS === "android" ? false : true,
           headerShadowVisible: false,
 
           headerRight: () => (
@@ -61,9 +57,9 @@ export default function Layout() {
           return {
             title: "Editar",
             headerBackTitle: "Detalles",
-            headerBlurEffect: "regular",
             headerBackVisible: true,
-            headerTransparent: true,
+            headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
+            headerTransparent: Platform.OS === "android" ? false : true,
             headerShadowVisible: false,
             presentation: "modal",
             headerRight: () => (

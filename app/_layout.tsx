@@ -21,6 +21,8 @@ import { useColorScheme } from "~/lib/useColorScheme";
 import { Button } from "~/components/ui/button";
 import { Button as NativeButton } from "react-native";
 import { Text } from "~/components/ui/text";
+import { useExpenseContext } from "~/context";
+import AppProvider from "~/context/provider";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -125,6 +127,7 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const { isLoaded, isSignedIn } = useAuth();
+  const { expense } = useExpenseContext();
 
   // Automatically open login if user is not authenticated
   React.useEffect(() => {
@@ -134,68 +137,72 @@ function RootLayoutNav() {
   }, [isLoaded]);
 
   return (
-    <Stack>
-      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-      <Stack.Screen
-        name="(modals)/details/[id]"
-        options={{
-          title: "Detalles",
-          headerBackTitle: "Gastos",
-          headerBlurEffect: "regular",
-          headerTransparent: true,
-          headerShadowVisible: false,
-
-          headerRight: () => (
-            <NativeButton
-              title="Editar"
-              color="#27BE8B"
-              onPress={() => router.push("/(modals)/edit/[id]")}
-            />
-          ),
-        }}
-      />
-      <Stack.Screen
-        name="(modals)/edit/[id]"
-        options={{
-          title: "Editar Gasto",
-          headerBackTitle: "Detalles",
-          headerLargeTitle: true,
-          headerBlurEffect: "regular",
-          headerBackVisible: true,
-          headerTransparent: true,
-          headerShadowVisible: false,
-          presentation: "card",
-          headerRight: () => (
-            <NativeButton
-              title="Eliminar"
-              color="#FF453A"
-              onPress={() => router.back()}
-            />
-          ),
-        }}
-      />
-      <Stack.Screen
-        name="(modals)/buy-premium"
-        options={{
-          presentation: "modal",
-          title: "Adquirir Premium",
-          headerTransparent: true,
-          headerShown: true,
-          headerBlurEffect: "regular",
-          headerShadowVisible: false,
-          headerRight: () => (
-            <Button
-              variant="ghost"
-              size="icon"
-              className="rounded-full  "
-              onPress={() => router.back()}
-            >
-              <X />
-            </Button>
-          ),
-        }}
-      />
-    </Stack>
+    <AppProvider>
+      <Stack>
+        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="(modals)/details/[id]"
+          options={({ route }) => {
+            const { id } = route.params as { id: string };
+            return {
+              title: "Detalles",
+              headerBackTitle: "Gastos",
+              headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
+              headerTransparent: Platform.OS === "android" ? false : true,
+              headerShadowVisible: false,
+              headerRight: () => (
+                <NativeButton
+                  title="Editar"
+                  color="#27BE8B"
+                  onPress={() => router.push(`/(modals)/edit/${id}`)}
+                />
+              ),
+            };
+          }}
+        />
+        <Stack.Screen
+          name="(modals)/edit/[id]"
+          options={{
+            title: "Editar Gasto",
+            headerBackTitle: "Detalles",
+            headerLargeTitle: true,
+            headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
+            headerTransparent: Platform.OS === "android" ? false : true,
+            headerBackVisible: true,
+            headerShadowVisible: false,
+            presentation: "card",
+            headerRight: () => (
+              <NativeButton
+                title="Eliminar"
+                color="#FF453A"
+                onPress={() => router.back()}
+              />
+            ),
+          }}
+        />
+        <Stack.Screen
+          name="(modals)/buy-premium"
+          options={{
+            presentation: "modal",
+            title: "Adquirir Premium",
+            headerShown: true,
+            headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
+            headerTransparent: Platform.OS === "android" ? false : true,
+            headerShadowVisible: false,
+            headerRight: () => (
+              <Button
+                variant="ghost"
+                size="icon"
+                className="rounded-full  "
+                onPress={() => router.back()}
+              >
+                <X />
+              </Button>
+            ),
+          }}
+        />
+      </Stack>
+    </AppProvider>
   );
 }

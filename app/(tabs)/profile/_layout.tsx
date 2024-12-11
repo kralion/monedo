@@ -1,7 +1,7 @@
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { router, Stack } from "expo-router";
 import React from "react";
-import { Alert, Button } from "react-native";
+import { Alert, Button, Platform } from "react-native";
 
 export default function Layout() {
   const { user } = useUser();
@@ -75,8 +75,8 @@ export default function Layout() {
         options={{
           title: "Adquirir Premium",
           headerBackTitle: "Perfil",
-          headerBlurEffect: "regular",
-          headerTransparent: true,
+          headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
+          headerTransparent: Platform.OS === "android" ? false : true,
           headerStyle: {
             backgroundColor: "transparent",
           },

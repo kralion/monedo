@@ -1,6 +1,4 @@
 import { useExpenseContext } from "@/context";
-import { IExpenseGET } from "@/interfaces";
-import { createClerkSupabaseClient } from "@/lib/supabase";
 import { router, useLocalSearchParams } from "expo-router";
 import * as React from "react";
 import { Image, ScrollView, View } from "react-native";
@@ -17,7 +15,6 @@ import {
 import { Button } from "~/components/ui/button";
 import { Progress } from "~/components/ui/progress";
 import { Separator } from "~/components/ui/separator";
-
 import { ActivityIndicator } from "react-native";
 import { Badge } from "~/components/ui/badge";
 import { Text } from "~/components/ui/text";
@@ -25,9 +22,7 @@ import { expensesIdentifiers } from "~/constants/ExpensesIdentifiers";
 
 export default function ExpenseDetails() {
   const [isLoading, setIsLoading] = React.useState(false);
-  const supabase = createClerkSupabaseClient();
-  const { deleteExpense } = useExpenseContext();
-  const [expense, setExpense] = React.useState({} as IExpenseGET);
+  const { deleteExpense, expense, getExpenseById } = useExpenseContext();
   const [isOpen, setIsOpen] = React.useState(false);
   const params = useLocalSearchParams<{ id: string }>();
   const handleDeleteExpense = async (id: string) => {
@@ -39,29 +34,17 @@ export default function ExpenseDetails() {
     setIsOpen(false);
   };
 
-  async function getExpenseById(id: string) {
-    setIsLoading(true);
-    const { data, error } = await supabase
-      .from("expenses")
-      .select("*")
-      .eq("id", id)
-      .single();
-    if (error) throw error;
-    setExpense(data);
-    setIsLoading(false);
-    return data;
-  }
-  const assetIndentificador =
-    expensesIdentifiers.find(
-      (icon) => icon.label.toLowerCase() === expense.category
-    )?.iconHref ||
-    "https://img.icons8.com/?size=160&id=MjAYkOMsbYOO&format=png";
-
   React.useEffect(() => {
     if (params.id) {
       getExpenseById(params.id);
     }
   }, [params.id]);
+
+  const assetIndentificador =
+    expensesIdentifiers.find(
+      (icon) => icon.label.toLowerCase() === expense.category
+    )?.iconHref ||
+    "https://img.icons8.com/?size=160&id=MjAYkOMsbYOO&format=png";
 
   if (!expense) return null;
 

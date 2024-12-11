@@ -108,14 +108,14 @@ export default function BuyPremiumModal() {
             <TabsTrigger
               onPress={handleCardPayment}
               value="card"
-              className="flex-1 rounded-lg"
+              className="flex-1 rounded-md"
             >
               <Text>Tarjeta</Text>
             </TabsTrigger>
             <TabsTrigger
               onPress={handleYapePayment}
               value="yape"
-              className="flex-1 rounded-lg"
+              className="flex-1 rounded-md"
             >
               <Text>Yape</Text>
             </TabsTrigger>

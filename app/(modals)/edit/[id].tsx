@@ -1,41 +1,32 @@
-import { expensesIdentifiers } from "@/constants/ExpensesIdentifiers";
 import { useExpenseContext } from "@/context";
-import { IExpense, IExpenseGET, IExpensePOST } from "@/interfaces";
-import { createClerkSupabaseClient } from "@/lib/supabase";
-import { useUser } from "@clerk/clerk-expo";
-import { router, useLocalSearchParams } from "expo-router";
-import { Loader, X } from "lucide-react-native";
-import React, { useEffect, useMemo } from "react";
+import { IExpensePOST } from "@/interfaces";
+import { useLocalSearchParams } from "expo-router";
+import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
-  Image,
   Keyboard,
   SafeAreaView,
   ScrollView,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import AddExpenseSuccesModal from "~/components/popups/add-expense-sucess";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
 import {
   Select,
   SelectContent,
   SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+import { Switch } from "~/components/ui/switch";
 import { Text } from "~/components/ui/text";
 import { Textarea } from "~/components/ui/textarea";
-import { useHeaderHeight } from "@react-navigation/elements";
-import { Separator } from "~/components/ui/separator";
-import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
-import { Switch } from "~/components/ui/switch";
+import { createClerkSupabaseClient } from "~/lib/supabase";
 
 interface IGasto {
   description: string;
@@ -59,13 +50,10 @@ const items = [
   { name: "Casuales" },
 ];
 export default function EditExpense() {
-  const params = useLocalSearchParams<{ id: string }>();
+  const { id } = useLocalSearchParams();
   const supabase = createClerkSupabaseClient();
-  const { updateExpense } = useExpenseContext();
-  const { expense } = useExpenseContext();
-  const [currentExpense, setCurrentExpense] = React.useState({} as IExpense);
+  const { expense, getExpenseById } = useExpenseContext();
   const [isLoading, setIsLoading] = React.useState(false);
-  const headerHeight = useHeaderHeight();
   const {
     control,
     handleSubmit,
@@ -83,19 +71,14 @@ export default function EditExpense() {
       currency: expense.currency,
     },
   });
+  const formattedDate = new Date(expense.date).toLocaleDateString("es-PE", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
 
-  async function getExpenseById(id: string) {
-    const { data, error } = await supabase
-      .from("expenses")
-      .select("*")
-      .eq("id", id)
-      .single();
-    if (error) throw error;
-    setCurrentExpense(data);
-
-    return data;
-  }
-
+  // TODO: Multiple renders
+  console.log(expense);
   async function onSubmit(data: IGasto) {
     setIsLoading(true);
     try {
@@ -116,17 +99,6 @@ export default function EditExpense() {
     setIsLoading(false);
     // setOpenModal(true);
   }
-
-  useEffect(() => {
-    if (params.id) {
-      getExpenseById(params.id);
-    }
-  }, [params.id]);
-  const assetIndentificador =
-    expensesIdentifiers.find(
-      (icon) => icon.label.toLowerCase() === expense.category
-    )?.iconHref ||
-    "https://img.icons8.com/?size=160&id=MjAYkOMsbYOO&format=png";
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -150,7 +122,10 @@ export default function EditExpense() {
                   <View className="flex flex-col gap-2">
                     <Label>Categoría</Label>
                     <Select
-                      // defaultValue={expense.category}
+                      defaultValue={{
+                        value: expense.category,
+                        label: expense.category,
+                      }}
                       onValueChange={onChange}
                     >
                       <SelectTrigger>
@@ -277,12 +252,7 @@ export default function EditExpense() {
                       <Text className="text-muted-foreground text-sm">
                         La recurrencia del gasto se hará efectivo cada mes en la
                         fecha en la que fue creado inicialmente, en este caso
-                        cada{" "}
-                        <Text className="font-bold ">
-                          {new Date().toLocaleDateString("es-PE", {
-                            day: "numeric",
-                          })}
-                        </Text>{" "}
+                        cada <Text className="font-bold ">{formattedDate}</Text>{" "}
                         de cada mes.
                       </Text>
                     )}
