@@ -1,15 +1,14 @@
 import { useBudgetContext } from "@/context";
-import { IBudget, IExpense } from "@/interfaces";
-import { createClerkSupabaseClient } from "@/lib/supabase";
-import { useHeaderHeight } from "@react-navigation/elements";
-import { useLocalSearchParams } from "expo-router";
+import { IBudget } from "@/interfaces";
+import { useUser } from "@clerk/clerk-expo";
+import { router, useLocalSearchParams } from "expo-router";
 import { Info } from "lucide-react-native";
-import React, { useEffect } from "react";
+import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
+  Alert,
   Keyboard,
-  SafeAreaView,
   ScrollView,
   TouchableWithoutFeedback,
   View,
@@ -22,34 +21,36 @@ import { Textarea } from "~/components/ui/textarea";
 
 export default function EditExpense() {
   const params = useLocalSearchParams<{ id: string }>();
-  const supabase = createClerkSupabaseClient();
-  const { updateBudget } = useBudgetContext();
-  const [currentBudget, setCurrentBudget] = React.useState({} as IBudget);
+  const { user } = useUser();
+  const { updateBudget, budget, deleteBudget } = useBudgetContext();
   const [isLoading, setIsLoading] = React.useState(false);
-  const headerHeight = useHeaderHeight();
   const {
     control,
     handleSubmit,
     formState: { errors },
     reset,
-    setValue,
   } = useForm<IBudget>({
     defaultValues: {
-      description: currentBudget.description,
-      amount: currentBudget.amount,
+      amount: budget.amount,
+      description: budget.description,
     },
   });
 
-  async function getBudgetById(id: string) {
-    const { data, error } = await supabase
-      .from("budget")
-      .select("*")
-      .eq("id", id)
-      .single();
-    if (error) throw error;
-    setCurrentBudget(data);
-    return data;
-  }
+  const onDelete = (id: string) => {
+    Alert.alert("Eliminar gasto", "¿Estás seguro?", [
+      {
+        text: "Sí",
+        onPress: () => {
+          deleteBudget(id);
+          router.push("/(tabs)/wallet");
+        },
+      },
+      {
+        text: "No",
+        style: "cancel",
+      },
+    ]);
+  };
 
   async function onSubmit(data: IBudget) {
     setIsLoading(true);
@@ -57,20 +58,15 @@ export default function EditExpense() {
       updateBudget({
         ...data,
         id: params.id,
+        user_id: user?.id ? user.id : "",
+        amount: Number(data.amount),
       });
     } catch (error) {
       console.log(error);
+      reset();
     }
-    setValue("amount", 0);
     setIsLoading(false);
-    // setOpenModal(true);
   }
-
-  useEffect(() => {
-    if (params.id) {
-      getBudgetById(params.id);
-    }
-  }, [params.id]);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -78,75 +74,77 @@ export default function EditExpense() {
         className="h-screen-safe-offset-2 p-4"
         contentInsetAdjustmentBehavior="automatic"
       >
-        <SafeAreaView style={{ paddingTop: headerHeight }}>
-          {/* <AddExpenseSuccesModal
-          expensePrice={expensePrice}
-          openModal={openModal}
-          setOpenModal={setOpenModal}
-        /> */}
-
-          <View className="flex flex-col">
-            <View className="flex flex-col gap-6 ">
-              <View className="flex flex-col gap-1">
-                <Label className="text-md">Monto </Label>
-                <View className="flex flex-col ">
-                  <Controller
-                    control={control}
-                    rules={{
-                      required: {
-                        value: true,
-                        message: "Ingrese el monto",
-                      },
-                      pattern: {
-                        value: /^\d+(\.\d*)?$/,
-                        message: "Solo números",
-                      },
-                    }}
-                    name="amount"
-                    render={({ field: { onChange, value } }) => (
-                      <Input
-                        autoCapitalize="none"
-                        className="w-full"
-                        // value={String(value)}
-                        onChangeText={onChange}
-                        keyboardType="decimal-pad"
-                      />
-                    )}
-                  />
-                </View>
-              </View>
-              <View className="flex flex-col">
+        <View className="flex flex-col">
+          <View className="flex flex-col gap-6 ">
+            <View className="flex flex-col gap-1">
+              <Label className="text-md">Monto </Label>
+              <View className="flex flex-col ">
                 <Controller
                   control={control}
-                  name="description"
+                  rules={{
+                    required: {
+                      value: true,
+                      message: "Ingrese el monto",
+                    },
+                    pattern: {
+                      value: /^\d+(\.\d*)?$/,
+                      message: "Solo números",
+                    },
+                  }}
+                  name="amount"
                   render={({ field: { onChange, value } }) => (
-                    <Textarea
+                    <Input
                       autoCapitalize="none"
-                      value={value}
+                      className="w-full"
+                      value={String(value)}
                       onChangeText={onChange}
-                      placeholder={expense}
+                      keyboardType="decimal-pad"
                     />
                   )}
                 />
-                {errors.description && (
-                  <View className="flex flex-row gap-1.5 ml-2 mt-2 items-center">
-                    <Info color="red" size={15} />
-                    <Text className="text-sm text-destructive">
-                      {errors.description.message}
-                    </Text>
-                  </View>
-                )}
               </View>
-              <Button onPress={handleSubmit(onSubmit)} size="lg">
-                {isLoading ? (
-                  <ActivityIndicator size={20} color="white" />
-                ) : (
-                  <Text>Guardar Cambios</Text>
-                )}
-              </Button>
             </View>
+            <View className="flex flex-col">
+              <Controller
+                control={control}
+                name="description"
+                render={({ field: { onChange, value } }) => (
+                  <Textarea
+                    autoCapitalize="none"
+                    value={value}
+                    onChangeText={onChange}
+                  />
+                )}
+              />
+              {errors.description && (
+                <View className="flex flex-row gap-1.5 ml-2 mt-2 items-center">
+                  <Info color="red" size={15} />
+                  <Text className="text-sm text-destructive">
+                    {errors.description.message}
+                  </Text>
+                </View>
+              )}
+            </View>
+            <Button onPress={handleSubmit(onSubmit)} size="lg">
+              {isLoading ? (
+                <ActivityIndicator size={20} color="white" />
+              ) : (
+                <Text>Guardar Cambios</Text>
+              )}
+            </Button>
+            <Button
+              variant="destructive"
+              onPress={() => onDelete(params.id)}
+              size="lg"
+            >
+              {isLoading ? (
+                <ActivityIndicator size={20} color="white" />
+              ) : (
+                <Text>Eliminar Gasto</Text>
+              )}
+            </Button>
           </View>
-        </SafeAreaView>
+        </View>
       </ScrollView>
     </TouchableWithoutFeedback>
 

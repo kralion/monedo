@@ -27,14 +27,17 @@ export interface IGoal {
 export interface IBudget {
   id: string;
   user_id: string;
-  created_At: Date;
+  created_At?: Date;
   description: string;
   amount: number;
 }
 
 export interface IBudgetContextProvider {
   addBudget: (budget: IBudget) => void;
+  loading: boolean;
   budgets: IBudget[];
+  getBudgetById: (id: string) => Promise<IBudget>;
+  budget: IBudget;
   getMonthlyBudget: () => Promise<number>;
   updateBudget: (budget: IBudget) => void;
   deleteBudget: (id: string) => void;

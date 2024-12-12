@@ -1,23 +1,7 @@
 import { router, Stack } from "expo-router";
-import { Alert, Button, Platform } from "react-native";
-import { useExpenseContext } from "~/context";
+import { Button, Platform } from "react-native";
 
 export default function Layout() {
-  const { deleteExpense } = useExpenseContext();
-  const onDelete = (id: string) => {
-    Alert.alert("Eliminar gasto", "¿Estás seguro?", [
-      {
-        text: "Sí",
-        onPress: () => {
-          deleteExpense(id);
-        },
-      },
-      {
-        text: "No",
-        style: "cancel",
-      },
-    ]);
-  };
   return (
     <Stack>
       <Stack.Screen
@@ -34,13 +18,11 @@ export default function Layout() {
       <Stack.Screen
         name="details/[id]"
         options={{
-          headerLargeTitle: true,
-          title: "Presupuesto",
+          title: "Detalles",
           headerBackTitle: "Atrás",
           headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
           headerTransparent: Platform.OS === "android" ? false : true,
           headerShadowVisible: false,
-
           headerRight: () => (
             <Button
               title="Editar"
@@ -52,24 +34,21 @@ export default function Layout() {
       />
       <Stack.Screen
         name="edit/[id]"
-        options={({ route }) => {
-          const { id } = route.params as { id: string };
-          return {
-            title: "Editar",
-            headerBackTitle: "Detalles",
-            headerBackVisible: true,
-            headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
-            headerTransparent: Platform.OS === "android" ? false : true,
-            headerShadowVisible: false,
-            presentation: "modal",
-            headerRight: () => (
-              <Button
-                title="Eliminar"
-                color="#FF453A"
-                onPress={() => onDelete(id)}
-              />
-            ),
-          };
+        options={{
+          title: "Editar",
+          headerLargeTitle: true,
+          headerBackVisible: true,
+          headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
+          headerTransparent: Platform.OS === "android" ? false : true,
+          headerShadowVisible: false,
+          presentation: "modal",
+          headerRight: () => (
+            <Button
+              title="Cancelar"
+              color="#27BE8B"
+              onPress={() => router.back()}
+            />
+          ),
         }}
       />
     </Stack>

@@ -133,12 +133,12 @@ export default function Home() {
               </Button>
             </View>
             <Card />
-            <View style={{ height: 160 }} />
+            <View style={{ height: 120 }} />
           </View>
 
           <ScrollView ref={scrollRef} className="px-4 ">
             <View>
-              <View className="flex flex-row justify-between items-center pt-32  w-full pb-8">
+              <View className="flex flex-row justify-between items-center pt-36  w-full pb-8">
                 <Text className="text-2xl font-bold">Gastos Recientes</Text>
 
                 <Text

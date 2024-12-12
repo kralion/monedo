@@ -115,7 +115,7 @@ const styles = StyleSheet.create({
     height: 200,
     zIndex: 100,
     position: "absolute",
-    top: 30,
+    top: 20,
     flexDirection: "column",
     justifyContent: "space-between",
     borderRadius: 18,

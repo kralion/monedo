@@ -1,4 +1,4 @@
-const tintColor = "#5BB98C";
+const tintColor = "#41D29B";
 
 export const NAV_THEME = {
   light: {

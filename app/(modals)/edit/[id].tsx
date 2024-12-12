@@ -52,7 +52,7 @@ const items = [
 export default function EditExpense() {
   const { id } = useLocalSearchParams();
   const supabase = createClerkSupabaseClient();
-  const { expense, getExpenseById } = useExpenseContext();
+  const { expense } = useExpenseContext();
   const [isLoading, setIsLoading] = React.useState(false);
   const {
     control,
@@ -82,7 +82,7 @@ export default function EditExpense() {
   async function onSubmit(data: IGasto) {
     setIsLoading(true);
     try {
-      await supabase.from("expenses").insert({
+      await supabase.from("expenses").update({
         ...data,
         category: data.category.value,
       });

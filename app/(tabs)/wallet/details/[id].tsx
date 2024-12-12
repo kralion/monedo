@@ -1,8 +1,6 @@
-import { createClerkSupabaseClient } from "@/lib/supabase";
-import { useHeaderHeight } from "@react-navigation/elements";
 import { router, useLocalSearchParams } from "expo-router";
 import * as React from "react";
-import { Image, ScrollView, View } from "react-native";
+import { ActivityIndicator, Image, ScrollView, View } from "react-native";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -15,18 +13,13 @@ import {
 } from "~/components/ui/alert-dialog";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
-import { ActivityIndicator } from "react-native";
 import { Text } from "~/components/ui/text";
 import { useBudgetContext } from "~/context";
-import { IBudget } from "~/interfaces";
 
 export default function BudgetDetails() {
   const [isLoading, setIsLoading] = React.useState(false);
-  const supabase = createClerkSupabaseClient();
-  const { deleteBudget } = useBudgetContext();
-  const [budget, setBudget] = React.useState({} as IBudget);
+  const { deleteBudget, budget, getBudgetById } = useBudgetContext();
   const [isOpen, setIsOpen] = React.useState(false);
-  const headerHeight = useHeaderHeight();
   const params = useLocalSearchParams<{ id: string }>();
   const handleDeleteBudget = async (id: string) => {
     setIsLoading(true);
@@ -36,19 +29,6 @@ export default function BudgetDetails() {
     router.push("/(tabs)/wallet");
     setIsOpen(false);
   };
-
-  async function getBudgetById(id: string) {
-    setIsLoading(true);
-    const { data, error } = await supabase
-      .from("budgets")
-      .select("*")
-      .eq("id", id)
-      .single();
-    if (error) throw error;
-    setBudget(data);
-    setIsLoading(false);
-    return data;
-  }
 
   React.useEffect(() => {
     if (params.id) {
