@@ -1,14 +1,14 @@
 import { IBudget, IBudgetContextProvider } from "@/interfaces";
-import { useUser } from "@clerk/clerk-expo";
 import * as React from "react";
 import { createContext, useContext } from "react";
 import { createClerkSupabaseClient } from "~/lib/supabase";
 
 export const BudgetContext = createContext<IBudgetContextProvider>({
   addBudget: async () => {},
+  getMonthlyBudget: async () => 0,
   updateBudget: async () => {},
   deleteBudget: async () => {},
-  getRecentBudgets: async (id: string) => [],
+  getBudgets: async (id: string) => [],
   budgets: [],
 });
 
@@ -17,12 +17,16 @@ export const BudgetContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const { user: userData } = useUser();
   const supabase = createClerkSupabaseClient();
   const [budgets, setBudgets] = React.useState<IBudget[]>([]);
 
   const addBudget = async (budget: IBudget) => {
     await supabase.from("budgets").insert(budget);
+  };
+
+  const getMonthlyBudget = async () => {
+    const { data } = await supabase.from("budgets").select("amount").limit(1);
+    return data ? data[0].amount : 0;
   };
 
   const updateBudget = async (budget: IBudget) => {
@@ -33,7 +37,7 @@ export const BudgetContextProvider = ({
     await supabase.from("budgets").delete().eq("id", id);
   };
 
-  async function getRecentBudgets(id: string) {
+  async function getBudgets(id: string) {
     const { data } = await supabase
       .from("budgets")
       .select("*")
@@ -50,7 +54,8 @@ export const BudgetContextProvider = ({
         addBudget,
         updateBudget,
         deleteBudget,
-        getRecentBudgets,
+        getMonthlyBudget,
+        getBudgets,
         budgets,
       }}
     >

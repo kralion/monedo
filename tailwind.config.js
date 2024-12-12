@@ -11,6 +11,7 @@ module.exports = {
         DEFAULT: "150ms",
       },
       colors: {
+        brand: "#41D29B",
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

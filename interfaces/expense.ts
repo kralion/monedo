@@ -35,9 +35,10 @@ export interface IBudget {
 export interface IBudgetContextProvider {
   addBudget: (budget: IBudget) => void;
   budgets: IBudget[];
+  getMonthlyBudget: () => Promise<number>;
   updateBudget: (budget: IBudget) => void;
   deleteBudget: (id: string) => void;
-  getRecentBudgets: (id: string) => Promise<IBudget[]>;
+  getBudgets: (id: string) => Promise<IBudget[] | null>;
 }
 
 export interface IExpenseContextProvider {

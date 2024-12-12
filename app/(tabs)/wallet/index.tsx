@@ -27,7 +27,7 @@ type TBudget = {
 
 export default function Wallet() {
   const [showSavingGoalModal, setShowSavingGoalModal] = useState(false);
-  const { budgets, getRecentBudgets } = useBudgetContext();
+  const { budgets, getBudgets } = useBudgetContext();
   const supabase = createClerkSupabaseClient();
   const {
     control,
@@ -56,9 +56,9 @@ export default function Wallet() {
 
   useEffect(() => {
     if (user) {
-      getRecentBudgets(user.id);
+      getBudgets(user.id);
     }
-  }, [user, getRecentBudgets]);
+  }, [user, getBudgets]);
 
   const [budgetFormAvailable, setBudgetFormAvailable] = useState(true);
   const scrollRef = useAnimatedRef<Animated.ScrollView>();

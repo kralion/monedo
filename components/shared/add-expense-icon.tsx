@@ -1,80 +1,84 @@
-import { useExpenseContext } from "@/context";
-import { supabase } from "@/lib/supabase";
+import { useBudgetContext, useExpenseContext } from "@/context";
 import { useAuth } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
 import { Plus } from "lucide-react-native";
 import React from "react";
 import { StyleSheet, View } from "react-native";
+import { BudgetLimitExceededModal } from "../popups/budget-limit-exceeded";
 import { Button } from "../ui/button";
 
 export default function AddExpenseIcon() {
   const router = useRouter();
   const { has } = useAuth();
-  const [presupuesto, setPresupuesto] = React.useState(0);
-  // TODO: get this from the actual month
-  const { sumOfAllOfExpensesMonthly } = useExpenseContext();
-  const [blockRoute, setBlockRoute] = React.useState(false);
-  async function fetchExpenses() {
-    const totalExpenses = await sumOfAllOfExpensesMonthly();
-    setTotalMonthExpenses(totalExpenses);
-  }
+  const [balance, setBalance] = React.useState(0);
   const [totalMonthExpenses, setTotalMonthExpenses] = React.useState(0);
-  const balance = presupuesto - totalMonthExpenses;
-  const getLastBudget = async () => {
-    const { data } = await supabase
-      .from("presupuestos")
-      .select("*")
-      .order("fecha_final", {
-        ascending: false,
-      })
-      .limit(1);
-    if (data) {
-      setPresupuesto(data[0].monto);
+  const [budget, setBudget] = React.useState(0);
+  const [showModal, setShowModal] = React.useState(false);
+  const { sumOfAllOfExpensesMonthly } = useExpenseContext();
+  const { getMonthlyBudget } = useBudgetContext();
+
+  async function calculateTotalMonthExpenses() {
+    const total = await sumOfAllOfExpensesMonthly();
+    setTotalMonthExpenses(total);
+    return total;
+  }
+
+  async function calculateBudget() {
+    const budget = await getMonthlyBudget();
+    setBudget(budget);
+    return budget;
+  }
+
+  async function calculateBalance() {
+    const total = await calculateTotalMonthExpenses();
+    const presupuesto = await calculateBudget();
+    setBalance(presupuesto - total);
+  }
+
+  React.useEffect(() => {
+    calculateBalance();
+  }, []);
+
+  React.useEffect(() => {
+    if (balance <= 0) {
+      setShowModal(true);
     }
-  };
-  // React.useEffect(() => {
-  //   getLastBudget();
-  //   fetchExpenses();
-  // }, [blockRoute]);
-  // React.useEffect(() => {
-  //   if (balance <= 0) {
-  //     setBlockRoute(true);
-  //   }
-  // }, [balance]);
+  }, [balance]);
+
   return (
-    <View>
-      {has?.({ permission: "premium:plan" }) ? (
-        <Button
-          size="icon"
-          className="absolute -bottom-2 -right-9 rounded-full bg-yellow-500  h-auto w-auto p-4 shadow"
-          onPress={() => {
-            if (blockRoute) {
-              router.push("/(tabs)");
-              // toast.show("No puedes añadir gastos tu balance es cero.");
-            } else {
-              router.push("/(tabs)/add-expense");
-            }
-          }}
-        >
-          <Plus strokeWidth={2.5} color="white" size={40} />
-        </Button>
-      ) : (
-        <Button
-          size="icon"
-          className="absolute -bottom-2 -right-9 rounded-full  h-auto w-auto p-4 shadow"
-          onPress={() => {
-            if (blockRoute) {
-              router.push("/(tabs)");
-              // toast.show("No puedes añadir gastos tu balance es cero.");
-            } else {
-              router.push("/(tabs)/add-expense");
-            }
-          }}
-        >
-          <Plus strokeWidth={2.5} color="white" size={40} />
-        </Button>
-      )}
-    </View>
+    <>
+      <View>
+        {has?.({ permission: "premium:plan" }) ? (
+          <Button
+            size="icon"
+            className="absolute -bottom-2 -right-9 rounded-full bg-yellow-500  h-auto w-auto p-4 shadow"
+            onPress={() => {
+              balance <= 0
+                ? setShowModal(true)
+                : router.push("/(tabs)/add-expense");
+            }}
+          >
+            <Plus strokeWidth={2.5} color="white" size={40} />
+          </Button>
+        ) : (
+          <Button
+            size="icon"
+            className="absolute -bottom-2 -right-9 rounded-full  h-auto w-auto p-4 shadow"
+            onPress={() => {
+              balance <= 0
+                ? setShowModal(true)
+                : router.push("/(tabs)/add-expense");
+            }}
+          >
+            <Plus strokeWidth={2.5} color="white" size={40} />
+          </Button>
+        )}
+      </View>
+      <BudgetLimitExceededModal
+        showModal={showModal}
+        setShowModal={setShowModal}
+      />
+    </>
   );
 }
 
