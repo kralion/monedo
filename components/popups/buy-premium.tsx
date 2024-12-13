@@ -1,73 +1,90 @@
 import BuyPremiumAsset from "@/assets/svgs/buy-premium.svg";
 import { LinearGradient } from "expo-linear-gradient";
 import { Link, router } from "expo-router";
-import { X } from "lucide-react-native";
 import * as React from "react";
-import { View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
+import { AlertDialog, AlertDialogContent } from "../ui/alert-dialog";
 import { Button } from "../ui/button";
-import { Dialog, DialogContent } from "../ui/dialog";
 import { Text } from "../ui/text";
-type ModalProps = {
+
+const styles = StyleSheet.create({
+  modalContent: {
+    width: "95%", // Adjust as needed
+    height: "80%", // Adjust as needed
+    maxWidth: 450, // Prevent it from becoming too wide on larger screens
+    borderRadius: 20,
+    overflow: "hidden", // Important for rounded corners with gradient
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
+  },
+  gradient: {
+    height: "100%",
+    display: "flex",
+    paddingBottom: 20,
+    flexDirection: "column",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+});
+
+export default function BuyPremiumModal({openModal, setOpenModal}: {
   openModal: boolean;
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
-};
-
-export default function BuyPremiumModal({
-  openModal,
-  setOpenModal,
-}: ModalProps) {
+}) {
   return (
-    <Dialog open={openModal}>
-      <DialogContent
-        key="content"
-        className="rounded-full w-full flex flex-col py-4"
-      >
+    <AlertDialog open={openModal} onOpenChange={setOpenModal}>
+      <AlertDialogContent className="p-0 " style={styles.modalContent}>
         <LinearGradient
-          style={{
-            borderRadius: 20,
-            padding: 10,
-            shadowRadius: 10,
-            paddingHorizontal: 12,
-          }}
-          colors={["#10828d", "#a3e062"]}
+          colors={["#41D29B", "#2E9B70"]}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
+          style={styles.gradient}
         >
-          <View className="flex flex-col gap-4 items-center">
-            <BuyPremiumAsset width={200} height={220} />
-            <Text className="text-3xl">Desbloquea Ahora</Text>
-            <Text className="text-center">
-              Con el plan <Text className="font-bold">Premium</Text> podrás
-              acceder a funcionalidades exclusivas.
+          <View className="flex flex-col gap-6 items-center pt-10">
+            <BuyPremiumAsset width={180} height={200} />
+            <Text className="text-3xl font-bold">Desbloquea Premium</Text>
+            <Text className="text-center leading-6">
+              Actualiza a <Text className="font-bold">Premium</Text> para
+              obtener funciones exclusivas y una experiencia mejorada.{" "}
             </Text>
-            <Text className="text-center italic">
-              ¡Mejora tu experiencia hoy! y sácale el máximo provecho a{" "}
-              <Text className="font-bold">Monedo</Text>
-              🚀
+            <Text className="text-center italic leading-5">
+              ¡Maximiza tu potencial con{" "}
+              <Text className="font-bold">Monedo</Text>! 🚀
             </Text>
           </View>
-          <View className="flex flex-col gap-4">
+          <View className="px-6 mt-6 w-full">
             <Link href="/(modals)/buy-premium" asChild>
               <Button
-                className="mt-5"
                 size="lg"
                 onPress={() => {
-                  setOpenModal(false), router.push("/(modals)/buy-premium");
+                  router.push("/(modals)/buy-premium");
                 }}
               >
-                Adquiere Premium
+                <Text>Adquirir Premium</Text>
               </Button>
             </Link>
+            <Button
+              variant="outline"
+              className="w-full mt-4 border-white"
+              onPress={() => {
+                setOpenModal(false);
+                router.push("/(tabs)");
+              }}
+            >
+              <Text>Quizá más tarde</Text>
+            </Button>
           </View>
         </LinearGradient>
-        <Button
-          className="absolute rounded-full top-5 right-5"
-          size="icon"
-          onPress={() => setOpenModal(false)}
-        >
-          <X />
-        </Button>
-      </DialogContent>
-    </Dialog>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 }

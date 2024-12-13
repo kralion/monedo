@@ -1,5 +1,5 @@
 import Card from "@/components/dashboard/card";
-import { Expense } from "@/components/dashboard/expense";
+import { Expense } from "@/components/shared/expense";
 import { useExpenseContext } from "@/context";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { FlashList } from "@shopify/flash-list";
@@ -23,7 +23,6 @@ export default function Home() {
   const { user, isSignedIn } = useUser();
   const { has } = useAuth();
   const [showAll, setShowAll] = React.useState(false);
-  const [showBuyPremiumModal, setShowBuyPremiumModal] = React.useState(false);
   if (!user) {
     return null;
   }
@@ -74,7 +73,7 @@ export default function Home() {
           >
             <View className="flex flex-col gap-5">
               <View className="flex flex-row justify-between items-center">
-                <Text className="text-3xl font-bold">Gastos Recientes</Text>
+                <Text className="text-xl font-bold">Gastos Recientes</Text>
                 <Text
                   onPress={() => {
                     setShowAll(false);
@@ -137,9 +136,9 @@ export default function Home() {
           </View>
 
           <ScrollView ref={scrollRef} className="px-4 ">
-            <View>
-              <View className="flex flex-row justify-between items-center pt-36  w-full pb-8">
-                <Text className="text-2xl font-bold">Gastos Recientes</Text>
+            <View className="h-screen-safe">
+              <View className="flex flex-row justify-between items-center pt-36  w-full pb-4">
+                <Text className="text-xl font-bold">Gastos Recientes</Text>
 
                 <Text
                   onPress={() => {

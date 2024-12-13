@@ -1,33 +1,16 @@
+import { Expense } from "@/components/shared/expense";
 import Chart from "@/components/statistics/chart";
-import NoDataSvg from "@/assets/svgs/no-data.svg";
-import { Expense } from "@/components/statistics/expense";
 import { useExpenseContext } from "@/context";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FlashList } from "@shopify/flash-list";
-import { Link, router } from "expo-router";
-import { Download, FileLineChart, Inbox } from "lucide-react-native";
+import { router } from "expo-router";
+import { Download } from "lucide-react-native";
 import * as React from "react";
 import { useState } from "react";
-import {
-  ActivityIndicator,
-  Animated,
-  ScrollView,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Animated, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "~/components/ui/button";
-import { Button as NativeButton } from "react-native";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "~/components/ui/select";
-import { Text } from "~/components/ui/text";
 import { Separator } from "~/components/ui/separator";
+import { Text } from "~/components/ui/text";
 
 const items = [
   { name: "Top Gastos" },
@@ -116,21 +99,19 @@ export default function Statistics() {
           <Separator className="text-muted-foreground" />
         </View>
       </View>
-      <ScrollView>
-        <View className="flex flex-col gap-10 justify-center mt-10">
+      <ScrollView contentInsetAdjustmentBehavior="automatic">
+        <View className="flex flex-col gap-4 justify-center mt-10 min-h-screen-safe">
           <Chart timelineQuery={timelineQuery} />
-          {/* TODO: Change the height of the view correctly */}
-          <View className="p-4 flex flex-col gap-4 h-screen-safe">
-            <Text className="text-xl font-bold">Historial de Gastos</Text>
-
-            <FlashList
-              data={expenses}
-              renderItem={({ item: expense }) => {
-                return <Expense expense={expense} />;
-              }}
-              estimatedItemSize={100}
-            />
-          </View>
+          <Text className="text-xl font-bold mx-4  mt-12">Top Gastos</Text>
+          <FlashList
+            //TODO: This expenses data should be dinamic and show the top expenses only maybe limit to 12 items
+            contentContainerStyle={{ paddingHorizontal: 16 }}
+            data={expenses}
+            renderItem={({ item: expense }) => {
+              return <Expense expense={expense} />;
+            }}
+            estimatedItemSize={100}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>

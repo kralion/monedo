@@ -1,28 +1,35 @@
 import { IBudget } from "@/interfaces";
-import * as React from "react";
-import { Image, View } from "react-native";
-import { Card, CardDescription, CardHeader, CardTitle } from "../ui/card";
-import { Text } from "../ui/text";
-import { Button } from "../ui/button";
-import { ChevronRight } from "lucide-react-native";
 import { router } from "expo-router";
+import { ChevronRight } from "lucide-react-native";
+import * as React from "react";
+import { Image, TouchableOpacity, View } from "react-native";
+import { Button } from "../ui/button";
+import { Separator } from "../ui/separator";
+import { Text } from "../ui/text";
 export function Budget({ budget }: { budget: IBudget }) {
-  const date = new Date(budget.created_At); // Parse the original date
+  const date = new Date(budget.created_At);
+
   const formattedDate = date.toLocaleDateString("es-ES", {
-    month: "2-digit",
-    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+
+  const expire = new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000);
+  const expireDate = expire.toLocaleDateString("es-ES", {
+    month: "short",
     day: "numeric",
   });
 
   return (
-    <Card className=" active:opacity-80 rounded-xl mb-5">
-      <CardHeader className="flex flex-row justify-between items-center p-3">
-        <CardTitle
-          onPress={() => {
-            router.push(`/wallet/details/${budget.id}`);
-          }}
-        >
-          <View className="flex flex-row items-center gap-2">
+    <>
+      <TouchableOpacity
+        onPress={() => {
+          router.push(`/wallet/details/${budget.id}`);
+        }}
+        className="card active:opacity-80"
+      >
+        <View className="card-header flex flex-row justify-between items-center px-2 py-4">
+          <View className="card-title flex flex-row items-center gap-2">
             <Image
               width={45}
               height={45}
@@ -30,22 +37,26 @@ export function Budget({ budget }: { budget: IBudget }) {
                 uri: "https://img.icons8.com/?size=96&id=ci9FsQ29gcwi&format=png",
               }}
             />
+            <View className="card-title-details flex flex-col gap-1">
+              <Text className="text-xl">S/. {budget.amount}</Text>
+              <Text className="text-xs text-muted-foreground">
+                Registro : {formattedDate}
+              </Text>
+            </View>
+          </View>
+          <View className="card-description flex flex-row items-center justify-between">
+            <View className="card-description-amount flex flex-row gap-2 items-center">
+              <Text className="font-bold">Exp. {expireDate}</Text>
+              <Button variant="ghost" size="icon">
+                <ChevronRight size={20} color="gray" />
+              </Button>
+            </View>
+          </View>
+        </View>
+      </TouchableOpacity>
+      <Separator />
+    </>
 
-            <Text className="text-2xl tracking-tight font-semibold">
-              S/. {budget.amount}
-            </Text>
-          </View>
-        </CardTitle>
-        <CardDescription>
-          <View className="flex flex-row gap-2 items-center">
-            <Text className="text-muted-foreground">{formattedDate} </Text>
-            <Button variant="ghost" size="icon">
-              <ChevronRight size={20} color="gray" />
-            </Button>
-          </View>
-        </CardDescription>
-      </CardHeader>
-    </Card>
     // {/* <Sheet
     //   zIndex={100_000}
     //   snapPointsMode="fit"

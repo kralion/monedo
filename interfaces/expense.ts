@@ -27,7 +27,7 @@ export interface IGoal {
 export interface IBudget {
   id: string;
   user_id: string;
-  created_At?: Date;
+  created_At: Date;
   description: string;
   amount: number;
 }

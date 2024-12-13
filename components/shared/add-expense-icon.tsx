@@ -39,11 +39,11 @@ export default function AddExpenseIcon() {
     calculateBalance();
   }, []);
 
-  React.useEffect(() => {
-    if (balance <= 0) {
-      setShowModal(true);
-    }
-  }, [balance]);
+  // React.useEffect(() => {
+  //   if (balance <= 0) {
+  //     setShowModal(true);
+  //   }
+  // }, [balance]);
 
   return (
     <>
