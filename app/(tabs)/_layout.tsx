@@ -1,104 +1,71 @@
-import Colors from "@/lib/constants";
-import { Image } from "expo-image";
 import { Tabs } from "expo-router";
-import { useColorScheme, View } from "react-native";
-import AddExpenseIcon from "~/components/shared/add-expense-icon";
+import { BarChart, Home, PlusCircle, User, Wallet } from "lucide-react-native";
+import { Pressable, useColorScheme, View } from "react-native";
+import { Text } from "~/components/ui/text";
+const TabBar = ({ state, navigation }: any) => {
+  const icons = [
+    { name: "Inicio", icon: Home, routeName: "index" },
+    { name: "Statistics", icon: BarChart, routeName: "statistics" },
+    { name: "Agregar", icon: PlusCircle, routeName: "add-expense" },
+    { name: "Wallet", icon: Wallet, routeName: "wallet" },
+    { name: "Perfil", icon: User, routeName: "profile" },
+  ];
+
+  return (
+    <View className="flex-row items-center justify-between p-4 m-4 absolute bottom-4 border-2 border-zinc-100  bg-zinc-100 shadow shadow-gray-300 w-[95%]  left-0 right-0  rounded-full backdrop-blur-xl">
+      {icons.map((item, index) => {
+        const isFocused = state.index === index;
+        const Icon = item.icon;
+
+        const onPress = () => {
+          const event = navigation.emit({
+            type: "tabPress",
+            target: item.routeName,
+          });
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(item.routeName);
+          }
+        };
+
+        return (
+          <View key={item.routeName} className="flex-row items-center ">
+            <Pressable
+              onPress={onPress}
+              className={`p-2 flex flex-row gap-2 items-center ${
+                isFocused
+                  ? "bg-white rounded-full px-4 flex-row items-center"
+                  : ""
+              }`}
+            >
+              {isFocused && item.routeName === "profile" && (
+                <Text className="text-brand animate-fade-in">{item.name}</Text>
+              )}
+              <Icon size={24} color={isFocused ? "#41D29B" : "#999"} />
+              {isFocused && item.routeName !== "profile" && (
+                <Text className="text-brand animate-fade-in">{item.name}</Text>
+              )}
+            </Pressable>
+          </View>
+        );
+      })}
+    </View>
+  );
+};
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors.NAV_THEME[colorScheme ?? "light"].tint,
-        tabBarStyle: {
-          height: 80,
-          paddingTop: 10,
-        },
-        tabBarHideOnKeyboard: true,
-        freezeOnBlur: true,
         headerShown: false,
       }}
+      tabBar={(props) => <TabBar {...props} />}
     >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: "Inicio",
-          headerShown: false,
-          tabBarIcon: ({ color, focused }) => (
-            <Image
-              style={{ width: 28, height: 28, tintColor: color }}
-              source={{
-                uri: focused
-                  ? "https://api.iconify.design/mingcute:home-4-fill.svg"
-                  : "https://api.iconify.design/mingcute:home-4-line.svg",
-              }}
-              alt="google"
-            />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
-        name="statistics"
-        options={{
-          title: "Reportes",
-          tabBarIcon: ({ color, focused }) => (
-            <Image
-              style={{ width: 28, height: 28, tintColor: color }}
-              source={{
-                uri: focused
-                  ? "https://api.iconify.design/mingcute:chart-vertical-fill.svg"
-                  : "https://api.iconify.design/mingcute:chart-vertical-line.svg",
-              }}
-              alt="google"
-            />
-          ),
-          headerShown: false,
-        }}
-      />
-      <Tabs.Screen
-        name="add-expense"
-        options={{
-          title: "",
-          tabBarIcon: () => <AddExpenseIcon />,
-        }}
-      />
-      <Tabs.Screen
-        name="wallet"
-        options={{
-          title: "Billetera",
-          tabBarIcon: ({ color, focused }) => (
-            <Image
-              style={{ width: 28, height: 28, tintColor: color }}
-              source={{
-                uri: focused
-                  ? "https://api.iconify.design/mingcute:wallet-4-fill.svg"
-                  : "https://api.iconify.design/mingcute:wallet-4-line.svg",
-              }}
-              alt="google"
-            />
-          ),
-          headerShown: false,
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          headerBackground: () => <View style={{ flex: 1 }} />,
-          title: "Cuenta",
-          tabBarIcon: ({ color, focused }) => (
-            <Image
-              style={{ width: 28, height: 28, tintColor: color }}
-              source={{
-                uri: focused
-                  ? "https://api.iconify.design/mingcute:user-setting-fill.svg"
-                  : "https://api.iconify.design/mingcute:user-setting-line.svg",
-              }}
-              alt="google"
-            />
-          ),
-        }}
-      />
+      <Tabs.Screen name="index" />
+      <Tabs.Screen name="statistics" />
+      <Tabs.Screen name="add-expense" />
+      <Tabs.Screen name="wallet" />
+      <Tabs.Screen name="profile" />
     </Tabs>
   );
 }
