@@ -1,6 +1,13 @@
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
-import { Bell, LogOut, Unlock, User, UserSquare2 } from "lucide-react-native";
+import {
+  Bell,
+  LogOut,
+  Phone,
+  Unlock,
+  User,
+  UserSquare2,
+} from "lucide-react-native";
 import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
@@ -73,6 +80,15 @@ export default function ProfileScreen() {
           <Text>Membresía</Text>
         </Button>
 
+        <Button
+          onPress={() => router.push("/(tabs)/profile/contact")}
+          size="lg"
+          variant="ghost"
+          className="flex flex-row gap-3 px-5"
+        >
+          <Phone color="black" />
+          <Text>Contacto</Text>
+        </Button>
         <Button
           onPress={() => router.push("/(tabs)/profile/notifications")}
           size="lg"

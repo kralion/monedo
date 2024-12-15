@@ -5,14 +5,14 @@ import { Text } from "~/components/ui/text";
 const TabBar = ({ state, navigation }: any) => {
   const icons = [
     { name: "Inicio", icon: Home, routeName: "index" },
-    { name: "Statistics", icon: BarChart, routeName: "statistics" },
+    { name: "Reportes", icon: BarChart, routeName: "statistics" },
     { name: "Agregar", icon: PlusCircle, routeName: "add-expense" },
     { name: "Wallet", icon: Wallet, routeName: "wallet" },
     { name: "Perfil", icon: User, routeName: "profile" },
   ];
 
   return (
-    <View className="flex-row items-center justify-between p-4 m-4 absolute bottom-4 border-2 border-zinc-100  bg-zinc-100 shadow shadow-gray-300 w-[95%]  left-0 right-0  rounded-full backdrop-blur-xl">
+    <View className="flex-row items-center justify-between p-4 m-4 absolute bottom-4  border-2 border-zinc-100  bg-white shadow-sm shadow-gray-300 w-[95%]     rounded-full backdrop-blur-xl">
       {icons.map((item, index) => {
         const isFocused = state.index === index;
         const Icon = item.icon;
@@ -33,7 +33,7 @@ const TabBar = ({ state, navigation }: any) => {
               onPress={onPress}
               className={`p-2 flex flex-row gap-2 items-center ${
                 isFocused
-                  ? "bg-white rounded-full px-4 flex-row items-center"
+                  ? "bg-zinc-100 rounded-full px-4 flex-row items-center"
                   : ""
               }`}
             >

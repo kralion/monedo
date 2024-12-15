@@ -55,6 +55,15 @@ export default function Layout() {
         }}
       />
       <Stack.Screen
+        name="contact"
+        options={{
+          title: "Contáctanos",
+          headerBackTitle: "Perfil",
+          headerTransparent: true,
+          headerLargeTitle: true,
+        }}
+      />
+      <Stack.Screen
         name="personal-info"
         options={{
           title: "Datos Personales",
@@ -70,6 +79,7 @@ export default function Layout() {
           ),
         }}
       />
+
       <Stack.Screen
         name="buy-premium"
         options={{
