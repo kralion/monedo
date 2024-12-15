@@ -104,18 +104,18 @@ export default function BuyPremiumModal() {
           onValueChange={setValue}
           className="w-full max-w-[400px] mx-auto flex-col gap-1.5"
         >
-          <TabsList className="flex-row w-full rounded-lg">
+          <TabsList className="flex-row w-full rounded-xl">
             <TabsTrigger
               onPress={handleCardPayment}
               value="card"
-              className="flex-1 rounded-md"
+              className="flex-1 rounded-lg"
             >
               <Text>Tarjeta</Text>
             </TabsTrigger>
             <TabsTrigger
               onPress={handleYapePayment}
               value="yape"
-              className="flex-1 rounded-md"
+              className="flex-1 rounded-lg"
             >
               <Text>Yape</Text>
             </TabsTrigger>
