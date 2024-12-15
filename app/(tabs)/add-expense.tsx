@@ -29,6 +29,7 @@ import { Textarea } from "~/components/ui/textarea";
 import { IExpensePOST } from "~/interfaces";
 import { createClerkSupabaseClient } from "~/lib/supabase";
 import Toast from "~/components/shared/toast";
+import { router } from "expo-router";
 
 const items = [
   { name: "Hogar" },
@@ -263,13 +264,25 @@ export default function AddExpense() {
                 )}
                 defaultValue={false}
               />
-              <Button onPress={handleSubmit(onSubmit)} size="lg">
-                {isLoading ? (
-                  <ActivityIndicator size={20} color="white" />
-                ) : (
-                  <Text>Registrar</Text>
-                )}
-              </Button>
+              <View className="flex flex-col gap-4">
+                <Button onPress={handleSubmit(onSubmit)} size="lg">
+                  {isLoading ? (
+                    <ActivityIndicator size={20} color="white" />
+                  ) : (
+                    <Text>Registrar</Text>
+                  )}
+                </Button>
+                <Button
+                  onPress={() => {
+                    reset();
+                    router.push("/(tabs)");
+                  }}
+                  size="lg"
+                  variant="outline"
+                >
+                  <Text className="text-red-500">Cancelar</Text>
+                </Button>
+              </View>
             </View>
           </ScrollView>
         </View>

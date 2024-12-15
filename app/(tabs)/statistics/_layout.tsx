@@ -16,7 +16,7 @@ export default function Layout() {
           title: "",
           headerShadowVisible: false,
           presentation: "modal",
-          headerRight: () => (
+          headerLeft: () => (
             <Button
               title="Cancelar"
               color="#27BE8B"

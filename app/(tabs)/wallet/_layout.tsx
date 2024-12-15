@@ -35,14 +35,13 @@ export default function Layout() {
       <Stack.Screen
         name="edit/[id]"
         options={{
-          title: "Editar",
-          headerLargeTitle: true,
+          title: "Editar Registro",
           headerBackVisible: true,
           headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
           headerTransparent: Platform.OS === "android" ? false : true,
-          headerShadowVisible: false,
+          headerShadowVisible: true,
           presentation: "modal",
-          headerRight: () => (
+          headerLeft: () => (
             <Button
               title="Cancelar"
               color="#27BE8B"

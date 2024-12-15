@@ -187,18 +187,13 @@ function RootLayoutNav() {
             presentation: "modal",
             title: "Adquirir Premium",
             headerShown: true,
-            headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
-            headerTransparent: Platform.OS === "android" ? false : true,
-            headerShadowVisible: false,
-            headerRight: () => (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="rounded-full  "
+            headerShadowVisible: true,
+            headerLeft: () => (
+              <NativeButton
+                title="Cancelar"
+                color="#27BE8B"
                 onPress={() => router.back()}
-              >
-                <X />
-              </Button>
+              />
             ),
           }}
         />

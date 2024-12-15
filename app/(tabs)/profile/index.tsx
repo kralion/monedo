@@ -109,22 +109,22 @@ export default function ProfileScreen() {
           className="flex flex-row gap-3  px-5"
         >
           <LogOut color="red" />
-          <Text className="text-destructive">Salir</Text>
+          <Text className="text-red-500">Cerrar Sesión</Text>
         </Button>
       </View>
 
-      <Text className="text-muted-foreground opacity-40  mt-44 mx-auto text-sm">
+      <Text className="text-muted-foreground opacity-40  mt-20 mx-auto text-sm">
         Logueado con {user?.emailAddresses[0].emailAddress}
       </Text>
       <Text className="text-muted-foreground opacity-40   mx-auto text-sm">
         Versión 3.15.1
       </Text>
 
-      <View className="absolute bottom-[100px] right-[-70px] w-[200px] h-[300px] rounded-xl rotate-[-30deg] bg-yellow-400 shadow-lg" />
+      <View className="absolute bottom-[200px] right-[-70px] w-[200px] h-[300px] rounded-xl rotate-[-30deg] bg-yellow-400 shadow-lg" />
 
-      <View className="absolute bottom-[50px] right-[-70px] w-[200px] h-[300px] rounded-xl rotate-[-40deg] bg-orange-500 shadow-lg" />
+      <View className="absolute bottom-[160px] right-[-70px] w-[200px] h-[300px] rounded-xl rotate-[-40deg] bg-orange-500 shadow-lg" />
 
-      <View className="absolute bottom-[10px] right-[-70px] w-[200px] h-[300px] rounded-xl rotate-[-50deg] bg-primary shadow-lg" />
+      <View className="absolute bottom-[120px] right-[-70px] w-[200px] h-[300px] rounded-xl rotate-[-50deg] bg-primary shadow-lg" />
     </SafeAreaView>
   );
 }

@@ -1,4 +1,4 @@
-import { useUser } from "@clerk/clerk-expo";
+import { useAuth, useUser } from "@clerk/clerk-expo";
 import * as React from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -23,7 +23,9 @@ type FormData = {
 
 export default function PersonalInfoScreen() {
   const { user, isLoaded } = useUser();
+  const { signOut } = useAuth();
   const [isUpdating, setIsUpdating] = React.useState(false);
+  const [isDeleting, setIsDeleting] = React.useState(false);
 
   if (!isLoaded) {
     return null;
@@ -41,6 +43,36 @@ export default function PersonalInfoScreen() {
       lastName: user.lastName || "",
     },
   });
+  const deleteAccount = async () => {
+    setIsDeleting(true);
+    try {
+      await user?.delete();
+      await signOut();
+      alert("Se ha cerrado la sesión");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+    setIsDeleting(false);
+  };
+
+  const handleDeleteAccount = () => {
+    Alert.alert(
+      "¿Estás seguro?",
+      "Esta acción eliminará todos los datos de tu cuenta y no se puede deshacer",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Eliminar cuenta",
+          onPress: deleteAccount,
+          style: "destructive",
+        },
+      ],
+      { cancelable: false }
+    );
+  };
 
   const onSubmit = async (data: FormData) => {
     setIsUpdating(true);
@@ -64,16 +96,10 @@ export default function PersonalInfoScreen() {
               <AvatarImage source={{ uri: user.imageUrl }} />
               <AvatarFallback />
             </Avatar>
-
-            <Badge className="mt-4 px-4 py-2 border border-blue-200 bg-blue-100">
-              <Text className="text-blue-500 text-md">
-                {user.primaryEmailAddress?.emailAddress}
-              </Text>
-            </Badge>
           </View>
 
           {/* Profile Update Form */}
-          <View className="flex flex-col gap-8 mt-6">
+          <View className="flex flex-col gap-4 mt-6">
             {/* First Name Input */}
             <View className="flex flex-col gap-2 ">
               <Label>Nombres</Label>
@@ -129,15 +155,38 @@ export default function PersonalInfoScreen() {
                 </Text>
               )}
             </View>
-
-            {/* Submit Button */}
-            <Button onPress={handleSubmit(onSubmit)} disabled={isUpdating}>
-              {isUpdating ? (
-                <ActivityIndicator color="white" />
-              ) : (
-                <Text>Guardar Cambios</Text>
-              )}
-            </Button>
+            <View className="flex flex-col gap-2">
+              <Label>Email</Label>
+              <Button
+                variant="outline"
+                disabled
+                size="lg"
+                className="font-bold"
+              >
+                <Text> {user.primaryEmailAddress?.emailAddress}</Text>
+              </Button>
+            </View>
+            <View className="flex flex-col gap-4 mt-10">
+              {/* Submit Button */}
+              <Button onPress={handleSubmit(onSubmit)} disabled={isUpdating}>
+                {isUpdating ? (
+                  <ActivityIndicator color="white" />
+                ) : (
+                  <Text>Guardar Cambios</Text>
+                )}
+              </Button>
+              <Button
+                onPress={handleDeleteAccount}
+                variant="outline"
+                disabled={isUpdating}
+              >
+                {isDeleting ? (
+                  <ActivityIndicator color="white" />
+                ) : (
+                  <Text className="text-red-500">Eliminar Cuenta</Text>
+                )}
+              </Button>
+            </View>
           </View>
         </View>
       </SafeAreaView>
