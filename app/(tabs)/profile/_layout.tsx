@@ -54,15 +54,7 @@ export default function Layout() {
           headerLargeTitle: true,
         }}
       />
-      <Stack.Screen
-        name="contact"
-        options={{
-          title: "Contáctanos",
-          headerBackTitle: "Perfil",
-          headerTransparent: true,
-          headerLargeTitle: true,
-        }}
-      />
+
       <Stack.Screen
         name="personal-info"
         options={{

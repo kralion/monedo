@@ -4,11 +4,12 @@ import {
   Bell,
   LogOut,
   Phone,
+  SmartphoneNfc,
   Unlock,
   User,
   UserSquare2,
 } from "lucide-react-native";
-import { View } from "react-native";
+import { Linking, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
@@ -81,15 +82,6 @@ export default function ProfileScreen() {
         </Button>
 
         <Button
-          onPress={() => router.push("/(tabs)/profile/contact")}
-          size="lg"
-          variant="ghost"
-          className="flex flex-row gap-3 px-5"
-        >
-          <Phone color="black" />
-          <Text>Contacto</Text>
-        </Button>
-        <Button
           onPress={() => router.push("/(tabs)/profile/notifications")}
           size="lg"
           variant="ghost"
@@ -97,6 +89,15 @@ export default function ProfileScreen() {
         >
           <Bell color="black" />
           <Text>Notificaciones</Text>
+        </Button>
+        <Button
+          onPress={() => Linking.openURL("https://cal.com/brayanpaucar/monedo")}
+          size="lg"
+          variant="ghost"
+          className="flex flex-row gap-3 px-5"
+        >
+          <SmartphoneNfc color="black" />
+          <Text>Soporte</Text>
         </Button>
         <Button
           onPress={() => {
