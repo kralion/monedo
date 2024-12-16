@@ -2,11 +2,12 @@ import Card from "@/components/dashboard/card";
 import { Expense } from "@/components/shared/expense";
 import { useExpenseContext } from "@/context";
 import { useAuth, useUser } from "@clerk/clerk-expo";
+import NoData2Svg from "@/assets/svgs/no-data.svg";
 import { FlashList } from "@shopify/flash-list";
 import { router } from "expo-router";
 import { ChevronUp, Lock } from "lucide-react-native";
 import * as React from "react";
-import { Animated as AnimatedRN, ScrollView, View } from "react-native";
+import { ActivityIndicator, ScrollView, View } from "react-native";
 import Animated, {
   useAnimatedRef,
   useAnimatedStyle,
@@ -18,8 +19,7 @@ import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 
 export default function Home() {
-  const fadeAnim = React.useRef(new AnimatedRN.Value(1)).current;
-  const { expenses, getExpensesByUser } = useExpenseContext();
+  const { expenses, getExpensesByUser, loading } = useExpenseContext();
   const { user, isSignedIn } = useUser();
   const { has } = useAuth();
   const [showAll, setShowAll] = React.useState(false);
@@ -28,23 +28,15 @@ export default function Home() {
   }
 
   React.useEffect(() => {
-    AnimatedRN.timing(fadeAnim, {
-      toValue: showAll ? 1 : 0,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
-  }, [showAll]);
-
-  React.useEffect(() => {
     getExpensesByUser(user.id);
-  }, [expenses, user]);
+  }, [user]);
 
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollHandler = useScrollViewOffset(scrollRef);
 
   const buttonStyle = useAnimatedStyle(() => {
     return {
-      opacity: scrollHandler.value > 5 ? withTiming(1) : withTiming(0),
+      opacity: scrollHandler.value > 2 ? withTiming(1) : withTiming(0),
     };
   });
   function scrollToTop() {
@@ -62,15 +54,8 @@ export default function Home() {
   return (
     <View>
       {showAll ? (
-        //TODO: Change the opacity to another value, primarily it was fadeAnim but it was causing bugs
         <Animated.View style={{ opacity: 60 }}>
-          <SafeAreaView
-            style={{
-              paddingTop: 14,
-              paddingHorizontal: 16,
-              paddingBottom: 20,
-            }}
-          >
+          <SafeAreaView className="p-4">
             <View className="flex flex-col gap-5">
               <View className="flex flex-row justify-between items-center">
                 <Text className="text-xl font-bold">Gastos Recientes</Text>
@@ -149,9 +134,21 @@ export default function Home() {
                   Ver Todos
                 </Text>
               </View>
-              {/* TODO: Add loading indicator */}
 
-              {/* {isLoading && <ActivityIndicator size="large" className="mt-5" />} */}
+              {loading && <ActivityIndicator size="large" className="mt-5" />}
+              {expenses.length === 0 && (
+                <View className="flex flex-col items-center justify-center  ">
+                  <NoData2Svg width={150} height={150} />
+                  <View>
+                    <Text className="text-center text-xl text-muted-foreground">
+                      No hay gastos registrados
+                    </Text>
+                    <Text className="text-center text-sm text-muted-foreground">
+                      Haz click en el botón "+" para registrar un gasto
+                    </Text>
+                  </View>
+                </View>
+              )}
               <FlashList
                 data={expenses}
                 estimatedItemSize={200}
@@ -160,27 +157,17 @@ export default function Home() {
                 )}
               />
             </View>
+            <Animated.View style={[buttonStyle]}>
+              <Button
+                onPress={scrollToTop}
+                size="icon"
+                className="w-10 rounded-full absolute z-50 right-4 bottom-4"
+                variant="outline"
+              >
+                <ChevronUp color="gray" />
+              </Button>
+            </Animated.View>
           </ScrollView>
-          {/*
-          // TODO: Add scroll to top button
-          <Animated.View
-            style={[
-              buttonStyle,
-              {
-                position: "absolute",
-                bottom: 0,
-                left: 0,
-                right: 0,
-              },
-            ]}
-          >
-            <Button
-              style={{ borderRadius: 20, padding: 10 }}
-              onPress={scrollToTop}
-            >
-              <ChevronUp />
-            </Button>
-          </Animated.View> */}
         </>
       )}
     </View>

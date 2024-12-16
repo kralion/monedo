@@ -13,7 +13,7 @@ export interface IExpense {
   id: string;
   amount: number;
   number: number;
-  date: Date;
+  date: Date | string;
   category: string;
   periodicity: boolean;
   currency: string;
@@ -46,16 +46,22 @@ export interface IBudgetContextProvider {
 
 export interface IExpenseContextProvider {
   addExpense: (expense: IExpense) => void;
-  weeklyExpenses: IExpense[];
   getWeeklyExpenses: () => Promise<IExpense[]>;
   deleteExpense: (id: string) => void;
+  loading: boolean;
   expense: IExpense;
   expenses: IExpense[];
   getExpenseById: (id: string) => Promise<IExpense>;
   updateExpense: (expense: IExpense) => void;
   getExpensesByUser: (id: string) => Promise<IExpense[]>;
   sumOfAllOfExpensesMonthly: () => Promise<number>;
-  getTopExpenses: () => Promise<IExpense[]>;
+  getTopExpenses: ({
+    startTimeOfQuery,
+    endTimeOfQuery,
+  }: {
+    startTimeOfQuery: Date;
+    endTimeOfQuery: Date;
+  }) => Promise<IExpense[] | null>;
   getRecentExpenses: () => Promise<IExpense[]>;
   getExpensesByPeriodicity: () => Promise<IExpense[]>;
 }

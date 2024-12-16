@@ -1,5 +1,7 @@
 import { Budget } from "@/components/wallet/budget";
 import { useBudgetContext } from "@/context";
+import NoData2Svg from "@/assets/svgs/no-data.svg";
+
 import { useUser } from "@clerk/clerk-expo";
 import { useHeaderHeight } from "@react-navigation/elements";
 import { FlashList } from "@shopify/flash-list";
@@ -27,7 +29,7 @@ type TBudget = {
 
 export default function Wallet() {
   const [showSavingGoalModal, setShowSavingGoalModal] = useState(false);
-  const { budgets, getBudgets } = useBudgetContext();
+  const { budgets, getBudgets, loading } = useBudgetContext();
   const supabase = createClerkSupabaseClient();
   const {
     control,
@@ -154,31 +156,26 @@ export default function Wallet() {
               /> */}
             </>
           )}
-          <React.Suspense
-            fallback={
-              <ActivityIndicator size="large" className="mx-auto mt-5 " />
-            }
-          >
-            {budgets && budgets.length > 0 ? (
-              <FlashList
-                data={budgets}
-                estimatedItemSize={100}
-                renderItem={({ item }) => <Budget budget={item} />}
-              />
-            ) : (
-              <View className="flex flex-col items-center justify-center gap-2 mt-10">
-                <Inbox size={100} color="gray" strokeWidth={1} />
-                <View>
-                  <Text className="text-center text-xl text-muted-foreground">
-                    No hay presupuestos
-                  </Text>
-                  <Text className="text-center text-sm text-muted-foreground">
-                    Completa el formulario y registra uno.
-                  </Text>
-                </View>
+          {loading && <ActivityIndicator size="large" className="mt-5" />}
+          {budgets.length === 0 && (
+            <View className="flex flex-col items-center justify-center  ">
+              <NoData2Svg width={150} height={150} />
+              <View>
+                <Text className="text-center text-xl text-muted-foreground">
+                  No hay presupuestos registrados
+                </Text>
+                <Text className="text-center text-sm text-muted-foreground">
+                  Rellena el formulario y registra uno para el mes actual.
+                </Text>
               </View>
-            )}
-          </React.Suspense>
+            </View>
+          )}
+
+          <FlashList
+            data={budgets}
+            estimatedItemSize={100}
+            renderItem={({ item }) => <Budget budget={item} />}
+          />
         </View>
       </ScrollView>
       <Animated.View

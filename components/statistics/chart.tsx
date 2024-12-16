@@ -1,61 +1,22 @@
 // import NoDataAsset from "@/assets/svgs/no-data.svg";
 import { useExpenseContext } from "@/context";
 import { useUser } from "@clerk/clerk-expo";
-import {
-  endOfDay,
-  endOfMonth,
-  endOfWeek,
-  endOfYear,
-  format,
-  startOfDay,
-  startOfMonth,
-  startOfWeek,
-  startOfYear,
-} from "date-fns";
+import { format } from "date-fns";
+import { LineChartIcon } from "lucide-react-native";
 import React from "react";
 import { View } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
 import { Text } from "../ui/text";
-import { LineChartIcon } from "lucide-react-native";
-import { createClerkSupabaseClient } from "~/lib/supabase";
 
-async function getExpensesDataByTimelineQuery(timelineQuery: string) {
-  const supabase = createClerkSupabaseClient();
-  let startDate, endDate;
-  switch (timelineQuery) {
-    case "hoy":
-      startDate = startOfDay(new Date()).toISOString();
-      endDate = endOfDay(new Date()).toISOString();
-      break;
-    case "diario":
-      startDate = startOfWeek(new Date(), { weekStartsOn: 1 }).toISOString();
-      endDate = endOfWeek(new Date(), { weekStartsOn: 1 }).toISOString();
-      break;
-    case "semanal":
-      startDate = startOfMonth(new Date()).toISOString();
-      endDate = endOfMonth(new Date()).toISOString();
-      break;
-    case "mensual":
-      startDate = startOfYear(new Date()).toISOString();
-      endDate = endOfYear(new Date()).toISOString();
-      break;
-    default:
-      throw new Error(`Invalid timelineQuery: ${timelineQuery}`);
-  }
-  const { data, error } = await supabase
-    .from("expenses")
-    .select("*")
-    .gte("fecha", startDate)
-    .lt("fecha", endDate);
-  if (error) {
-    console.log("Error al obtener los datos de la base de datos", error);
-    return [];
-  }
-
-  return data;
-}
-
-export default function Chart({ timelineQuery }: { timelineQuery: string }) {
+type ChartProps = {
+  timelineQuery: {
+    value: string;
+    label: string;
+    startTimeOfQuery: Date;
+    endTimeOfQuery: Date;
+  };
+};
+export default function Chart({ timelineQuery }: ChartProps) {
   const { user: userData } = useUser();
   const dataSample = [
     { value: 15, label: "L" },
@@ -74,7 +35,7 @@ export default function Chart({ timelineQuery }: { timelineQuery: string }) {
     }
   }, [userData, getExpensesByUser]);
   let labels;
-  switch (timelineQuery) {
+  switch (timelineQuery.value) {
     case "hoy":
       labels = ["05:00", "08:00", "11:00", "13:00", "17:00", "20:00", "24:00"];
       break;

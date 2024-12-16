@@ -1,68 +1,79 @@
+import NoData2Svg from "@/assets/svgs/no-data.svg";
 import { Expense } from "@/components/shared/expense";
 import Chart from "@/components/statistics/chart";
 import { useExpenseContext } from "@/context";
 import { FlashList } from "@shopify/flash-list";
+import { parseISO } from "date-fns";
 import { router } from "expo-router";
 import { Download } from "lucide-react-native";
 import * as React from "react";
 import { useState } from "react";
-import { Animated, ScrollView, View } from "react-native";
+import { ActivityIndicator, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { Text } from "~/components/ui/text";
-
-const items = [
-  { name: "Top Gastos" },
-  { name: "Periódicos" },
-  { name: "Recientes" },
-];
+import { IExpense } from "~/interfaces";
+import { getDateRange } from "~/lib/rangeDate";
 
 export default function Statistics() {
-  const [queryType, setQueryType] = useState("recientes");
-  const [timelineQuery, setTimelineQuery] = useState("semanal");
-  const {
-    getTopExpenses,
-    getRecentExpenses,
-    getExpensesByPeriodicity,
-    expenses,
-  } = useExpenseContext();
-  const [showAll, setShowAll] = React.useState(false);
-  const fadeAnim = React.useRef(new Animated.Value(1)).current;
-
-  const fetchRecentExpenses = async () => {
-    await getRecentExpenses();
-  };
-  const fetchTopExpenses = async () => {
-    await getTopExpenses();
-  };
-  const fetchExpensesByPeriodicity = async () => {
-    await getExpensesByPeriodicity();
-  };
-  React.useEffect(() => {
-    if (queryType === "recientes") {
-      fetchRecentExpenses();
-    } else if (queryType === "top-gastos") {
-      fetchTopExpenses();
-    } else if (queryType === "periódicos") {
-      fetchExpensesByPeriodicity();
-    }
-  }, [queryType]);
-  React.useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: showAll ? 1 : 0,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
-  }, [showAll]);
-
+  const [topExpenses, setTopExpenses] = useState<IExpense[]>([]);
+  const [loading, setLoading] = useState(false);
+  const { getTopExpenses } = useExpenseContext();
+  const [timelineQuery, setTimelineQuery] = useState({
+    value: "diario",
+    label: "Diario",
+    ...getDateRange("diario"),
+  });
   const queryFilters = [
-    { value: "diario", label: "Diario" },
-    { value: "semanal", label: "Semanal" },
-    { value: "mensual", label: "Mensual" },
-    { value: "hoy", label: "Hoy" },
+    {
+      value: "hoy",
+      label: "Hoy",
+      ...getDateRange("hoy"),
+    },
+    {
+      value: "diario",
+      label: "Diario",
+      ...getDateRange("diario"),
+    },
+    {
+      value: "semanal",
+      label: "Semanal",
+      ...getDateRange("semanal"),
+    },
+    {
+      value: "mensual",
+      label: "Mensual",
+      ...getDateRange("mensual"),
+    },
   ];
 
+  const fetchTopExpenses = async () => {
+    setLoading(true);
+    try {
+      const expenses = await getTopExpenses({
+        startTimeOfQuery: timelineQuery.startTimeOfQuery,
+        endTimeOfQuery: timelineQuery.endTimeOfQuery,
+      });
+      if (!expenses) return;
+
+      const processedExpenses = expenses.map((expense) => ({
+        ...expense,
+        parsedDate: parseISO(expense.date as string),
+      }));
+
+      setTopExpenses(processedExpenses);
+    } catch (error) {
+      console.error("Error in fetchTopExpenses:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  React.useEffect(() => {
+    fetchTopExpenses();
+    console.log("useEffect fired");
+  }, [timelineQuery]);
   return (
     <SafeAreaView className="py-4">
       <View className="flex flex-col gap-8">
@@ -84,11 +95,18 @@ export default function Statistics() {
             <Download color="#27BE8B" size={20} />
           </Button>
         </View>
-        <View className="flex flex-col gap-5">
+        <View className="flex flex-col gap-4">
           <FlashList
             data={queryFilters}
             renderItem={({ item }) => (
-              <Button className="rounded-full ml-4 px-6" size="sm">
+              <Button
+                className="rounded-full ml-4 px-6"
+                size="sm"
+                variant={
+                  timelineQuery.value === item.value ? "default" : "outline"
+                }
+                onPress={() => setTimelineQuery(item)}
+              >
                 <Text>{item.label}</Text>
               </Button>
             )}
@@ -103,10 +121,24 @@ export default function Statistics() {
         <View className="flex flex-col gap-4 justify-center mt-10 min-h-screen-safe">
           <Chart timelineQuery={timelineQuery} />
           <Text className="text-xl font-bold mx-4  mt-12">Top Gastos</Text>
+          {loading && <ActivityIndicator size="large" className="mt-5" />}
+          {topExpenses.length === 0 && (
+            <View className="flex flex-col items-center justify-center  ">
+              <NoData2Svg width={150} height={150} />
+              <View>
+                <Text className="text-center text-xl text-muted-foreground">
+                  Sin datos
+                </Text>
+                <Text className="text-center text-sm text-muted-foreground">
+                  Para este filtro no hay gastos registrados aún
+                </Text>
+              </View>
+            </View>
+          )}
           <FlashList
             //TODO: This expenses data should be dinamic and show the top expenses only maybe limit to 12 items
             contentContainerStyle={{ paddingHorizontal: 16 }}
-            data={expenses}
+            data={topExpenses}
             renderItem={({ item: expense }) => {
               return <Expense expense={expense} />;
             }}

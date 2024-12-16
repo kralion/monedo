@@ -1,4 +1,4 @@
-import { endOfMonth, formatISO, startOfMonth } from "date-fns";
+import { endOfMonth, formatISO, set, startOfMonth } from "date-fns";
 import * as React from "react";
 import { createContext, useContext } from "react";
 import { IExpenseContextProvider, IExpense } from "@/interfaces";
@@ -8,9 +8,9 @@ import { createClerkSupabaseClient } from "~/lib/supabase";
 export const ExpenseContext = createContext<IExpenseContextProvider>({
   addExpense: () => {},
   updateExpense: () => {},
+  loading: false,
   sumOfAllOfExpensesMonthly: async () => 0,
   getExpenseById: async (id: string): Promise<IExpense> => ({} as IExpense),
-  weeklyExpenses: [],
   getWeeklyExpenses: async (): Promise<IExpense[]> => [],
   getExpensesByUser: async (id: string) => [],
   expenses: [],
@@ -28,24 +28,27 @@ export const ExpenseContextProvider = ({
 }) => {
   const [expenses, setExpenses] = React.useState<IExpense[]>([]);
   const [expense, setExpense] = React.useState<IExpense>({} as IExpense);
+  const [loading, setLoading] = React.useState(false);
   const supabase = createClerkSupabaseClient();
-  const [weeklyExpenses, setWeeklyExpenses] = React.useState<IExpense[]>([]);
   const { user } = useUser();
   const addExpense = async (expense: IExpense) => {
     await supabase.from("expenses").insert(expense);
   };
 
   async function getExpensesByUser(id: string) {
+    setLoading(true);
     const { data, error } = await supabase
       .from("expenses")
       .select("*")
       .eq("user_id", id);
     if (error) throw error;
-    setExpenses(JSON.parse(JSON.stringify(data)));
+    setExpenses(data);
+    setLoading(false);
     return data;
   }
 
   async function getWeeklyExpenses() {
+    setLoading(true);
     const { data, error } = await supabase
       .from("expenses")
       .select("*")
@@ -53,7 +56,7 @@ export const ExpenseContextProvider = ({
       .order("date", { ascending: false });
     // .limit(7);
     if (error) throw error;
-    setWeeklyExpenses(data);
+    setLoading(false);
     return data;
   }
 
@@ -84,47 +87,72 @@ export const ExpenseContextProvider = ({
   }
 
   const updateExpense = async (expense: IExpense) => {
+    setLoading(true);
     await supabase.from("expenses").update(expense).eq("id", expense.id);
+    setLoading(false);
   };
 
   const deleteExpense = async (id: string) => {
+    setLoading(true);
     const { error } = await supabase.from("expenses").delete().eq("id", id);
     if (error) throw error;
+    setLoading(false);
     console.log("Expense deleted", error);
   };
 
-  async function getTopExpenses() {
-    const { data: expenses, error } = await supabase
-      .from("expenses")
-      .select("*")
-      .eq("user_id", user?.id)
-      .order("amount", { ascending: false })
-      .limit(15);
-    if (!expenses) return [];
-    return expenses;
+  async function getTopExpenses({
+    startTimeOfQuery,
+    endTimeOfQuery,
+  }: {
+    startTimeOfQuery: Date;
+    endTimeOfQuery: Date;
+  }) {
+    setLoading(true);
+    try {
+      const { data } = await supabase
+        .from("expenses")
+        .select("*")
+        .eq("user_id", user?.id)
+        .gte("date", startTimeOfQuery.toISOString())
+        .lte("date", endTimeOfQuery.toISOString())
+        .order("amount", { ascending: false })
+        .limit(15);
+      return data;
+    } catch (error) {
+      console.log("ERROR in getTopExpenses", error);
+      return [];
+    } finally {
+      setLoading(false);
+    }
+    setLoading(false);
   }
   async function getRecentExpenses() {
-    const { data: expenses, error } = await supabase
+    setLoading(true);
+    const { data } = await supabase
       .from("expenses")
       .select("*")
       .eq("user_id", user?.id)
       .order("date", { ascending: false })
       .limit(15);
-    if (!expenses) return [];
-    return expenses;
+    setLoading(false);
+    if (!data) return [];
+    return data;
   }
   async function getExpensesByPeriodicity() {
-    const { data: expenses, error } = await supabase
+    setLoading(true);
+    const { data } = await supabase
       .from("expenses")
       .select("*")
       .eq("user_id", user?.id)
       .eq("periodicity", true)
       .limit(15);
-    if (!expenses) return [];
-    return expenses;
+    setLoading(false);
+    if (!data) return [];
+    return data;
   }
 
   async function getExpenseById(id: string) {
+    setLoading(true);
     const { data, error } = await supabase
       .from("expenses")
       .select("*")
@@ -132,6 +160,7 @@ export const ExpenseContextProvider = ({
       .single();
     if (error) throw error;
     setExpense(data);
+    setLoading(false);
     return data;
   }
   return (
@@ -139,8 +168,8 @@ export const ExpenseContextProvider = ({
       value={{
         getExpensesByUser,
         expenses,
+        loading,
         deleteExpense,
-        weeklyExpenses,
         getWeeklyExpenses,
         getExpenseById,
         addExpense,

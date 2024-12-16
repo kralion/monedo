@@ -17,15 +17,11 @@ import { Text } from "~/components/ui/text";
 import { useBudgetContext } from "~/context";
 
 export default function BudgetDetails() {
-  const [isLoading, setIsLoading] = React.useState(false);
-  const { deleteBudget, budget, getBudgetById } = useBudgetContext();
+  const { deleteBudget, budget, getBudgetById, loading } = useBudgetContext();
   const [isOpen, setIsOpen] = React.useState(false);
   const params = useLocalSearchParams<{ id: string }>();
   const handleDeleteBudget = async (id: string) => {
-    setIsLoading(true);
     deleteBudget(id);
-    setIsLoading(false);
-    // toast.show("Gasto eliminado");
     router.push("/(tabs)/wallet");
     setIsOpen(false);
   };
@@ -49,6 +45,11 @@ export default function BudgetDetails() {
 
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
+      {loading && (
+        <View className="flex flex-col justify-center items-center min-h-full">
+          <ActivityIndicator size="large" />
+        </View>
+      )}
       <View className="flex flex-col gap-4 p-4">
         <AlertDialog open={isOpen}>
           <AlertDialogContent key="content">
@@ -75,11 +76,6 @@ export default function BudgetDetails() {
           </AlertDialogContent>
         </AlertDialog>
         <ScrollView>
-          {isLoading && (
-            <View className="flex flex-col justify-center items-center min-h-full">
-              <ActivityIndicator size="large" />
-            </View>
-          )}
           <View className="flex flex-col gap-8">
             <View className="flex flex-col gap-4">
               <Image

@@ -21,15 +21,12 @@ import { Text } from "~/components/ui/text";
 import { expensesIdentifiers } from "~/constants/ExpensesIdentifiers";
 
 export default function ExpenseDetails() {
-  const [isLoading, setIsLoading] = React.useState(false);
-  const { deleteExpense, expense, getExpenseById } = useExpenseContext();
+  const { deleteExpense, expense, getExpenseById, loading } =
+    useExpenseContext();
   const [isOpen, setIsOpen] = React.useState(false);
   const params = useLocalSearchParams<{ id: string }>();
   const handleDeleteExpense = async (id: string) => {
-    setIsLoading(true);
     deleteExpense(id);
-    setIsLoading(false);
-    // toast.show("Gasto eliminado");
     router.push("/(tabs)");
     setIsOpen(false);
   };
@@ -45,8 +42,6 @@ export default function ExpenseDetails() {
       (icon) => icon.label.toLowerCase() === expense.category
     )?.iconHref ||
     "https://img.icons8.com/?size=160&id=MjAYkOMsbYOO&format=png";
-
-  if (!expense) return null;
 
   //TODO: Cambiar este valor por el monto presupuestado del mes actual
   const monto_presupuestado = 1000;
@@ -80,7 +75,7 @@ export default function ExpenseDetails() {
           </AlertDialogContent>
         </AlertDialog>
         <ScrollView>
-          {isLoading && (
+          {loading && (
             <View className="flex flex-col justify-center items-center min-h-full">
               <ActivityIndicator size="large" />
             </View>
