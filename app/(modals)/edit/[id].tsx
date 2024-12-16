@@ -5,6 +5,7 @@ import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
+  Alert,
   Keyboard,
   SafeAreaView,
   ScrollView,
@@ -27,6 +28,7 @@ import { Switch } from "~/components/ui/switch";
 import { Text } from "~/components/ui/text";
 import { Textarea } from "~/components/ui/textarea";
 import { createClerkSupabaseClient } from "~/lib/supabase";
+import { toast } from "sonner-native";
 
 interface IGasto {
   description: string;
@@ -52,7 +54,7 @@ const items = [
 export default function EditExpense() {
   const { id } = useLocalSearchParams();
   const supabase = createClerkSupabaseClient();
-  const { expense } = useExpenseContext();
+  const { expense, deleteExpense, updateExpense } = useExpenseContext();
   const [isLoading, setIsLoading] = React.useState(false);
   const {
     control,
@@ -64,9 +66,7 @@ export default function EditExpense() {
     defaultValues: {
       description: expense.description,
       amount: expense.amount,
-      category: {
-        value: expense.category,
-      },
+      category: expense.category.value,
       periodicity: expense.periodicity,
       currency: expense.currency,
     },
@@ -77,22 +77,39 @@ export default function EditExpense() {
     year: "numeric",
   });
 
+  const handleDeleteExpense = () => {
+    Alert.alert(
+      "¿Estás seguro?",
+      "Esta acción eliminará el gasto seleccionado y no se puede deshacer",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Eliminar Gasto",
+          onPress: () => deleteExpense(id as string),
+          style: "destructive",
+        },
+      ],
+      { cancelable: false }
+    );
+  };
+
   // TODO: Multiple renders
   console.log(expense);
-  async function onSubmit(data: IGasto) {
+  async function onSubmit(data: IExpensePOST) {
     setIsLoading(true);
     try {
-      await supabase.from("expenses").update({
+      updateExpense({
         ...data,
-        category: data.category.value,
+        amount: Number(data.amount),
       });
+      reset();
     } catch (error) {
       console.log(error);
     }
-    setValue("category", {
-      label: "",
-      value: "",
-    });
+    setValue("category", "Hogar");
     setValue("amount", 0);
     setValue("currency", "Soles");
     setValue("periodicity", false);
@@ -122,10 +139,7 @@ export default function EditExpense() {
                   <View className="flex flex-col gap-2">
                     <Label>Categoría</Label>
                     <Select
-                      defaultValue={{
-                        value: expense.category,
-                        label: expense.category,
-                      }}
+                      defaultValue={expense.category}
                       onValueChange={onChange}
                     >
                       <SelectTrigger>
@@ -267,6 +281,13 @@ export default function EditExpense() {
                   ) : (
                     <Text>Guardar Cambios</Text>
                   )}
+                </Button>
+                <Button
+                  onPress={handleDeleteExpense}
+                  size="lg"
+                  variant="outline"
+                >
+                  <Text className="text-red-500">Eliminar Gasto</Text>
                 </Button>
               </View>
             </View>

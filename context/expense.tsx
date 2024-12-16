@@ -1,8 +1,11 @@
-import { endOfMonth, formatISO, set, startOfMonth } from "date-fns";
+import { IExpense, IExpenseContextProvider, IExpensePOST } from "@/interfaces";
+import { useUser } from "@clerk/clerk-expo";
+import { endOfMonth, formatISO, startOfMonth } from "date-fns";
+import { router } from "expo-router";
+import { CheckCircle } from "lucide-react-native";
 import * as React from "react";
 import { createContext, useContext } from "react";
-import { IExpenseContextProvider, IExpense } from "@/interfaces";
-import { useUser } from "@clerk/clerk-expo";
+import { toast } from "sonner-native";
 import { createClerkSupabaseClient } from "~/lib/supabase";
 
 export const ExpenseContext = createContext<IExpenseContextProvider>({
@@ -18,7 +21,7 @@ export const ExpenseContext = createContext<IExpenseContextProvider>({
   getTopExpenses: async (): Promise<IExpense[]> => [],
   getRecentExpenses: async (): Promise<IExpense[]> => [],
   getExpensesByPeriodicity: async (): Promise<IExpense[]> => [],
-  deleteExpense: () => {},
+  deleteExpense: async () => {},
 });
 
 export const ExpenseContextProvider = ({
@@ -31,8 +34,16 @@ export const ExpenseContextProvider = ({
   const [loading, setLoading] = React.useState(false);
   const supabase = createClerkSupabaseClient();
   const { user } = useUser();
-  const addExpense = async (expense: IExpense) => {
-    await supabase.from("expenses").insert(expense);
+  const addExpense = async (expense: IExpensePOST) => {
+    setLoading(true);
+    const { error } = await supabase.from("expenses").insert(expense);
+    if (error) {
+      throw error;
+    }
+    toast.success("Gasto agregado exitosamente", {
+      icon: <CheckCircle color="green" size={20} />,
+    });
+    setLoading(false);
   };
 
   async function getExpensesByUser(id: string) {
@@ -42,6 +53,7 @@ export const ExpenseContextProvider = ({
       .select("*")
       .eq("user_id", id);
     if (error) throw error;
+
     setExpenses(data);
     setLoading(false);
     return data;
@@ -86,18 +98,26 @@ export const ExpenseContextProvider = ({
     return 0;
   }
 
-  const updateExpense = async (expense: IExpense) => {
+  const updateExpense = async (expense: IExpensePOST) => {
     setLoading(true);
     await supabase.from("expenses").update(expense).eq("id", expense.id);
+    toast.success("Gasto actualizado exitosamente", {
+      icon: <CheckCircle color="green" size={20} />,
+    });
     setLoading(false);
   };
 
   const deleteExpense = async (id: string) => {
     setLoading(true);
     const { error } = await supabase.from("expenses").delete().eq("id", id);
-    if (error) throw error;
+    if (error) {
+      throw error;
+    }
+    toast.success("Gasto eliminado exitosamente", {
+      icon: <CheckCircle color="red" size={20} />,
+    });
+    router.push("/(tabs)");
     setLoading(false);
-    console.log("Expense deleted", error);
   };
 
   async function getTopExpenses({
@@ -124,7 +144,6 @@ export const ExpenseContextProvider = ({
     } finally {
       setLoading(false);
     }
-    setLoading(false);
   }
   async function getRecentExpenses() {
     setLoading(true);

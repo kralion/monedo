@@ -1,10 +1,10 @@
 export interface IExpensePOST {
   description: string;
+  id: string;
   amount: number;
-  category: {
-    label: string;
-    value: string;
-  };
+  number: number;
+  date: Date | string;
+  category: string;
   periodicity: boolean;
   currency: string;
 }
@@ -14,7 +14,10 @@ export interface IExpense {
   amount: number;
   number: number;
   date: Date | string;
-  category: string;
+  category: {
+    label: string;
+    value: string;
+  };
   periodicity: boolean;
   currency: string;
 }
@@ -38,21 +41,21 @@ export interface IBudgetContextProvider {
   budgets: IBudget[];
   getBudgetById: (id: string) => Promise<IBudget>;
   budget: IBudget;
-  getMonthlyBudget: () => Promise<number>;
+  getCurrentBudget: () => Promise<IBudget | null>;
   updateBudget: (budget: IBudget) => void;
   deleteBudget: (id: string) => void;
   getBudgets: (id: string) => Promise<IBudget[] | null>;
 }
 
 export interface IExpenseContextProvider {
-  addExpense: (expense: IExpense) => void;
+  addExpense: (expense: IExpensePOST) => void;
   getWeeklyExpenses: () => Promise<IExpense[]>;
   deleteExpense: (id: string) => void;
   loading: boolean;
   expense: IExpense;
   expenses: IExpense[];
   getExpenseById: (id: string) => Promise<IExpense>;
-  updateExpense: (expense: IExpense) => void;
+  updateExpense: (expense: IExpensePOST) => void;
   getExpensesByUser: (id: string) => Promise<IExpense[]>;
   sumOfAllOfExpensesMonthly: () => Promise<number>;
   getTopExpenses: ({

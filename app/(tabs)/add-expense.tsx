@@ -1,5 +1,5 @@
-import AddExpenseSuccesModal from "@/components/popups/add-expense-sucess";
 import { useHeaderHeight } from "@react-navigation/elements";
+import { router } from "expo-router";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -26,26 +26,22 @@ import { Separator } from "~/components/ui/separator";
 import { Switch } from "~/components/ui/switch";
 import { Text } from "~/components/ui/text";
 import { Textarea } from "~/components/ui/textarea";
+import { useExpenseContext } from "~/context";
 import { IExpensePOST } from "~/interfaces";
-import { createClerkSupabaseClient } from "~/lib/supabase";
-import Toast from "~/components/shared/toast";
-import { router } from "expo-router";
 
 const items = [
-  { name: "Hogar" },
-  { name: "Transporte" },
-  { name: "Salud" },
-  { name: "Alimentacion" },
-  { name: "Finanzas" },
-  { name: "Educación" },
-  { name: "Personal" },
-  { name: "Casuales" },
+  { value: "Hogar" },
+  { value: "Transporte" },
+  { value: "Salud" },
+  { value: "Alimentacion" },
+  { value: "Finanzas" },
+  { value: "Educación" },
+  { value: "Personal" },
+  { value: "Casuales" },
 ];
 
 export default function AddExpense() {
-  const supabase = createClerkSupabaseClient();
-  const [toastVisible, setToastVisible] = React.useState(false);
-  const [isLoading, setIsLoading] = React.useState(false);
+  const { addExpense, loading } = useExpenseContext();
   const headerHeight = useHeaderHeight();
   const {
     control,
@@ -59,31 +55,16 @@ export default function AddExpense() {
       amount: 0,
       periodicity: false,
       description: "",
+      category: "Hogar",
     },
   });
 
   async function onSubmit(data: IExpensePOST) {
-    setIsLoading(true);
-    const TOAST_DISPLAY_DURATION = 2500;
-    try {
-      const { error } = await supabase.from("expenses").insert({
-        ...data,
-        amount: Number(data.amount),
-        category: data.category.value,
-      });
-
-      if (error) {
-        alert("Datos inválidos");
-      } else {
-        setToastVisible(true);
-        setTimeout(() => setToastVisible(false), TOAST_DISPLAY_DURATION);
-        reset();
-      }
-    } catch (error: any) {
-      alert(error.message || "Ocurrió un error inesperado.");
-    } finally {
-      setIsLoading(false);
-    }
+    addExpense({
+      ...data,
+      amount: Number(data.amount),
+    });
+    reset();
   }
 
   return (
@@ -94,11 +75,7 @@ export default function AddExpense() {
           openModal={openModal}
           setOpenModal={setOpenModal}
         /> */}
-        <Toast
-          message="Gasto agregado exitosamente"
-          visible={toastVisible}
-          type="success"
-        />
+
         <View className="flex flex-col">
           <View className="flex flex-col gap-6">
             <View className="flex flex-col px-4">
@@ -128,11 +105,11 @@ export default function AddExpense() {
                           {items.map((item, i) => {
                             return (
                               <SelectItem
-                                label={item.name}
-                                key={item.name}
-                                value={item.name.toLowerCase()}
+                                label={item.value}
+                                key={i}
+                                value={item.value.toLowerCase()}
                               >
-                                {item.name}
+                                {item.value}
                               </SelectItem>
                             );
                           })}
@@ -266,7 +243,7 @@ export default function AddExpense() {
               />
               <View className="flex flex-col gap-4">
                 <Button onPress={handleSubmit(onSubmit)} size="lg">
-                  {isLoading ? (
+                  {loading ? (
                     <ActivityIndicator size={20} color="white" />
                   ) : (
                     <Text>Registrar</Text>

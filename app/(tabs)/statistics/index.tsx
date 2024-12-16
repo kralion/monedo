@@ -72,7 +72,6 @@ export default function Statistics() {
 
   React.useEffect(() => {
     fetchTopExpenses();
-    console.log("useEffect fired");
   }, [timelineQuery]);
   return (
     <SafeAreaView className="py-4">

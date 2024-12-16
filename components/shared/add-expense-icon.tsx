@@ -63,7 +63,7 @@ export default function AddExpenseIcon() {
         ) : (
           <Button
             size="icon"
-            className="absolute -bottom-2 -right-9 rounded-full  h-auto w-auto p-4 shadow"
+            className="absolute -bottom-2 -right-9 rounded-full  h-auto w-auto p-4 shadow active:scale-105  active:opacity-70 "
             onPress={() => {
               balance <= 0
                 ? setShowModal(true)

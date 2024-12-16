@@ -12,9 +12,10 @@ import { IExpense } from "~/interfaces";
 export function Expense({ expense }: { expense: IExpense }) {
   const { category, amount, date } = expense;
   const formattedDate = date ? formatDate(new Date(date)) : "No date provided";
+
   const assetIndentificador =
     expensesIdentifiers.find(
-      (icon) => icon.label.toLowerCase() === expense.category
+      (icon) => icon.label.toLowerCase() === category.value
     )?.iconHref ||
     "https://img.icons8.com/?size=160&id=MjAYkOMsbYOO&format=png";
   return (
@@ -33,7 +34,7 @@ export function Expense({ expense }: { expense: IExpense }) {
               source={{ uri: assetIndentificador }}
             />
             <View className="card-title-details flex flex-col">
-              <Text className="text-xl font-semibold">{category}</Text>
+              <Text className="text-xl font-semibold">{category.label}</Text>
               <Text className="text-xs text-muted-foreground">
                 {formattedDate}
               </Text>

@@ -1,19 +1,19 @@
-import {
-  BudgetContextProvider,
-  ExpenseContextProvider,
-  GoalContextProvider,
-} from "@/context";
-
+import { BudgetContextProvider, ExpenseContextProvider } from "@/context";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { Toaster } from "sonner-native";
 export default function AppProvider({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <ExpenseContextProvider>
-      <GoalContextProvider>
-        <BudgetContextProvider>{children}</BudgetContextProvider>
-      </GoalContextProvider>
-    </ExpenseContextProvider>
+    <GestureHandlerRootView>
+      <ExpenseContextProvider>
+        <BudgetContextProvider>
+          <Toaster />
+          {children}
+        </BudgetContextProvider>
+      </ExpenseContextProvider>
+    </GestureHandlerRootView>
   );
 }

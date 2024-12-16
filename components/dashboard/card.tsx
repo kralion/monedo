@@ -13,7 +13,7 @@ export default function Card() {
   const [budget, setBudget] = React.useState(0);
   const { has } = useAuth();
   const { sumOfAllOfExpensesMonthly } = useExpenseContext();
-  const { getMonthlyBudget } = useBudgetContext();
+  const { getCurrentBudget } = useBudgetContext();
 
   async function calculateTotalMonthExpenses() {
     const total = await sumOfAllOfExpensesMonthly();
@@ -22,15 +22,16 @@ export default function Card() {
   }
 
   async function calculateBudget() {
-    const budget = await getMonthlyBudget();
-    setBudget(budget);
+    const budget = await getCurrentBudget();
+    setBudget(budget?.amount ?? 0);
     return budget;
   }
 
   async function calculateBalance() {
     const total = await calculateTotalMonthExpenses();
     const presupuesto = await calculateBudget();
-    setBalance(presupuesto - total);
+    if (!presupuesto) return;
+    setBalance(presupuesto?.amount - total);
   }
 
   React.useEffect(() => {
@@ -80,7 +81,7 @@ export default function Card() {
                 }
                 `}
           >
-            <Text>
+            <Text className="text-white">
               {has?.({ permission: "premium:plan" })
                 ? "Cuenta Premium"
                 : "Cuenta Free"}
@@ -101,7 +102,7 @@ export default function Card() {
             <View className="flex flex-row">
               <Text className="text-white">Presupuesto</Text>
             </View>
-            <Text className="text-xl text-white">S/. {budget.toFixed(2)}</Text>
+            <Text className="text-xl text-white">S/. {budget}</Text>
           </View>
         </View>
       </LinearGradient>

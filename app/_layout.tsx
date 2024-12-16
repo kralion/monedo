@@ -12,17 +12,13 @@ import { PortalHost } from "@rn-primitives/portal";
 import { router, SplashScreen, Stack } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
-import { X } from "lucide-react-native";
 import * as React from "react";
-import { Platform, TouchableOpacity } from "react-native";
+import { Alert, Button as NativeButton, Platform } from "react-native";
+import { useExpenseContext } from "~/context";
+import AppProvider from "~/context/provider";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
 import { NAV_THEME } from "~/lib/constants";
 import { useColorScheme } from "~/lib/useColorScheme";
-import { Button } from "~/components/ui/button";
-import { Button as NativeButton } from "react-native";
-import { Text } from "~/components/ui/text";
-import { useExpenseContext } from "~/context";
-import AppProvider from "~/context/provider";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -127,7 +123,6 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const { isLoaded, isSignedIn } = useAuth();
-  const { expense } = useExpenseContext();
 
   // Automatically open login if user is not authenticated
   React.useEffect(() => {
@@ -172,13 +167,6 @@ function RootLayoutNav() {
             headerBackVisible: true,
             headerShadowVisible: false,
             presentation: "card",
-            headerRight: () => (
-              <NativeButton
-                title="Eliminar"
-                color="#FF453A"
-                onPress={() => router.back()}
-              />
-            ),
           }}
         />
         <Stack.Screen
