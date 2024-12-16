@@ -1,5 +1,3 @@
-import { usePremiumStatusContext } from "@/context";
-import { supabase } from "@/lib/supabase";
 import { useUser } from "@clerk/clerk-expo";
 import { Loader } from "lucide-react-native";
 import React from "react";
@@ -21,10 +19,9 @@ interface ICard {
 }
 
 export default function Stripe() {
-  const { setIsPremium } = usePremiumStatusContext();
   const [showConfetti, setShowConfetti] = React.useState(false);
   const [isLoading, setIsLoading] = React.useState(false);
-  const { user: userData } = useUser();
+  const { user } = useUser();
   const {
     control,
     handleSubmit,
@@ -36,33 +33,13 @@ export default function Stripe() {
     },
   });
 
-  async function updateUserRole(userId: string | undefined) {
-    const { error } = await supabase
-      .from("usuarios")
-      .update({ rol: "free" })
-      .eq("id", userId);
-
-    if (error) {
-      console.error("Error updating user role:", error);
-    }
-  }
   async function onSubmit(data: ICard) {
     setIsLoading(true);
-    const createdAt = new Date();
-    const expiresAt = new Date(createdAt);
-    expiresAt.setMonth(createdAt.getMonth() + 1);
-    const { error } = await supabase.from("payments").insert({
-      usuario_id: userData?.id,
-      created_At: createdAt.toISOString(),
-      expires_At: expiresAt.toISOString(),
-      card_data: JSON.stringify(data),
+    user?.update({
+      unsafeMetadata: {
+        plan: "premium",
+      },
     });
-
-    await updateUserRole("972cf283-22e9-4224-bb76-3d5805884f1b");
-    if (error) {
-      console.error("Error inserting payment:", error);
-    }
-    setIsPremium(true);
     reset();
     setIsLoading(false);
     setShowConfetti(true);
@@ -177,7 +154,7 @@ export default function Stripe() {
         </Button>
       </View>
 
-      <Button onPress={() => setShowConfetti(true)} size="lg" className="mt-5">
+      <Button onPress={handleSubmit(onSubmit)} size="lg" className="mt-5">
         {isLoading ? (
           <Loader className="animate-spin text-white" size={20} />
         ) : (

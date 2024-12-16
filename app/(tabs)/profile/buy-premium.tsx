@@ -1,10 +1,8 @@
 import Stripe from "@/components/payment/stripe";
 import Yape from "@/components/payment/yape";
-import { useAuth, useUser } from "@clerk/clerk-expo";
-import { router } from "expo-router";
-import { X } from "lucide-react-native";
-import * as React from "react";
 import { useHeaderHeight } from "@react-navigation/elements";
+import { Image } from "expo-image";
+import * as React from "react";
 import {
   Animated as AnimatedRN,
   Dimensions,
@@ -12,21 +10,16 @@ import {
   View,
 } from "react-native";
 import { useSharedValue, withTiming } from "react-native-reanimated";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { Badge } from "~/components/ui/badge";
-import { Button } from "~/components/ui/button";
+import Carousel from "react-native-reanimated-carousel";
 import { Separator } from "~/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Text } from "~/components/ui/text";
 export default function BuyPremiumModal() {
   const [yapePaymentMethod, setYapePaymentMethod] = React.useState(false);
+  const width = Dimensions.get("window").width;
   const [cardPaymentMethod, setCardPaymentMethod] = React.useState(true);
   const [value, setValue] = React.useState("card");
   const screenWidth = Dimensions.get("window").width;
-  const { user: userData } = useUser();
-  const { has } = useAuth();
-
   const animation = useSharedValue(0);
   const handlePress = (index: number) => {
     animation.value = withTiming((index * screenWidth) / 2.3, {
@@ -62,41 +55,49 @@ export default function BuyPremiumModal() {
     setCardPaymentMethod(true);
     handlePress(0);
   };
+  const scrollOffsetValue = useSharedValue<number>(0);
   const headerHeight = useHeaderHeight();
+  const defaultDataWith6Colors = [
+    "#B0604D",
+    "#899F9C",
+    "#B3C680",
+    "#5C6265",
+    "#F5D399",
+    "#F1F1F1",
+  ];
 
   return (
     <ScrollView className="px-4" style={{ paddingTop: headerHeight + 16 }}>
       <View className="flex flex-col gap-6 ">
-        <View className="flex flex-row gap-4 items-center">
-          <Avatar alt="profile" className="bg-teal-600 w-32 h-32">
-            <AvatarImage
-              accessibilityLabel="avatar"
-              source={{ uri: userData?.imageUrl }}
-            />
-            <AvatarFallback className="bg-slate-500" />
-          </Avatar>
-          <View className="flex flex-col gap-2">
-            <Text className="font-bold text-xl">
-              {userData?.firstName} {userData?.lastName}
-            </Text>
-            <Badge
-              className={`
-                  ${
-                    has?.({ permission: "free:plan" })
-                      ? "bg-primary"
-                      : "bg-orange-500"
-                  }
-                  text-white py-2
-                  `}
-            >
-              <Text className="text-md">
-                {has?.({ permission: "free:plan" })
-                  ? "Cuenta Premium"
-                  : "Cuenta Free"}
-              </Text>
-            </Badge>
-          </View>
+        <View id="carousel-component">
+          <Carousel
+            loop
+            width={430}
+            height={width / 2}
+            pagingEnabled
+            defaultScrollOffsetValue={scrollOffsetValue}
+            data={defaultDataWith6Colors}
+            scrollAnimationDuration={1000}
+            onSnapToItem={(index) => console.log("current index:", index)}
+            renderItem={({ index }) => (
+              <View
+                style={{
+                  flex: 1,
+                  borderWidth: 1,
+                  justifyContent: "center",
+                }}
+              >
+                <Image
+                  source={{
+                    uri: "https://images.pexels.com/photos/29683927/pexels-photo-29683927/free-photo-of-historic-courtyard-architecture-in-arequipa-peru.jpeg?auto=compress&cs=tinysrgb&w=400&lazy=load",
+                  }}
+                  style={{ width: width, height: width / 2 }}
+                />
+              </View>
+            )}
+          />
         </View>
+
         <Separator className="text-gray-500" />
         <Text className="text-2xl font-bold ">Método de Pago</Text>
         <Tabs

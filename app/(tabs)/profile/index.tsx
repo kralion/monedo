@@ -37,7 +37,7 @@ export default function ProfileScreen() {
             <Badge
               className={` text-white py-2  rounded-full
                 bg-${
-                  has?.({ permission: "premium:plan" })
+                  has?.({ permission: "org:premium:plan" })
                     ? "green-500"
                     : "orange-500"
                 }
@@ -45,7 +45,7 @@ export default function ProfileScreen() {
             >
               <Text className="text-md">
                 {`Cuenta ${
-                  has?.({ permission: "premium:plan" }) ? "Premium" : "Free"
+                  has?.({ permission: "org:premium:plan" }) ? "Premium" : "Free"
                 }`}
               </Text>
             </Badge>
