@@ -110,7 +110,7 @@ export default function Home() {
               <Button
                 onPress={() => router.push("/(modals)/buy-premium")}
                 size="icon"
-                variant="secondary"
+                variant="outline"
                 className="rounded-full"
               >
                 <Lock color="#27BE8B" size={20} />

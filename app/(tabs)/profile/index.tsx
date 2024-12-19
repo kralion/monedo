@@ -3,7 +3,6 @@ import { useRouter } from "expo-router";
 import {
   Bell,
   LogOut,
-  Phone,
   SmartphoneNfc,
   Unlock,
   User,

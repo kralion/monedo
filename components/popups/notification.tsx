@@ -1,9 +1,7 @@
 import { INotification } from "@/interfaces/notification";
-import { Card, CardHeader, CardTitle, CardDescription } from "../ui/card";
-import { Image, View } from "react-native";
-import { Text } from "../ui/text";
-import { ChevronRight } from "lucide-react-native";
+import { View } from "react-native";
 import { Avatar, AvatarImage } from "../ui/avatar";
+import { Text } from "../ui/text";
 const iconos = {
   INFO: "https://img.icons8.com/?size=100&id=VQOfeAx5KWTK&format=png&color=000000",
   WARNING: "https://img.icons8.com/?size=48&id=12116&format=png",

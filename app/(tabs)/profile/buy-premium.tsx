@@ -67,8 +67,8 @@ export default function BuyPremiumModal() {
   ];
 
   return (
-    <ScrollView className="px-4" style={{ paddingTop: headerHeight + 16 }}>
-      <View className="flex flex-col gap-6 ">
+    <ScrollView className="p-4" style={{ paddingTop: headerHeight }}>
+      <View className="flex flex-col gap-6 pb-64">
         <View id="carousel-component">
           <Carousel
             loop
