@@ -3,9 +3,9 @@ import { formatDate } from "@/helpers/dateFormatter";
 import { ChevronRight } from "lucide-react-native";
 import React from "react";
 import { Image, TouchableOpacity, View } from "react-native";
-import { Button } from "../ui/button";
-import { Separator } from "../ui/separator";
-import { Text } from "../ui/text";
+import { Button } from "./ui/button";
+import { Separator } from "./ui/separator";
+import { Text } from "./ui/text";
 import { router } from "expo-router";
 import { IExpense } from "~/interfaces";
 

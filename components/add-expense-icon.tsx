@@ -5,7 +5,7 @@ import { Plus } from "lucide-react-native";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { BudgetLimitExceededModal } from "../popups/budget-limit-exceeded";
-import { Button } from "../ui/button";
+import { Button } from "./ui/button";
 
 export default function AddExpenseIcon() {
   const router = useRouter();

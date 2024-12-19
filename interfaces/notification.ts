@@ -1,8 +1,8 @@
 export interface INotification {
   id: string;
-  titulo: string;
-  descripcion: string;
-  tipo: "INFO" | "WARNING" | "ERROR";
-  session_id?: string;
-  fecha: string;
+  title: string;
+  description: string;
+  tipo: "info" | "warning" | "error";
+  user_id?: string;
+  created_At: Date;
 }

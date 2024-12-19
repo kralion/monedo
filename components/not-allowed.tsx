@@ -4,9 +4,9 @@ import { router } from "expo-router";
 import { X } from "lucide-react-native";
 import * as React from "react";
 import { View } from "react-native";
-import { Button } from "../ui/button";
-import { Dialog, DialogClose, DialogContent } from "../ui/dialog";
-import { Text } from "../ui/text";
+import { Button } from "./ui/button";
+import { Dialog, DialogClose, DialogContent } from "./ui/dialog";
+import { Text } from "./ui/text";
 type NotAllowedProps = {
   openModal: boolean;
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;

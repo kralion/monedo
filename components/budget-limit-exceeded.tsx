@@ -8,8 +8,8 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "../ui/alert-dialog";
-import { Text } from "../ui/text";
+} from "./ui/alert-dialog";
+import { Text } from "./ui/text";
 import { Image } from "expo-image";
 
 type TNotification = {

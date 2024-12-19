@@ -3,9 +3,9 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Link, router } from "expo-router";
 import * as React from "react";
 import { Platform, StyleSheet, View } from "react-native";
-import { AlertDialog, AlertDialogContent } from "../ui/alert-dialog";
-import { Button } from "../ui/button";
-import { Text } from "../ui/text";
+import { AlertDialog, AlertDialogContent } from "./ui/alert-dialog";
+import { Button } from "./ui/button";
+import { Text } from "./ui/text";
 
 const styles = StyleSheet.create({
   modalContent: {
@@ -36,7 +36,10 @@ const styles = StyleSheet.create({
   },
 });
 
-export default function BuyPremiumModal({openModal, setOpenModal}: {
+export default function BuyPremiumModal({
+  openModal,
+  setOpenModal,
+}: {
   openModal: boolean;
   setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
 }) {

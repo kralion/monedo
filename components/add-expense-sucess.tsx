@@ -2,9 +2,9 @@ import { LinearGradient } from "expo-linear-gradient";
 import { X } from "lucide-react-native";
 import React from "react";
 import { Image, View } from "react-native";
-import { Button } from "../ui/button";
-import { Dialog, DialogClose, DialogContent } from "../ui/dialog";
-import { Text } from "../ui/text";
+import { Button } from "./ui/button";
+import { Dialog, DialogClose, DialogContent } from "./ui/dialog";
+import { Text } from "./ui/text";
 
 export default function AddExpenseSuccesModal({
   openModal,

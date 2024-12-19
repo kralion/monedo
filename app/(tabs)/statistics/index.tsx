@@ -1,5 +1,5 @@
 import NoData2Svg from "@/assets/svgs/no-data.svg";
-import { Expense } from "@/components/shared/expense";
+import { Expense } from "~/components/expense";
 import Chart from "@/components/statistics/chart";
 import { useExpenseContext } from "@/context";
 import { FlashList } from "@shopify/flash-list";

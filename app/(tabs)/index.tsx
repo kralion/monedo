@@ -1,5 +1,5 @@
 import Card from "@/components/dashboard/card";
-import { Expense } from "@/components/shared/expense";
+import { Expense } from "~/components/expense";
 import { useExpenseContext } from "@/context";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import NoData2Svg from "@/assets/svgs/no-data.svg";

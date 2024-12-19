@@ -2,7 +2,7 @@ import Colors from "@/lib/constants";
 import { Image } from "expo-image";
 import { Tabs } from "expo-router";
 import { useColorScheme, View } from "react-native";
-import AddExpenseIcon from "~/components/shared/add-expense-icon";
+import AddExpenseIcon from "~/components/add-expense-icon";
 import AppProvider from "~/context/provider";
 
 export default function TabLayout() {
