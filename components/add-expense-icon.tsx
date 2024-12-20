@@ -4,18 +4,19 @@ import { useRouter } from "expo-router";
 import { Plus } from "lucide-react-native";
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { BudgetLimitExceededModal } from "../popups/budget-limit-exceeded";
 import { Button } from "./ui/button";
+import { BudgetLimitExceededModal } from "./budget-limit-exceeded";
+import { IBudget } from "~/interfaces";
 
 export default function AddExpenseIcon() {
   const router = useRouter();
   const { has } = useAuth();
-  const [balance, setBalance] = React.useState(0);
+  const [balance, setBalance] = React.useState<number>(0);
   const [totalMonthExpenses, setTotalMonthExpenses] = React.useState(0);
-  const [budget, setBudget] = React.useState(0);
+  const [budget, setBudget] = React.useState<IBudget | null>({} as IBudget);
   const [showModal, setShowModal] = React.useState(false);
   const { sumOfAllOfExpensesMonthly } = useExpenseContext();
-  const { getMonthlyBudget } = useBudgetContext();
+  const { getCurrentBudget } = useBudgetContext();
 
   async function calculateTotalMonthExpenses() {
     const total = await sumOfAllOfExpensesMonthly();
@@ -24,15 +25,17 @@ export default function AddExpenseIcon() {
   }
 
   async function calculateBudget() {
-    const budget = await getMonthlyBudget();
-    setBudget(budget);
+    await getCurrentBudget().then((budget) => setBudget(budget));
+
     return budget;
   }
 
   async function calculateBalance() {
     const total = await calculateTotalMonthExpenses();
     const presupuesto = await calculateBudget();
-    setBalance(presupuesto - total);
+    if (presupuesto) {
+      setBalance(presupuesto.amount - total);
+    }
   }
 
   React.useEffect(() => {

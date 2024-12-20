@@ -30,7 +30,7 @@ export function BudgetLimitExceededModal({
         <AlertDialogHeader className="w-full ">
           <Image
             style={{ width: 300, height: 250 }}
-            source={require("../../assets/images/block-limit-exceeded.png")}
+            source={require("../assets/images/block-limit-exceeded.png")}
           />
           <AlertDialogTitle>Presupuesto Excedido</AlertDialogTitle>
           <AlertDialogDescription>

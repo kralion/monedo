@@ -6,7 +6,6 @@ import { createClerkSupabaseClient } from "~/lib/supabase";
 import { toast } from "sonner-native";
 import { CheckCircle } from "lucide-react-native";
 import { useUser } from "@clerk/clerk-expo";
-import { format } from "date-fns";
 export const BudgetContext = createContext<IBudgetContextProvider>({
   getBudgetById: async (id: string): Promise<IBudget> => ({} as IBudget),
   loading: false,

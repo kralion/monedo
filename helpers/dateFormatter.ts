@@ -1,30 +1,32 @@
 import {
-  formatDistanceToNow,
-  differenceInHours,
   differenceInDays,
+  differenceInHours,
+  differenceInMinutes,
   format,
 } from "date-fns";
-import { es } from "date-fns/locale";
 
 export function formatDate(fecha: Date): string {
   const now = new Date();
+  const minutesDifference = differenceInMinutes(now, fecha);
   const hoursDifference = differenceInHours(now, fecha);
   const daysDifference = differenceInDays(now, fecha);
-  if (hoursDifference < 1) {
-    return formatDistanceToNow(fecha, { addSuffix: true, locale: es });
-  } else if (hoursDifference < 3) {
+
+  if (minutesDifference < 60) {
+    return (
+      "hace " +
+      minutesDifference +
+      " minuto" +
+      (minutesDifference > 1 ? "s" : "")
+    );
+  } else if (daysDifference < 1 && fecha.getDate() === now.getDate()) {
     return (
       "hace " + hoursDifference + " hora" + (hoursDifference > 1 ? "s" : "")
     );
-  } else if (hoursDifference < 24) {
-    const hour = fecha.getHours();
-    if (hour < 12) {
-      return "en la mañana";
-    } else if (hour < 18) {
-      return "en la tarde";
-    } else {
-      return "en la noche";
-    }
+  } else if (
+    daysDifference === 1 ||
+    (daysDifference < 1 && fecha.getDate() !== now.getDate())
+  ) {
+    return "ayer";
   } else if (daysDifference <= 3) {
     return daysDifference + " día" + (daysDifference > 1 ? "s" : "") + " atrás";
   } else if (fecha instanceof Date && !isNaN(fecha.getTime())) {
