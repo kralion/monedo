@@ -5,6 +5,8 @@ import * as React from "react";
 import { Image, TouchableOpacity, View } from "react-native";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
+import Animated, { FadeIn } from "react-native-reanimated";
+
 import { Text } from "../ui/text";
 export function Budget({ budget }: { budget: IBudget }) {
   const date = new Date(budget.created_At);
@@ -21,7 +23,7 @@ export function Budget({ budget }: { budget: IBudget }) {
   });
 
   return (
-    <>
+    <Animated.View entering={FadeIn.duration(1000)}>
       <TouchableOpacity
         onPress={() => {
           router.push(`/wallet/details/${budget.id}`);
@@ -38,7 +40,11 @@ export function Budget({ budget }: { budget: IBudget }) {
               }}
             />
             <View className="card-title-details flex flex-col gap-1">
-              <Text className="text-xl">S/. {budget.amount}</Text>
+              <Text className="text-xl">
+                <Animated.Text entering={FadeIn.duration(1500)}>
+                  S/. {budget.amount}
+                </Animated.Text>
+              </Text>
               <Text className="text-xs text-muted-foreground">
                 Registro : {formattedDate}
               </Text>
@@ -46,7 +52,11 @@ export function Budget({ budget }: { budget: IBudget }) {
           </View>
           <View className="card-description flex flex-row items-center justify-between">
             <View className="card-description-amount flex flex-row gap-2 items-center">
-              <Text className="font-bold">Exp. {expireDate}</Text>
+              <Text className="font-bold">
+                <Animated.Text entering={FadeIn.duration(1500)}>
+                  Exp. {expireDate}
+                </Animated.Text>
+              </Text>
               <Button variant="ghost" size="icon">
                 <ChevronRight size={20} color="gray" />
               </Button>
@@ -55,7 +65,7 @@ export function Budget({ budget }: { budget: IBudget }) {
         </View>
       </TouchableOpacity>
       <Separator />
-    </>
+    </Animated.View>
 
     // {/* <Sheet
     //   zIndex={100_000}

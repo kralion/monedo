@@ -85,6 +85,7 @@ export const BudgetContextProvider = ({
   };
 
   async function getBudgets(id: string) {
+    setLoading(true);
     const { data } = await supabase
       .from("budgets")
       .select("*")
@@ -92,6 +93,7 @@ export const BudgetContextProvider = ({
       .order("created_At", { ascending: false })
       .limit(3);
     setBudgets(JSON.parse(JSON.stringify(data)));
+    setLoading(false);
     return data;
   }
 

@@ -15,6 +15,7 @@ import { Separator } from "~/components/ui/separator";
 import { Text } from "~/components/ui/text";
 import { IExpense } from "~/interfaces";
 import { getDateRange } from "~/lib/rangeDate";
+import { ContactListSkeleton } from "~/components/skeleton/expense";
 
 export default function Statistics() {
   const [topExpenses, setTopExpenses] = useState<IExpense[]>([]);
@@ -120,7 +121,13 @@ export default function Statistics() {
         <View className="flex flex-col gap-4 justify-center mt-10 min-h-screen-safe">
           <Chart timelineQuery={timelineQuery} />
           <Text className="text-xl font-bold mx-4  mt-12">Top Gastos</Text>
-          {loading && <ActivityIndicator size="large" className="mt-5" />}
+          {loading && (
+            <View className="flex flex-col gap-2">
+              <ContactListSkeleton />
+              <ContactListSkeleton />
+              <ContactListSkeleton />
+            </View>
+          )}
           {topExpenses.length === 0 && (
             <View className="flex flex-col items-center justify-center  ">
               <NoData2Svg width={150} height={150} />

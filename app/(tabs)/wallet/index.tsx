@@ -21,6 +21,7 @@ import { Label } from "~/components/ui/label";
 import { Text } from "~/components/ui/text";
 import { Textarea } from "~/components/ui/textarea";
 import { createClerkSupabaseClient } from "~/lib/supabase";
+import { BudgetSkeleton } from "~/components/skeleton/budget";
 
 type TBudget = {
   amount: number;
@@ -156,7 +157,19 @@ export default function Wallet() {
               /> */}
             </>
           )}
-          {loading && <ActivityIndicator size="large" className="mt-5" />}
+
+          {loading && (
+            <View className="flex flex-col gap-2">
+              <BudgetSkeleton />
+              <BudgetSkeleton />
+            </View>
+          )}
+
+          <FlashList
+            data={budgets}
+            estimatedItemSize={100}
+            renderItem={({ item }) => <Budget budget={item} />}
+          />
           {budgets.length === 0 && (
             <View className="flex flex-col items-center justify-center  ">
               <NoData2Svg width={150} height={150} />
@@ -170,12 +183,6 @@ export default function Wallet() {
               </View>
             </View>
           )}
-
-          <FlashList
-            data={budgets}
-            estimatedItemSize={100}
-            renderItem={({ item }) => <Budget budget={item} />}
-          />
         </View>
       </ScrollView>
       <Animated.View

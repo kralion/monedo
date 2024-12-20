@@ -17,6 +17,7 @@ import Animated, {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
+import { ExpenseSkeleton } from "~/components/skeleton/expense";
 
 export default function Home() {
   const { expenses, getExpensesByUser, loading } = useExpenseContext();
@@ -134,8 +135,20 @@ export default function Home() {
                   Ver Todos
                 </Text>
               </View>
-
-              {loading && <ActivityIndicator size="large" className="mt-5" />}
+              {loading && (
+                <View className="flex flex-col gap-2">
+                  <ExpenseSkeleton />
+                  <ExpenseSkeleton />
+                  <ExpenseSkeleton />
+                </View>
+              )}
+              <FlashList
+                data={expenses}
+                estimatedItemSize={200}
+                renderItem={({ item: expense }) => (
+                  <Expense expense={expense} />
+                )}
+              />
               {expenses.length === 0 && (
                 <View className="flex flex-col items-center justify-center  ">
                   <NoData2Svg width={150} height={150} />
@@ -149,13 +162,6 @@ export default function Home() {
                   </View>
                 </View>
               )}
-              <FlashList
-                data={expenses}
-                estimatedItemSize={200}
-                renderItem={({ item: expense }) => (
-                  <Expense expense={expense} />
-                )}
-              />
             </View>
             <Animated.View style={[buttonStyle]}>
               <Button
