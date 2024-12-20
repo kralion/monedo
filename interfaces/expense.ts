@@ -44,7 +44,7 @@ export interface IBudgetContextProvider {
   getCurrentBudget: () => Promise<IBudget | null>;
   updateBudget: (budget: IBudget) => void;
   deleteBudget: (id: string) => void;
-  getBudgets: (id: string) => Promise<IBudget[] | null>;
+  getBudgets: () => Promise<IBudget[] | null>;
 }
 
 export interface IExpenseContextProvider {

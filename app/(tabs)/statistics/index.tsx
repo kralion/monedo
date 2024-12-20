@@ -15,7 +15,7 @@ import { Separator } from "~/components/ui/separator";
 import { Text } from "~/components/ui/text";
 import { IExpense } from "~/interfaces";
 import { getDateRange } from "~/lib/rangeDate";
-import { ContactListSkeleton } from "~/components/skeleton/expense";
+import { ExpenseSkeleton } from "~/components/skeleton/expense";
 
 export default function Statistics() {
   const [topExpenses, setTopExpenses] = useState<IExpense[]>([]);
@@ -123,9 +123,9 @@ export default function Statistics() {
           <Text className="text-xl font-bold mx-4  mt-12">Top Gastos</Text>
           {loading && (
             <View className="flex flex-col gap-2">
-              <ContactListSkeleton />
-              <ContactListSkeleton />
-              <ContactListSkeleton />
+              <ExpenseSkeleton />
+              <ExpenseSkeleton />
+              <ExpenseSkeleton />
             </View>
           )}
           {topExpenses.length === 0 && (

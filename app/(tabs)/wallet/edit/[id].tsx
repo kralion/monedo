@@ -134,7 +134,9 @@ export default function EditExpense() {
             </Button>
             <Button
               variant="destructive"
-              onPress={() => onDelete(params.id)}
+              onPress={() => {
+                onDelete(params.id);
+              }}
               size="lg"
             >
               {isLoading ? (

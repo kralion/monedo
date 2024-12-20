@@ -4,7 +4,7 @@ import * as React from "react";
 import { createContext, useContext } from "react";
 import { createClerkSupabaseClient } from "~/lib/supabase";
 import { toast } from "sonner-native";
-import { CheckCircle } from "lucide-react-native";
+import { CheckCircle, X } from "lucide-react-native";
 import { useUser } from "@clerk/clerk-expo";
 export const BudgetContext = createContext<IBudgetContextProvider>({
   getBudgetById: async (id: string): Promise<IBudget> => ({} as IBudget),
@@ -14,7 +14,7 @@ export const BudgetContext = createContext<IBudgetContextProvider>({
   updateBudget: async () => {},
   budget: {} as IBudget,
   deleteBudget: async () => {},
-  getBudgets: async (id: string) => [],
+  getBudgets: async () => [],
   budgets: [],
 });
 
@@ -30,7 +30,18 @@ export const BudgetContextProvider = ({
   const [loading, setLoading] = React.useState(false);
 
   const addBudget = async (budget: IBudget) => {
-    await supabase.from("budgets").insert(budget);
+    setLoading(true);
+    const { error } = await supabase.from("budgets").insert({
+      ...budget,
+      user_id: user?.id,
+    });
+    if (error) {
+      toast.error("Error al registrar presupuesto", {
+        icon: <X color="red" size={20} />,
+      });
+      return;
+    }
+    setLoading(false);
   };
 
   const getCurrentBudget = async () => {
@@ -80,16 +91,16 @@ export const BudgetContextProvider = ({
     toast.success("Presupuesto eliminado exitosamente", {
       icon: <CheckCircle color="green" size={20} />,
     });
-    router.push("/(tabs)/wallet");
+    router.replace("/(tabs)/wallet");
     setLoading(false);
   };
 
-  async function getBudgets(id: string) {
+  async function getBudgets() {
     setLoading(true);
     const { data } = await supabase
       .from("budgets")
       .select("*")
-      .eq("user_id", id)
+      .eq("user_id", user?.id)
       .order("created_At", { ascending: false })
       .limit(3);
     setBudgets(JSON.parse(JSON.stringify(data)));

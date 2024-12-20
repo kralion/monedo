@@ -1,5 +1,6 @@
 import { router, Stack } from "expo-router";
 import { Button, Platform } from "react-native";
+import { useBudgetContext } from "~/context";
 
 export default function Layout() {
   return (
@@ -17,19 +18,22 @@ export default function Layout() {
       />
       <Stack.Screen
         name="details/[id]"
-        options={{
-          title: "Detalles",
-          headerBackTitle: "Atrás",
-          headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
-          headerTransparent: Platform.OS === "android" ? false : true,
-          headerShadowVisible: false,
-          headerRight: () => (
-            <Button
-              title="Editar"
-              color="#27BE8B"
-              onPress={() => router.push("/(tabs)/wallet/edit/[id]")}
-            />
-          ),
+        options={({ route }) => {
+          const { id } = route.params as { id: string };
+          return {
+            title: "Detalles",
+            headerBackTitle: "Atrás",
+            headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
+            headerTransparent: Platform.OS === "android" ? false : true,
+            headerShadowVisible: false,
+            headerRight: () => (
+              <Button
+                title="Editar"
+                color="#27BE8B"
+                onPress={() => router.push(`/wallet/edit/${id}`)}
+              />
+            ),
+          };
         }}
       />
       <Stack.Screen
