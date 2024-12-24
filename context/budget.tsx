@@ -48,18 +48,15 @@ export const BudgetContextProvider = ({
     const currentDate = new Date();
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth() + 1;
-
     const startOfMonth = new Date(year, month - 1, 1);
     const endOfMonth = new Date(year, month, 0, 23, 59, 59, 999);
-
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("budgets")
       .select("*")
       .eq("user_id", user?.id)
       .gte("created_At", startOfMonth.toISOString())
       .lte("created_At", endOfMonth.toISOString())
       .single();
-
     return data;
   };
 

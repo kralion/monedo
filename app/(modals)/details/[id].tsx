@@ -66,7 +66,8 @@ export default function ExpenseDetails() {
     )?.iconHref ||
     "https://img.icons8.com/?size=160&id=MjAYkOMsbYOO&format=png";
 
-  const totalPercentageExpensed = (totalMonthExpenses / budget.amount) * 100;
+  const percentage = (totalMonthExpenses / budget.amount) * 100;
+
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <View className="flex flex-col gap-4 p-4">
@@ -155,7 +156,7 @@ export default function ExpenseDetails() {
             <View className="flex flex-col gap-3">
               <Progress
                 className=" web:w-[60%] "
-                value={totalPercentageExpensed}
+                value={percentage}
                 max={budget.amount}
               />
 
@@ -167,8 +168,7 @@ export default function ExpenseDetails() {
               <Text className="text-muted-foreground text-sm text-center">
                 Consumido{" "}
                 <Text className="font-bold text-primary">
-                  {" "}
-                  {totalPercentageExpensed}%
+                  {percentage.toFixed(2)}%
                 </Text>{" "}
                 del presupuesto para el mes actual.
               </Text>
