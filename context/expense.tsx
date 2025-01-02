@@ -12,6 +12,7 @@ export const ExpenseContext = createContext<IExpenseContextProvider>({
   addExpense: () => {},
   updateExpense: () => {},
   loading: false,
+  weeklyExpenses: [],
   sumOfAllOfExpensesMonthly: async () => 0,
   getExpenseById: async (id: string): Promise<IExpense> => ({} as IExpense),
   getWeeklyExpenses: async (): Promise<IExpense[]> => [],
@@ -30,6 +31,7 @@ export const ExpenseContextProvider = ({
   children: React.ReactNode;
 }) => {
   const [expenses, setExpenses] = React.useState<IExpense[]>([]);
+  const [weeklyExpenses, setWeeklyExpenses] = React.useState<IExpense[]>([]);
   const [expense, setExpense] = React.useState<IExpense>({} as IExpense);
   const [loading, setLoading] = React.useState(false);
   const supabase = createClerkSupabaseClient();
@@ -65,9 +67,10 @@ export const ExpenseContextProvider = ({
       .from("expenses")
       .select("*")
       .eq("user_id", user?.id)
-      .order("date", { ascending: false });
-    // .limit(7);
+      .order("date", { ascending: false })
+      .limit(7);
     if (error) throw error;
+    setWeeklyExpenses(data);
     setLoading(false);
     return data;
   }
@@ -188,6 +191,7 @@ export const ExpenseContextProvider = ({
         getExpensesByUser,
         expenses,
         loading,
+        weeklyExpenses,
         deleteExpense,
         getWeeklyExpenses,
         getExpenseById,

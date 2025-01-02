@@ -2,10 +2,11 @@ import ExportAsset from "@/assets/svgs/export.svg";
 import { useHeaderHeight } from "@react-navigation/elements";
 import * as Print from "expo-print";
 import React from "react";
-import { Alert, Image, ScrollView, View } from "react-native";
+import { Image, ScrollView, View } from "react-native";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 import { useExpenseContext } from "~/context";
+import { IExpense } from "~/interfaces";
 export default function Export() {
   const headerHeight = useHeaderHeight();
   const { weeklyExpenses, getWeeklyExpenses } = useExpenseContext();
@@ -13,145 +14,181 @@ export default function Export() {
     (acc, expense) => acc + expense.amount,
     0
   );
-  React.useEffect(() => {
-    getWeeklyExpenses();
-  }, []);
-  const generateHTML = () => {
+
+  function formatDate(date: Date) {
+    return date.toLocaleDateString("es-ES", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    });
+  }
+
+  const generateHTML = (expenses: IExpense[], periodicity: string) => {
     return `
-     <html>
-      <head>
-        <style>
-          {/* Paste the provided CSS styles here */}
-          @page {
-            size: 80mm auto;
+    <html>
+<head>
+    <style>
+        @page {
+            margin: 5;
+        }
+        body {
+            font-family: Arial, sans-serif;
             margin: 0;
-          }
-
-          body {
-            font-family: 'Courier New', monospace;
-            width: 80mm;
-            margin: 0;
-            padding: 5mm;
+            padding: 10mm;
             box-sizing: border-box;
-          }
+        }
 
-          /* Para impresión */
-          @media print {
-            body {
-              width: 80mm;
-            }
+        @media print {
+           margin: 5;
+        }
 
-            .page-break {
-              page-break-after: always;
-            }
-          }
-
-          .logo {
+        .logo {
             text-align: center;
             font-size: 24px;
             margin-bottom: 20px;
-          }
+        }
 
-          .logo img {
-            max-width: 150px;
+        .logo img {
+            max-width: 100px;
             height: auto;
-            margin: 0 auto;
             display: block;
-          }
+            margin: 0 auto;
+        }
 
-          .header-info {
-            font-size: 12px;
+        .header-info {
+            font-size: 14px;
             text-align: center;
-            margin-bottom: 20px;
-          }
+        }
 
-          .table-info {
+        .datetime {
+            text-align: center;
+            font-size: 12px;
+            opacity: 0.5;
+        }
+        .footer {
+            text-align: center;
+            font-size: 10px;
+            margin-top: 20px;
+        }
+
+        .cycle {
+            text-align: center;
+            opacity: 0.5;
+            margin-bottom: 16px;
+        }
+
+        .table-info {
             margin-bottom: 15px;
             border-bottom: 1px solid #ccc;
             padding-bottom: 5px;
-          }
+        }
 
-          .items {
+        .items {
             width: 100%;
+            border-collapse: collapse;
             margin-bottom: 15px;
-          }
+        }
 
-          .items td {
-            padding: 3px 0;
-          }
+        .items th, .items td {
+            padding: 3px;
+            text-align: left;
+        }
 
-          .price-col {
+        .items td {
+            font-family: 'Courier New', monospace;
+        }
+
+        .price-col {
             text-align: right;
-          }
+            padding-right: 70px;
+        }
 
-          .total-section {
+        .total-section {
             border-top: 1px solid #ccc;
             padding-top: 10px;
             margin-top: 10px;
-          }
+        }
+    </style>
+</head>
+<body>
+    <div class="logo">
+        <img src="https://i.ibb.co/dt53QVB/logo.png" alt="Logo" />
+    </div>
 
-          .datetime {
-            text-align: center;
-            font-size: 12px;
-            margin-top: 10px;
-          }
+    <div class="header-info">
+        <h2>Reporte de Gastos</h2>
+    </div>
 
-          .footer {
-            text-align: center;
-            font-size: 12px;
-            margin-top: 20px;
-          }
-        </style>
-      </head>
-      <body>
-        <div class="logo">
-          <img src="../../../assets/logo.png" alt="Logo" />
-        </div>
-        <table class="items">
-          <tr>
-            <th align="left">Descripción</th>
-            <th align="center">Fecha Registro</th>
-            <th align="right">Monto</th>
-          </tr>
-          ${weeklyExpenses.map(
-            (expense) => `
-            <tr key=${expense.id}>
-              <td>${expense.description}</td>
-              <td align="center">${expense.date.toLocaleDateString()}</td>
-              <td className="price-col">S/. ${expense.amount.toFixed(2)}</td>
-            </tr>
-          `
-          )}
-        </table>
-        <div class="total-section">
-          <table width="100%">
+    <div class="cycle">
+        <p>Frecuencia del Reporte: ${
+          periodicity === "daily"
+            ? "Diario"
+            : periodicity === "weekly"
+            ? "Semanal"
+            : "Mensual"
+        }</p>
+    </div>
+    <div class="total-section" />
+
+    <table class="items">
+        <thead>
             <tr>
-              <td>
-                <strong>Total:</strong>
-              </td>
-              <td align="right">
-                <strong>S/. ${totalAmount.toFixed(2)}</strong>
-              </td>
+                <th>Categoría</th>
+                <th>Descripción</th>
+                <th>Fecha Registro</th>
+                <th class="price-col">Monto</th>
             </tr>
-          </table>
-        </div>
+        </thead>
+        <tbody>
+            ${expenses
+              .map(
+                (expense) => `
+                <tr key=${expense.id}>
+                    <td>${expense.category.label}</td>
+                    <td>${expense.description}</td>
+                    <td align="center">${formatDate(
+                      new Date(expense.date)
+                    )}</td>
+                    <td class="price-col">S/. ${expense.amount.toFixed(2)}</td>
+                </tr>
+                `
+              )
+              .join("")}
+        </tbody>
+    </table>
 
-        <div class="datetime">
-          Fecha: ${new Date().toLocaleDateString()}<br />
-          Hora: ${new Date().toLocaleTimeString("es-ES", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
-        </div>
-        <div class="footer">
-          REPORTE SEMANAL<br />
-        </div>
-      </body>
-    </html>
+    <div class="total-section">
+        <table width="100%">
+            <tr>
+                <td><strong>Total:</strong></td>
+                <td class="price-col"><strong>S/. ${totalAmount.toFixed(
+                  2
+                )}</strong></td>
+            </tr>
+        </table>
+    </div>
+    <div class="total-section" />
+
+
+    <div class="datetime">
+        Fecha de Emisión: ${new Date().toLocaleDateString()}<br />
+        Hora de Emisión: ${new Date().toLocaleTimeString("es-ES", {
+          hour: "2-digit",
+          minute: "2-digit",
+        })}
+    </div>
+
+    <div class="footer">
+        Generado por Monedo | Contacto: joan300501@gmail.com | Teléfono: +51 914019629]
+    </div>
+</body>
+</html>
+
     `;
   };
   const printOrder = async () => {
-    const html = generateHTML();
+    await getWeeklyExpenses();
+    const html = generateHTML(weeklyExpenses, "weekly");
     await Print.printAsync({
       html,
     });
@@ -170,58 +207,20 @@ export default function Export() {
           </Text>
         </View>
 
-        <View className="flex flex-col mt-10 gap-3 w-full">
-          <Button
-            size="lg"
-            variant="outline"
-            className="flex flex-row gap-2 items-center"
-            disabled
-            onPress={() =>
-              Alert.alert("Exportación", "Se exportó correctamente")
-            }
-          >
-            <Image
-              source={{
-                uri: "https://img.icons8.com/?size=48&id=13674&format=png",
-              }}
-              style={{ width: 30, height: 30 }}
-            />
-            <Text> Documento</Text>
-          </Button>
-          <Button
-            size="lg"
-            className="flex flex-row gap-2 items-center"
-            variant="outline"
-            disabled
-            onPress={() =>
-              Alert.alert("Exportación", "Se exportó correctamente")
-            }
-          >
-            <Image
-              source={{
-                uri: "https://img.icons8.com/?size=48&id=13654&format=png",
-              }}
-              style={{ width: 30, height: 30 }}
-            />
-
-            <Text> Hoja de Cálculo</Text>
-          </Button>
-          <Button
-            size="lg"
-            className="flex flex-row gap-2 items-center"
-            variant="outline"
-            onPress={() => printOrder()}
-          >
-            <Image
-              source={{
-                uri: "https://img.icons8.com/?size=48&id=13417&format=png",
-              }}
-              style={{ width: 30, height: 30 }}
-            />
-
-            <Text> Archivo PDF</Text>
-          </Button>
-        </View>
+        <Button
+          size="lg"
+          variant="secondary"
+          className="flex flex-row gap-2 items-center mt-5 w-full"
+          onPress={printOrder}
+        >
+          <Image
+            source={{
+              uri: "https://img.icons8.com/?size=48&id=13417&format=png",
+            }}
+            style={{ width: 30, height: 30 }}
+          />
+          <Text> Descargar PDF</Text>
+        </Button>
       </View>
     </ScrollView>
   );

@@ -51,6 +51,7 @@ export interface IExpenseContextProvider {
   addExpense: (expense: IExpensePOST) => void;
   getWeeklyExpenses: () => Promise<IExpense[]>;
   deleteExpense: (id: string) => void;
+  weeklyExpenses: IExpense[];
   loading: boolean;
   expense: IExpense;
   expenses: IExpense[];
