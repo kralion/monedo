@@ -59,7 +59,7 @@ export interface IExpenseContextProvider {
   updateExpense: (expense: IExpensePOST) => void;
   getExpensesByUser: (id: string) => Promise<IExpense[]>;
   sumOfAllOfExpensesMonthly: () => Promise<number>;
-  getTopExpenses: ({
+  getExpensesByPeriodicity: ({
     startTimeOfQuery,
     endTimeOfQuery,
   }: {
@@ -67,7 +67,6 @@ export interface IExpenseContextProvider {
     endTimeOfQuery: Date;
   }) => Promise<IExpense[] | null>;
   getRecentExpenses: () => Promise<IExpense[]>;
-  getExpensesByPeriodicity: () => Promise<IExpense[]>;
 }
 export interface IGoalContextProvider {
   addGoal: (meta: IGoal) => void;

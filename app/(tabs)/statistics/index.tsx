@@ -1,78 +1,36 @@
 import NoData2Svg from "@/assets/svgs/no-data.svg";
-import { Expense } from "~/components/expense";
 import Chart from "@/components/statistics/chart";
 import { useExpenseContext } from "@/context";
 import { FlashList } from "@shopify/flash-list";
-import { parseISO } from "date-fns";
 import { router } from "expo-router";
 import { Download } from "lucide-react-native";
 import * as React from "react";
 import { useState } from "react";
-import { ActivityIndicator, ScrollView, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Expense } from "~/components/expense";
+import { ExpenseSkeleton } from "~/components/skeleton/expense";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { Text } from "~/components/ui/text";
 import { IExpense } from "~/interfaces";
 import { getDateRange } from "~/lib/rangeDate";
-import { ExpenseSkeleton } from "~/components/skeleton/expense";
 
 export default function Statistics() {
-  const [topExpenses, setTopExpenses] = useState<IExpense[]>([]);
-  const [loading, setLoading] = useState(false);
-  const { getTopExpenses } = useExpenseContext();
-  const [timelineQuery, setTimelineQuery] = useState({
-    value: "diario",
-    label: "Diario",
-    ...getDateRange("diario"),
-  });
+  const [expenses, setExpenses] = useState<IExpense[]>([]);
+  const { getExpensesByPeriodicity, loading } = useExpenseContext();
+  const [timelineQuery, setTimelineQuery] = useState(getDateRange("diario"));
   const queryFilters = [
-    {
-      value: "hoy",
-      label: "Hoy",
-      ...getDateRange("hoy"),
-    },
-    {
-      value: "diario",
-      label: "Diario",
-      ...getDateRange("diario"),
-    },
-    {
-      value: "semanal",
-      label: "Semanal",
-      ...getDateRange("semanal"),
-    },
-    {
-      value: "mensual",
-      label: "Mensual",
-      ...getDateRange("mensual"),
-    },
+    getDateRange("hoy"),
+    getDateRange("diario"),
+    getDateRange("semanal"),
+    getDateRange("mensual"),
   ];
 
-  const fetchTopExpenses = async () => {
-    setLoading(true);
-    try {
-      const expenses = await getTopExpenses({
-        startTimeOfQuery: timelineQuery.startTimeOfQuery,
-        endTimeOfQuery: timelineQuery.endTimeOfQuery,
-      });
-      if (!expenses) return;
-
-      const processedExpenses = expenses.map((expense) => ({
-        ...expense,
-        parsedDate: parseISO(expense.date as string),
-      }));
-
-      setTopExpenses(processedExpenses);
-    } catch (error) {
-      console.error("Error in fetchTopExpenses:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   React.useEffect(() => {
-    fetchTopExpenses();
+    getExpensesByPeriodicity(timelineQuery).then((data) =>
+      setExpenses(data as IExpense[])
+    );
   }, [timelineQuery]);
   return (
     <SafeAreaView className="py-4">
@@ -86,7 +44,10 @@ export default function Statistics() {
           </View>
           <Button
             onPress={() => {
-              router.push("/(tabs)/statistics/export-data");
+              router.push({
+                pathname: "/(tabs)/statistics/export-data",
+                params: { periodicity: timelineQuery.value },
+              });
             }}
             variant="ghost"
             size="icon"
@@ -119,7 +80,7 @@ export default function Statistics() {
       </View>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
         <View className="flex flex-col gap-4 justify-center mt-10 min-h-screen-safe">
-          <Chart timelineQuery={timelineQuery} />
+          <Chart timelineQuery={timelineQuery} data={expenses} />
           <Text className="text-xl font-bold mx-4  mt-12">Top Gastos</Text>
           {loading && (
             <View className="flex flex-col gap-2">
@@ -128,7 +89,7 @@ export default function Statistics() {
               <ExpenseSkeleton />
             </View>
           )}
-          {topExpenses.length === 0 && (
+          {expenses.length === 0 && (
             <View className="flex flex-col items-center justify-center  ">
               <NoData2Svg width={150} height={150} />
               <View>
@@ -144,7 +105,7 @@ export default function Statistics() {
           <FlashList
             //TODO: This expenses data should be dinamic and show the top expenses only maybe limit to 12 items
             contentContainerStyle={{ paddingHorizontal: 16 }}
-            data={topExpenses}
+            data={expenses}
             renderItem={({ item: expense }) => {
               return <Expense expense={expense} />;
             }}

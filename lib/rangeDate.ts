@@ -1,4 +1,5 @@
-import { startOfDay, endOfDay, subDays } from "date-fns";
+import { startOfDay, endOfDay, subDays, subMonths } from "date-fns";
+
 export const getDateRange = (timelineType: string) => {
   const now = new Date();
   switch (timelineType) {
@@ -6,26 +7,36 @@ export const getDateRange = (timelineType: string) => {
       return {
         startTimeOfQuery: startOfDay(now),
         endTimeOfQuery: endOfDay(now),
+        value: "hoy",
+        label: "Hoy",
       };
     case "diario":
       return {
-        startTimeOfQuery: startOfDay(subDays(now, 1)),
+        startTimeOfQuery: startOfDay(subDays(now, 7)),
         endTimeOfQuery: endOfDay(now),
+        value: "diario",
+        label: "Diario",
       };
     case "semanal":
       return {
-        startTimeOfQuery: startOfDay(subDays(now, 7)),
+        startTimeOfQuery: startOfDay(subDays(now, 28)),
         endTimeOfQuery: endOfDay(now),
+        value: "semanal",
+        label: "Semanal",
       };
     case "mensual":
       return {
-        startTimeOfQuery: startOfDay(subDays(now, 30)),
+        startTimeOfQuery: startOfDay(subMonths(now, 12)),
         endTimeOfQuery: endOfDay(now),
+        value: "mensual",
+        label: "Mensual",
       };
     default:
       return {
-        startTimeOfQuery: startOfDay(subDays(now, 1)),
+        startTimeOfQuery: startOfDay(now),
         endTimeOfQuery: endOfDay(now),
+        value: "hoy",
+        label: "Hoy",
       };
   }
 };

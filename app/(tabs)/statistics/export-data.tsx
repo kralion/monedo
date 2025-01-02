@@ -1,19 +1,19 @@
 import ExportAsset from "@/assets/svgs/export.svg";
 import { useHeaderHeight } from "@react-navigation/elements";
 import * as Print from "expo-print";
+import { useLocalSearchParams } from "expo-router";
 import React from "react";
 import { Image, ScrollView, View } from "react-native";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 import { useExpenseContext } from "~/context";
 import { IExpense } from "~/interfaces";
+import { getDateRange } from "~/lib/rangeDate";
+
 export default function Export() {
   const headerHeight = useHeaderHeight();
-  const { weeklyExpenses, getWeeklyExpenses } = useExpenseContext();
-  const totalAmount = weeklyExpenses.reduce(
-    (acc, expense) => acc + expense.amount,
-    0
-  );
+  const { periodicity } = useLocalSearchParams();
+  const { getExpensesByPeriodicity } = useExpenseContext();
 
   function formatDate(date: Date) {
     return date.toLocaleDateString("es-ES", {
@@ -22,6 +22,15 @@ export default function Export() {
       year: "numeric",
     });
   }
+  const printOrder = async () => {
+    const data = await getExpensesByPeriodicity(
+      getDateRange(String(periodicity))
+    );
+    const html = generateHTML(data as IExpense[], periodicity as string);
+    await Print.printAsync({
+      html,
+    });
+  };
 
   const generateHTML = (expenses: IExpense[], periodicity: string) => {
     return `
@@ -161,9 +170,9 @@ export default function Export() {
         <table width="100%">
             <tr>
                 <td><strong>Total:</strong></td>
-                <td class="price-col"><strong>S/. ${totalAmount.toFixed(
-                  2
-                )}</strong></td>
+                <td class="price-col"><strong>S/. ${expenses
+                  .reduce((acc, expense) => acc + expense.amount, 0)
+                  .toFixed(2)}</strong></td>
             </tr>
         </table>
     </div>
@@ -186,13 +195,7 @@ export default function Export() {
 
     `;
   };
-  const printOrder = async () => {
-    await getWeeklyExpenses();
-    const html = generateHTML(weeklyExpenses, "weekly");
-    await Print.printAsync({
-      html,
-    });
-  };
+
   return (
     <ScrollView style={{ paddingTop: headerHeight }}>
       <View className="flex flex-col gap-4 p-4 items-center">

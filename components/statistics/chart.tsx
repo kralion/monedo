@@ -1,13 +1,14 @@
-// import NoDataAsset from "@/assets/svgs/no-data.svg";
-import { useExpenseContext } from "@/context";
-import { useUser } from "@clerk/clerk-expo";
-import { format } from "date-fns";
-import { LineChartIcon } from "lucide-react-native";
+import NoDataAsset from "@/assets/svgs/no-data.svg";
 import React from "react";
 import { View } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
+import { IExpense } from "~/interfaces";
 import { Text } from "../ui/text";
 
+interface ChartDataPoint {
+  label: string;
+  value: number;
+}
 type ChartProps = {
   timelineQuery: {
     value: string;
@@ -15,56 +16,85 @@ type ChartProps = {
     startTimeOfQuery: Date;
     endTimeOfQuery: Date;
   };
+  data: IExpense[];
 };
-export default function Chart({ timelineQuery }: ChartProps) {
-  const { user: userData } = useUser();
-  const dataSample = [
-    { value: 15, label: "L" },
-    { value: 30, label: "M" },
-    { value: 26, label: "X" },
-    { value: 40, label: "J" },
-    { value: 30, label: "V" },
-    { value: 26, label: "S" },
-    { value: 40, label: "D" },
-  ];
+export default function Chart({ timelineQuery, data }: ChartProps) {
+  const aggregateData = (
+    data: IExpense[],
+    timeLabels: string[],
+    getTimeKey: (date: Date) => string
+  ): ChartDataPoint[] => {
+    const totals = new Map<string, number>();
+    data.forEach((expense) => {
+      const expenseDate = new Date(expense.date);
+      const key = getTimeKey(expenseDate);
+      totals.set(key, (totals.get(key) || 0) + expense.amount);
+    });
+    const result = timeLabels.map((label) => ({
+      label,
+      value: totals.get(label) || 0,
+    }));
+    return result;
+  };
 
-  const { expenses, getExpensesByUser } = useExpenseContext();
-  React.useEffect(() => {
-    if (userData) {
-      getExpensesByUser(userData.id);
-    }
-  }, [userData, getExpensesByUser]);
-  let labels;
+  let chartData: ChartDataPoint[] = [];
   switch (timelineQuery.value) {
-    case "hoy":
-      labels = ["05:00", "08:00", "11:00", "13:00", "17:00", "20:00", "24:00"];
+    case "hoy": {
+      const hours = [
+        "05:00",
+        "08:00",
+        "11:00",
+        "14:00",
+        "17:00",
+        "20:00",
+        "23:59",
+      ];
+      chartData = aggregateData(
+        data,
+        hours,
+        (date) => `${date.getHours().toString().padStart(2, "0")}:00`
+      );
       break;
-    case "diario":
-      labels = ["L", "M", "X", "J", "V", "S", "D"];
+    }
+    case "diario": {
+      const days = Array.from({ length: 7 }, (_, i) => {
+        const date = new Date();
+        date.setDate(date.getDate() - (6 - i));
+        return date
+          .toLocaleDateString("es-ES", { weekday: "short" })
+          .toUpperCase();
+      });
+      chartData = aggregateData(data, days, (date) =>
+        date.toLocaleDateString("es-ES", { weekday: "short" }).toUpperCase()
+      );
       break;
-    case "semanal":
-      labels = ["S1", "S2", "S3", "S4"];
-      break;
-    case "mensual":
-      labels = ["Ene", "Mar", "Abr", "Jul", "Ago", "Sep", "Dic"];
-      break;
-
-    default:
-      labels = expenses.map((expense) => {
-        const date = new Date(expense.date);
-        return format(date, "MMMM"); // e.g., May
+    }
+    case "semanal": {
+      const weeks = Array.from({ length: 4 }, (_, i) => `S ${4 - i}`);
+      chartData = aggregateData(data, weeks, (date) => {
+        const weekNumber = Math.ceil(date.getDate() / 7);
+        return `S ${weekNumber}`;
       });
       break;
+    }
+    case "mensual": {
+      const months = Array.from({ length: 12 }, (_, i) => {
+        const date = new Date();
+        date.setMonth(date.getMonth() - (11 - i));
+        return date
+          .toLocaleDateString("es-ES", { month: "short" })
+          .toUpperCase();
+      });
+      chartData = aggregateData(data, months, (date) =>
+        date.toLocaleDateString("es-ES", { month: "short" }).toUpperCase()
+      );
+      break;
+    }
   }
-
-  const data = expenses.map((expense) => {
-    const monto = isFinite(expense.amount) ? expense.amount : 0;
-    return monto;
-  });
   if (data.length === 0) {
     return (
       <View className="flex flex-col items-center justify-center gap-5  ">
-        <LineChartIcon size={100} color="gray" strokeWidth={1} />
+        <NoDataAsset width={100} height={100} />
         <View>
           <Text className="text-center text-xl text-muted-foreground">
             No hay gastos registrados
@@ -81,8 +111,14 @@ export default function Chart({ timelineQuery }: ChartProps) {
     <LineChart
       areaChart
       curved
-      data={dataSample}
-      spacing={55}
+      data={chartData}
+      spacing={
+        timelineQuery.value === "hoy"
+          ? 55
+          : timelineQuery.value === "semanal"
+          ? 110
+          : 55
+      }
       initialSpacing={5}
       yAxisColor="gray"
       xAxisColor="white"
@@ -93,7 +129,7 @@ export default function Chart({ timelineQuery }: ChartProps) {
       startFillColor1="teal"
       startOpacity={0.8}
       endOpacity={0.5}
-      width={450}
+      width={500}
       height={250}
     />
   );

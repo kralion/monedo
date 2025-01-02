@@ -19,9 +19,8 @@ export const ExpenseContext = createContext<IExpenseContextProvider>({
   getExpensesByUser: async (id: string) => [],
   expenses: [],
   expense: {} as IExpense,
-  getTopExpenses: async (): Promise<IExpense[]> => [],
-  getRecentExpenses: async (): Promise<IExpense[]> => [],
   getExpensesByPeriodicity: async (): Promise<IExpense[]> => [],
+  getRecentExpenses: async (): Promise<IExpense[]> => [],
   deleteExpense: async () => {},
 });
 
@@ -123,7 +122,7 @@ export const ExpenseContextProvider = ({
     setLoading(false);
   };
 
-  async function getTopExpenses({
+  async function getExpensesByPeriodicity({
     startTimeOfQuery,
     endTimeOfQuery,
   }: {
@@ -142,7 +141,7 @@ export const ExpenseContextProvider = ({
         .limit(15);
       return data;
     } catch (error) {
-      console.log("ERROR in getTopExpenses", error);
+      console.log("ERROR in getExpensesByPeriodicity", error);
       return [];
     } finally {
       setLoading(false);
@@ -155,18 +154,6 @@ export const ExpenseContextProvider = ({
       .select("*")
       .eq("user_id", user?.id)
       .order("date", { ascending: false })
-      .limit(15);
-    setLoading(false);
-    if (!data) return [];
-    return data;
-  }
-  async function getExpensesByPeriodicity() {
-    setLoading(true);
-    const { data } = await supabase
-      .from("expenses")
-      .select("*")
-      .eq("user_id", user?.id)
-      .eq("periodicity", true)
       .limit(15);
     setLoading(false);
     if (!data) return [];
@@ -198,7 +185,6 @@ export const ExpenseContextProvider = ({
         addExpense,
         sumOfAllOfExpensesMonthly,
         updateExpense,
-        getTopExpenses,
         expense,
         getRecentExpenses,
         getExpensesByPeriodicity,
