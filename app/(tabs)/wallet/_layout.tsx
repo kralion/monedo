@@ -22,6 +22,7 @@ export default function Layout() {
           const { id } = route.params as { id: string };
           return {
             title: "Detalles",
+            headerLargeTitle: true,
             headerBackTitle: "Atrás",
             headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
             headerTransparent: Platform.OS === "android" ? false : true,
@@ -41,6 +42,7 @@ export default function Layout() {
         options={{
           title: "Editar Registro",
           headerBackVisible: true,
+          headerLargeTitle: true,
           headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
           headerTransparent: Platform.OS === "android" ? false : true,
           headerShadowVisible: true,

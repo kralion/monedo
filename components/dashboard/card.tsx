@@ -23,7 +23,7 @@ export default function Card() {
 
   async function calculateBudget() {
     const budget = await getCurrentBudget();
-    setBudget(budget?.amount ?? 0);
+    setBudget(budget?.amount ?? 0.0);
     return budget;
   }
 

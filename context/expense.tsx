@@ -41,9 +41,6 @@ export const ExpenseContextProvider = ({
     if (error) {
       throw error;
     }
-    toast.success("Gasto agregado exitosamente", {
-      icon: <CheckCircle color="green" size={20} />,
-    });
     setLoading(false);
   };
 
@@ -54,7 +51,6 @@ export const ExpenseContextProvider = ({
       .select("*")
       .eq("user_id", id);
     if (error) throw error;
-
     setExpenses(data);
     setLoading(false);
     return data;
@@ -103,9 +99,6 @@ export const ExpenseContextProvider = ({
   const updateExpense = async (expense: IExpensePOST) => {
     setLoading(true);
     await supabase.from("expenses").update(expense).eq("id", expense.id);
-    toast.success("Gasto actualizado exitosamente", {
-      icon: <CheckCircle color="green" size={20} />,
-    });
     setLoading(false);
   };
 
@@ -154,7 +147,7 @@ export const ExpenseContextProvider = ({
       .select("*")
       .eq("user_id", user?.id)
       .order("date", { ascending: false })
-      .limit(15);
+      .limit(20);
     setLoading(false);
     if (!data) return [];
     return data;

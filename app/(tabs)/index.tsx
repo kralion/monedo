@@ -18,9 +18,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 import { ExpenseSkeleton } from "~/components/skeleton/expense";
+import { IExpense } from "~/interfaces";
 
 export default function Home() {
-  const { expenses, getExpensesByUser, loading } = useExpenseContext();
+  const { loading, getRecentExpenses } = useExpenseContext();
+  const [expenses, setExpenses] = React.useState<IExpense[]>([]);
   const { user, isSignedIn } = useUser();
   const { has } = useAuth();
   const [showAll, setShowAll] = React.useState(false);
@@ -29,7 +31,7 @@ export default function Home() {
   }
 
   React.useEffect(() => {
-    getExpensesByUser(user.id);
+    getRecentExpenses().then((data) => setExpenses(data));
   }, [user]);
 
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
@@ -121,54 +123,53 @@ export default function Home() {
             <View style={{ height: 120 }} />
           </View>
 
-          <ScrollView ref={scrollRef} className="px-4 ">
-            <View className="h-screen-safe">
-              <View className="flex flex-row justify-between items-center pt-36  w-full pb-4">
-                <Text className="text-xl font-bold">Gastos Recientes</Text>
-
-                <Text
-                  onPress={() => {
-                    setShowAll(true);
-                  }}
-                  className="text-muted-foreground px-1.5 opacity-50 "
-                >
-                  Ver Todos
-                </Text>
+          <ScrollView ref={scrollRef} className="px-4">
+            <View className="flex flex-row justify-between items-center pt-36  w-full pb-4">
+              <Text className="text-xl font-bold">Gastos Recientes</Text>
+              <Text
+                onPress={() => {
+                  setShowAll(true);
+                }}
+                className="text-muted-foreground px-1.5 opacity-50 "
+              >
+                Ver Todos
+              </Text>
+            </View>
+            {loading ? (
+              <View className="flex flex-col gap-2">
+                <ExpenseSkeleton />
+                <ExpenseSkeleton />
+                <ExpenseSkeleton />
               </View>
-              {loading && (
-                <View className="flex flex-col gap-2">
-                  <ExpenseSkeleton />
-                  <ExpenseSkeleton />
-                  <ExpenseSkeleton />
-                </View>
-              )}
+            ) : (
               <FlashList
                 data={expenses}
+                contentContainerClassName="pb-[400px]"
                 estimatedItemSize={200}
                 renderItem={({ item: expense }) => (
                   <Expense expense={expense} />
                 )}
-              />
-              {expenses.length === 0 && (
-                <View className="flex flex-col items-center justify-center  ">
-                  <NoData2Svg width={150} height={150} />
-                  <View>
-                    <Text className="text-center text-xl text-muted-foreground">
-                      No hay gastos registrados
-                    </Text>
-                    <Text className="text-center text-sm text-muted-foreground">
-                      Haz click en el botón "+" para registrar un gasto
-                    </Text>
+                ListEmptyComponent={
+                  <View className="flex flex-col items-center justify-center  ">
+                    <NoData2Svg width={150} height={150} />
+                    <View>
+                      <Text className="text-center text-xl text-muted-foreground">
+                        No hay gastos registrados
+                      </Text>
+                      <Text className="text-center text-sm text-muted-foreground">
+                        Haz click en el botón "+" para registrar un gasto
+                      </Text>
+                    </View>
                   </View>
-                </View>
-              )}
-            </View>
+                }
+              />
+            )}
             <Animated.View style={[buttonStyle]}>
               <Button
                 onPress={scrollToTop}
                 size="icon"
-                className="w-10 rounded-full absolute z-50 right-4 bottom-4"
                 variant="outline"
+                className="w-14 h-14 rounded-full absolute z-50 right-2 bottom-12 shadow-xl"
               >
                 <ChevronUp color="gray" />
               </Button>

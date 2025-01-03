@@ -4,9 +4,8 @@ import { AlertDialog, AlertDialogContent } from "./ui/alert-dialog";
 import { Button } from "./ui/button";
 import { Text } from "./ui/text";
 import { Badge } from "./ui/badge";
-import { router } from "expo-router";
 
-export default function AddExpenseSuccesModal({
+export default function UpdateExpenseSuccesModal({
   openModal,
   setOpenModal,
   expensePrice,
@@ -31,16 +30,13 @@ export default function AddExpenseSuccesModal({
               S/. {expensePrice}
             </Text>
           </Badge>
-          <Text className="text-xl font-bold">Gasto Registrado</Text>
+          <Text className="text-xl font-bold">Cambios Guardados</Text>
           <Text className="opacity-50">
-            Puedes revisar detalles del gasto en tu historial, las estadísticas
-            también fueron actualizadas con el nuevo gasto.
+            Los datos serán actualizados en la fecha en que se guarde el gasto
+            como editado.
           </Text>
           <Button
-            onPress={() => {
-              setOpenModal(false);
-              router.push("/(tabs)");
-            }}
+            onPress={() => setOpenModal(false)}
             className="rounded-full w-full py-4"
           >
             <Text className=" font-semibold text-white">Aceptar</Text>

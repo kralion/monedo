@@ -1,17 +1,16 @@
 import Stripe from "@/components/payment/stripe";
 import Yape from "@/components/payment/yape";
-import { useHeaderHeight } from "@react-navigation/elements";
 import { Image } from "expo-image";
 import * as React from "react";
 import {
   Animated as AnimatedRN,
   Dimensions,
+  KeyboardAvoidingView,
   ScrollView,
   View,
 } from "react-native";
 import { useSharedValue, withTiming } from "react-native-reanimated";
 import Carousel from "react-native-reanimated-carousel";
-import { Separator } from "~/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Text } from "~/components/ui/text";
 export default function BuyPremiumModal() {
@@ -56,7 +55,6 @@ export default function BuyPremiumModal() {
     handlePress(0);
   };
   const scrollOffsetValue = useSharedValue<number>(0);
-  const headerHeight = useHeaderHeight();
   const defaultDataWith6Colors = [
     "#B0604D",
     "#899F9C",
@@ -67,76 +65,68 @@ export default function BuyPremiumModal() {
   ];
 
   return (
-    <ScrollView className="p-4" style={{ paddingTop: headerHeight }}>
-      <View className="flex flex-col gap-6 pb-64">
-        <View id="carousel-component">
-          <Carousel
-            loop
-            width={430}
-            height={width / 2}
-            pagingEnabled
-            defaultScrollOffsetValue={scrollOffsetValue}
-            data={defaultDataWith6Colors}
-            scrollAnimationDuration={1000}
-            onSnapToItem={(index) => console.log("current index:", index)}
-            renderItem={({ index }) => (
-              <View
-                style={{
-                  flex: 1,
-                  borderWidth: 1,
-                  justifyContent: "center",
-                }}
-              >
+    <KeyboardAvoidingView behavior="height" enabled style={{ flex: 1 }}>
+      <ScrollView className="p-4" contentInsetAdjustmentBehavior="automatic">
+        <View className="flex flex-col gap-6">
+          <View id="carousel-component">
+            <Carousel
+              loop
+              width={430}
+              height={width / 2}
+              defaultScrollOffsetValue={scrollOffsetValue}
+              data={defaultDataWith6Colors}
+              scrollAnimationDuration={1000}
+              onSnapToItem={(index) => console.log("current index:", index)}
+              renderItem={({ index }) => (
                 <Image
                   source={{
                     uri: "https://images.pexels.com/photos/29683927/pexels-photo-29683927/free-photo-of-historic-courtyard-architecture-in-arequipa-peru.jpeg?auto=compress&cs=tinysrgb&w=400&lazy=load",
                   }}
                   style={{ width: width, height: width / 2 }}
                 />
-              </View>
-            )}
-          />
-        </View>
+              )}
+            />
+          </View>
 
-        <Separator className="text-gray-500" />
-        <Text className="text-2xl font-bold ">Método de Pago</Text>
-        <Tabs
-          value={value}
-          onValueChange={setValue}
-          className="w-full max-w-[400px] mx-auto flex-col gap-1.5"
-        >
-          <TabsList className="flex-row w-full rounded-xl">
-            <TabsTrigger
-              onPress={handleCardPayment}
-              value="card"
-              className="flex-1 rounded-lg"
-            >
-              <Text>Tarjeta</Text>
-            </TabsTrigger>
-            <TabsTrigger
-              onPress={handleYapePayment}
-              value="yape"
-              className="flex-1 rounded-lg"
-            >
-              <Text>Yape</Text>
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="card">
-            {cardPaymentMethod && (
-              <AnimatedRN.View style={{ opacity: fadeAnimCard }}>
-                <Stripe />
-              </AnimatedRN.View>
-            )}
-          </TabsContent>
-          <TabsContent value="yape">
-            {yapePaymentMethod && (
-              <AnimatedRN.View style={{ opacity: fadeAnimYape }}>
-                <Yape />
-              </AnimatedRN.View>
-            )}
-          </TabsContent>
-        </Tabs>
-      </View>
-    </ScrollView>
+          <Text className="text-2xl font-bold ">Método de Pago</Text>
+          <Tabs
+            value={value}
+            onValueChange={setValue}
+            className="w-full max-w-[400px] mx-auto flex-col gap-1.5"
+          >
+            <TabsList className="flex-row w-full rounded-xl">
+              <TabsTrigger
+                onPress={handleCardPayment}
+                value="card"
+                className="flex-1 rounded-lg"
+              >
+                <Text>Tarjeta</Text>
+              </TabsTrigger>
+              <TabsTrigger
+                onPress={handleYapePayment}
+                value="yape"
+                className="flex-1 rounded-lg"
+              >
+                <Text>Yape</Text>
+              </TabsTrigger>
+            </TabsList>
+            <TabsContent value="card">
+              {cardPaymentMethod && (
+                <AnimatedRN.View style={{ opacity: fadeAnimCard }}>
+                  <Stripe />
+                </AnimatedRN.View>
+              )}
+            </TabsContent>
+            <TabsContent value="yape">
+              {yapePaymentMethod && (
+                <AnimatedRN.View style={{ opacity: fadeAnimYape }}>
+                  <Yape />
+                </AnimatedRN.View>
+              )}
+            </TabsContent>
+          </Tabs>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

@@ -8,6 +8,8 @@ import {
   Alert,
   TouchableWithoutFeedback,
   Keyboard,
+  KeyboardAvoidingView,
+  ScrollView,
 } from "react-native";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
@@ -87,8 +89,8 @@ export default function PersonalInfoScreen() {
   };
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <SafeAreaView className="flex-1">
+    <KeyboardAvoidingView behavior="height" enabled style={{ flex: 1 }}>
+      <ScrollView className="flex-1" contentInsetAdjustmentBehavior="automatic">
         <View className="flex-1 px-4 pt-10">
           {/* Profile Avatar Section */}
           <View className="items-center mb-6">
@@ -189,7 +191,7 @@ export default function PersonalInfoScreen() {
             </View>
           </View>
         </View>
-      </SafeAreaView>
-    </TouchableWithoutFeedback>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 }

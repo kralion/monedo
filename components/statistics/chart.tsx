@@ -112,24 +112,16 @@ export default function Chart({ timelineQuery, data }: ChartProps) {
       areaChart
       curved
       data={chartData}
-      spacing={
-        timelineQuery.value === "hoy"
-          ? 55
-          : timelineQuery.value === "semanal"
-          ? 110
-          : 55
-      }
-      initialSpacing={5}
+      spacing={timelineQuery.value === "semanal" ? 100 : 50}
       yAxisColor="gray"
       xAxisColor="white"
       yAxisThickness={0.2}
       color1="teal"
       dataPointsColor1="teal"
       hideRules
+      endSpacing={-20}
       startFillColor1="teal"
       startOpacity={0.8}
-      endOpacity={0.5}
-      width={500}
       height={250}
     />
   );

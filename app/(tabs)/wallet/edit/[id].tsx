@@ -133,7 +133,7 @@ export default function EditExpense() {
               )}
             </Button>
             <Button
-              variant="destructive"
+              variant="secondary"
               onPress={() => {
                 onDelete(params.id);
               }}
@@ -142,7 +142,7 @@ export default function EditExpense() {
               {isLoading ? (
                 <ActivityIndicator size={20} color="white" />
               ) : (
-                <Text>Eliminar Gasto</Text>
+                <Text className="text-red-400">Eliminar Presupuesto</Text>
               )}
             </Button>
           </View>
