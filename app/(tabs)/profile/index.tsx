@@ -101,7 +101,6 @@ export default function ProfileScreen() {
         <Button
           onPress={() => {
             signOut();
-            router.replace("/(auth)/sign-in");
           }}
           size="lg"
           variant="ghost"

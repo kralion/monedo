@@ -9,7 +9,7 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { PortalHost } from "@rn-primitives/portal";
-import { router, SplashScreen, Stack } from "expo-router";
+import { router, Slot, SplashScreen, Stack, useSegments } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
@@ -122,69 +122,17 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const { isLoaded, isSignedIn } = useAuth();
+  const segments = useSegments();
 
-  // Automatically open login if user is not authenticated
   React.useEffect(() => {
-    if (isLoaded && !isSignedIn) {
+    if (!isSignedIn && segments[0] === "(tabs)") {
       router.push("/(auth)/sign-in");
+    } else if (!isSignedIn && segments[0] === "(modals)") {
+      router.push("/(auth)/sign-in");
+    } else if (isSignedIn && segments[0] === "(auth)") {
+      router.push("/(tabs)");
     }
-  }, [isLoaded]);
+  }, [isLoaded, isSignedIn, segments]);
 
-  return (
-    <AppProvider>
-      <Stack>
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="(modals)/details/[id]"
-          options={({ route }) => {
-            const { id } = route.params as { id: string };
-            return {
-              title: "Detalles",
-              headerBackTitle: "Gastos",
-              headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
-              headerTransparent: Platform.OS === "android" ? false : true,
-              headerShadowVisible: false,
-              headerRight: () => (
-                <NativeButton
-                  title="Editar"
-                  color="#27BE8B"
-                  onPress={() => router.push(`/(modals)/edit/${id}`)}
-                />
-              ),
-            };
-          }}
-        />
-        <Stack.Screen
-          name="(modals)/edit/[id]"
-          options={{
-            title: "Editar Gasto",
-            headerBackTitle: "Detalles",
-            headerLargeTitle: true,
-            headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
-            headerTransparent: Platform.OS === "android" ? false : true,
-            headerBackVisible: true,
-            headerShadowVisible: false,
-            presentation: "card",
-          }}
-        />
-        <Stack.Screen
-          name="(modals)/buy-premium"
-          options={{
-            presentation: "modal",
-            title: "Adquirir Premium",
-            headerShown: true,
-            headerShadowVisible: true,
-            headerLeft: () => (
-              <NativeButton
-                title="Cancelar"
-                color="#27BE8B"
-                onPress={() => router.back()}
-              />
-            ),
-          }}
-        />
-      </Stack>
-    </AppProvider>
-  );
+  return <Slot />;
 }

@@ -3,7 +3,7 @@ import Card from "@/components/dashboard/card";
 import { useExpenseContext } from "@/context";
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { FlashList } from "@shopify/flash-list";
-import { router, useFocusEffect } from "expo-router";
+import { Redirect, router, useFocusEffect } from "expo-router";
 import { ChevronUp, Lock } from "lucide-react-native";
 import * as React from "react";
 import { ScrollView, View } from "react-native";
@@ -27,6 +27,10 @@ export default function Home() {
   const { has } = useAuth();
   const supabase = createClerkSupabaseClient();
   const [showAll, setShowAll] = React.useState(false);
+  if (!user) {
+    <Redirect href="/(auth)/sign-in" />;
+    return;
+  }
 
   useFocusEffect(
     React.useCallback(() => {
@@ -46,6 +50,10 @@ export default function Home() {
       };
     }, [])
   );
+
+  React.useEffect(() => {
+    getRecentExpenses();
+  }, []);
 
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollHandler = useScrollViewOffset(scrollRef);
