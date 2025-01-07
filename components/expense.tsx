@@ -12,14 +12,13 @@ import { Text } from "./ui/text";
 export function Expense({ expense }: { expense: IExpense }) {
   const { category, amount, date } = expense;
   const formattedDate = date ? formatDate(new Date(date)) : "No date provided";
-
   const assetIndentificador =
     expensesIdentifiers.find(
       (icon) => icon.label.toLowerCase() === category.value
     )?.iconHref ||
     "https://img.icons8.com/?size=160&id=MjAYkOMsbYOO&format=png";
   return (
-    <Animated.View entering={FadeIn.duration(1000)}>
+    <Animated.View entering={FadeIn.duration(200)}>
       <TouchableOpacity
         onPress={() => {
           router.push(`/(modals)/details/${expense.id}`);
@@ -42,9 +41,9 @@ export function Expense({ expense }: { expense: IExpense }) {
           </View>
           <View className="card-description flex flex-row items-center justify-between">
             <View className="card-description-amount flex flex-row gap-2 items-center">
-              <Text className="text-xl text-red-500">
+              <Text className="text-xl text-red-500 font-semibold">
                 <Animated.Text entering={FadeIn.duration(1500)}>
-                  - S/. {amount.toFixed(2)}
+                  S/. {amount}
                 </Animated.Text>
               </Text>
               <Button variant="ghost" size="icon">

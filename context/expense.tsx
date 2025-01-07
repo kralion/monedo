@@ -1,4 +1,4 @@
-import { IExpense, IExpenseContextProvider, IExpensePOST } from "@/interfaces";
+import { IExpense, IExpenseContextProvider } from "@/interfaces";
 import { useUser } from "@clerk/clerk-expo";
 import { endOfMonth, formatISO, startOfMonth } from "date-fns";
 import { router } from "expo-router";
@@ -16,11 +16,10 @@ export const ExpenseContext = createContext<IExpenseContextProvider>({
   sumOfAllOfExpensesMonthly: async () => 0,
   getExpenseById: async (id: string): Promise<IExpense> => ({} as IExpense),
   getWeeklyExpenses: async (): Promise<IExpense[]> => [],
-  getExpensesByUser: async (id: string) => [],
   expenses: [],
   expense: {} as IExpense,
   getExpensesByPeriodicity: async (): Promise<IExpense[]> => [],
-  getRecentExpenses: async (): Promise<IExpense[]> => [],
+  getRecentExpenses: async (): Promise<[]> => [],
   deleteExpense: async () => {},
 });
 
@@ -35,26 +34,17 @@ export const ExpenseContextProvider = ({
   const [loading, setLoading] = React.useState(false);
   const supabase = createClerkSupabaseClient();
   const { user } = useUser();
-  const addExpense = async (expense: IExpensePOST) => {
+  const addExpense = async (expense: IExpense) => {
     setLoading(true);
     const { error } = await supabase.from("expenses").insert(expense);
     if (error) {
-      throw error;
+      toast.error("Ocurrió un error al registrar el gasto");
+    } else {
+      toast.success("Gasto registrado exitosamente");
+      router.push("/(tabs)");
     }
     setLoading(false);
   };
-
-  async function getExpensesByUser(id: string) {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from("expenses")
-      .select("*")
-      .eq("user_id", id);
-    if (error) throw error;
-    setExpenses(data);
-    setLoading(false);
-    return data;
-  }
 
   async function getWeeklyExpenses() {
     setLoading(true);
@@ -96,9 +86,18 @@ export const ExpenseContextProvider = ({
     return 0;
   }
 
-  const updateExpense = async (expense: IExpensePOST) => {
+  const updateExpense = async (expense: IExpense) => {
     setLoading(true);
-    await supabase.from("expenses").update(expense).eq("id", expense.id);
+    const { error } = await supabase
+      .from("expenses")
+      .update(expense)
+      .eq("id", expense.id);
+    if (error) {
+      toast.error("Ocurrió un error al actualizar el gasto");
+    } else {
+      toast.success("Gasto actualizado exitosamente");
+      router.back();
+    }
     setLoading(false);
   };
 
@@ -148,9 +147,10 @@ export const ExpenseContextProvider = ({
       .eq("user_id", user?.id)
       .order("date", { ascending: false })
       .limit(20);
+    const expensesData = data ?? [];
+    setExpenses(expensesData);
     setLoading(false);
-    if (!data) return [];
-    return data;
+    return expensesData;
   }
 
   async function getExpenseById(id: string) {
@@ -168,7 +168,6 @@ export const ExpenseContextProvider = ({
   return (
     <ExpenseContext.Provider
       value={{
-        getExpensesByUser,
         expenses,
         loading,
         weeklyExpenses,

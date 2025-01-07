@@ -1,5 +1,5 @@
 import { useBudgetContext, useExpenseContext } from "@/context";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import * as React from "react";
 import { Image, ScrollView, View } from "react-native";
 import {
@@ -20,6 +20,7 @@ import { Badge } from "~/components/ui/badge";
 import { Text } from "~/components/ui/text";
 import { expensesIdentifiers } from "~/constants/ExpensesIdentifiers";
 import { IBudget } from "~/interfaces";
+import { createClerkSupabaseClient } from "~/lib/supabase";
 
 export default function ExpenseDetails() {
   const {
@@ -34,6 +35,7 @@ export default function ExpenseDetails() {
   const [totalMonthExpenses, setTotalMonthExpenses] = React.useState(0);
   const [isOpen, setIsOpen] = React.useState(false);
   const params = useLocalSearchParams<{ id: string }>();
+  const supabase = createClerkSupabaseClient();
   const handleDeleteExpense = async (id: string) => {
     deleteExpense(id);
     router.push("/(tabs)");
@@ -44,19 +46,34 @@ export default function ExpenseDetails() {
     setTotalMonthExpenses(total);
     return total;
   }
-  React.useEffect(() => {
-    if (params.id) {
-      getExpenseById(params.id);
-    }
-  }, [params.id]);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      if (params.id) {
+        getExpenseById(params.id);
+        const channel = supabase.channel("realtime-expenses").on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "expenses",
+          },
+          () => {
+            getExpenseById(params.id);
+          }
+        );
+        return () => {
+          channel.unsubscribe();
+        };
+      }
+    }, [params.id])
+  );
+
   React.useEffect(() => {
     getCurrentBudget().then((budget) => {
       if (!budget) return;
       setBudget(budget);
     });
-  }, []);
-
-  React.useEffect(() => {
     calculateTotalMonthExpenses();
   }, []);
 

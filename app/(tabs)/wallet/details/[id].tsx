@@ -1,4 +1,4 @@
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import * as React from "react";
 import { ActivityIndicator, Image, ScrollView, View } from "react-native";
 import {
@@ -15,22 +15,43 @@ import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { Text } from "~/components/ui/text";
 import { useBudgetContext } from "~/context";
+import { createClerkSupabaseClient } from "~/lib/supabase";
 
 export default function BudgetDetails() {
   const { deleteBudget, budget, getBudgetById, loading } = useBudgetContext();
   const [isOpen, setIsOpen] = React.useState(false);
   const params = useLocalSearchParams<{ id: string }>();
+  const supabase = createClerkSupabaseClient();
   const handleDeleteBudget = async (id: string) => {
     deleteBudget(id);
     router.push("/(tabs)/wallet");
     setIsOpen(false);
   };
 
-  React.useEffect(() => {
-    if (params.id) {
-      getBudgetById(params.id);
-    }
-  }, [params.id]);
+  useFocusEffect(
+    React.useCallback(() => {
+      if (params.id) {
+        getBudgetById(params.id);
+
+        const channel = supabase.channel(`budgets:id=eq.${params.id}`).on(
+          "postgres_changes",
+          {
+            event: "*",
+            schema: "public",
+            table: "budgets",
+            filter: `id=eq.${params.id}`,
+          },
+          () => {
+            getBudgetById(params.id);
+          }
+        );
+
+        return () => {
+          channel.unsubscribe();
+        };
+      }
+    }, [params.id])
+  );
 
   if (!budget) return null;
 

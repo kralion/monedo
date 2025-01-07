@@ -1,7 +1,7 @@
 import { useExpenseContext } from "@/context";
-import { IExpensePOST } from "@/interfaces";
+import { IExpense } from "@/interfaces";
 import { useLocalSearchParams } from "expo-router";
-import React from "react";
+import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
@@ -26,19 +26,6 @@ import {
 import { Switch } from "~/components/ui/switch";
 import { Text } from "~/components/ui/text";
 import { Textarea } from "~/components/ui/textarea";
-import UpdateExpenseSuccesModal from "~/components/update-expense-success";
-
-interface IGasto {
-  description: string;
-  amount: number;
-  category: {
-    label: string;
-    value: string;
-  };
-  periodicity: boolean;
-  currency: string;
-}
-
 const items = [
   { name: "Hogar" },
   { name: "Transporte" },
@@ -53,22 +40,25 @@ export default function EditExpense() {
   const { id } = useLocalSearchParams();
   const { expense, deleteExpense, updateExpense } = useExpenseContext();
   const [isLoading, setIsLoading] = React.useState(false);
-  const [openModal, setOpenModal] = React.useState(false);
   const {
     control,
     handleSubmit,
     formState: { errors },
     reset,
     setValue,
-  } = useForm<IExpensePOST>({
-    defaultValues: {
-      description: expense.description,
-      amount: expense.amount,
-      category: expense.category.value,
-      periodicity: expense.periodicity,
-      currency: expense.currency,
-    },
-  });
+  } = useForm<IExpense>();
+  useEffect(() => {
+    if (id) {
+      setValue("description", expense.description);
+      setValue("amount", expense.amount);
+      setValue("category", {
+        label: expense.category.label,
+        value: expense.category.value,
+      });
+      setValue("periodicity", expense.periodicity);
+      setValue("currency", expense.currency);
+    }
+  }, [id]);
   const formattedDate = new Date(expense.date).toLocaleDateString("es-PE", {
     day: "numeric",
     month: "long",
@@ -95,15 +85,14 @@ export default function EditExpense() {
   };
 
   // TODO: Multiple renders
-  async function onSubmit(data: IExpensePOST) {
+  async function onSubmit(data: IExpense) {
     setIsLoading(true);
     try {
       updateExpense({
         ...data,
+        id: id as string,
         amount: Number(data.amount),
       });
-      reset();
-      setOpenModal(true);
     } catch (error) {
       console.log(error);
     }
@@ -116,12 +105,6 @@ export default function EditExpense() {
         className="h-screen-safe-offset-2 px-4"
         contentInsetAdjustmentBehavior="automatic"
       >
-        <UpdateExpenseSuccesModal
-          expensePrice={expense.amount.toFixed(2)}
-          openModal={openModal}
-          setOpenModal={setOpenModal}
-        />
-
         <View className="flex flex-col">
           <View className="flex flex-col gap-6 pt-6">
             <Controller
@@ -130,10 +113,7 @@ export default function EditExpense() {
               render={({ field: { onChange, value } }) => (
                 <View className="flex flex-col gap-2">
                   <Label>Categoría</Label>
-                  <Select
-                    defaultValue={expense.category}
-                    onValueChange={onChange}
-                  >
+                  <Select onValueChange={onChange} value={value}>
                     <SelectTrigger>
                       <SelectValue placeholder="Selecciona" />
                     </SelectTrigger>
@@ -274,7 +254,7 @@ export default function EditExpense() {
                   <Text>Guardar Cambios</Text>
                 )}
               </Button>
-              <Button onPress={handleDeleteExpense} size="lg" variant="outline">
+              <Button onPress={handleDeleteExpense} size="lg" variant="link">
                 <Text className="text-red-500">Eliminar Gasto</Text>
               </Button>
             </View>

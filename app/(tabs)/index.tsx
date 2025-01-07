@@ -1,13 +1,12 @@
+import NoData2Svg from "@/assets/svgs/no-data.svg";
 import Card from "@/components/dashboard/card";
-import { Expense } from "~/components/expense";
 import { useExpenseContext } from "@/context";
 import { useAuth, useUser } from "@clerk/clerk-expo";
-import NoData2Svg from "@/assets/svgs/no-data.svg";
 import { FlashList } from "@shopify/flash-list";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { ChevronUp, Lock } from "lucide-react-native";
 import * as React from "react";
-import { ActivityIndicator, ScrollView, View } from "react-native";
+import { ScrollView, View } from "react-native";
 import Animated, {
   useAnimatedRef,
   useAnimatedStyle,
@@ -15,24 +14,38 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Expense } from "~/components/expense";
+import { ExpenseSkeleton } from "~/components/skeleton/expense";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
-import { ExpenseSkeleton } from "~/components/skeleton/expense";
-import { IExpense } from "~/interfaces";
+import { createClerkSupabaseClient } from "~/lib/supabase";
 
 export default function Home() {
-  const { loading, getRecentExpenses } = useExpenseContext();
-  const [expenses, setExpenses] = React.useState<IExpense[]>([]);
+  const { getRecentExpenses, expenses } = useExpenseContext();
+  const [loading, setLoading] = React.useState(false);
   const { user, isSignedIn } = useUser();
   const { has } = useAuth();
+  const supabase = createClerkSupabaseClient();
   const [showAll, setShowAll] = React.useState(false);
-  if (!user) {
-    return null;
-  }
 
-  React.useEffect(() => {
-    getRecentExpenses().then((data) => setExpenses(data));
-  }, [user]);
+  useFocusEffect(
+    React.useCallback(() => {
+      setLoading(true);
+      getRecentExpenses();
+      setLoading(false);
+      const channel = supabase.channel("realtime-expenses");
+      channel.on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "expenses" },
+        () => {
+          getRecentExpenses();
+        }
+      );
+      return () => {
+        channel.unsubscribe();
+      };
+    }, [])
+  );
 
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollHandler = useScrollViewOffset(scrollRef);

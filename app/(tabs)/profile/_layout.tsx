@@ -29,13 +29,6 @@ export default function Layout() {
           headerBackTitle: "Perfil",
           headerTransparent: true,
           headerLargeTitle: true,
-          headerRight: () => (
-            <Button
-              title="Cancelar"
-              color="#27BE8B"
-              onPress={() => router.back()}
-            />
-          ),
         }}
       />
 

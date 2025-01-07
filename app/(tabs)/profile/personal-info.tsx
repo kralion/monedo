@@ -179,7 +179,7 @@ export default function PersonalInfoScreen() {
               </Button>
               <Button
                 onPress={handleDeleteAccount}
-                variant="outline"
+                variant="ghost"
                 disabled={isUpdating}
               >
                 {isDeleting ? (

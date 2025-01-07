@@ -1,13 +1,12 @@
 import { useBudgetContext } from "@/context";
 import { IBudget } from "@/interfaces";
 import { useUser } from "@clerk/clerk-expo";
-import { router, useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import { Info } from "lucide-react-native";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
-  Alert,
   Keyboard,
   ScrollView,
   TouchableWithoutFeedback,
@@ -22,7 +21,7 @@ import { Textarea } from "~/components/ui/textarea";
 export default function EditExpense() {
   const params = useLocalSearchParams<{ id: string }>();
   const { user } = useUser();
-  const { updateBudget, budget, deleteBudget } = useBudgetContext();
+  const { updateBudget, budget } = useBudgetContext();
   const [isLoading, setIsLoading] = React.useState(false);
   const {
     control,
@@ -35,22 +34,6 @@ export default function EditExpense() {
       description: budget.description,
     },
   });
-
-  const onDelete = (id: string) => {
-    Alert.alert("Eliminar gasto", "¿Estás seguro?", [
-      {
-        text: "Sí",
-        onPress: () => {
-          deleteBudget(id);
-          router.push("/(tabs)/wallet");
-        },
-      },
-      {
-        text: "No",
-        style: "cancel",
-      },
-    ]);
-  };
 
   async function onSubmit(data: IBudget) {
     setIsLoading(true);
@@ -130,19 +113,6 @@ export default function EditExpense() {
                 <ActivityIndicator size={20} color="white" />
               ) : (
                 <Text>Guardar Cambios</Text>
-              )}
-            </Button>
-            <Button
-              variant="secondary"
-              onPress={() => {
-                onDelete(params.id);
-              }}
-              size="lg"
-            >
-              {isLoading ? (
-                <ActivityIndicator size={20} color="white" />
-              ) : (
-                <Text className="text-red-400">Eliminar Presupuesto</Text>
               )}
             </Button>
           </View>

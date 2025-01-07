@@ -13,7 +13,7 @@ export default function Notification({
 }: {
   notification: INotification;
 }) {
-  const formattedDate = new Date(notification.created_At).toLocaleDateString(
+  const formattedDate = new Date(notification.created_at).toLocaleDateString(
     "es-ES",
     {
       year: "numeric",
@@ -25,7 +25,7 @@ export default function Notification({
   return (
     <View className="flex-row bg-white px-4 items-center gap-1">
       <Avatar alt="User">
-        <AvatarImage source={{ uri: iconos[notification.tipo] }} />
+        <AvatarImage source={{ uri: iconos[notification.type] }} />
       </Avatar>
 
       <View className="flex-1 border-t border-gray-100 p-2">
@@ -37,7 +37,7 @@ export default function Notification({
         </View>
 
         <Text className="text-sm text-gray-600 leading-5">
-          {notification.description.slice(0, 100)}...
+          {notification.description.slice(0, 90)}...
         </Text>
       </View>
     </View>

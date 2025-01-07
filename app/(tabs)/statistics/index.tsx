@@ -2,7 +2,7 @@ import NoData2Svg from "@/assets/svgs/no-data.svg";
 import Chart from "@/components/statistics/chart";
 import { useExpenseContext } from "@/context";
 import { FlashList } from "@shopify/flash-list";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { Download } from "lucide-react-native";
 import * as React from "react";
 import { useState } from "react";
@@ -27,11 +27,14 @@ export default function Statistics() {
     getDateRange("semanal"),
     getDateRange("mensual"),
   ];
-  React.useEffect(() => {
-    getExpensesByPeriodicity(timelineQuery).then((data) =>
-      setExpenses(data as IExpense[])
-    );
-  }, [timelineQuery]);
+  useFocusEffect(
+    React.useCallback(() => {
+      getExpensesByPeriodicity(timelineQuery).then((data) =>
+        setExpenses(data as IExpense[])
+      );
+    }, [timelineQuery])
+  );
+
   return (
     <SafeAreaView className="py-4">
       <View className="flex flex-col gap-8">

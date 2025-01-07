@@ -7,7 +7,6 @@ import {
   ScrollView,
   View,
 } from "react-native";
-import AddExpenseSuccesModal from "~/components/add-expense-sucess";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
@@ -25,7 +24,7 @@ import { Switch } from "~/components/ui/switch";
 import { Text } from "~/components/ui/text";
 import { Textarea } from "~/components/ui/textarea";
 import { useExpenseContext } from "~/context";
-import { IExpensePOST } from "~/interfaces";
+import { IExpense } from "~/interfaces";
 
 const items = [
   { value: "Hogar" },
@@ -40,7 +39,6 @@ const items = [
 
 export default function AddExpense() {
   const { addExpense, loading } = useExpenseContext();
-  const [openModal, setOpenModal] = React.useState(false);
   const [amount, setAmount] = React.useState(0);
   const {
     control,
@@ -48,22 +46,24 @@ export default function AddExpense() {
     formState: { errors },
     reset,
     setValue,
-  } = useForm<IExpensePOST>({
+  } = useForm<IExpense>({
     defaultValues: {
       currency: "Soles",
       amount: amount,
       periodicity: false,
       description: "",
-      category: "Hogar",
+      category: {
+        label: "Hogar",
+        value: "Hogar",
+      },
     },
   });
 
-  async function onSubmit(data: IExpensePOST) {
+  async function onSubmit(data: IExpense) {
     addExpense({
       ...data,
       amount,
     });
-    setOpenModal(true);
     reset();
   }
 
@@ -73,12 +73,6 @@ export default function AddExpense() {
         className="h-screen-safe-offset-2 "
         contentInsetAdjustmentBehavior="automatic"
       >
-        <AddExpenseSuccesModal
-          expensePrice={amount.toFixed(2)}
-          openModal={openModal}
-          setOpenModal={setOpenModal}
-        />
-
         <View className="flex flex-col">
           <View className="flex flex-col gap-6 ">
             <View className="flex flex-col px-4 pt-7">
@@ -98,7 +92,7 @@ export default function AddExpense() {
               render={({ field: { onChange, value } }) => (
                 <View className="flex flex-col gap-2">
                   <Label>Categoría</Label>
-                  <Select onValueChange={onChange}>
+                  <Select onValueChange={onChange} value={value}>
                     <SelectTrigger>
                       <SelectValue placeholder="Selecciona" />
                     </SelectTrigger>

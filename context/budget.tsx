@@ -51,7 +51,6 @@ export const BudgetContextProvider = ({
       .eq("user_id", user?.id)
       .limit(1)
       .single();
-
     return data;
   };
 
@@ -83,20 +82,18 @@ export const BudgetContextProvider = ({
     toast.success("Presupuesto eliminado exitosamente", {
       icon: <CheckCircle color="green" size={20} />,
     });
-    router.replace("/(tabs)/wallet");
     setLoading(false);
   };
 
   async function getBudgets() {
-    setLoading(true);
     const { data } = await supabase
       .from("budgets")
       .select("*")
       .eq("user_id", user?.id)
-      .order("created_At", { ascending: false })
-      .limit(3);
-    setBudgets(JSON.parse(JSON.stringify(data)));
-    setLoading(false);
+      .order("created_At", { ascending: false });
+    if (data) {
+      setBudgets(data);
+    }
     return data;
   }
 

@@ -2,7 +2,7 @@ export interface INotification {
   id: string;
   title: string;
   description: string;
-  tipo: "info" | "warning" | "error";
+  type: "info" | "warning" | "error";
   user_id?: string;
-  created_At: Date;
+  created_at: Date;
 }

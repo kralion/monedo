@@ -1,7 +1,7 @@
 import { useBudgetContext, useExpenseContext } from "@/context";
 import { useAuth } from "@clerk/clerk-expo";
 import { LinearGradient } from "expo-linear-gradient";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import * as React from "react";
 import { Alert, Pressable, StyleSheet, View } from "react-native";
 import { Button } from "../ui/button";
@@ -34,9 +34,16 @@ export default function Card() {
     setBalance(presupuesto?.amount - total);
   }
 
-  React.useEffect(() => {
-    calculateBalance();
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      calculateBalance();
+    }, [])
+  );
+  useFocusEffect(
+    React.useCallback(() => {
+      calculateTotalMonthExpenses();
+    }, [])
+  );
 
   return (
     <Pressable
@@ -66,6 +73,7 @@ export default function Card() {
         <View className="flex flex-row justify-between">
           <View>
             <Text className="text-xl text-white">Balance</Text>
+
             <Text className="text-4xl text-white font-bold">
               S/. {balance.toFixed(2)}
             </Text>
