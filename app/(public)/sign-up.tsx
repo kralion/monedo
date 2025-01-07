@@ -1,4 +1,4 @@
-import { useOAuth, useSignUp } from "@clerk/clerk-expo";
+import { useOAuth } from "@clerk/clerk-expo";
 import * as Linking from "expo-linking";
 import { Link, useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
@@ -23,8 +23,6 @@ export const useWarmUpBrowser = () => {
 WebBrowser.maybeCompleteAuthSession();
 
 export default function SignUpScreen() {
-  const { signUp, setActive } = useSignUp();
-  const [showTCModal, setShowTCModal] = React.useState(false);
   const router = useRouter();
 
   return (
@@ -87,7 +85,7 @@ export const SignInWithOAuthGoogle = () => {
   const onPress = React.useCallback(async () => {
     try {
       const { createdSessionId, setActive } = await startOAuthFlow({
-        redirectUrl: Linking.createURL("/(tabs)", { scheme: "roomy" }),
+        redirectUrl: Linking.createURL("/(auth)/(tabs)", { scheme: "roomy" }),
       });
 
       if (createdSessionId) {
@@ -126,7 +124,7 @@ export const SignInWithOAuthTiktok = () => {
   const onPress = React.useCallback(async () => {
     try {
       const { createdSessionId, setActive } = await startOAuthFlow({
-        redirectUrl: Linking.createURL("/(tabs)", { scheme: "roomy" }),
+        redirectUrl: Linking.createURL("/(auth)/(tabs)", { scheme: "roomy" }),
       });
 
       if (createdSessionId) {
@@ -165,7 +163,7 @@ export const SignInWithOAuthFacebook = () => {
   const onPress = React.useCallback(async () => {
     try {
       const { createdSessionId, setActive } = await startOAuthFlow({
-        redirectUrl: Linking.createURL("/(tabs)", { scheme: "roomy" }),
+        redirectUrl: Linking.createURL("/(auth)/(tabs)", { scheme: "roomy" }),
       });
 
       if (createdSessionId) {

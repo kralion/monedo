@@ -58,7 +58,7 @@ export default function AddExpenseIcon() {
             onPress={() => {
               balance <= 0
                 ? setShowModal(true)
-                : router.push("/(tabs)/add-expense");
+                : router.push("/(auth)/(tabs)/add-expense");
             }}
           >
             <Plus strokeWidth={2.5} color="white" size={40} />
@@ -70,7 +70,7 @@ export default function AddExpenseIcon() {
             onPress={() => {
               balance <= 0
                 ? setShowModal(true)
-                : router.push("/(tabs)/add-expense");
+                : router.push("/(auth)/(tabs)/add-expense");
             }}
           >
             <Plus strokeWidth={2.5} color="white" size={40} />

@@ -28,7 +28,7 @@ export default function Home() {
   const supabase = createClerkSupabaseClient();
   const [showAll, setShowAll] = React.useState(false);
   if (!user) {
-    <Redirect href="/(auth)/sign-in" />;
+    <Redirect href="/(public)/sign-in" />;
     return;
   }
 
@@ -72,7 +72,7 @@ export default function Home() {
   }
 
   if (!isSignedIn) {
-    router.replace("/(auth)/sign-in");
+    router.replace("/(public)/sign-in");
   }
 
   return (
@@ -132,7 +132,7 @@ export default function Home() {
               </View>
 
               <Button
-                onPress={() => router.push("/(modals)/buy-premium")}
+                onPress={() => router.push("/(auth)/(modals)/buy-premium")}
                 size="icon"
                 variant="outline"
                 className="rounded-full"

@@ -1,6 +1,5 @@
 import { router, Stack } from "expo-router";
 import { Button, Platform } from "react-native";
-import { useBudgetContext } from "~/context";
 
 export default function Layout() {
   return (

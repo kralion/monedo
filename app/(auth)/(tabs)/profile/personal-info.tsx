@@ -3,16 +3,12 @@ import * as React from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
-  SafeAreaView,
-  View,
   Alert,
-  TouchableWithoutFeedback,
-  Keyboard,
   KeyboardAvoidingView,
   ScrollView,
+  View,
 } from "react-native";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";

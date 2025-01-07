@@ -21,7 +21,7 @@ export function Expense({ expense }: { expense: IExpense }) {
     <Animated.View entering={FadeIn.duration(200)}>
       <TouchableOpacity
         onPress={() => {
-          router.push(`/(modals)/details/${expense.id}`);
+          router.push(`/(auth)/(modals)/details/${expense.id}`);
         }}
         className="card active:opacity-80 flex flex-row gap-2   items-center"
       >

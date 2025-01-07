@@ -53,7 +53,7 @@ export default function ProfileScreen() {
       </View>
       <View className="flex flex-col mt-10 items-start ml-4">
         <Button
-          onPress={() => router.push("/(tabs)/profile/personal-info")}
+          onPress={() => router.push("/(auth)/(tabs)/profile/personal-info")}
           size="lg"
           variant="ghost"
           className="flex flex-row gap-3 px-5"
@@ -62,7 +62,7 @@ export default function ProfileScreen() {
           <Text>Mis Datos</Text>
         </Button>
         <Button
-          onPress={() => router.push("/(tabs)/profile/buy-premium")}
+          onPress={() => router.push("/(auth)/(tabs)/profile/buy-premium")}
           size="lg"
           variant="ghost"
           className="flex flex-row gap-3 px-5"
@@ -71,7 +71,7 @@ export default function ProfileScreen() {
           <Text>Adquirir Premium</Text>
         </Button>
         <Button
-          onPress={() => router.push("/(tabs)/profile/membership")}
+          onPress={() => router.push("/(auth)/(tabs)/profile/membership")}
           size="lg"
           className="flex flex-row gap-3 px-5"
           variant="ghost"
@@ -81,7 +81,7 @@ export default function ProfileScreen() {
         </Button>
 
         <Button
-          onPress={() => router.push("/(tabs)/profile/notifications")}
+          onPress={() => router.push("/(auth)/(tabs)/profile/notifications")}
           size="lg"
           variant="ghost"
           className="flex flex-row gap-3 px-5"

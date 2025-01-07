@@ -24,7 +24,7 @@ export default function BudgetDetails() {
   const supabase = createClerkSupabaseClient();
   const handleDeleteBudget = async (id: string) => {
     deleteBudget(id);
-    router.push("/(tabs)/wallet");
+    router.push("/(auth)/(tabs)/wallet");
     setIsOpen(false);
   };
 

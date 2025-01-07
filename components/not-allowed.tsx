@@ -51,7 +51,8 @@ export default function NotAllowedModal({
               <Button
                 size="lg"
                 onPress={() => {
-                  setOpenModal(false), router.push("/(modals)/buy-premium");
+                  setOpenModal(false),
+                    router.push("/(auth)/(modals)/buy-premium");
                 }}
               >
                 <Text className="font-semibold  ">Adquiere Premium</Text>

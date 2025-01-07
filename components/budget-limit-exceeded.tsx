@@ -45,7 +45,7 @@ export function BudgetLimitExceededModal({
         <AlertDialogFooter>
           <AlertDialogAction
             onPress={() => {
-              setShowModal(false), router.push("/(tabs)/wallet");
+              setShowModal(false), router.push("/(auth)/(tabs)/wallet");
             }}
           >
             <Text>Agregar Fondos</Text>

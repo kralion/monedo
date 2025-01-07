@@ -9,12 +9,11 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { PortalHost } from "@rn-primitives/portal";
-import { router, Slot, SplashScreen, Stack, useSegments } from "expo-router";
+import { router, Slot, SplashScreen, useSegments } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
-import { Button as NativeButton, Platform } from "react-native";
-import AppProvider from "~/context/provider";
+import { Platform } from "react-native";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
 import { NAV_THEME } from "~/lib/constants";
 import { useColorScheme } from "~/lib/useColorScheme";
@@ -28,10 +27,7 @@ const DARK_THEME: Theme = {
   colors: NAV_THEME.dark,
 };
 
-export {
-  // Catch any errors thrown by the Layout component.
-  ErrorBoundary,
-} from "expo-router";
+export { ErrorBoundary } from "expo-router";
 
 export interface TokenCache {
   getToken: (key: string) => Promise<string | undefined | null>;
@@ -71,7 +67,6 @@ if (!publishableKey) {
   );
 }
 
-// Prevent the splash screen from auto-hiding before getting the color scheme.
 SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const { colorScheme, setColorScheme, isDarkColorScheme } = useColorScheme();
@@ -81,7 +76,6 @@ export default function RootLayout() {
     (async () => {
       const theme = await AsyncStorage.getItem("theme");
       if (Platform.OS === "web") {
-        // Adds the background color to the html element to prevent white background on overscroll.
         document.documentElement.classList.add("bg-background");
       }
       if (!theme) {
@@ -125,12 +119,10 @@ function RootLayoutNav() {
   const segments = useSegments();
 
   React.useEffect(() => {
-    if (!isSignedIn && segments[0] === "(tabs)") {
-      router.push("/(auth)/sign-in");
-    } else if (!isSignedIn && segments[0] === "(modals)") {
-      router.push("/(auth)/sign-in");
-    } else if (isSignedIn && segments[0] === "(auth)") {
-      router.push("/(tabs)");
+    if (!isSignedIn && segments[0] === "(auth)") {
+      router.push("/(public)/sign-in");
+    } else if (isSignedIn && segments[0] === "(public)") {
+      router.push("/(auth)/(tabs)");
     }
   }, [isLoaded, isSignedIn, segments]);
 

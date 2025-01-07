@@ -233,7 +233,7 @@ export default function AddExpense() {
               <Button
                 onPress={() => {
                   reset();
-                  router.push("/(tabs)");
+                  router.push("/(auth)/(tabs)");
                 }}
                 size="lg"
                 variant="outline"

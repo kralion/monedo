@@ -1,18 +1,15 @@
 import { useAuth, useUser } from "@clerk/clerk-expo";
-import { useHeaderHeight } from "@react-navigation/elements";
-import { Info } from "lucide-react-native";
-import { Button } from "~/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import { Text } from "~/components/ui/text";
-import { SafeAreaView, ScrollView, View } from "react-native";
 import { Image } from "expo-image";
+import { Info } from "lucide-react-native";
+import { SafeAreaView, View } from "react-native";
+import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
+import { Text } from "~/components/ui/text";
 
 export default function Membership() {
   const { user: userData } = useUser();
   const { has } = useAuth();
 
-  const headerHeight = useHeaderHeight();
   const dateFormatted = userData?.createdAt
     ? new Date(userData.createdAt).toLocaleDateString("es-ES", {
         year: "numeric",
@@ -21,18 +18,12 @@ export default function Membership() {
       })
     : "";
 
-  const timeformatted = userData?.createdAt
-    ? new Date(userData.createdAt).toLocaleTimeString("es-ES", {
-        hour: "2-digit",
-        minute: "2-digit",
-      })
-    : "";
   return (
     <SafeAreaView>
       <View className="flex flex-col gap-6 px-4 py-8 ">
         <View className="flex flex-row gap-4 items-center ">
           <Image
-            source={require("../../../assets/logo.png")}
+            source={require("../../../../assets/logo.png")}
             style={{ width: 100, height: 100 }}
           />
 

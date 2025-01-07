@@ -49,7 +49,7 @@ export default function SignInScreen() {
               ¿No tienes una cuenta?
             </Text>
             <Text
-              onPress={() => router.push("/(auth)/sign-up")}
+              onPress={() => router.push("/(public)/sign-up")}
               className="text-primary active:underline"
             >
               Regístrate

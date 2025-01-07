@@ -1,6 +1,6 @@
-import { router, Stack } from "expo-router";
+import { Stack } from "expo-router";
 import React from "react";
-import { Button, Platform } from "react-native";
+import { Platform } from "react-native";
 
 export default function Layout() {
   return (

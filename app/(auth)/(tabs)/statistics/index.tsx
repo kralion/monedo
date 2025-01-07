@@ -48,7 +48,7 @@ export default function Statistics() {
           <Button
             onPress={() => {
               router.push({
-                pathname: "/(tabs)/statistics/export-data",
+                pathname: "/(auth)/(tabs)/statistics/export-data",
                 params: { periodicity: timelineQuery.value },
               });
             }}

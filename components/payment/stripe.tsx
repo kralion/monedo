@@ -44,7 +44,7 @@ export default function Stripe() {
     setIsLoading(false);
     setShowConfetti(true);
     setTimeout(() => {
-      router.push("/(tabs)");
+      router.push("/(auth)/(tabs)");
     }, 3000);
   }
 

@@ -41,7 +41,7 @@ export const ExpenseContextProvider = ({
       toast.error("Ocurrió un error al registrar el gasto");
     } else {
       toast.success("Gasto registrado exitosamente");
-      router.push("/(tabs)");
+      router.push("/(auth)/(tabs)");
     }
     setLoading(false);
   };
@@ -110,7 +110,7 @@ export const ExpenseContextProvider = ({
     toast.success("Gasto eliminado exitosamente", {
       icon: <CheckCircle color="red" size={20} />,
     });
-    router.push("/(tabs)");
+    router.push("/(auth)/(tabs)");
     setLoading(false);
   };
 

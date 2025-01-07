@@ -55,7 +55,7 @@ export default function Card() {
             "Ya eres usuario premium, tienes acceso a todas las funcionalidades."
           );
         } else {
-          router.push("/(modals)/buy-premium");
+          router.push("/(auth)/(modals)/buy-premium");
         }
       }}
       style={styles.shadowContainer}

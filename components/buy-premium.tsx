@@ -65,11 +65,11 @@ export default function BuyPremiumModal({
             </Text>
           </View>
           <View className="px-6 mt-6 w-full">
-            <Link href="/(modals)/buy-premium" asChild>
+            <Link href="/(auth)/(modals)/buy-premium" asChild>
               <Button
                 size="lg"
                 onPress={() => {
-                  router.push("/(modals)/buy-premium");
+                  router.push("/(auth)/(modals)/buy-premium");
                 }}
               >
                 <Text>Adquirir Premium</Text>
@@ -80,7 +80,7 @@ export default function BuyPremiumModal({
               className="w-full mt-4 border-white"
               onPress={() => {
                 setOpenModal(false);
-                router.push("/(tabs)");
+                router.push("/(auth)/(tabs)");
               }}
             >
               <Text>Quizá más tarde</Text>
