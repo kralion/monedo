@@ -38,7 +38,7 @@ export default function ExpenseDetails() {
   const supabase = createClerkSupabaseClient();
   const handleDeleteExpense = async (id: string) => {
     deleteExpense(id);
-    router.push("/(tabs)");
+    router.push("/(auth)/(tabs)");
     setIsOpen(false);
   };
   async function calculateTotalMonthExpenses() {
@@ -88,37 +88,9 @@ export default function ExpenseDetails() {
   return (
     <ScrollView contentInsetAdjustmentBehavior="automatic">
       <View className="flex flex-col gap-4 p-4">
-        <AlertDialog open={isOpen}>
-          <AlertDialogContent key="content">
-            <AlertDialogHeader>
-              <AlertDialogTitle>Eliminar Gasto</AlertDialogTitle>
-              <AlertDialogDescription>
-                Este gasto será eliminado de la base de datos y no podrá ser
-                recuperado.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-
-            <AlertDialogFooter>
-              <AlertDialogCancel onPress={() => setIsOpen(false)} asChild>
-                <Button variant="ghost">
-                  <Text>Cancelar</Text>
-                </Button>
-              </AlertDialogCancel>
-              <AlertDialogAction asChild>
-                <Button onPress={() => handleDeleteExpense(params.id ?? "")}>
-                  <Text>Eliminar</Text>
-                </Button>
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
-        <ScrollView>
-          {loading && (
-            <View className="flex flex-col justify-center items-center min-h-full">
-              <ActivityIndicator size="large" />
-            </View>
-          )}
-
+        {loading ? (
+          <ActivityIndicator size="large" className="mt-20" />
+        ) : (
           <View className="flex flex-col gap-8">
             <View className="flex flex-col gap-4">
               <Image
@@ -173,10 +145,9 @@ export default function ExpenseDetails() {
             <View className="flex flex-col gap-3">
               <Progress
                 className=" web:w-[60%] "
+                getValueLabel={(value) => `${value}%`}
                 value={percentage}
-                max={budget.amount}
               />
-
               <View className="flex flex-row justify-between items-center">
                 <Text>0%</Text>
                 <Text>100%</Text>
@@ -191,7 +162,7 @@ export default function ExpenseDetails() {
               </Text>
             </View>
           </View>
-        </ScrollView>
+        )}
       </View>
     </ScrollView>
   );

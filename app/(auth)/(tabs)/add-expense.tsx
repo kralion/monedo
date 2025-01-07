@@ -7,6 +7,7 @@ import {
   ScrollView,
   View,
 } from "react-native";
+import { toast } from "sonner-native";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
@@ -49,22 +50,32 @@ export default function AddExpense() {
   } = useForm<IExpense>({
     defaultValues: {
       currency: "Soles",
-      amount: amount,
+      amount: 0,
       periodicity: false,
       description: "",
       category: {
-        label: "Hogar",
-        value: "Hogar",
+        label: "",
+        value: "",
       },
     },
   });
 
   async function onSubmit(data: IExpense) {
+    if (data.category.value === "") {
+      toast.error("Debes seleccionar una categoría");
+      return;
+    }
+    if (amount === 0) {
+      toast.error("Debes ingresar un monto válido");
+      return;
+    }
+
     addExpense({
       ...data,
       amount,
     });
     reset();
+    setAmount(0);
   }
 
   return (
@@ -88,7 +99,6 @@ export default function AddExpense() {
             <Controller
               name="category"
               control={control}
-              rules={{ required: true }}
               render={({ field: { onChange, value } }) => (
                 <View className="flex flex-col gap-2">
                   <Label>Categoría</Label>
@@ -233,18 +243,17 @@ export default function AddExpense() {
               <Button
                 onPress={() => {
                   reset();
+                  setAmount(0);
                   router.push("/(auth)/(tabs)");
                 }}
                 size="lg"
-                variant="outline"
+                variant="link"
               >
                 <Text className="text-red-500">Cancelar</Text>
               </Button>
             </View>
           </View>
         </View>
-        {/* TODO: Probar esto solo el los dispositivos, en los emuladores no funciona
-      <PushNotification /> */}
       </ScrollView>
     </KeyboardAvoidingView>
   );
