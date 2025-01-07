@@ -43,17 +43,22 @@ export const BudgetContextProvider = ({
     }
     setLoading(false);
   };
-  //FIX: getCurrentBudget within the 30 days from the day it was created
   const getCurrentBudget = async () => {
-    const { data, error } = await supabase
+    const today = new Date();
+    const budgetStartDate = new Date(today);
+    budgetStartDate.setDate(today.getDate() - 30);
+    const { data } = await supabase
       .from("budgets")
       .select("*")
       .eq("user_id", user?.id)
+      .gte("created_At", budgetStartDate.toISOString())
+      .lte("created_At", today.toISOString())
+      .order("created_At", { ascending: false })
       .limit(1)
       .single();
+
     return data;
   };
-
   const getBudgetById = async (id: string) => {
     setLoading(true);
     const { data } = await supabase
