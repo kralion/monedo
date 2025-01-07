@@ -12,7 +12,7 @@ export default function Card() {
   const [totalMonthExpenses, setTotalMonthExpenses] = React.useState(0);
   const [budget, setBudget] = React.useState(0);
   const { has } = useAuth();
-  const { sumOfAllOfExpensesMonthly } = useExpenseContext();
+  const { sumOfAllOfExpensesMonthly, isOutOfBudget } = useExpenseContext();
   const { getCurrentBudget } = useBudgetContext();
 
   async function calculateTotalMonthExpenses() {
@@ -62,9 +62,11 @@ export default function Card() {
     >
       <LinearGradient
         colors={
-          has?.({ permission: "premium:plan" })
-            ? ["#D4AF37", "#FFD700", "#A79647"]
-            : ["#10B981", "#047857"]
+          isOutOfBudget
+            ? ["#FF0000", "#FF7F7F"] // Red gradient if out of budget
+            : has?.({ permission: "premium:plan" })
+            ? ["#D4AF37", "#FFD700", "#A79647"] // Gold gradient for premium users
+            : ["#10B981", "#047857"] // Default gradient
         }
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}

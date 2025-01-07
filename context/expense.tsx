@@ -7,13 +7,16 @@ import * as React from "react";
 import { createContext, useContext } from "react";
 import { toast } from "sonner-native";
 import { createClerkSupabaseClient } from "~/lib/supabase";
+import { useBudgetContext } from "./budget";
 
 export const ExpenseContext = createContext<IExpenseContextProvider>({
   addExpense: () => {},
   updateExpense: () => {},
   loading: false,
   weeklyExpenses: [],
+  checkBudget: () => {},
   sumOfAllOfExpensesMonthly: async () => 0,
+  isOutOfBudget: false,
   getExpenseById: async (id: string): Promise<IExpense> => ({} as IExpense),
   getWeeklyExpenses: async (): Promise<IExpense[]> => [],
   expenses: [],
@@ -30,8 +33,32 @@ export const ExpenseContextProvider = ({
 }) => {
   const [expenses, setExpenses] = React.useState<IExpense[]>([]);
   const [weeklyExpenses, setWeeklyExpenses] = React.useState<IExpense[]>([]);
+  const { getCurrentBudget } = useBudgetContext();
   const [expense, setExpense] = React.useState<IExpense>({} as IExpense);
   const [loading, setLoading] = React.useState(false);
+  const [isOutOfBudget, setIsOutOfBudget] = React.useState(false);
+  async function checkBudget() {
+    const budget = await getCurrentBudget();
+    if (!budget) return;
+    const total = await sumOfAllOfExpensesMonthly();
+    if (budget.amount - total <= 0) {
+      setIsOutOfBudget(true);
+      await supabase.from("notifications").insert({
+        title: "¡No tienes fondos suficientes!",
+        description:
+          "No puedes registrar más gastos, debes ingresar un monto menor a tu presupuesto",
+        type: "warning",
+        user_id: user?.id,
+      });
+    } else {
+      setIsOutOfBudget(false);
+    }
+  }
+
+  React.useEffect(() => {
+    checkBudget();
+  }, []);
+
   const supabase = createClerkSupabaseClient();
   const { user } = useUser();
   const addExpense = async (expense: IExpense) => {
@@ -174,7 +201,9 @@ export const ExpenseContextProvider = ({
         deleteExpense,
         getWeeklyExpenses,
         getExpenseById,
+        isOutOfBudget,
         addExpense,
+        checkBudget,
         sumOfAllOfExpensesMonthly,
         updateExpense,
         expense,

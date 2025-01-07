@@ -39,7 +39,8 @@ const items = [
 ];
 
 export default function AddExpense() {
-  const { addExpense, loading } = useExpenseContext();
+  const { addExpense, loading, isOutOfBudget, checkBudget } =
+    useExpenseContext();
   const [amount, setAmount] = React.useState(0);
   const {
     control,
@@ -61,6 +62,10 @@ export default function AddExpense() {
   });
 
   async function onSubmit(data: IExpense) {
+    if (isOutOfBudget === true) {
+      toast.error("No tienes suficiente fondos para registrar este gasto");
+      return;
+    }
     if (data.category.value === "") {
       toast.error("Debes seleccionar una categoría");
       return;
@@ -76,6 +81,7 @@ export default function AddExpense() {
     });
     reset();
     setAmount(0);
+    checkBudget();
   }
 
   return (

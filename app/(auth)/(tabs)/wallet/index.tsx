@@ -174,6 +174,14 @@ export default function Wallet() {
               </View>
             </View>
           }
+          ListFooterComponent={
+            <View className="flex flex-row justify-center items-center mt-10">
+              <Text className="text-center text-sm text-muted-foreground">
+                Podrás crear otro prespuesto al finalizar los 30 dias del
+                anterior presupuesto.
+              </Text>
+            </View>
+          }
         />
       </View>
     </ScrollView>
