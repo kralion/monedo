@@ -1,15 +1,15 @@
 import { IBudget, IBudgetContextProvider } from "@/interfaces";
-import { router } from "expo-router";
+import { useUser } from "@clerk/clerk-expo";
+import { CheckCircle, X } from "lucide-react-native";
 import * as React from "react";
 import { createContext, useContext } from "react";
-import { createClerkSupabaseClient } from "~/lib/supabase";
 import { toast } from "sonner-native";
-import { CheckCircle, X } from "lucide-react-native";
-import { useUser } from "@clerk/clerk-expo";
+import { createClerkSupabaseClient } from "~/lib/supabase";
 export const BudgetContext = createContext<IBudgetContextProvider>({
   getBudgetById: async (id: string): Promise<IBudget> => ({} as IBudget),
   loading: false,
   addBudget: async () => {},
+  setBudget: async () => {},
   getCurrentBudget: async () => ({} as IBudget),
   updateBudget: async () => {},
   budget: {} as IBudget,
@@ -41,6 +41,8 @@ export const BudgetContextProvider = ({
       });
       return;
     }
+    toast.success("Presupuesto registrado");
+    getBudgets();
     setLoading(false);
   };
   const getCurrentBudget = async () => {
@@ -73,12 +75,24 @@ export const BudgetContextProvider = ({
 
   const updateBudget = async (budget: IBudget) => {
     setLoading(true);
-    await supabase.from("budgets").update(budget).eq("id", budget.id);
+    const { error } = await supabase
+      .from("budgets")
+      .update({
+        ...budget,
+        amount: Number(budget.amount),
+      })
+      .eq("id", budget.id);
+    if (error) {
+      toast.error("Error al actualizar presupuesto", {
+        icon: <X color="red" size={20} />,
+      });
+      return;
+    }
     toast.success("Presupuesto actualizado exitosamente", {
       icon: <CheckCircle color="green" size={20} />,
     });
     setLoading(false);
-    router.back();
+    getBudgetById(budget.id);
   };
 
   const deleteBudget = async (id: string) => {
@@ -109,6 +123,7 @@ export const BudgetContextProvider = ({
         updateBudget,
         getBudgetById,
         loading,
+        setBudget,
         budget,
         deleteBudget,
         getCurrentBudget,

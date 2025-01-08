@@ -28,15 +28,10 @@ export function Budget({ budget }: { budget: IBudget }) {
   const date = new Date(budget.created_At);
   const formattedDate = date.toLocaleDateString("es-ES", {
     month: "short",
-    day: "numeric",
+    day: "2-digit",
+    year: "numeric",
   });
   const { deleteBudget } = useBudgetContext();
-
-  const expire = new Date(date.getTime() + 30 * 24 * 60 * 60 * 1000);
-  const expireDate = expire.toLocaleDateString("es-ES", {
-    month: "short",
-    day: "numeric",
-  });
 
   const onDelete = () => {
     Alert.alert(
@@ -107,21 +102,21 @@ export function Budget({ budget }: { budget: IBudget }) {
                 }}
               />
               <View className="card-title-details flex flex-col gap-1">
-                <Text className="text-xl">
+                <Text>
                   <Animated.Text entering={FadeIn.duration(1500)}>
-                    S/. {budget.amount}
+                    {formattedDate}
                   </Animated.Text>
                 </Text>
                 <Text className="text-xs text-muted-foreground">
-                  Registro : {formattedDate}
+                  {budget.description.slice(0, 20)}
                 </Text>
               </View>
             </View>
             <View className="card-description flex flex-row items-center justify-between">
               <View className="card-description-amount flex flex-row gap-2 items-center">
-                <Text className="font-bold">
+                <Text className="font-bold text-xl text-brand">
                   <Animated.Text entering={FadeIn.duration(1500)}>
-                    Exp. {expireDate}
+                    + S/. {budget.amount}
                   </Animated.Text>
                 </Text>
                 <Button variant="ghost" size="icon">

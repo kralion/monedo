@@ -22,7 +22,7 @@ export interface IBudget {
   user_id: string;
   created_At: Date;
   description: string;
-  amount: number;
+  amount: string;
 }
 
 export interface IBudgetContextProvider {
@@ -30,6 +30,7 @@ export interface IBudgetContextProvider {
   loading: boolean;
   budgets: IBudget[];
   getBudgetById: (id: string) => Promise<IBudget>;
+  setBudget: (budget: IBudget) => void;
   budget: IBudget;
   getCurrentBudget: () => Promise<IBudget | null>;
   updateBudget: (budget: IBudget) => void;
