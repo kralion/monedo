@@ -43,17 +43,9 @@ npm expo start
 ### Monedo
 Expense-tracker is an application for the management of daily financial expenses, in it you can have full control of the expenses you make daily, the application has features such as adding expenses according to categories, likewise you can add income, all this in an intuitive dashboard, and with premium features such as having savings goals, statistics, and to export them in different types of documents.
 
-### Dashboard
-Dashboard Expense-tracker interface
 
-[![Dashboard-ET.png](https://i.postimg.cc/Ls7B43T0/Dashboard-ET.png)](https://postimg.cc/KKPgJLCn)
+## Some Screens
 
-### Statistics
-Statistics Expense-tracker interface
-
-[![Estadisticas-ET.png](https://i.postimg.cc/vBb8Vp31/Estadisticas-ET.png)](https://postimg.cc/1g7ZxYxP)
-
-### User
-User Expense-tracker interface
-
-[![Usuario-ET.png](https://i.postimg.cc/k59P1W8z/Usuario-ET.png)](https://postimg.cc/nXdWMj3G)
+| ![dashboard](https://i.ibb.co/W0mrFNn/IMG-4185.png) | ![statistics](https://i.ibb.co/nmwfCjV/IMG-4186.png) | ![chart](https://i.ibb.co/RhCWgTn/IMG-4187.png) |
+|:---:|:---:|:---:|
+| ![profile](https://i.ibb.co/84yZR5H/IMG-4190.png) | ![profile](https://i.ibb.co/9qvhyGm/IMG-4188.png) |  |
