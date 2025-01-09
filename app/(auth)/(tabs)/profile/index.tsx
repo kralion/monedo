@@ -4,6 +4,7 @@ import {
   Bell,
   LogOut,
   SmartphoneNfc,
+  Tag,
   Unlock,
   User,
   UserSquare2,
@@ -90,6 +91,15 @@ export default function ProfileScreen() {
           <Text>Notificaciones</Text>
         </Button>
         <Button
+          onPress={() => router.push("/(auth)/(tabs)/profile/categories")}
+          size="lg"
+          variant="ghost"
+          className="flex flex-row gap-3 px-5"
+        >
+          <Tag color="black" />
+          <Text>Categorías</Text>
+        </Button>
+        <Button
           onPress={() => Linking.openURL("https://cal.com/brayanpaucar/monedo")}
           size="lg"
           variant="ghost"
@@ -118,11 +128,11 @@ export default function ProfileScreen() {
         Versión 3.15.1
       </Text>
 
-      <View className="absolute bottom-[200px] right-[-70px] w-[200px] h-[300px] rounded-xl rotate-[-30deg] bg-yellow-400 shadow-lg" />
+      <View className="absolute bottom-[200px] right-[-100px] w-[200px] h-[300px] rounded-xl rotate-[-30deg] bg-yellow-400 shadow-lg" />
 
-      <View className="absolute bottom-[160px] right-[-70px] w-[200px] h-[300px] rounded-xl rotate-[-40deg] bg-orange-500 shadow-lg" />
+      <View className="absolute bottom-[160px] right-[-100px] w-[200px] h-[300px] rounded-xl rotate-[-40deg] bg-orange-500 shadow-lg" />
 
-      <View className="absolute bottom-[120px] right-[-70px] w-[200px] h-[300px] rounded-xl rotate-[-50deg] bg-primary shadow-lg" />
+      <View className="absolute bottom-[120px] right-[-100px] w-[200px] h-[300px] rounded-xl rotate-[-50deg] bg-primary shadow-lg" />
     </SafeAreaView>
   );
 }

@@ -33,7 +33,7 @@ export default function Layout() {
   } = useForm<IBudget>();
   useEffect(() => {
     if (budget.id) {
-      setValue("amount", String(budget.amount));
+      setValue("amount", budget.amount);
       setValue("description", budget.description);
     }
   }, [budget.id]);
@@ -188,7 +188,7 @@ export default function Layout() {
                   className="border rounded-lg border-gray-200 p-4 w-full dark:border-zinc-700 text-black dark:text-white"
                   keyboardType="numeric"
                   placeholder="200"
-                  value={value}
+                  value={String(value)}
                   onChangeText={onChange}
                 />
                 {errors.amount && (
