@@ -4,10 +4,13 @@ import { View } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
 import { IExpense } from "~/interfaces";
 import { Text } from "../ui/text";
+import { Dimensions } from "react-native";
+const width = Dimensions.get("window").width;
 
 interface ChartDataPoint {
   label: string;
   value: number;
+  dataPointText: string;
 }
 type ChartProps = {
   timelineQuery: {
@@ -33,6 +36,7 @@ export default function Chart({ timelineQuery, data }: ChartProps) {
     const result = timeLabels.map((label) => ({
       label,
       value: totals.get(label) || 0,
+      dataPointText: String(totals.get(label) || 0),
     }));
     return result;
   };
@@ -112,11 +116,12 @@ export default function Chart({ timelineQuery, data }: ChartProps) {
       areaChart
       curved
       data={chartData}
-      spacing={timelineQuery.value === "semanal" ? 100 : 50}
+      spacing={timelineQuery.value === "semanal" ? width * 0.28 : width * 0.14}
       yAxisColor="gray"
       xAxisColor="white"
-      yAxisThickness={0.2}
+      yAxisThickness={0}
       color1="teal"
+      hideYAxisText
       dataPointsColor1="teal"
       hideRules
       endSpacing={-20}

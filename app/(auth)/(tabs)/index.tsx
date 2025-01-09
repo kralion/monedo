@@ -96,8 +96,25 @@ export default function Home() {
                 <FlashList
                   data={expenses}
                   estimatedItemSize={200}
-                  renderItem={({ item: expense }) => (
-                    <Expense expense={expense} />
+                  renderItem={({ item: expense, index }) => (
+                    <View>
+                      {index === 0 ? (
+                        <>
+                          <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-600 ml-[60px]" />
+                          <Expense expense={expense} />
+                        </>
+                      ) : index === expenses.length - 1 ? (
+                        <>
+                          <Expense expense={expense} />
+                          <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-600 ml-[60px]" />
+                        </>
+                      ) : (
+                        <Expense expense={expense} />
+                      )}
+                    </View>
+                  )}
+                  ItemSeparatorComponent={() => (
+                    <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-600 ml-[60px] " />
                   )}
                 />
               </ScrollView>
@@ -167,8 +184,25 @@ export default function Home() {
                 data={expenses}
                 contentContainerClassName="pb-[400px]"
                 estimatedItemSize={200}
-                renderItem={({ item: expense }) => (
-                  <Expense expense={expense} />
+                renderItem={({ item: expense, index }) => (
+                  <View>
+                    {index === 0 ? (
+                      <>
+                        <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-600 ml-[60px]" />
+                        <Expense expense={expense} />
+                      </>
+                    ) : index === expenses.length - 1 ? (
+                      <>
+                        <Expense expense={expense} />
+                        <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-600 ml-[60px]" />
+                      </>
+                    ) : (
+                      <Expense expense={expense} />
+                    )}
+                  </View>
+                )}
+                ItemSeparatorComponent={() => (
+                  <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-600 ml-[60px] " />
                 )}
                 ListEmptyComponent={
                   <View className="flex flex-col items-center justify-center  ">

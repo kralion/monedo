@@ -6,6 +6,11 @@ import * as React from "react";
 import { Alert, Pressable, StyleSheet, View } from "react-native";
 import { Button } from "../ui/button";
 import { Text } from "../ui/text";
+import {
+  ChevronUpCircle,
+  CircleArrowDownIcon,
+  CircleArrowUpIcon,
+} from "lucide-react-native";
 
 export default function Card() {
   const [totalMonthExpenses, setTotalMonthExpenses] = React.useState(0);
@@ -66,7 +71,7 @@ export default function Card() {
           <View>
             <Text className="text-xl text-white">Balance</Text>
 
-            <Text className="text-4xl text-white font-bold">
+            <Text className="text-4xl text-white font-bold ">
               S/. {budget - totalMonthExpenses}
             </Text>
           </View>
@@ -89,18 +94,28 @@ export default function Card() {
           </Button>
         </View>
         <View className="flex flex-row justify-between">
-          <View className="flex flex-col ">
+          <View className="flex flex-col gap-2">
             <View className="flex flex-row">
-              <Text className="text-white">Gastos</Text>
+              <Text className="text-white dark:text-zinc-700">Gastos</Text>
             </View>
-            <Text className="text-xl text-white">S/. {totalMonthExpenses}</Text>
+            <View className="flex flex-row gap-1">
+              <CircleArrowUpIcon color="white" />
+
+              <Text className="text-xl text-white">
+                S/. {totalMonthExpenses}
+              </Text>
+            </View>
           </View>
 
-          <View className="flex flex-col">
+          <View className="flex flex-col gap-2">
             <View className="flex flex-row">
-              <Text className="text-white">Presupuesto</Text>
+              <Text className="text-white dark:text-zinc-700">Presupuesto</Text>
             </View>
-            <Text className="text-xl text-white">S/. {budget}</Text>
+            <View className="flex flex-row gap-1">
+              <CircleArrowDownIcon color="white" />
+
+              <Text className="text-xl text-white">S/. {budget}</Text>
+            </View>
           </View>
         </View>
       </LinearGradient>

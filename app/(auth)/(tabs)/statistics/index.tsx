@@ -101,9 +101,26 @@ export default function Statistics() {
               contentContainerStyle={{ paddingHorizontal: 16 }}
               contentContainerClassName="pb-[400px] px-4"
               data={expenses}
-              renderItem={({ item: expense }) => {
-                return <Expense expense={expense} />;
-              }}
+              renderItem={({ item: expense, index }) => (
+                <View>
+                  {index === 0 ? (
+                    <>
+                      <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-600 ml-[60px]" />
+                      <Expense expense={expense} />
+                    </>
+                  ) : index === expenses.length - 1 ? (
+                    <>
+                      <Expense expense={expense} />
+                      <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-600 ml-[60px]" />
+                    </>
+                  ) : (
+                    <Expense expense={expense} />
+                  )}
+                </View>
+              )}
+              ItemSeparatorComponent={() => (
+                <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-600 ml-[60px] " />
+              )}
               estimatedItemSize={100}
               ListEmptyComponent={
                 <View className="flex flex-col items-center justify-center  ">

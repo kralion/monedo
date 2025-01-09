@@ -10,8 +10,7 @@ import { Button } from "./ui/button";
 import { Text } from "./ui/text";
 
 export function Expense({ expense }: { expense: IExpense }) {
-  const { category, amount, date } = expense;
-  const formattedDate = date ? formatDate(new Date(date)) : "No date provided";
+  const { category, amount, description } = expense;
   const assetIndentificador =
     expensesIdentifiers.find(
       (icon) => icon.label.toLowerCase() === category.value
@@ -23,19 +22,26 @@ export function Expense({ expense }: { expense: IExpense }) {
         onPress={() => {
           router.push(`/(auth)/(modals)/details/${expense.id}`);
         }}
-        className="card active:opacity-80 flex flex-row gap-2   items-center"
+        className="card active:opacity-80 flex flex-row gap-1   items-center"
       >
-        <Image width={45} height={45} source={{ uri: assetIndentificador }} />
-        <View className="flex flex-row justify-between items-center px-2 py-4 border-b border-zinc-200 w-[90%]">
+        <Image
+          width={50}
+          height={50}
+          className="bg-brand/20 rounded-full p-2"
+          source={{ uri: assetIndentificador }}
+        />
+        <View className="flex flex-row justify-between items-center px-2 py-4  w-[90%]">
           <View className="card-title flex flex-row items-center gap-2">
             <View className="card-title-details flex flex-col">
-              <Text className="text-xl font-semibold">
+              <Text className="text-xl font-semibold dark:text-white">
                 <Animated.Text entering={FadeIn.duration(1500)}>
                   {category.label}
                 </Animated.Text>
               </Text>
-              <Text className="text-xs text-muted-foreground">
-                {formattedDate}
+              <Text className="text-sm text-muted-foreground">
+                {description.length > 25
+                  ? `${description.slice(0, 25)}...`
+                  : description}
               </Text>
             </View>
           </View>
