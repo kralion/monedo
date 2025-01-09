@@ -6,17 +6,19 @@ import { router, useFocusEffect } from "expo-router";
 import { Download } from "lucide-react-native";
 import * as React from "react";
 import { useState } from "react";
-import { ScrollView, View } from "react-native";
+import { ScrollView, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Expense } from "~/components/expense";
 import { ChartSkeleton } from "~/components/skeleton/chart";
 import { ExpenseSkeleton } from "~/components/skeleton/expense";
+import { PieSkeleton } from "~/components/skeleton/pie";
+import PieChart from "~/components/statistics/pie-chart";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { Text } from "~/components/ui/text";
+import { legendItems } from "~/helpers/getCategoryColor";
 import { IExpense } from "~/interfaces";
 import { getDateRange } from "~/lib/rangeDate";
-
 export default function Statistics() {
   const [expenses, setExpenses] = useState<IExpense[]>([]);
   const { getExpensesByPeriodicity, loading } = useExpenseContext();
@@ -82,11 +84,37 @@ export default function Statistics() {
         </View>
       </View>
       <ScrollView contentInsetAdjustmentBehavior="automatic">
-        <View className="flex flex-col gap-4 justify-center mt-10">
+        <View className="flex flex-col gap-4 justify-center mt-4">
+          {loading ? (
+            <PieSkeleton />
+          ) : (
+            <View className="flex flex-col gap-2">
+              <PieChart timelineQuery={timelineQuery} data={expenses} />
+              <View style={styles.grid}>
+                {legendItems.map((item, index) => (
+                  <View
+                    key={index}
+                    className="flex flex-row items-center gap-2"
+                  >
+                    <View
+                      className="w-4 h-4 rounded-full "
+                      style={{ backgroundColor: item.color }}
+                    />
+                    <Text className=" text-gray-700">{item.label}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+          )}
           {loading ? (
             <ChartSkeleton />
           ) : (
-            <Chart timelineQuery={timelineQuery} data={expenses} />
+            <View className="flex flex-col items-center gap-4 mt-4">
+              <Chart timelineQuery={timelineQuery} data={expenses} />
+              <Text className="text-muted-foreground text-sm">
+                Puedes deslizar a la izquiera si la vista incompleta.
+              </Text>
+            </View>
           )}
 
           <Text className="text-xl font-bold mx-4  mt-12">Top Gastos</Text>
@@ -142,3 +170,16 @@ export default function Statistics() {
     </SafeAreaView>
   );
 }
+const styles = StyleSheet.create({
+  grid: {
+    flexDirection: "row",
+    padding: 16,
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    gap: 5, // Adjust as needed
+  },
+  gridItem: {
+    width: "30%", // Adjust for three columns
+    margin: 5, // Adjust gap between rows
+  },
+});

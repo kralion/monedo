@@ -26,6 +26,7 @@ import { Text } from "../ui/text";
 
 export function Budget({ budget }: { budget: IBudget }) {
   const date = new Date(budget.created_At);
+  const [isVisible, setIsVisible] = React.useState(true);
   const formattedDate = date.toLocaleDateString("es-ES", {
     month: "short",
     day: "2-digit",
@@ -36,7 +37,7 @@ export function Budget({ budget }: { budget: IBudget }) {
   const onDelete = () => {
     Alert.alert(
       "¿Estás seguro?",
-      "Esta acción eliminará el presupuesto seleccionado y no se puede deshacer", // Message
+      "Esta acción eliminará el presupuesto seleccionado y no se puede deshacer",
       [
         {
           text: "Cancelar",
@@ -44,7 +45,11 @@ export function Budget({ budget }: { budget: IBudget }) {
         },
         {
           text: "Eliminar",
-          onPress: () => deleteBudget(budget.id),
+          onPress: async () => {
+            setIsVisible(false);
+            await new Promise((resolve) => setTimeout(resolve, 200));
+            deleteBudget(budget.id);
+          },
           style: "destructive",
         },
       ],
@@ -74,7 +79,9 @@ export function Budget({ budget }: { budget: IBudget }) {
       </Pressable>
     );
   };
-
+  if (!isVisible) {
+    return null;
+  }
   return (
     <Animated.View entering={FadeIn.duration(200)}>
       <ReanimatedSwipeable
@@ -104,16 +111,18 @@ export function Budget({ budget }: { budget: IBudget }) {
               <View className="card-title-details flex flex-col gap-1">
                 <Text>
                   <Animated.Text entering={FadeIn.duration(1500)}>
-                    {formattedDate}
+                    {budget.description.length > 25
+                      ? `${budget.description.slice(0, 25)}...`
+                      : budget.description}
                   </Animated.Text>
                 </Text>
                 <Text className="text-xs text-muted-foreground">
-                  {budget.description.slice(0, 20)}
+                  {formattedDate}
                 </Text>
               </View>
             </View>
             <View className="card-description flex flex-row items-center justify-between">
-              <View className="card-description-amount flex flex-row gap-2 items-center">
+              <View className=" flex flex-row items-center">
                 <Text className="font-bold text-xl text-brand">
                   <Animated.Text entering={FadeIn.duration(1500)}>
                     + S/. {budget.amount}
@@ -129,67 +138,6 @@ export function Budget({ budget }: { budget: IBudget }) {
       </ReanimatedSwipeable>
       <Separator />
     </Animated.View>
-
-    // {/* <Sheet
-    //   zIndex={100_000}
-    //   snapPointsMode="fit"
-    //   animation="medium"
-    //   modal
-    //   open={openBudgetDetails}
-    //   onOpenChange={setOpenBudgetDetails}
-    // >
-    //   <Sheet.Handle />
-    //   <Sheet.Overlay
-    //     animation="100ms"
-    //     enterStyle={{ opacity: 0 }}
-    //     exitStyle={{ opacity: 0 }}
-    //   />
-    //   <Sheet.Frame p="$5">
-    //     <H3>Detalles</H3>
-    //     <Text color="$gray10">
-    //       Mostrando información relevante sobre el presupuesto seleccionado.
-    //     </Text>
-
-    //     <YStack gap="$4" mt="$5">
-    //       <H2>S/. {monto.toFixed(2)}</H2>
-    //       <YStack gap="$1">
-    //         <Text>Fecha Registro</Text>
-    //         <Text fontWeight="bold">
-    //           {date.toLocaleDateString("es-ES", {
-    //             day: "numeric",
-    //             month: "long",
-    //             year: "numeric",
-    //           })}
-    //         </Text>
-    //       </YStack>
-    //       <YStack gap="$1">
-    //         <Text className="font-bold">Fecha Expiración</Text>
-    //         <Text fontWeight="bold">
-    //           {endDate.toLocaleDateString("es-ES", {
-    //             day: "numeric",
-    //             month: "long",
-    //             year: "numeric",
-    //           })}
-    //         </Text>
-    //       </YStack>
-    //       <YStack gap="$1">
-    //         <Text>Descripcion</Text>
-    //         <Text>{descripcion}</Text>
-    //       </YStack>
-    //     </YStack>
-    //     <Button
-    //       my="$5"
-    //       size="$5"
-    //       bg="$green9Light"
-    //       color="$white1"
-    //       onPress={() => {
-    //         alert("La funcionalidad aun no esta disponible");
-    //       }}
-    //     >
-    //       Editar
-    //     </Button>
-    //   </Sheet.Frame>
-    // </Sheet> */}
   );
 }
 

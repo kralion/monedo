@@ -146,7 +146,7 @@ export default function ExpenseDetails() {
               <Progress
                 className=" web:w-[60%] "
                 getValueLabel={(value) => `${value}%`}
-                value={percentage}
+                value={percentage / 10}
               />
               <View className="flex flex-row justify-between items-center">
                 <Text>0%</Text>
@@ -156,7 +156,7 @@ export default function ExpenseDetails() {
               <Text className="text-muted-foreground text-sm text-center">
                 Consumido{" "}
                 <Text className="font-bold text-primary">
-                  {percentage.toFixed(2)}%
+                  {percentage / 10}%
                 </Text>{" "}
                 del presupuesto para el mes actual.
               </Text>

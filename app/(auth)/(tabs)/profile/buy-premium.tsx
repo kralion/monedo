@@ -127,7 +127,7 @@ export default function BuyPremiumModal() {
                 <View
                   key={index}
                   className={`h-2 w-2 rounded-full mx-1 ${
-                    index === currentIndex ? "bg-orange-600" : "bg-zinc-200"
+                    index === currentIndex ? "bg-brand" : "bg-zinc-200"
                   }`}
                 />
               ))}

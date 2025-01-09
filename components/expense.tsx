@@ -1,5 +1,4 @@
 import { expensesIdentifiers } from "@/constants/ExpensesIdentifiers";
-import { formatDate } from "@/helpers/dateFormatter";
 import { router } from "expo-router";
 import { ChevronRight } from "lucide-react-native";
 import React from "react";
@@ -46,10 +45,10 @@ export function Expense({ expense }: { expense: IExpense }) {
             </View>
           </View>
           <View className="card-description flex flex-row items-center justify-between">
-            <View className="card-description-amount flex flex-row gap-2 items-center">
+            <View className="card-description-amount flex flex-row items-center">
               <Text className="text-xl text-red-500 font-semibold">
                 <Animated.Text entering={FadeIn.duration(1500)}>
-                  S/. {amount}
+                  - S/. {amount.toFixed(2)}
                 </Animated.Text>
               </Text>
               <Button variant="ghost" size="icon">

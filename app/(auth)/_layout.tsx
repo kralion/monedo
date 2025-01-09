@@ -45,15 +45,7 @@ export default function Layout() {
           options={{
             presentation: "modal",
             title: "Adquirir Premium",
-            headerShown: true,
-            headerShadowVisible: true,
-            headerLeft: () => (
-              <NativeButton
-                title="Cancelar"
-                color="#27BE8B"
-                onPress={() => router.back()}
-              />
-            ),
+            headerShown: false,
           }}
         />
       </Stack>
