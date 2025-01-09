@@ -33,15 +33,15 @@ export const ExpenseContextProvider = ({
 }) => {
   const [expenses, setExpenses] = React.useState<IExpense[]>([]);
   const [weeklyExpenses, setWeeklyExpenses] = React.useState<IExpense[]>([]);
-  const { getCurrentBudget } = useBudgetContext();
+  const { getTotalBudget } = useBudgetContext();
   const [expense, setExpense] = React.useState<IExpense>({} as IExpense);
   const [loading, setLoading] = React.useState(false);
   const [isOutOfBudget, setIsOutOfBudget] = React.useState(false);
   async function checkBudget() {
-    const budget = await getCurrentBudget();
+    const budget = await getTotalBudget();
     if (!budget) return;
     const total = await sumOfAllOfExpensesMonthly();
-    if (budget.amount - total <= 0) {
+    if (budget - total <= 0) {
       setIsOutOfBudget(true);
       await supabase.from("notifications").insert({
         title: "¡No tienes fondos suficientes!",

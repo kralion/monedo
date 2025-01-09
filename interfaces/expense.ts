@@ -22,11 +22,12 @@ export interface IBudget {
   user_id: string;
   created_At: Date;
   description: string;
-  amount: string;
+  amount: number;
 }
 
 export interface IBudgetContextProvider {
   addBudget: (budget: IBudget) => void;
+  getTotalBudget: () => Promise<number>;
   loading: boolean;
   budgets: IBudget[];
   getBudgetById: (id: string) => Promise<IBudget>;

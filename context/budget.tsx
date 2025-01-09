@@ -7,6 +7,7 @@ import { toast } from "sonner-native";
 import { createClerkSupabaseClient } from "~/lib/supabase";
 export const BudgetContext = createContext<IBudgetContextProvider>({
   getBudgetById: async (id: string): Promise<IBudget> => ({} as IBudget),
+  getTotalBudget: async () => 0,
   loading: false,
   addBudget: async () => {},
   setBudget: async () => {},
@@ -61,6 +62,17 @@ export const BudgetContextProvider = ({
 
     return data;
   };
+
+  const getTotalBudget = async () => {
+    const { data, error } = await supabase
+      .from("budgets")
+      .select("amount")
+      .eq("user_id", user?.id);
+    const total =
+      data?.reduce((acc, budget) => acc + (budget.amount || 0), 0) ?? 0;
+    return total;
+  };
+
   const getBudgetById = async (id: string) => {
     setLoading(true);
     const { data } = await supabase
@@ -121,6 +133,7 @@ export const BudgetContextProvider = ({
       value={{
         addBudget,
         updateBudget,
+        getTotalBudget,
         getBudgetById,
         loading,
         setBudget,

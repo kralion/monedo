@@ -8,30 +8,20 @@ import { Button } from "../ui/button";
 import { Text } from "../ui/text";
 
 export default function Card() {
-  const [balance, setBalance] = React.useState(0);
   const [totalMonthExpenses, setTotalMonthExpenses] = React.useState(0);
   const [budget, setBudget] = React.useState(0);
   const { has } = useAuth();
   const { sumOfAllOfExpensesMonthly, isOutOfBudget } = useExpenseContext();
-  const { getCurrentBudget } = useBudgetContext();
-
-  async function calculateTotalMonthExpenses() {
-    const total = await sumOfAllOfExpensesMonthly();
-    setTotalMonthExpenses(total);
-    return total;
-  }
-
-  async function calculateBudget() {
-    const budget = await getCurrentBudget();
-    setBudget(budget?.amount ?? 0.0);
-    return budget;
-  }
+  const { getTotalBudget } = useBudgetContext();
 
   async function calculateBalance() {
-    const total = await calculateTotalMonthExpenses();
-    const presupuesto = await calculateBudget();
-    if (!presupuesto) return;
-    setBalance(presupuesto?.amount - total);
+    await sumOfAllOfExpensesMonthly().then((total) => {
+      setTotalMonthExpenses(total);
+    });
+    await getTotalBudget().then((total) => {
+      setBudget(total);
+    });
+    return budget - totalMonthExpenses;
   }
 
   useFocusEffect(
@@ -41,7 +31,7 @@ export default function Card() {
   );
   useFocusEffect(
     React.useCallback(() => {
-      calculateTotalMonthExpenses();
+      calculateBalance();
     }, [])
   );
 
@@ -77,7 +67,7 @@ export default function Card() {
             <Text className="text-xl text-white">Balance</Text>
 
             <Text className="text-4xl text-white font-bold">
-              S/. {balance.toFixed(2)}
+              S/. {budget - totalMonthExpenses}
             </Text>
           </View>
 
@@ -103,9 +93,7 @@ export default function Card() {
             <View className="flex flex-row">
               <Text className="text-white">Gastos</Text>
             </View>
-            <Text className="text-xl text-white">
-              S/. {totalMonthExpenses.toFixed(2)}
-            </Text>
+            <Text className="text-xl text-white">S/. {totalMonthExpenses}</Text>
           </View>
 
           <View className="flex flex-col">

@@ -13,10 +13,43 @@ import { useSharedValue, withTiming } from "react-native-reanimated";
 import Carousel from "react-native-reanimated-carousel";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Text } from "~/components/ui/text";
+const width = Dimensions.get("window").width;
+interface CarouselItem {
+  title: string;
+  subtitle: string;
+  svgIcon: string;
+}
+const carouselData: CarouselItem[] = [
+  {
+    title: "Presupuestos personalizados",
+    subtitle: "Crea presupuestos basados en su periodicidad.",
+    svgIcon:
+      "https://img.icons8.com/?size=200&id=6QysyQNQxW7H&format=png&color=000000",
+  },
+  {
+    title: "Análisis de gastos por categoría",
+    subtitle: "Gráficos extra para mantener un seguimiento detallado.",
+    svgIcon:
+      "https://img.icons8.com/?size=200&id=D0A1Afld5jac&format=png&color=000000",
+  },
+  {
+    title: "Soporte al cliente",
+    subtitle: "Prioridad en el soporte al cliente y asistencia.",
+    svgIcon:
+      "https://img.icons8.com/?size=200&id=C8twQXUl1qoA&format=png&color=000000",
+  },
+];
+
 export default function BuyPremiumModal() {
   const [yapePaymentMethod, setYapePaymentMethod] = React.useState(false);
-  const width = Dimensions.get("window").width;
   const [cardPaymentMethod, setCardPaymentMethod] = React.useState(true);
+  const [currentIndex, setCurrentIndex] = React.useState(0);
+  const baseOptions = {
+    vertical: false,
+    width: width - 20,
+    height: width * 0.6,
+  };
+
   const [value, setValue] = React.useState("card");
   const screenWidth = Dimensions.get("window").width;
   const animation = useSharedValue(0);
@@ -54,38 +87,51 @@ export default function BuyPremiumModal() {
     setCardPaymentMethod(true);
     handlePress(0);
   };
-  const scrollOffsetValue = useSharedValue<number>(0);
-  const defaultDataWith6Colors = [
-    "#B0604D",
-    "#899F9C",
-    "#B3C680",
-    "#5C6265",
-    "#F5D399",
-    "#F1F1F1",
-  ];
 
   return (
     <KeyboardAvoidingView behavior="height" enabled style={{ flex: 1 }}>
       <ScrollView className="p-4" contentInsetAdjustmentBehavior="automatic">
         <View className="flex flex-col gap-6">
-          <View id="carousel-component">
+          <View className="flex-1 justify-center">
             <Carousel
+              {...baseOptions}
               loop
-              width={430}
-              height={width / 2}
-              defaultScrollOffsetValue={scrollOffsetValue}
-              data={defaultDataWith6Colors}
-              scrollAnimationDuration={1000}
-              onSnapToItem={(index) => console.log("current index:", index)}
-              renderItem={({ index }) => (
-                <Image
-                  source={{
-                    uri: "https://images.pexels.com/photos/29683927/pexels-photo-29683927/free-photo-of-historic-courtyard-architecture-in-arequipa-peru.jpeg?auto=compress&cs=tinysrgb&w=400&lazy=load",
-                  }}
-                  style={{ width: width, height: width / 2 }}
-                />
+              autoPlay
+              autoPlayInterval={3000}
+              data={carouselData}
+              onProgressChange={(_, absoluteProgress) => {
+                setCurrentIndex(Math.round(absoluteProgress));
+              }}
+              renderItem={({ item }) => (
+                <View className="items-center justify-center px-4">
+                  <View className="mb-6">
+                    <Image
+                      source={{ uri: item.svgIcon }}
+                      style={{ width: 150, height: 150 }}
+                    />
+                  </View>
+                  <View className="flex flex-col gap-0 px-4">
+                    <Text className="text-xl font-semibold text-center ">
+                      {item.title}
+                    </Text>
+                    <Text className="  text-center text-muted-foreground text-sm">
+                      {item.subtitle}
+                    </Text>
+                  </View>
+                </View>
               )}
             />
+
+            <View className="flex-row justify-center items-center h-8">
+              {carouselData.map((_, index) => (
+                <View
+                  key={index}
+                  className={`h-2 w-2 rounded-full mx-1 ${
+                    index === currentIndex ? "bg-orange-600" : "bg-zinc-200"
+                  }`}
+                />
+              ))}
+            </View>
           </View>
 
           <Text className="text-2xl font-bold ">Método de Pago</Text>
