@@ -2,15 +2,11 @@ import { useBudgetContext, useExpenseContext } from "@/context";
 import { useAuth } from "@clerk/clerk-expo";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
+import { ArrowDownIcon, ArrowUpIcon } from "lucide-react-native";
 import * as React from "react";
 import { Alert, Pressable, StyleSheet, View } from "react-native";
 import { Button } from "../ui/button";
 import { Text } from "../ui/text";
-import {
-  ChevronUpCircle,
-  CircleArrowDownIcon,
-  CircleArrowUpIcon,
-} from "lucide-react-native";
 
 export default function Card() {
   const [totalMonthExpenses, setTotalMonthExpenses] = React.useState(0);
@@ -96,10 +92,10 @@ export default function Card() {
         <View className="flex flex-row justify-between">
           <View className="flex flex-col gap-2">
             <View className="flex flex-row">
-              <Text className="text-white dark:text-zinc-700">Gastos</Text>
+              <Text className="text-white ">Gastos</Text>
             </View>
-            <View className="flex flex-row gap-1">
-              <CircleArrowUpIcon color="white" />
+            <View className="flex flex-row gap-2">
+              <ArrowDownIcon color="white" />
 
               <Text className="text-xl text-white">
                 S/. {totalMonthExpenses}
@@ -109,10 +105,10 @@ export default function Card() {
 
           <View className="flex flex-col gap-2">
             <View className="flex flex-row">
-              <Text className="text-white dark:text-zinc-700">Presupuesto</Text>
+              <Text className="text-white ">Presupuesto</Text>
             </View>
-            <View className="flex flex-row gap-1">
-              <CircleArrowDownIcon color="white" />
+            <View className="flex flex-row gap-2">
+              <ArrowUpIcon color="white" />
 
               <Text className="text-xl text-white">S/. {budget}</Text>
             </View>

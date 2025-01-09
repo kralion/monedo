@@ -28,6 +28,7 @@ export default function Categories() {
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       keyboardDismissMode="on-drag"
+      className="bg-white dark:bg-zinc-900"
     >
       <FlashList
         data={categories}
@@ -36,7 +37,7 @@ export default function Categories() {
           paddingVertical: 8,
         }}
         renderItem={({ item }) => (
-          <View className="flex-row items-center justify-between p-4 mb-2 rounded-lg border border-border bg-card">
+          <View className="flex-row items-center justify-between p-4 mb-2 rounded-lg border border-border dark:border-zinc-800 bg-card dark:bg-zinc-700">
             <View className="flex-row items-center gap-3">
               <View
                 className="w-10 h-10 rounded-full items-center justify-center"

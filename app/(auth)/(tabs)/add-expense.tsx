@@ -87,7 +87,7 @@ export default function AddExpense() {
   return (
     <KeyboardAvoidingView behavior="height" enabled style={{ flex: 1 }}>
       <ScrollView
-        className="h-screen-safe-offset-2 "
+        className="h-screen bg-white dark:bg-zinc-900"
         contentInsetAdjustmentBehavior="automatic"
       >
         <View className="flex flex-col">
@@ -223,7 +223,7 @@ export default function AddExpense() {
                     </View>
                   </View>
                   {value && (
-                    <Text className="text-muted-foreground text-sm">
+                    <Text className="text-muted-foreground dark:text-secondary text-sm">
                       La recurrencia del gasto se hará efectivo cada mes en la
                       fecha en la que fue creado inicialmente, en este caso cada{" "}
                       <Text className="font-bold ">

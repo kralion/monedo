@@ -55,7 +55,7 @@ export function TermsPolicyModal() {
   return (
     <Dialog className="rounded-xl">
       <DialogTrigger asChild>
-        <Text className="text-primary active:underline active:opacity-80">
+        <Text className="text-primary active:underline active:opacity-80 dark:text-primary">
           Términos y Condiciones
         </Text>
       </DialogTrigger>

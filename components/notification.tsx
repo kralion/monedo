@@ -23,12 +23,12 @@ export default function Notification({
   );
 
   return (
-    <View className="flex-row bg-white px-4 items-center gap-1">
+    <View className="flex-row bg-white  dark:bg-zinc-900 px-4 items-center gap-1">
       <Avatar alt="User">
         <AvatarImage source={{ uri: iconos[notification.type] }} />
       </Avatar>
 
-      <View className="flex-1 border-t border-gray-100 p-2">
+      <View className="flex-1 border-t border-gray-100 p-2 dark:border-zinc-800">
         <View className="flex-row justify-between items-center mb-1">
           <Text className="font-bold text-gray-900">
             {notification.title.toUpperCase()}

@@ -68,6 +68,7 @@ export default function Wallet() {
   return (
     <ScrollView
       ref={scrollRef}
+      className="bg-white dark:bg-zinc-900"
       contentInsetAdjustmentBehavior="automatic"
       keyboardDismissMode="on-drag"
     >

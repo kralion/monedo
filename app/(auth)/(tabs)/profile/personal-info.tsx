@@ -86,7 +86,10 @@ export default function PersonalInfoScreen() {
 
   return (
     <KeyboardAvoidingView behavior="height" enabled style={{ flex: 1 }}>
-      <ScrollView className="flex-1" contentInsetAdjustmentBehavior="automatic">
+      <ScrollView
+        className="flex-1 bg-white dark:bg-zinc-900"
+        contentInsetAdjustmentBehavior="automatic"
+      >
         <View className="flex-1 px-4 pt-10">
           {/* Profile Avatar Section */}
           <View className="items-center mb-6">

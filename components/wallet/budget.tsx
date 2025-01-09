@@ -123,7 +123,7 @@ export function Budget({ budget }: { budget: IBudget }) {
             </View>
             <View className="card-description flex flex-row items-center justify-between">
               <View className=" flex flex-row items-center">
-                <Text className="font-bold text-xl text-brand">
+                <Text className="font-bold text-xl text-brand dark:text-brand">
                   <Animated.Text entering={FadeIn.duration(1500)}>
                     + S/. {budget.amount}
                   </Animated.Text>
@@ -136,7 +136,7 @@ export function Budget({ budget }: { budget: IBudget }) {
           </View>
         </TouchableOpacity>
       </ReanimatedSwipeable>
-      <Separator />
+      <Separator className="bg-zinc-200 dark:bg-zinc-800 " />
     </Animated.View>
   );
 }

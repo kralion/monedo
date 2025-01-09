@@ -6,24 +6,19 @@ import BottomSheet, {
 import { router, Stack } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
-import {
-  Button as NativeButton,
-  Platform,
-  useColorScheme,
-  View,
-} from "react-native";
+import { Button as NativeButton, Platform, View } from "react-native";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 import { useBudgetContext } from "~/context";
 import { IBudget } from "~/interfaces";
+import { useColorScheme } from "~/lib/useColorScheme";
 
 export default function Layout() {
   const incomeBottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ["25%", "50%"], []);
   const { addBudget, loading, budget, updateBudget, setBudget } =
     useBudgetContext();
-  const colorScheme = useColorScheme();
-  const isDarkMode = colorScheme === "dark";
+  const { isDarkColorScheme } = useColorScheme();
   const {
     control,
     handleSubmit,
@@ -170,7 +165,9 @@ export default function Layout() {
         snapPoints={snapPoints}
         enablePanDownToClose={true}
         handleIndicatorStyle={{ backgroundColor: "gray" }}
-        backgroundStyle={{ backgroundColor: isDarkMode ? "#262626" : "white" }}
+        backgroundStyle={{
+          backgroundColor: isDarkColorScheme ? "#262626" : "white",
+        }}
         backdropComponent={renderBackdrop}
       >
         <BottomSheetView className="p-4 flex flex-col gap-4 ">

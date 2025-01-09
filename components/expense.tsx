@@ -46,7 +46,7 @@ export function Expense({ expense }: { expense: IExpense }) {
           </View>
           <View className="card-description flex flex-row items-center justify-between">
             <View className="card-description-amount flex flex-row items-center">
-              <Text className="text-xl text-red-500 font-semibold">
+              <Text className="text-xl text-red-500 dark:text-red-400  font-semibold">
                 <Animated.Text entering={FadeIn.duration(1500)}>
                   - S/. {amount.toFixed(2)}
                 </Animated.Text>

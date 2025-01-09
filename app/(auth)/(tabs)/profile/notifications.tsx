@@ -30,6 +30,7 @@ export default function Notifications() {
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       keyboardDismissMode="on-drag"
+      className="bg-white dark:bg-zinc-900"
     >
       <FlashList
         data={notifications}

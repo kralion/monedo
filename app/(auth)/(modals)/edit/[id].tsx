@@ -102,7 +102,7 @@ export default function EditExpense() {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <ScrollView
-        className="h-screen-safe-offset-2 px-4"
+        className="h-screen-safe-offset-2 px-4 bg-white dark:bg-zinc-900"
         contentInsetAdjustmentBehavior="automatic"
       >
         <View className="flex flex-col">

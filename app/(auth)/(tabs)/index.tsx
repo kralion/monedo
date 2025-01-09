@@ -162,14 +162,19 @@ export default function Home() {
             <View style={{ height: 120 }} />
           </View>
 
-          <ScrollView ref={scrollRef} className="px-4">
+          <ScrollView
+            ref={scrollRef}
+            className="bg-white dark:bg-zinc-900 px-4"
+          >
             <View className="flex flex-row justify-between items-center pt-36  w-full pb-4">
-              <Text className="text-xl font-bold">Gastos Recientes</Text>
+              <Text className="text-xl font-bold dark:text-white">
+                Gastos Recientes
+              </Text>
               <Text
                 onPress={() => {
                   setShowAll(true);
                 }}
-                className="text-muted-foreground px-1.5 opacity-50 "
+                className="text-muted-foreground dark:text-secondary px-1.5 opacity-50 "
               >
                 Ver Todos
               </Text>
@@ -189,13 +194,13 @@ export default function Home() {
                   <View>
                     {index === 0 ? (
                       <>
-                        <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-600 ml-[60px]" />
+                        <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-800 ml-[60px]" />
                         <Expense expense={expense} />
                       </>
                     ) : index === expenses.length - 1 ? (
                       <>
                         <Expense expense={expense} />
-                        <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-600 ml-[60px]" />
+                        <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-800 ml-[60px]" />
                       </>
                     ) : (
                       <Expense expense={expense} />
@@ -203,7 +208,7 @@ export default function Home() {
                   </View>
                 )}
                 ItemSeparatorComponent={() => (
-                  <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-600 ml-[60px]" />
+                  <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-800 ml-[60px]" />
                 )}
                 ListEmptyComponent={
                   <View className="flex flex-col items-center justify-center  ">

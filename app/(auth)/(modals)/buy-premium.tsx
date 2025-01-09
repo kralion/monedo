@@ -92,7 +92,10 @@ export default function BuyPremiumModal() {
 
   return (
     <KeyboardAvoidingView behavior="height" enabled style={{ flex: 1 }}>
-      <ScrollView className="p-4" contentInsetAdjustmentBehavior="automatic">
+      <ScrollView
+        className="p-4 bg-white dark:bg-zinc-900"
+        contentInsetAdjustmentBehavior="automatic"
+      >
         <View className="flex flex-col gap-6">
           <View className="flex-1 justify-center">
             <Carousel
@@ -148,14 +151,14 @@ export default function BuyPremiumModal() {
                 value="card"
                 className="flex-1 rounded-lg"
               >
-                <Text>Tarjeta</Text>
+                <Text className="text-black dark:text-black">Tarjeta</Text>
               </TabsTrigger>
               <TabsTrigger
                 onPress={handleYapePayment}
                 value="yape"
                 className="flex-1 rounded-lg"
               >
-                <Text>Yape</Text>
+                <Text className="text-black dark:text-black">Yape</Text>
               </TabsTrigger>
             </TabsList>
             <TabsContent value="card">

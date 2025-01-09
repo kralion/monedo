@@ -50,7 +50,7 @@ export default function SignInScreen() {
             </Text>
             <Text
               onPress={() => router.push("/(public)/sign-up")}
-              className="text-primary active:underline"
+              className="text-primary active:underline dark:text-primary"
             >
               Regístrate
             </Text>
@@ -97,7 +97,7 @@ export const SignInWithOAuthGoogle = () => {
         }}
         alt="google"
       />
-      <Text>Continuar con Google</Text>
+      <Text className="text-black dark:text-black">Continuar con Google</Text>
     </Button>
   );
 };
@@ -137,7 +137,7 @@ export const SignInWithOAuthTiktok = () => {
         }}
         alt="tiktok"
       />
-      <Text>Continuar con TikTok</Text>
+      <Text className="text-black dark:text-black">Continuar con TikTok</Text>
     </Button>
   );
 };
@@ -177,7 +177,7 @@ export const SignInWithOAuthFacebook = () => {
         }}
         alt="Facebook"
       />
-      <Text>Continuar con Facebook</Text>
+      <Text className="text-black dark:text-black">Continuar con Facebook</Text>
     </Button>
   );
 };

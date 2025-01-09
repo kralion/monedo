@@ -29,6 +29,15 @@ export default function Layout() {
             headerLargeTitle: true,
           }}
         />
+        <Stack.Screen
+          name="settings"
+          options={{
+            title: "Configuración",
+            headerBackTitle: "Perfil",
+            headerTransparent: true,
+            headerLargeTitle: true,
+          }}
+        />
 
         <Stack.Screen
           name="personal-info"

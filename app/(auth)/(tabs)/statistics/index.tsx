@@ -38,7 +38,7 @@ export default function Statistics() {
   );
 
   return (
-    <SafeAreaView className="py-4">
+    <SafeAreaView className="py-4 bg-white dark:bg-zinc-900">
       <View className="flex flex-col gap-8">
         <View className="flex flex-row  justify-between px-4 pt-7">
           <View className="flex flex-col ">
@@ -73,7 +73,7 @@ export default function Statistics() {
                 }
                 onPress={() => setTimelineQuery(item)}
               >
-                <Text>{item.label}</Text>
+                <Text className="text-black dark:text-black">{item.label}</Text>
               </Button>
             )}
             estimatedItemSize={16}
@@ -83,7 +83,10 @@ export default function Statistics() {
           <Separator className="text-muted-foreground" />
         </View>
       </View>
-      <ScrollView contentInsetAdjustmentBehavior="automatic">
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        className="bg-white dark:bg-zinc-900"
+      >
         <View className="flex flex-col gap-4 justify-center mt-4">
           {loading ? (
             <PieSkeleton />

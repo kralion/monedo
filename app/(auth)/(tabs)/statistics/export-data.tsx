@@ -197,7 +197,10 @@ export default function Export() {
   };
 
   return (
-    <ScrollView style={{ paddingTop: headerHeight }}>
+    <ScrollView
+      style={{ paddingTop: headerHeight }}
+      className="bg-white dark:bg-zinc-900"
+    >
       <View className="flex flex-col gap-4 p-4 items-center">
         <ExportAsset width={300} height={300} />
         <View className="flex flex-col gap-2 mx-auto">
@@ -222,7 +225,7 @@ export default function Export() {
             }}
             style={{ width: 30, height: 30 }}
           />
-          <Text> Descargar PDF</Text>
+          <Text className="text-black dark:text-black"> Descargar PDF</Text>
         </Button>
       </View>
     </ScrollView>

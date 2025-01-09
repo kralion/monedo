@@ -42,7 +42,7 @@ export default function SignUpScreen() {
               <Text>Ya tienes una cuenta?</Text>
 
               <Text
-                className="text-primary active:underline"
+                className="text-primary active:underline dark:text-primary"
                 onPress={() => router.back()}
               >
                 Inicia Sesión
@@ -112,7 +112,7 @@ export const SignInWithOAuthGoogle = () => {
         }}
         alt="google"
       />
-      <Text>Continuar con Google</Text>
+      <Text className="text-black dark:text-black">Continuar con Google</Text>
     </Button>
   );
 };
@@ -151,7 +151,7 @@ export const SignInWithOAuthTiktok = () => {
         }}
         alt="tiktok"
       />
-      <Text>Continuar con TikTok</Text>
+      <Text className="text-black dark:text-black">Continuar con TikTok</Text>
     </Button>
   );
 };
@@ -190,7 +190,7 @@ export const SignInWithOAuthFacebook = () => {
         }}
         alt="Facebook"
       />
-      <Text>Continuar con Facebook</Text>
+      <Text className="text-black dark:text-black">Continuar con Facebook</Text>
     </Button>
   );
 };

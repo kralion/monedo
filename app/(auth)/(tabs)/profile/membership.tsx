@@ -1,7 +1,7 @@
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { Image } from "expo-image";
 import { Info } from "lucide-react-native";
-import { SafeAreaView, View } from "react-native";
+import { SafeAreaView, ScrollView, View } from "react-native";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { Text } from "~/components/ui/text";
@@ -19,7 +19,10 @@ export default function Membership() {
     : "";
 
   return (
-    <SafeAreaView>
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      className="bg-white dark:bg-zinc-900"
+    >
       <View className="flex flex-col gap-6 px-4 py-8 ">
         <View className="flex flex-row gap-4 items-center ">
           <Image
@@ -86,6 +89,6 @@ export default function Membership() {
           </Text>
         </Button>
       </View>
-    </SafeAreaView>
+    </ScrollView>
   );
 }

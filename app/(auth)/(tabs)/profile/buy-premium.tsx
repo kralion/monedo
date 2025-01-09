@@ -1,6 +1,7 @@
 import Stripe from "@/components/payment/stripe";
 import Yape from "@/components/payment/yape";
 import { Image } from "expo-image";
+import { router } from "expo-router";
 import * as React from "react";
 import {
   Animated as AnimatedRN,
@@ -11,6 +12,7 @@ import {
 } from "react-native";
 import { useSharedValue, withTiming } from "react-native-reanimated";
 import Carousel from "react-native-reanimated-carousel";
+import { Button } from "~/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Text } from "~/components/ui/text";
 const width = Dimensions.get("window").width;
@@ -90,7 +92,10 @@ export default function BuyPremiumModal() {
 
   return (
     <KeyboardAvoidingView behavior="height" enabled style={{ flex: 1 }}>
-      <ScrollView className="p-4" contentInsetAdjustmentBehavior="automatic">
+      <ScrollView
+        className="p-4 bg-white dark:bg-zinc-900"
+        contentInsetAdjustmentBehavior="automatic"
+      >
         <View className="flex flex-col gap-6">
           <View className="flex-1 justify-center">
             <Carousel
@@ -146,14 +151,14 @@ export default function BuyPremiumModal() {
                 value="card"
                 className="flex-1 rounded-lg"
               >
-                <Text>Tarjeta</Text>
+                <Text className="text-black dark:text-black">Tarjeta</Text>
               </TabsTrigger>
               <TabsTrigger
                 onPress={handleYapePayment}
                 value="yape"
                 className="flex-1 rounded-lg"
               >
-                <Text>Yape</Text>
+                <Text className="text-black dark:text-black">Yape</Text>
               </TabsTrigger>
             </TabsList>
             <TabsContent value="card">
@@ -172,6 +177,9 @@ export default function BuyPremiumModal() {
             </TabsContent>
           </Tabs>
         </View>
+        <Button onPress={() => router.back()} size="sm" variant="ghost">
+          <Text className="text-brand">Quizás más tarde</Text>
+        </Button>
       </ScrollView>
     </KeyboardAvoidingView>
   );

@@ -65,7 +65,10 @@ export default function BudgetDetails() {
   });
 
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      className="bg-white dark:bg-zinc-900"
+    >
       {loading && (
         <View className="flex flex-col justify-center items-center min-h-full">
           <ActivityIndicator size="large" />

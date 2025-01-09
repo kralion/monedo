@@ -11,7 +11,7 @@ export default function NotFoundScreen() {
       <View>
         <Text>This screen doesn't exist.</Text>
 
-        <Link href="/(tabs)">
+        <Link href="/(auth)/(tabs)">
           <Button variant="link">
             <Text>Go to home screen!</Text>
           </Button>

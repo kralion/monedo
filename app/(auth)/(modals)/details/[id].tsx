@@ -86,7 +86,10 @@ export default function ExpenseDetails() {
   const percentage = (totalMonthExpenses / budget.amount) * 100;
 
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      className="bg-white dark:bg-zinc-900"
+    >
       <View className="flex flex-col gap-4 p-4">
         {loading ? (
           <ActivityIndicator size="large" className="mt-20" />
@@ -101,12 +104,12 @@ export default function ExpenseDetails() {
                 }}
               />
               <View className="flex flex-col">
-                <Text className="text-5xl tracking-tighter font-bold">
+                <Text className="text-5xl tracking-tighter font-bold ">
                   S/. {expense.amount}
                 </Text>
               </View>
               <Separator className="text-muted-foreground" />
-              <Text className="text-lg text-muted-foreground ">
+              <Text className="text-lg dark:text-secondary  text-secondary-foreground">
                 {expense.description}
               </Text>
             </View>
