@@ -1,22 +1,23 @@
-import { useBudgetContext, useExpenseContext } from "@/context";
-import { useAuth } from "@clerk/clerk-expo";
+import { useBudgetContext } from "@/context";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
 import { ArrowDownIcon, ArrowUpIcon } from "lucide-react-native";
 import * as React from "react";
 import { Alert, Pressable, StyleSheet, View } from "react-native";
+import { useUserPlan } from "~/hooks/useUserPlan";
+import { useExpenseStore } from "~/stores/expense";
 import { Button } from "../ui/button";
 import { Text } from "../ui/text";
 
 export default function Card() {
   const [totalMonthExpenses, setTotalMonthExpenses] = React.useState(0);
   const [budget, setBudget] = React.useState(0);
-  const { has } = useAuth();
-  const { sumOfAllOfExpensesMonthly, isOutOfBudget } = useExpenseContext();
+  const { planName, isPremium } = useUserPlan();
+  const { sumOfAllOfExpenses, isOutOfBudget } = useExpenseStore();
   const { getTotalBudget } = useBudgetContext();
 
   async function calculateBalance() {
-    await sumOfAllOfExpensesMonthly().then((total) => {
+    await sumOfAllOfExpenses().then((total) => {
       setTotalMonthExpenses(total);
     });
     await getTotalBudget().then((total) => {
@@ -40,7 +41,7 @@ export default function Card() {
     <Pressable
       className="m-5 z-10"
       onPress={() => {
-        if (has?.({ permission: "premium:plan" })) {
+        if (isPremium) {
           Alert.alert(
             "Premium",
             "Ya eres usuario premium, tienes acceso a todas las funcionalidades."
@@ -55,7 +56,7 @@ export default function Card() {
         colors={
           isOutOfBudget
             ? ["#FF0000", "#FF7F7F"] // Red gradient if out of budget
-            : has?.({ permission: "premium:plan" })
+            : isPremium
             ? ["#D4AF37", "#FFD700", "#A79647"] // Gold gradient for premium users
             : ["#10B981", "#047857"] // Default gradient
         }
@@ -75,18 +76,10 @@ export default function Card() {
           <Button
             size="sm"
             className={` rounded-full
-                bg-${
-                  has?.({ permission: "premium:plan" })
-                    ? "yellow-500"
-                    : "orange-500"
-                }
+                bg-${isPremium ? "yellow-500" : "orange-500"}
                 `}
           >
-            <Text className="text-white">
-              {has?.({ permission: "premium:plan" })
-                ? "Cuenta Premium"
-                : "Cuenta Free"}
-            </Text>
+            <Text className="text-white">Cuenta {planName}</Text>
           </Button>
         </View>
         <View className="flex flex-row justify-between">

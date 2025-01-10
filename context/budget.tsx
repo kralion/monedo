@@ -4,7 +4,7 @@ import { CheckCircle, X } from "lucide-react-native";
 import * as React from "react";
 import { createContext, useContext } from "react";
 import { toast } from "sonner-native";
-import { createClerkSupabaseClient } from "~/lib/supabase";
+import { supabase } from "~/lib/supabase";
 export const BudgetContext = createContext<IBudgetContextProvider>({
   getBudgetById: async (id: string): Promise<IBudget> => ({} as IBudget),
   getTotalBudget: async () => 0,
@@ -24,7 +24,6 @@ export const BudgetContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const supabase = createClerkSupabaseClient();
   const [budgets, setBudgets] = React.useState<IBudget[]>([]);
   const { user } = useUser();
   const [budget, setBudget] = React.useState({} as IBudget);

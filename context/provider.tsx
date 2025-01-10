@@ -1,5 +1,6 @@
 import { BudgetContextProvider, ExpenseContextProvider } from "@/context";
 import NetInfo from "@react-native-community/netinfo";
+import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { XCircle } from "lucide-react-native";
 import React from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -9,6 +10,7 @@ export default function AppProvider({
 }: {
   children: React.ReactNode;
 }) {
+  const client = new QueryClient();
   React.useEffect(() => {
     const unsubscribe = NetInfo.addEventListener((state) => {
       if (!state.isConnected) {
@@ -21,12 +23,14 @@ export default function AppProvider({
   }, []);
   return (
     <GestureHandlerRootView>
-      <ExpenseContextProvider>
-        <BudgetContextProvider>
-          <Toaster />
-          {children}
-        </BudgetContextProvider>
-      </ExpenseContextProvider>
+      <QueryClientProvider client={client}>
+        <ExpenseContextProvider>
+          <BudgetContextProvider>
+            <Toaster />
+            {children}
+          </BudgetContextProvider>
+        </ExpenseContextProvider>
+      </QueryClientProvider>
     </GestureHandlerRootView>
   );
 }

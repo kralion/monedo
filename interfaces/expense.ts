@@ -39,6 +39,27 @@ export interface IBudgetContextProvider {
   getBudgets: () => Promise<IBudget[] | null>;
 }
 
+export interface ExpenseStore {
+  addExpense: (expense: IExpense) => void;
+  isOutOfBudget: boolean;
+  deleteExpense: (id: string) => void;
+  checkBudget: () => void;
+  weeklyExpenses: IExpense[];
+  loading: boolean;
+  expense: IExpense | null;
+  expenses: IExpense[];
+  getExpenseById: (id: string) => Promise<IExpense>;
+  updateExpense: (expense: IExpense) => void;
+  sumOfAllOfExpenses: () => Promise<number>;
+  getExpensesByPeriodicity: ({
+    startTimeOfQuery,
+    endTimeOfQuery,
+  }: {
+    startTimeOfQuery: Date;
+    endTimeOfQuery: Date;
+  }) => Promise<IExpense[] | null>;
+  getRecentExpenses: (userId: string) => Promise<IExpense[]>;
+}
 export interface IExpenseContextProvider {
   addExpense: (expense: IExpense) => void;
   getWeeklyExpenses: () => Promise<IExpense[]>;

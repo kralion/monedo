@@ -9,10 +9,10 @@ import { Button } from "./ui/button";
 import { Text } from "./ui/text";
 
 export function Expense({ expense }: { expense: IExpense }) {
-  const { category, amount, description } = expense;
+  const { categories, amount, description } = expense;
   const assetIndentificador =
     expensesIdentifiers.find(
-      (icon) => icon.label.toLowerCase() === category.value
+      (icon) => icon.label.toLowerCase() === categories?.value
     )?.iconHref ||
     "https://img.icons8.com/?size=160&id=MjAYkOMsbYOO&format=png";
   return (
@@ -34,7 +34,7 @@ export function Expense({ expense }: { expense: IExpense }) {
             <View className="card-title-details flex flex-col">
               <Text className="text-xl font-semibold dark:text-white">
                 <Animated.Text entering={FadeIn.duration(1500)}>
-                  {category.label}
+                  {categories?.label}
                 </Animated.Text>
               </Text>
               <Text className="text-sm text-muted-foreground">

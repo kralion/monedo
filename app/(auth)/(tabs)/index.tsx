@@ -1,12 +1,11 @@
 import NoData2Svg from "@/assets/svgs/no-data.svg";
 import Card from "@/components/dashboard/card";
-import { useExpenseContext } from "@/context";
-import { useAuth, useUser } from "@clerk/clerk-expo";
+import { useUser } from "@clerk/clerk-expo";
 import { FlashList } from "@shopify/flash-list";
-import { Redirect, router, useFocusEffect } from "expo-router";
+import { Redirect, router } from "expo-router";
 import { ChevronUp, Lock } from "lucide-react-native";
 import * as React from "react";
-import { ScrollView, View } from "react-native";
+import { ActivityIndicator, ScrollView, View } from "react-native";
 import Animated, {
   useAnimatedRef,
   useAnimatedStyle,
@@ -18,42 +17,25 @@ import { Expense } from "~/components/expense";
 import { ExpenseSkeleton } from "~/components/skeleton/expense";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
-import { createClerkSupabaseClient } from "~/lib/supabase";
+import { useUserPlan } from "~/hooks/useUserPlan";
+import { useExpenseStore } from "~/stores/expense";
 
 export default function Home() {
-  const { getRecentExpenses, expenses } = useExpenseContext();
-  const [loading, setLoading] = React.useState(false);
   const { user, isSignedIn } = useUser();
-  const { has } = useAuth();
-  const supabase = createClerkSupabaseClient();
+  const { isPremium } = useUserPlan();
   const [showAll, setShowAll] = React.useState(false);
+  const { getRecentExpenses, loading, expenses } = useExpenseStore();
+  React.useEffect(() => {
+    getRecentExpenses(user?.id as string);
+  }, [showAll]);
+
+  if (!expenses) {
+    return <ActivityIndicator />;
+  }
   if (!user) {
     <Redirect href="/(public)/sign-in" />;
     return;
   }
-
-  useFocusEffect(
-    React.useCallback(() => {
-      setLoading(true);
-      getRecentExpenses();
-      setLoading(false);
-      const channel = supabase.channel("realtime-expenses");
-      channel.on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "expenses" },
-        () => {
-          getRecentExpenses();
-        }
-      );
-      return () => {
-        channel.unsubscribe();
-      };
-    }, [])
-  );
-
-  React.useEffect(() => {
-    getRecentExpenses();
-  }, []);
 
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollHandler = useScrollViewOffset(scrollRef);
@@ -126,9 +108,7 @@ export default function Home() {
         <>
           <View
             className={`pt-16  rounded-b-3xl
-             bg-${
-               has?.({ permission: "premium:plan" }) ? "yellow-500" : "primary"
-             }
+             bg-${isPremium ? "yellow-500" : "primary"}
 
               `}
           >
