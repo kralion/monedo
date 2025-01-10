@@ -1,56 +1,38 @@
-import { useBudgetContext, useExpenseContext } from "@/context";
-import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import * as React from "react";
-import { Image, ScrollView, View } from "react-native";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "~/components/ui/alert-dialog";
-import { Button } from "~/components/ui/button";
+import { ActivityIndicator, Image, ScrollView, View } from "react-native";
+import { Badge } from "~/components/ui/badge";
 import { Progress } from "~/components/ui/progress";
 import { Separator } from "~/components/ui/separator";
-import { ActivityIndicator } from "react-native";
-import { Badge } from "~/components/ui/badge";
 import { Text } from "~/components/ui/text";
 import { expensesIdentifiers } from "~/constants/ExpensesIdentifiers";
-import { IBudget } from "~/interfaces";
 import { createClerkSupabaseClient } from "~/lib/supabase";
+import { useBudgetStore } from "~/stores/budget";
+import { useExpenseStore } from "~/stores/expense";
 
 export default function ExpenseDetails() {
   const {
-    deleteExpense,
     expense,
     getExpenseById,
     loading,
-    sumOfAllOfExpensesMonthly,
-  } = useExpenseContext();
-  const { getCurrentBudget } = useBudgetContext();
-  const [budget, setBudget] = React.useState({} as IBudget);
-  const [totalMonthExpenses, setTotalMonthExpenses] = React.useState(0);
-  const [isOpen, setIsOpen] = React.useState(false);
+    sumOfAllOfExpenses,
+    totalExpenses,
+  } = useExpenseStore();
+  const { getTotalBudget, totalBudget } = useBudgetStore();
   const params = useLocalSearchParams<{ id: string }>();
   const supabase = createClerkSupabaseClient();
-  const handleDeleteExpense = async (id: string) => {
-    deleteExpense(id);
-    router.push("/(auth)/(tabs)");
-    setIsOpen(false);
-  };
-  async function calculateTotalMonthExpenses() {
-    const total = await sumOfAllOfExpensesMonthly();
-    setTotalMonthExpenses(total);
-    return total;
-  }
+
+  if (!expense) return <ActivityIndicator />;
+
+  React.useEffect(() => {
+    getTotalBudget();
+    sumOfAllOfExpenses();
+  }, []);
 
   useFocusEffect(
     React.useCallback(() => {
       if (params.id) {
-        getExpenseById(params.id);
+        getExpenseById(Number(params.id));
         const channel = supabase.channel("realtime-expenses").on(
           "postgres_changes",
           {
@@ -59,7 +41,7 @@ export default function ExpenseDetails() {
             table: "expenses",
           },
           () => {
-            getExpenseById(params.id);
+            getExpenseById(Number(params.id));
           }
         );
         return () => {
@@ -69,21 +51,13 @@ export default function ExpenseDetails() {
     }, [params.id])
   );
 
-  React.useEffect(() => {
-    getCurrentBudget().then((budget) => {
-      if (!budget) return;
-      setBudget(budget);
-    });
-    calculateTotalMonthExpenses();
-  }, []);
-
   const assetIndentificador =
     expensesIdentifiers.find(
-      (icon) => icon.label.toLowerCase() === expense?.category?.value
+      (icon) => icon.label.toLowerCase() === expense?.categories?.value
     )?.iconHref ||
     "https://img.icons8.com/?size=160&id=MjAYkOMsbYOO&format=png";
 
-  const percentage = (totalMonthExpenses / budget.amount) * 100;
+  const percentage = (totalExpenses / totalBudget) * 100;
 
   return (
     <ScrollView
@@ -139,7 +113,7 @@ export default function ExpenseDetails() {
                 <View className="flex flex-row justify-between items-center">
                   <Text className="text-muted-foreground">Categoria</Text>
                   <Badge className="py-1 px-2" variant="outline">
-                    <Text>{expense?.category?.label}</Text>
+                    <Text>{expense?.categories?.label}</Text>
                   </Badge>
                 </View>
               </View>

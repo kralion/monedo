@@ -1,22 +1,14 @@
-import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import * as React from "react";
 import { ActivityIndicator, Image, ScrollView, View } from "react-native";
 import { Separator } from "~/components/ui/separator";
 import { Text } from "~/components/ui/text";
-import { useBudgetContext } from "~/context";
-import { createClerkSupabaseClient } from "~/lib/supabase";
+import { supabase } from "~/lib/supabase";
+import { useBudgetStore } from "~/stores/budget";
 
 export default function BudgetDetails() {
-  const { deleteBudget, budget, getBudgetById, loading } = useBudgetContext();
-  const [isOpen, setIsOpen] = React.useState(false);
+  const { budget, getBudgetById, loading } = useBudgetStore();
   const params = useLocalSearchParams<{ id: string }>();
-  const supabase = createClerkSupabaseClient();
-  const handleDeleteBudget = async (id: string) => {
-    deleteBudget(id);
-    router.push("/(auth)/(tabs)/wallet");
-    setIsOpen(false);
-  };
-
   useFocusEffect(
     React.useCallback(() => {
       if (params.id) {

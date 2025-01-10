@@ -25,15 +25,14 @@ import { Separator } from "~/components/ui/separator";
 import { Switch } from "~/components/ui/switch";
 import { Text } from "~/components/ui/text";
 import { Textarea } from "~/components/ui/textarea";
-import { useExpenseContext } from "~/context";
-import { IExpense } from "~/interfaces";
-import { ICategory } from "~/interfaces/category";
-import { createClerkSupabaseClient } from "~/lib/supabase";
+import { ICategory, IExpense } from "~/interfaces";
+import { supabase } from "~/lib/supabase";
+import { useBudgetStore } from "~/stores/budget";
+import { useExpenseStore } from "~/stores/expense";
 
 export default function AddExpense() {
-  const { addExpense, loading, isOutOfBudget, checkBudget } =
-    useExpenseContext();
-  const supabase = createClerkSupabaseClient();
+  const { addExpense, loading } = useExpenseStore();
+  const { isOutOfBudget, checkBudget } = useBudgetStore();
   const [category, setCategory] = React.useState<ICategory>({} as ICategory);
   const { user } = useUser();
   const [categories, setCategories] = React.useState<ICategory[]>([]);
@@ -88,7 +87,7 @@ export default function AddExpense() {
     });
     reset();
     setAmount(0);
-    checkBudget();
+    checkBudget(user?.id as string);
   }
 
   return (

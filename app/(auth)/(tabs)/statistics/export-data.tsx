@@ -6,14 +6,14 @@ import React from "react";
 import { Image, ScrollView, View } from "react-native";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
-import { useExpenseContext } from "~/context";
 import { IExpense } from "~/interfaces";
 import { getDateRange } from "~/lib/rangeDate";
+import { useExpenseStore } from "~/stores/expense";
 
 export default function Export() {
   const headerHeight = useHeaderHeight();
   const { periodicity } = useLocalSearchParams();
-  const { getExpensesByPeriodicity } = useExpenseContext();
+  const { getExpensesByPeriodicity } = useExpenseStore();
 
   function formatDate(date: Date) {
     return date.toLocaleDateString("es-ES", {
@@ -153,7 +153,7 @@ export default function Export() {
               .map(
                 (expense) => `
                 <tr key=${expense.id}>
-                    <td>${expense.category.label}</td>
+                    <td>${expense.categories?.label}</td>
                     <td>${expense.description}</td>
                     <td align="center">${formatDate(
                       new Date(expense.date)

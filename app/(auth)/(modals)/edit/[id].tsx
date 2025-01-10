@@ -1,5 +1,4 @@
-import { useExpenseContext } from "@/context";
-import { IExpense } from "@/interfaces";
+import { ICategory, IExpense } from "@/interfaces";
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -27,6 +26,9 @@ import {
 import { Switch } from "~/components/ui/switch";
 import { Text } from "~/components/ui/text";
 import { Textarea } from "~/components/ui/textarea";
+import { useBudgetStore } from "~/stores/budget";
+import { useCategoryStore } from "~/stores/category";
+import { useExpenseStore } from "~/stores/expense";
 const items = [
   { name: "Hogar" },
   { name: "Transporte" },
@@ -39,9 +41,12 @@ const items = [
 ];
 export default function EditExpense() {
   const { id } = useLocalSearchParams();
-  const { expense, deleteExpense, updateExpense, isOutOfBudget } =
-    useExpenseContext();
+  const { expense, deleteExpense, updateExpense } = useExpenseStore();
+  const { categories, loading } = useCategoryStore();
+  const [category, setCategory] = React.useState<ICategory>();
+  const { isOutOfBudget } = useBudgetStore();
   const [isLoading, setIsLoading] = React.useState(false);
+  if (!expense) return <ActivityIndicator />;
   const [amount, setAmount] = React.useState(expense.amount);
 
   const {
@@ -55,12 +60,10 @@ export default function EditExpense() {
     if (id) {
       setValue("description", expense.description);
       setValue("amount", expense.amount);
-      setValue("category", {
-        label: expense.category.label,
-        value: expense.category.value,
-      });
+      setValue("id_category", expense.id_category);
       setValue("periodicity", expense.periodicity);
       setValue("currency", "Soles");
+      setCategory(categories.find((c) => c.id === expense.id_category));
     }
   }, [id]);
   const formattedDate = new Date(expense.date).toLocaleDateString("es-PE", {
@@ -80,7 +83,7 @@ export default function EditExpense() {
         },
         {
           text: "Eliminar Gasto",
-          onPress: () => deleteExpense(id as string),
+          onPress: () => deleteExpense(Number(id)),
           style: "destructive",
         },
       ],
@@ -95,7 +98,7 @@ export default function EditExpense() {
       toast.error("No tienes suficiente fondos para registrar este gasto");
       return;
     }
-    if (data.category.value === "") {
+    if (data.categories?.value === "") {
       toast.error("Debes seleccionar una categoría");
       return;
     }
@@ -106,7 +109,7 @@ export default function EditExpense() {
     try {
       updateExpense({
         ...data,
-        id: id as string,
+        id: Number(id),
         amount:
           data.currency === "Euros"
             ? amount * 3.85
@@ -129,12 +132,25 @@ export default function EditExpense() {
         <View className="flex flex-col">
           <View className="flex flex-col gap-6 pt-6">
             <Controller
-              name="category"
+              name="id_category"
               control={control}
               render={({ field: { onChange, value } }) => (
                 <View className="flex flex-col gap-2">
                   <Label>Categoría</Label>
-                  <Select onValueChange={onChange} value={value}>
+                  <Select
+                    onValueChange={(value) => {
+                      const selectedCategory = categories.find(
+                        (category) => category.id === Number(value)
+                      );
+                      if (selectedCategory) {
+                        setCategory(selectedCategory);
+                      }
+                    }}
+                    value={{
+                      value: String(category?.label),
+                      label: category?.label as string,
+                    }}
+                  >
                     <SelectTrigger>
                       <SelectValue placeholder="Selecciona" />
                     </SelectTrigger>

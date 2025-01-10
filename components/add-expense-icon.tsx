@@ -1,57 +1,35 @@
-import { useBudgetContext, useExpenseContext } from "@/context";
-import { useAuth } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
 import { Plus } from "lucide-react-native";
 import React from "react";
 import { StyleSheet, View } from "react-native";
-import { Button } from "./ui/button";
+import { useUserPlan } from "~/hooks/useUserPlan";
+import { useBudgetStore } from "~/stores/budget";
+import { useExpenseStore } from "~/stores/expense";
 import { BudgetLimitExceededModal } from "./budget-limit-exceeded";
-import { IBudget } from "~/interfaces";
+import { Button } from "./ui/button";
 
 export default function AddExpenseIcon() {
   const router = useRouter();
-  const { has } = useAuth();
+  const { isPremium } = useUserPlan();
   const [balance, setBalance] = React.useState<number>(0);
-  const [totalMonthExpenses, setTotalMonthExpenses] = React.useState(0);
-  const [budget, setBudget] = React.useState<IBudget | null>({} as IBudget);
   const [showModal, setShowModal] = React.useState(false);
-  const { sumOfAllOfExpensesMonthly } = useExpenseContext();
-  const { getCurrentBudget } = useBudgetContext();
-
-  async function calculateTotalMonthExpenses() {
-    const total = await sumOfAllOfExpensesMonthly();
-    setTotalMonthExpenses(total);
-    return total;
-  }
-
-  async function calculateBudget() {
-    await getCurrentBudget().then((budget) => setBudget(budget));
-
-    return budget;
-  }
+  const { sumOfAllOfExpenses, totalExpenses } = useExpenseStore();
+  const { getTotalBudget, totalBudget } = useBudgetStore();
 
   async function calculateBalance() {
-    const total = await calculateTotalMonthExpenses();
-    const presupuesto = await calculateBudget();
-    if (presupuesto) {
-      setBalance(presupuesto.amount - total);
-    }
+    await getTotalBudget();
+    await sumOfAllOfExpenses();
+    setBalance(totalBudget - totalExpenses);
+    return totalBudget - totalExpenses;
   }
-
   React.useEffect(() => {
     calculateBalance();
   }, []);
 
-  // React.useEffect(() => {
-  //   if (balance <= 0) {
-  //     setShowModal(true);
-  //   }
-  // }, [balance]);
-
   return (
     <>
       <View>
-        {has?.({ permission: "premium:plan" }) ? (
+        {isPremium ? (
           <Button
             size="icon"
             className="absolute -bottom-2 -right-9 rounded-full bg-yellow-500  h-auto w-auto p-4 shadow"

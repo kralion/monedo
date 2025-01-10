@@ -1,4 +1,5 @@
 import "~/global.css";
+import NetInfo from "@react-native-community/netinfo";
 
 import { ClerkLoaded, ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -17,6 +18,10 @@ import { Platform } from "react-native";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
 import { NAV_THEME } from "~/lib/constants";
 import { useColorScheme } from "~/lib/useColorScheme";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { toast, Toaster } from "sonner-native";
+import { XCircle } from "lucide-react-native";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -111,7 +116,17 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const { isLoaded, isSignedIn } = useAuth();
   const segments = useSegments();
-
+  const client = new QueryClient();
+  React.useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      if (!state.isConnected) {
+        toast.success("No tienes conexión a internet", {
+          icon: <XCircle color="red" size={20} />,
+        });
+      }
+    });
+    return () => unsubscribe();
+  }, []);
   React.useEffect(() => {
     if (!isSignedIn && segments[0] === "(auth)") {
       router.push("/(public)/sign-in");
@@ -120,5 +135,12 @@ function RootLayoutNav() {
     }
   }, [isLoaded, isSignedIn, segments]);
 
-  return <Slot />;
+  return (
+    <GestureHandlerRootView>
+      <QueryClientProvider client={client}>
+        <Toaster />
+        <Slot />
+      </QueryClientProvider>
+    </GestureHandlerRootView>
+  );
 }

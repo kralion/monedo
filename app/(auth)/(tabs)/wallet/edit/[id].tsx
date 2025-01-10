@@ -1,4 +1,3 @@
-import { useBudgetContext } from "@/context";
 import { IBudget } from "@/interfaces";
 import { useUser } from "@clerk/clerk-expo";
 import { useLocalSearchParams } from "expo-router";
@@ -17,11 +16,12 @@ import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Text } from "~/components/ui/text";
 import { Textarea } from "~/components/ui/textarea";
+import { useBudgetStore } from "~/stores/budget";
 
 export default function EditExpense() {
   const params = useLocalSearchParams<{ id: string }>();
   const { user } = useUser();
-  const { updateBudget, budget } = useBudgetContext();
+  const { updateBudget, budget } = useBudgetStore();
   const [isLoading, setIsLoading] = React.useState(false);
   const {
     control,
@@ -30,8 +30,8 @@ export default function EditExpense() {
     reset,
   } = useForm<IBudget>({
     defaultValues: {
-      amount: budget.amount,
-      description: budget.description,
+      amount: budget?.amount,
+      description: budget?.description,
     },
   });
 
@@ -40,7 +40,7 @@ export default function EditExpense() {
     try {
       updateBudget({
         ...data,
-        id: params.id,
+        id: Number(params.id),
         user_id: user?.id ? user.id : "",
         amount: Number(data.amount),
       });

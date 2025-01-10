@@ -1,20 +1,18 @@
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { ICategory } from "@/interfaces";
+import { useUser } from "@clerk/clerk-expo";
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetTextInput,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
+import React, { useCallback, useEffect, useMemo } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { TouchableOpacity, View } from "react-native";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 import { useColorScheme } from "~/lib/useColorScheme";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { ICategory } from "~/interfaces/category";
-import { createClerkSupabaseClient } from "~/lib/supabase";
-import { toast } from "sonner-native";
+import { useCategoryStore } from "~/stores/category";
 import { Separator } from "../ui/separator";
-import { useUser } from "@clerk/clerk-expo";
 const colors = [
   "#6874e7",
   "#b8304f",
@@ -35,11 +33,10 @@ export default function AddCategory({
 }: {
   bottomSheetRef: React.RefObject<BottomSheet>;
 }) {
-  const [loading, setLoading] = React.useState(false);
   const { user } = useUser();
   const [color, setColor] = React.useState(0);
+  const { addCategory, updateCategory, loading } = useCategoryStore();
   const snapPoints = useMemo(() => ["25%", "50%"], []);
-  const supabase = createClerkSupabaseClient();
   const { isDarkColorScheme: isDarkMode } = useColorScheme();
   const {
     control,
@@ -49,29 +46,6 @@ export default function AddCategory({
     reset,
   } = useForm<ICategory>();
 
-  async function addCategory(category: ICategory) {
-    setLoading(true);
-    const { error } = await supabase.from("categories").insert([category]);
-    if (error) {
-      toast.error("Error al agregar la categoria");
-      console.log(error);
-    } else {
-      toast.success("Categoria agregada");
-    }
-    setLoading(false);
-  }
-
-  async function updateCategory(category: ICategory) {
-    setLoading(true);
-    const { error } = await supabase.from("categories").update(category);
-    if (error) {
-      toast.error("Error al actualizar la categoria");
-      console.log(error);
-    } else {
-      toast.success("Categoria actualizada");
-    }
-    setLoading(false);
-  }
   const renderBackdrop = useCallback(
     (props: any) => (
       <BottomSheetBackdrop
@@ -82,6 +56,7 @@ export default function AddCategory({
     ),
     []
   );
+
   const onUpdate = async (data: ICategory) => {
     updateCategory({
       ...data,

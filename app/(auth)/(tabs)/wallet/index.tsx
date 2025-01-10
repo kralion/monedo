@@ -1,43 +1,21 @@
 import NoData2Svg from "@/assets/svgs/no-data.svg";
 import { Budget } from "@/components/wallet/budget";
-import { useBudgetContext } from "@/context";
 
 import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
-import { LinearGradient } from "expo-linear-gradient";
 import React, { useEffect } from "react";
 import { ScrollView, View } from "react-native";
 import Animated, { useAnimatedRef } from "react-native-reanimated";
 import { BudgetSkeleton } from "~/components/skeleton/budget";
 import { Text } from "~/components/ui/text";
-import { createClerkSupabaseClient } from "~/lib/supabase";
+import { useBudgetStore } from "~/stores/budget";
 
 export default function Wallet() {
-  const { budgets, getBudgets } = useBudgetContext();
-  const [loading, setIsLoading] = React.useState(false);
+  const { budgets, getBudgets, loading } = useBudgetStore();
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
-  const supabase = createClerkSupabaseClient();
 
   useEffect(() => {
-    setIsLoading(true);
     getBudgets();
-    setIsLoading(false);
-  }, []);
-
-  useEffect(() => {
-    const subscription = supabase
-      .channel("budgets")
-      .on(
-        "postgres_changes",
-        { event: "*", schema: "public", table: "budgets" },
-        () => {
-          getBudgets();
-        }
-      )
-      .subscribe();
-    return () => {
-      subscription.unsubscribe();
-    };
   }, []);
 
   const ListTotal = () => {

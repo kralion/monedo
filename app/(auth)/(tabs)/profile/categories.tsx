@@ -6,7 +6,8 @@ import * as React from "react";
 import { ScrollView, View } from "react-native";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
-import { ICategory } from "~/interfaces/category";
+import { ICategory } from "@/interfaces";
+import { useFocusEffect } from "expo-router";
 
 export default function Categories() {
   const [categories, setCategories] = React.useState<ICategory[]>([]);
@@ -23,6 +24,29 @@ export default function Categories() {
   React.useEffect(() => {
     getCategories();
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      const channel = supabase.channel("realtime-categories").on(
+        "postgres_changes",
+        {
+          event: "*",
+          schema: "public",
+          table: "categories",
+          filter: `user_id=eq.${user?.id}`,
+        },
+        () => {
+          getCategories();
+        }
+      );
+
+      channel.subscribe();
+
+      return () => {
+        channel.unsubscribe();
+      };
+    }, [])
+  );
 
   return (
     <ScrollView

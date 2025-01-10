@@ -1,36 +1,23 @@
-import { useBudgetContext } from "@/context";
 import { LinearGradient } from "expo-linear-gradient";
 import { router, useFocusEffect } from "expo-router";
 import { ArrowDownIcon, ArrowUpIcon } from "lucide-react-native";
 import * as React from "react";
 import { Alert, Pressable, StyleSheet, View } from "react-native";
 import { useUserPlan } from "~/hooks/useUserPlan";
+import { useBudgetStore } from "~/stores/budget";
 import { useExpenseStore } from "~/stores/expense";
 import { Button } from "../ui/button";
 import { Text } from "../ui/text";
 
 export default function Card() {
-  const [totalMonthExpenses, setTotalMonthExpenses] = React.useState(0);
-  const [budget, setBudget] = React.useState(0);
   const { planName, isPremium } = useUserPlan();
-  const { sumOfAllOfExpenses, isOutOfBudget } = useExpenseStore();
-  const { getTotalBudget } = useBudgetContext();
-
+  const { sumOfAllOfExpenses, totalExpenses } = useExpenseStore();
+  const { totalBudget, isOutOfBudget, getTotalBudget } = useBudgetStore();
   async function calculateBalance() {
-    await sumOfAllOfExpenses().then((total) => {
-      setTotalMonthExpenses(total);
-    });
-    await getTotalBudget().then((total) => {
-      setBudget(total);
-    });
-    return budget - totalMonthExpenses;
+    await sumOfAllOfExpenses();
+    await getTotalBudget();
+    return totalBudget - totalExpenses;
   }
-
-  useFocusEffect(
-    React.useCallback(() => {
-      calculateBalance();
-    }, [])
-  );
   useFocusEffect(
     React.useCallback(() => {
       calculateBalance();
@@ -55,10 +42,10 @@ export default function Card() {
       <LinearGradient
         colors={
           isOutOfBudget
-            ? ["#FF0000", "#FF7F7F"] // Red gradient if out of budget
+            ? ["#FF0000", "#FF7F7F"]
             : isPremium
-            ? ["#D4AF37", "#FFD700", "#A79647"] // Gold gradient for premium users
-            : ["#10B981", "#047857"] // Default gradient
+            ? ["#D4AF37", "#FFD700", "#A79647"]
+            : ["#10B981", "#047857"]
         }
         start={{ x: 0, y: 0 }}
         end={{ x: 1, y: 1 }}
@@ -69,7 +56,7 @@ export default function Card() {
             <Text className="text-xl text-white">Balance</Text>
 
             <Text className="text-4xl text-white font-bold ">
-              S/. {budget - totalMonthExpenses}
+              S/. {totalBudget - totalExpenses}
             </Text>
           </View>
 
@@ -90,9 +77,7 @@ export default function Card() {
             <View className="flex flex-row gap-2">
               <ArrowDownIcon color="white" />
 
-              <Text className="text-xl text-white">
-                S/. {totalMonthExpenses}
-              </Text>
+              <Text className="text-xl text-white">S/. {totalExpenses}</Text>
             </View>
           </View>
 
@@ -103,7 +88,7 @@ export default function Card() {
             <View className="flex flex-row gap-2">
               <ArrowUpIcon color="white" />
 
-              <Text className="text-xl text-white">S/. {budget}</Text>
+              <Text className="text-xl text-white">S/. {totalBudget}</Text>
             </View>
           </View>
         </View>

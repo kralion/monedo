@@ -1,6 +1,5 @@
 import NoData2Svg from "@/assets/svgs/no-data.svg";
 import Chart from "@/components/statistics/chart";
-import { useExpenseContext } from "@/context";
 import { FlashList } from "@shopify/flash-list";
 import { router, useFocusEffect } from "expo-router";
 import { Download } from "lucide-react-native";
@@ -19,9 +18,10 @@ import { Text } from "~/components/ui/text";
 import { legendItems } from "~/helpers/getCategoryColor";
 import { IExpense } from "~/interfaces";
 import { getDateRange } from "~/lib/rangeDate";
+import { useExpenseStore } from "~/stores/expense";
 export default function Statistics() {
   const [expenses, setExpenses] = useState<IExpense[]>([]);
-  const { getExpensesByPeriodicity, loading } = useExpenseContext();
+  const { getExpensesByPeriodicity, loading } = useExpenseStore();
   const [timelineQuery, setTimelineQuery] = useState(getDateRange("diario"));
   const queryFilters = [
     getDateRange("hoy"),

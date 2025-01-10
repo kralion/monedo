@@ -6,18 +6,22 @@ import BottomSheet, {
 import { router, Stack } from "expo-router";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { Button as NativeButton, Platform, View } from "react-native";
+import {
+  ActivityIndicator,
+  Button as NativeButton,
+  Platform,
+  View,
+} from "react-native";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
-import { useBudgetContext } from "~/context";
 import { IBudget } from "~/interfaces";
 import { useColorScheme } from "~/lib/useColorScheme";
+import { useBudgetStore } from "~/stores/budget";
 
 export default function Layout() {
   const incomeBottomSheetRef = useRef<BottomSheet>(null);
   const snapPoints = useMemo(() => ["25%", "50%"], []);
-  const { addBudget, loading, budget, updateBudget, setBudget } =
-    useBudgetContext();
+  const { addBudget, loading, budget, updateBudget } = useBudgetStore();
   const { isDarkColorScheme } = useColorScheme();
   const {
     control,
@@ -26,6 +30,7 @@ export default function Layout() {
     formState: { errors },
     reset,
   } = useForm<IBudget>();
+  if (!budget) return <ActivityIndicator />;
   useEffect(() => {
     if (budget.id) {
       setValue("amount", budget.amount);
@@ -47,7 +52,6 @@ export default function Layout() {
       ...data,
       id: budget.id,
     });
-    setBudget({} as IBudget);
     incomeBottomSheetRef.current?.close();
   };
   const onSubmit = async (data: IBudget) => {
@@ -141,7 +145,6 @@ export default function Layout() {
                   color="#27BE8B"
                   onPress={() => {
                     router.back();
-                    setBudget({} as IBudget);
                   }}
                 />
               ) : (
@@ -149,7 +152,6 @@ export default function Layout() {
                   variant="link"
                   onPress={() => {
                     router.back();
-                    setBudget({} as IBudget);
                   }}
                 >
                   <Text>Cancelar</Text>

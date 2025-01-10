@@ -19,10 +19,10 @@ import {
   SharedValue,
   useAnimatedStyle,
 } from "react-native-reanimated";
-import { useBudgetContext } from "~/context";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { Text } from "../ui/text";
+import { useBudgetStore } from "~/stores/budget";
 
 export function Budget({ budget }: { budget: IBudget }) {
   const date = new Date(budget.created_At);
@@ -32,7 +32,7 @@ export function Budget({ budget }: { budget: IBudget }) {
     day: "2-digit",
     year: "numeric",
   });
-  const { deleteBudget } = useBudgetContext();
+  const { deleteBudget } = useBudgetStore();
 
   const onDelete = () => {
     Alert.alert(
