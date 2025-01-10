@@ -94,11 +94,11 @@ export default function SettingsScreen() {
         superior derecha.
       </Text>
       <Button
-        variant="secondary"
+        variant="destructive"
         onPress={() => signOut()}
         style={{ marginTop: 40 }}
       >
-        <Text className="text-red-500">Cerrar Sesión</Text>
+        <Text>Cerrar Sesión</Text>
       </Button>
     </ScrollView>
   );

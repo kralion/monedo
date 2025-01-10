@@ -1,13 +1,13 @@
+import { ICategory } from "./category";
+
 export interface IExpense {
   description: string;
   id: string;
   amount: number;
   number: number;
   date: Date | string;
-  category: {
-    label: string;
-    value: string;
-  };
+  id_category: number;
+  categories?: ICategory;
   periodicity: boolean;
   currency: string;
 }

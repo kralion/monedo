@@ -1,5 +1,6 @@
+import { useUser } from "@clerk/clerk-expo";
 import { router } from "expo-router";
-import React from "react";
+import React, { useEffect } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
@@ -26,21 +27,16 @@ import { Text } from "~/components/ui/text";
 import { Textarea } from "~/components/ui/textarea";
 import { useExpenseContext } from "~/context";
 import { IExpense } from "~/interfaces";
-
-const items = [
-  { value: "Hogar" },
-  { value: "Transporte" },
-  { value: "Salud" },
-  { value: "Alimentacion" },
-  { value: "Finanzas" },
-  { value: "Educación" },
-  { value: "Personal" },
-  { value: "Casuales" },
-];
+import { ICategory } from "~/interfaces/category";
+import { createClerkSupabaseClient } from "~/lib/supabase";
 
 export default function AddExpense() {
   const { addExpense, loading, isOutOfBudget, checkBudget } =
     useExpenseContext();
+  const supabase = createClerkSupabaseClient();
+  const [category, setCategory] = React.useState<ICategory>({} as ICategory);
+  const { user } = useUser();
+  const [categories, setCategories] = React.useState<ICategory[]>([]);
   const [amount, setAmount] = React.useState(0);
   const {
     control,
@@ -48,25 +44,29 @@ export default function AddExpense() {
     formState: { errors },
     reset,
     setValue,
-  } = useForm<IExpense>({
-    defaultValues: {
-      currency: "Soles",
-      amount: 0,
-      periodicity: false,
-      description: "",
-      category: {
-        label: "",
-        value: "",
-      },
-    },
-  });
+  } = useForm<IExpense>();
 
+  async function getCategories() {
+    const { data } = await supabase
+      .from("categories")
+      .select("*")
+      .eq("user_id", user?.id);
+    setCategories(data as ICategory[]);
+    return data;
+  }
+
+  useEffect(() => {
+    getCategories();
+  }, []);
   async function onSubmit(data: IExpense) {
+    const id_category = categories.find(
+      (category) => category.label === data.categories?.label
+    )?.id;
     if (isOutOfBudget === true) {
       toast.error("No tienes suficiente fondos para registrar este gasto");
       return;
     }
-    if (data.category.value === "") {
+    if (!id_category) {
       toast.error("Debes seleccionar una categoría");
       return;
     }
@@ -77,7 +77,14 @@ export default function AddExpense() {
 
     addExpense({
       ...data,
-      amount,
+      currency: data.currency ? data.currency : "Soles",
+      id_category: category.id,
+      amount:
+        data.currency === "Euros"
+          ? amount * 3.85
+          : data.currency === "Dólares"
+          ? amount * 3.7
+          : amount,
     });
     reset();
     setAmount(0);
@@ -102,41 +109,43 @@ export default function AddExpense() {
           </View>
 
           <View className="flex flex-col gap-6 p-4">
-            <Controller
-              name="category"
-              control={control}
-              render={({ field: { onChange, value } }) => (
-                <View className="flex flex-col gap-2">
-                  <Label>Categoría</Label>
-                  <Select onValueChange={onChange} value={value}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Selecciona" />
-                    </SelectTrigger>
+            <View className="flex flex-col gap-2">
+              <Label>Categoría</Label>
+              <Select
+                onValueChange={(value) => {
+                  const selectedCategory = categories.find(
+                    (category) => category.id === Number(value)
+                  );
+                  if (selectedCategory) {
+                    setCategory(selectedCategory);
+                  }
+                }}
+                value={{
+                  value: String(category.label),
+                  label: category.label,
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Selecciona" />
+                </SelectTrigger>
 
-                    <SelectContent className="w-[90%]">
-                      <SelectGroup>
-                        {items.map((item, i) => {
-                          return (
-                            <SelectItem
-                              label={item.value}
-                              key={i}
-                              value={item.value.toLowerCase()}
-                            >
-                              {item.value}
-                            </SelectItem>
-                          );
-                        })}
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-                  {errors.category && (
-                    <Text className="text-red-500 text-xs">
-                      {errors.category.message}
-                    </Text>
-                  )}
-                </View>
-              )}
-            />
+                <SelectContent className="w-[90%]">
+                  <SelectGroup>
+                    {categories.map((item, i) => {
+                      return (
+                        <SelectItem
+                          label={item.label}
+                          key={i}
+                          value={item.value}
+                        >
+                          {item.label}
+                        </SelectItem>
+                      );
+                    })}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+            </View>
 
             <View className="flex flex-col gap-2">
               <Label>Monto</Label>

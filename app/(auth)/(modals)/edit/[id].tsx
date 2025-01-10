@@ -11,6 +11,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
+import { toast } from "sonner-native";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
@@ -38,8 +39,11 @@ const items = [
 ];
 export default function EditExpense() {
   const { id } = useLocalSearchParams();
-  const { expense, deleteExpense, updateExpense } = useExpenseContext();
+  const { expense, deleteExpense, updateExpense, isOutOfBudget } =
+    useExpenseContext();
   const [isLoading, setIsLoading] = React.useState(false);
+  const [amount, setAmount] = React.useState(expense.amount);
+
   const {
     control,
     handleSubmit,
@@ -56,7 +60,7 @@ export default function EditExpense() {
         value: expense.category.value,
       });
       setValue("periodicity", expense.periodicity);
-      setValue("currency", expense.currency);
+      setValue("currency", "Soles");
     }
   }, [id]);
   const formattedDate = new Date(expense.date).toLocaleDateString("es-PE", {
@@ -87,11 +91,28 @@ export default function EditExpense() {
   // TODO: Multiple renders
   async function onSubmit(data: IExpense) {
     setIsLoading(true);
+    if (isOutOfBudget === true) {
+      toast.error("No tienes suficiente fondos para registrar este gasto");
+      return;
+    }
+    if (data.category.value === "") {
+      toast.error("Debes seleccionar una categoría");
+      return;
+    }
+    if (amount === 0) {
+      toast.error("Debes ingresar un monto válido");
+      return;
+    }
     try {
       updateExpense({
         ...data,
         id: id as string,
-        amount: Number(data.amount),
+        amount:
+          data.currency === "Euros"
+            ? amount * 3.85
+            : data.currency === "Dólares"
+            ? amount * 3.7
+            : amount,
       });
     } catch (error) {
       console.log(error);
@@ -140,25 +161,14 @@ export default function EditExpense() {
 
             <View className="flex flex-col gap-2">
               <Label>Monto</Label>
-              <Controller
-                control={control}
-                name="amount"
-                render={({ field: { onChange, value } }) => (
-                  <Input
-                    inputMode="decimal"
-                    onChangeText={onChange}
-                    value={String(value)}
-                    defaultValue={String(expense.amount)}
-                    placeholder="65.00"
-                  />
-                )}
-                rules={{
-                  required: { value: true, message: "Ingrese el monto" },
-                  pattern: {
-                    value: /^\d+(\.\d*)?$/,
-                    message: "Solo se permiten números válidos",
-                  },
+
+              <Input
+                inputMode="decimal"
+                onChangeText={(e) => {
+                  setAmount(Number(e));
                 }}
+                value={String(amount)}
+                placeholder="65.00"
               />
             </View>
             <View className="flex flex-col gap-2">

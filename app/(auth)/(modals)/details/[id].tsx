@@ -105,7 +105,7 @@ export default function ExpenseDetails() {
               />
               <View className="flex flex-col">
                 <Text className="text-5xl tracking-tighter font-bold ">
-                  S/. {expense.amount}
+                  S/. {expense?.amount?.toFixed(2)}
                 </Text>
               </View>
               <Separator className="text-muted-foreground" />
@@ -149,7 +149,7 @@ export default function ExpenseDetails() {
               <Progress
                 className=" web:w-[60%] "
                 getValueLabel={(value) => `${value}%`}
-                value={percentage / 10}
+                value={Number((percentage / 10).toFixed(2))}
               />
               <View className="flex flex-row justify-between items-center">
                 <Text>0%</Text>
@@ -158,8 +158,8 @@ export default function ExpenseDetails() {
 
               <Text className="text-muted-foreground text-sm text-center">
                 Consumido{" "}
-                <Text className="font-bold text-primary">
-                  {percentage / 10}%
+                <Text className="font-bold text-primary dark:text-primary">
+                  {Number((percentage / 10).toFixed(2))}%
                 </Text>{" "}
                 del presupuesto para el mes actual.
               </Text>

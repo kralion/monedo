@@ -66,6 +66,7 @@ export const ExpenseContextProvider = ({
     const { error } = await supabase.from("expenses").insert(expense);
     if (error) {
       toast.error("Ocurrió un error al registrar el gasto");
+      console.log(error);
     } else {
       toast.success("Gasto registrado exitosamente");
       router.push("/(auth)/(tabs)");
@@ -170,7 +171,7 @@ export const ExpenseContextProvider = ({
     setLoading(true);
     const { data } = await supabase
       .from("expenses")
-      .select("*")
+      .select("*, category(*, id)")
       .eq("user_id", user?.id)
       .order("date", { ascending: false })
       .limit(20);

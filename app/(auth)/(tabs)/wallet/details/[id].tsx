@@ -1,17 +1,6 @@
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import * as React from "react";
 import { ActivityIndicator, Image, ScrollView, View } from "react-native";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "~/components/ui/alert-dialog";
-import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { Text } from "~/components/ui/text";
 import { useBudgetContext } from "~/context";
@@ -75,38 +64,15 @@ export default function BudgetDetails() {
         </View>
       )}
       <View className="flex flex-col gap-4 p-4">
-        <AlertDialog open={isOpen}>
-          <AlertDialogContent key="content">
-            <AlertDialogHeader>
-              <AlertDialogTitle>Eliminar Presupuesto</AlertDialogTitle>
-              <AlertDialogDescription>
-                Este presupuesto será eliminado de la base de datos y no podrá
-                ser recuperado.
-              </AlertDialogDescription>
-            </AlertDialogHeader>
-
-            <AlertDialogFooter>
-              <AlertDialogCancel onPress={() => setIsOpen(false)} asChild>
-                <Button variant="ghost">
-                  <Text>Cancelar</Text>
-                </Button>
-              </AlertDialogCancel>
-              <AlertDialogAction asChild>
-                <Button onPress={() => handleDeleteBudget(params.id ?? "")}>
-                  <Text>Eliminar</Text>
-                </Button>
-              </AlertDialogAction>
-            </AlertDialogFooter>
-          </AlertDialogContent>
-        </AlertDialog>
         <ScrollView>
           <View className="flex flex-col gap-8">
             <View className="flex flex-col gap-4">
               <Image
                 width={100}
                 height={100}
+                className="bg-brand/20 rounded-full p-4"
                 source={{
-                  uri: "https://img.icons8.com/?size=96&id=ci9FsQ29gcwi&format=png",
+                  uri: "https://img.icons8.com/?size=300&id=yUTNKgUuTlsA&format=png&color=000000",
                 }}
               />
               <View className="flex flex-col">

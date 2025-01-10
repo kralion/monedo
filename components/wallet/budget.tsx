@@ -28,7 +28,7 @@ export function Budget({ budget }: { budget: IBudget }) {
   const date = new Date(budget.created_At);
   const [isVisible, setIsVisible] = React.useState(true);
   const formattedDate = date.toLocaleDateString("es-ES", {
-    month: "short",
+    month: "2-digit",
     day: "2-digit",
     year: "numeric",
   });
@@ -99,24 +99,25 @@ export function Budget({ budget }: { budget: IBudget }) {
           }}
           className="card active:opacity-80"
         >
-          <View className="card-header flex flex-row justify-between items-center px-2 py-3">
+          <View className="card-header flex flex-row justify-between items-center  py-3">
             <View className="card-title flex flex-row items-center gap-2">
               <Image
                 width={45}
                 height={45}
+                className="bg-brand/20 rounded-full p-2"
                 source={{
-                  uri: "https://img.icons8.com/?size=96&id=ci9FsQ29gcwi&format=png",
+                  uri: "https://img.icons8.com/?size=100&id=yUTNKgUuTlsA&format=png&color=000000",
                 }}
               />
               <View className="card-title-details flex flex-col gap-1">
-                <Text>
+                <Text className="text-lg">
                   <Animated.Text entering={FadeIn.duration(1500)}>
                     {budget.description.length > 25
                       ? `${budget.description.slice(0, 25)}...`
                       : budget.description}
                   </Animated.Text>
                 </Text>
-                <Text className="text-xs text-muted-foreground">
+                <Text className="text-muted-foreground dark:text-secondary text-sm">
                   {formattedDate}
                 </Text>
               </View>
