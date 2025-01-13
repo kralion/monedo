@@ -1,5 +1,6 @@
 import NoData2Svg from "@/assets/svgs/no-data.svg";
 import { Budget } from "@/components/wallet/budget";
+import { useUser } from "@clerk/clerk-expo";
 
 import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
@@ -12,10 +13,11 @@ import { useBudgetStore } from "~/stores/budget";
 
 export default function Wallet() {
   const { budgets, getBudgets, loading } = useBudgetStore();
+  const { user } = useUser();
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
 
   useEffect(() => {
-    getBudgets();
+    getBudgets(user?.id as string);
   }, []);
 
   const ListTotal = () => {

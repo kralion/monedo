@@ -26,7 +26,6 @@ import { useBudgetStore } from "~/stores/budget";
 
 export function Budget({ budget }: { budget: IBudget }) {
   const date = new Date(budget.created_At);
-  const [isVisible, setIsVisible] = React.useState(true);
   const formattedDate = date.toLocaleDateString("es-ES", {
     month: "2-digit",
     day: "2-digit",
@@ -46,8 +45,6 @@ export function Budget({ budget }: { budget: IBudget }) {
         {
           text: "Eliminar",
           onPress: async () => {
-            setIsVisible(false);
-            await new Promise((resolve) => setTimeout(resolve, 200));
             deleteBudget(budget.id);
           },
           style: "destructive",
@@ -79,9 +76,7 @@ export function Budget({ budget }: { budget: IBudget }) {
       </Pressable>
     );
   };
-  if (!isVisible) {
-    return null;
-  }
+
   return (
     <Animated.View entering={FadeIn.duration(200)}>
       <ReanimatedSwipeable

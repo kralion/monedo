@@ -20,7 +20,7 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
     if (error) {
       toast.error("Ocurrió un error al registrar el presupuesto");
       console.log(error);
-      await get().getBudgets();
+      await get().getBudgets(budget.user_id);
     } else {
       toast.success("Registro exitoso");
       router.push("/(auth)/(tabs)");
@@ -65,7 +65,7 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
       .eq("id", budget.id);
     if (error) {
       toast.error("Ocurrió un error al actualizar el presupuesto");
-      await get().getBudgets();
+      await get().getBudgets(budget.user_id);
     } else {
       toast.success("Billetera actualizada");
       router.back();
@@ -74,23 +74,20 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
   },
 
   deleteBudget: async (id: number) => {
-    set({ loading: true });
     set((state) => ({ budgets: state.budgets.filter((b) => b.id !== id) }));
-
     const { error } = await supabase.from("budgets").delete().eq("id", id);
     if (error) {
-      console.error("Error deleting budget:", error);
-      await get().getBudgets();
-      return;
+      toast.error("Error al eliminar ingreso");
     }
     toast.success("Eliminado exitosamente");
-    router.push("/(auth)/(tabs)");
-    set({ loading: false });
   },
 
-  getBudgets: async () => {
+  getBudgets: async (userId: string) => {
     set({ loading: true });
-    const { data, error } = await supabase.from("budgets").select("*");
+    const { data, error } = await supabase
+      .from("budgets")
+      .select("*")
+      .eq("user_id", userId);
     if (error) throw error;
     set({ budgets: data ?? [], loading: false });
   },

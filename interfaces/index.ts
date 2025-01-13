@@ -60,7 +60,7 @@ export interface BudgetStore {
   addBudget: (budget: IBudget) => Promise<void>;
   updateBudget: (budget: IBudget) => Promise<void>;
   deleteBudget: (id: number) => Promise<void>;
-  getBudgets: () => Promise<void>;
+  getBudgets: (userId: string) => Promise<void>;
   getTotalBudget: () => Promise<number>;
   getBudgetById: (id: string) => Promise<IBudget>;
 }

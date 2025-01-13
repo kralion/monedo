@@ -4,6 +4,7 @@ import BottomSheet, {
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
 import { router, Stack } from "expo-router";
+import { PlusCircle } from "lucide-react-native";
 import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
@@ -30,13 +31,12 @@ export default function Layout() {
     formState: { errors },
     reset,
   } = useForm<IBudget>();
-  if (!budget) return <ActivityIndicator />;
   useEffect(() => {
-    if (budget.id) {
-      setValue("amount", budget.amount);
-      setValue("description", budget.description);
+    if (budget?.id) {
+      setValue("amount", budget?.amount);
+      setValue("description", budget?.description);
     }
-  }, [budget.id]);
+  }, [budget?.id]);
   const renderBackdrop = useCallback(
     (props: any) => (
       <BottomSheetBackdrop
@@ -50,7 +50,7 @@ export default function Layout() {
   const onUpdate = async (data: IBudget) => {
     updateBudget({
       ...data,
-      id: budget.id,
+      id: budget?.id as number,
     });
     incomeBottomSheetRef.current?.close();
   };
@@ -77,24 +77,17 @@ export default function Layout() {
             headerTransparent: Platform.OS === "android" ? false : true,
             headerLargeTitleShadowVisible: false,
             headerRight: () => {
-              return Platform.OS === "ios" ? (
-                <NativeButton
-                  title="Agregar"
-                  color="#27BE8B"
-                  onPress={() => {
-                    reset();
-                    incomeBottomSheetRef.current?.expand();
-                  }}
-                />
-              ) : (
+              return (
                 <Button
-                  variant="link"
+                  variant="ghost"
+                  className="rounded-full"
+                  size="icon"
                   onPress={() => {
                     reset();
                     incomeBottomSheetRef.current?.expand();
                   }}
                 >
-                  <Text>Agregar</Text>
+                  <PlusCircle size={24} />
                 </Button>
               );
             },
@@ -224,11 +217,11 @@ export default function Layout() {
 
           <Button
             onPress={
-              budget.id ? handleSubmit(onUpdate) : handleSubmit(onSubmit)
+              budget?.id ? handleSubmit(onUpdate) : handleSubmit(onSubmit)
             }
             disabled={loading}
           >
-            <Text>{budget.id ? "Actualizar" : "Registrar Ingreso"}</Text>
+            <Text>{budget?.id ? "Actualizar" : "Registrar Ingreso"}</Text>
           </Button>
 
           <Button
