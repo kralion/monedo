@@ -3,19 +3,21 @@ import * as Linking from "expo-linking";
 import { Link, useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import * as React from "react";
-import { Image, ScrollView, View } from "react-native";
+import { Image, ScrollView, View, Platform } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { TermsPolicyModal } from "~/components/auth/terms&policy";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
-
 export const useWarmUpBrowser = () => {
   React.useEffect(() => {
-    // Warm up the android browser to improve UX
-    // https://docs.expo.dev/guides/authentication/#improving-user-experience
-    void WebBrowser.warmUpAsync();
+    if (Platform.OS !== "web") {
+      void WebBrowser.warmUpAsync();
+    }
+
     return () => {
-      void WebBrowser.coolDownAsync();
+      if (Platform.OS !== "web") {
+        void WebBrowser.coolDownAsync();
+      }
     };
   }, []);
 };
