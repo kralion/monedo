@@ -26,40 +26,38 @@ WebBrowser.maybeCompleteAuthSession();
 export default function SignInScreen() {
   return (
     <ScrollView>
-      <SafeAreaView className="flex flex-col justify-center align-middle p-4 items-center h-[100vh]">
-        <View className="flex flex-col gap-16 w-full items-center">
-          <View className="flex flex-col items-center gap-1">
-            <Image
-              style={{
-                width: 125,
-                height: 125,
-              }}
-              source={require("../../assets/logo.png")}
-            />
-            <Text className="text-4xl font-bold"> Inicia Sesión</Text>
-            <Text className="text-center">
-              Para empezar a usar y disfrutar de Monedo
-            </Text>
-          </View>
-          <View className="flex flex-col gap-4 justify-center align-middle w-full">
-            <SignInWithOAuthGoogle />
-            <SignInWithOAuthFacebook />
-            <SignInWithOAuthTiktok />
-          </View>
-
-          <View className="flex flex-row gap-2 justify-center align-middle w-full">
-            <Text className="text-textmuted text-center">
-              ¿No tienes una cuenta?
-            </Text>
-            <Text
-              onPress={() => router.push("/(public)/sign-up")}
-              className="text-primary active:underline dark:text-primary"
-            >
-              Regístrate
-            </Text>
-          </View>
+      <View className="flex flex-col gap-16 w-full items-center px-4">
+        <View className="flex flex-col items-center gap-1">
+          <Image
+            style={{
+              width: 125,
+              height: 125,
+            }}
+            source={require("../../assets/logo.png")}
+          />
+          <Text className="text-4xl font-bold"> Inicia Sesión</Text>
+          <Text className="text-center">
+            Para empezar a usar y disfrutar de Monedo
+          </Text>
         </View>
-      </SafeAreaView>
+        <View className="flex flex-col gap-4 justify-center align-middle w-full">
+          <SignInWithOAuthGoogle />
+          <SignInWithOAuthFacebook />
+          <SignInWithOAuthTiktok />
+        </View>
+
+        <View className="flex flex-row gap-2 justify-center align-middle w-full">
+          <Text className="text-textmuted text-center">
+            ¿No tienes una cuenta?
+          </Text>
+          <Text
+            onPress={() => router.push("/(public)/sign-up")}
+            className="text-primary active:underline dark:text-primary"
+          >
+            Regístrate
+          </Text>
+        </View>
+      </View>
     </ScrollView>
   );
 }

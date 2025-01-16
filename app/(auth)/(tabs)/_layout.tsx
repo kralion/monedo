@@ -3,6 +3,7 @@ import { Image } from "expo-image";
 import { Tabs } from "expo-router";
 import { useColorScheme, View } from "react-native";
 import AddExpenseIcon from "~/components/add-expense-icon";
+import { Platform } from "react-native";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -17,6 +18,7 @@ export default function TabLayout() {
         tabBarHideOnKeyboard: true,
         freezeOnBlur: true,
         headerShown: false,
+        tabBarShowLabel: Platform.OS === "web" ? false : true,
       }}
     >
       <Tabs.Screen
