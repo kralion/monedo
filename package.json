@@ -3,13 +3,11 @@
   "main": "index.js",
   "version": "1.0.0",
   "scripts": {
-    "dev": "expo start -c --ios",
-    "dev:web": "expo start -c --web",
-    "dev:android": "expo start -c --android",
-    "android": "expo start -c --android",
-    "ios": "expo start -c --ios",
-    "web": "expo start -c --web",
-    "clean": "rm -rf .expo node_modules",
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web",
+    "test": "jest --watchAll",
     "postinstall": "npx tailwindcss -i ./global.css -o ./node_modules/.cache/nativewind/global.css"
   },
   "dependencies": {
