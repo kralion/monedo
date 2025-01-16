@@ -1,7 +1,7 @@
 # Monedo
 
 A mobile app development project, for daily financial expenses tracking, built with React Native, Typescript, NativeWind and Expo. It is based on essential dependencies such as react-native, native-base, and more.
-Visit the  [ website ](monedo.framer.website) for more details.
+Visit the  [ website ](https://monedo.framer.website) for more details.
 |  |  |  |
 |---|---|---|
 | <img src="https://i.ibb.co/NrfWzBD/Google-Pixel-4-XL-Screenshot-1.png" alt="Screenshot 1"> | <img src="https://i.ibb.co/FqXPTqj/Google-Pixel-4-XL-Screenshot-2.png" alt="Screenshot 2"> | <img src="https://i.ibb.co/kgRSCYC/Google-Pixel-4-XL-Screenshot-3.png" alt="Screenshot 3"> |
