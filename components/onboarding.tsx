@@ -33,7 +33,7 @@ const OnboardingScreen = ({ onComplete }: { onComplete: () => void }) => {
         },
         {
           backgroundColor: colorScheme === "dark" ? "#000" : "#81DFBB",
-          image: <Image source={require("../assets/images/onboarding3.gif")} />,
+          image: <Image source={require("../assets/images/onboarding4.gif")} />,
           title: "Registra tus ingresos",
           subtitle: "Agrega a tu billetera los ingresos que vayas a recibir.",
         },
@@ -46,21 +46,31 @@ const OnboardingScreen = ({ onComplete }: { onComplete: () => void }) => {
         },
         {
           backgroundColor: colorScheme === "dark" ? "#000" : "#81DFBB",
-          image: <Image source={require("../assets/images/onboarding2.gif")} />,
+          image: <Image source={require("../assets/images/onboarding6.gif")} />,
           title: "Crea Categorías",
           subtitle:
             "Crea categorías personalizadas para los diferentes tipos de gastos que realices.",
         },
         {
           backgroundColor: colorScheme === "dark" ? "#000" : "#81DFBB",
-          image: <Image source={require("../assets/images/onboarding1.gif")} />,
+          image: (
+            <Image
+              style={{ width: 350, height: 350 }}
+              source={require("../assets/images/onboarding7.gif")}
+            />
+          ),
           title: "Exporta tu reporte",
           subtitle:
             "Exporta en PDF tu reporte de ingresos y gastos para una vista mas clara.",
         },
         {
           backgroundColor: colorScheme === "dark" ? "#000" : "#81DFBB",
-          image: <Image source={require("../assets/images/onboarding1.gif")} />,
+          image: (
+            <Image
+              style={{ width: 350, height: 300 }}
+              source={require("../assets/images/onboarding5.gif")}
+            />
+          ),
           title: "Análisis y Estadísticas",
           subtitle:
             "Visualiza de manera didáctica tus gastos realizados en periodos de tiempo.",
