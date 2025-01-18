@@ -24,7 +24,7 @@ export const expensesIdentifiers: expenseIcon[] = [
     iconHref: "https://img.icons8.com/?size=160&id=yUTNKgUuTlsA&format=png",
   },
   {
-    label: "Educación",
+    label: "Educacion",
     iconHref: "https://img.icons8.com/?size=160&id=XAg8ooTyo7Dl&format=png",
   },
   {

@@ -1,3 +1,4 @@
+import { useUser } from "@clerk/clerk-expo";
 import BottomSheet, {
   BottomSheetBackdrop,
   BottomSheetTextInput,
@@ -5,12 +6,18 @@ import BottomSheet, {
 } from "@gorhom/bottom-sheet";
 import { router, Stack } from "expo-router";
 import { PlusCircle } from "lucide-react-native";
-import React, { useCallback, useEffect, useMemo, useRef } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
-  ActivityIndicator,
   Button as NativeButton,
   Platform,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { Button } from "~/components/ui/button";
@@ -21,8 +28,10 @@ import { useBudgetStore } from "~/stores/budget";
 
 export default function Layout() {
   const incomeBottomSheetRef = useRef<BottomSheet>(null);
+  const { user } = useUser();
   const snapPoints = useMemo(() => ["25%", "50%"], []);
-  const { addBudget, loading, budget, updateBudget } = useBudgetStore();
+  const { addBudget, budget, updateBudget } = useBudgetStore();
+  const [loading, setIsLoading] = useState(false);
   const { isDarkColorScheme } = useColorScheme();
   const {
     control,
@@ -48,14 +57,23 @@ export default function Layout() {
     []
   );
   const onUpdate = async (data: IBudget) => {
+    setIsLoading(true);
     updateBudget({
       ...data,
       id: budget?.id as number,
+      amount: Number(data.amount),
     });
+    setIsLoading(false);
     incomeBottomSheetRef.current?.close();
   };
   const onSubmit = async (data: IBudget) => {
-    addBudget(data);
+    setIsLoading(true);
+    addBudget({
+      ...data,
+      user_id: user?.id as string,
+      amount: Number(data.amount),
+    });
+    setIsLoading(false);
     reset();
     incomeBottomSheetRef.current?.close();
   };
@@ -78,17 +96,15 @@ export default function Layout() {
             headerLargeTitleShadowVisible: false,
             headerRight: () => {
               return (
-                <Button
-                  variant="ghost"
-                  className="rounded-full"
-                  size="icon"
+                <TouchableOpacity
+                  hitSlop={20}
                   onPress={() => {
                     reset();
                     incomeBottomSheetRef.current?.expand();
                   }}
                 >
-                  <PlusCircle size={24} />
-                </Button>
+                  <PlusCircle size={30} />
+                </TouchableOpacity>
               );
             },
           }}
@@ -165,7 +181,8 @@ export default function Layout() {
         }}
         backdropComponent={renderBackdrop}
       >
-        <BottomSheetView className="p-4 flex flex-col gap-4 ">
+        <BottomSheetView className="px-4 flex flex-col gap-4 ">
+          <Text className="text-2xl font-bold">Nuevo Ingreso</Text>
           <Controller
             control={control}
             name="amount"
@@ -180,7 +197,7 @@ export default function Layout() {
                   className="border rounded-lg border-gray-200 p-4 w-full dark:border-zinc-700 text-black dark:text-white"
                   keyboardType="numeric"
                   placeholder="200"
-                  value={String(value)}
+                  value={value?.toString() || ""}
                   onChangeText={onChange}
                 />
                 {errors.amount && (
@@ -222,15 +239,6 @@ export default function Layout() {
             disabled={loading}
           >
             <Text>{budget?.id ? "Actualizar" : "Registrar Ingreso"}</Text>
-          </Button>
-
-          <Button
-            onPress={() => {
-              incomeBottomSheetRef.current?.close();
-            }}
-            variant="secondary"
-          >
-            <Text>Cancelar</Text>
           </Button>
         </BottomSheetView>
       </BottomSheet>

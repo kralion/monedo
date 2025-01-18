@@ -20,11 +20,11 @@ export default function AddExpenseIcon() {
     await getTotalBudget();
     await sumOfAllOfExpenses();
     setBalance(totalBudget - totalExpenses);
-    return totalBudget - totalExpenses;
   }
   React.useEffect(() => {
     calculateBalance();
-  }, []);
+    console.log("rendering");
+  }, [totalBudget]);
 
   return (
     <>

@@ -70,7 +70,7 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
     set({ loading: true });
     const { data, error } = await supabase
       .from("expenses")
-      .select("*")
+      .select("*, categories:id_category(*)")
       .eq("id", id)
       .single();
     if (error) throw error;
@@ -82,7 +82,7 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
     set({ loading: true });
     const { data } = await supabase
       .from("expenses")
-      .select("*")
+      .select("*, categories:id_category(*)")
       .eq("user_id", userId)
       .order("date", { ascending: false })
       .limit(20);

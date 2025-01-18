@@ -12,7 +12,7 @@ export default function BudgetDetails() {
   useFocusEffect(
     React.useCallback(() => {
       if (params.id) {
-        getBudgetById(params.id);
+        getBudgetById(Number(params.id));
 
         const channel = supabase.channel(`budgets:id=eq.${params.id}`).on(
           "postgres_changes",
@@ -23,7 +23,7 @@ export default function BudgetDetails() {
             filter: `id=eq.${params.id}`,
           },
           () => {
-            getBudgetById(params.id);
+            getBudgetById(Number(params.id));
           }
         );
 

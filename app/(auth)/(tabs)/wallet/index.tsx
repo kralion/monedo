@@ -4,7 +4,7 @@ import { useUser } from "@clerk/clerk-expo";
 
 import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
 import Animated, { useAnimatedRef } from "react-native-reanimated";
 import { BudgetSkeleton } from "~/components/skeleton/budget";
@@ -12,12 +12,15 @@ import { Text } from "~/components/ui/text";
 import { useBudgetStore } from "~/stores/budget";
 
 export default function Wallet() {
-  const { budgets, getBudgets, loading } = useBudgetStore();
+  const { budgets, getBudgets } = useBudgetStore();
+  const [loading, setIsLoading] = useState(false);
   const { user } = useUser();
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
 
   useEffect(() => {
+    setIsLoading(true);
     getBudgets(user?.id as string);
+    setIsLoading(false);
   }, []);
 
   const ListTotal = () => {

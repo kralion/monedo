@@ -12,7 +12,7 @@ export interface IExpense {
 }
 
 export interface IBudget {
-  id: number;
+  id?: number;
   user_id: string;
   created_At: Date;
   description: string;
@@ -62,7 +62,7 @@ export interface BudgetStore {
   deleteBudget: (id: number) => Promise<void>;
   getBudgets: (userId: string) => Promise<void>;
   getTotalBudget: () => Promise<number>;
-  getBudgetById: (id: string) => Promise<IBudget>;
+  getBudgetById: (id: number) => Promise<IBudget>;
 }
 export interface ExpenseStore {
   addExpense: (expense: IExpense) => void;

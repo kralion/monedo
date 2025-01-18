@@ -19,16 +19,14 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
     const { error } = await supabase.from("budgets").insert(budget);
     if (error) {
       toast.error("Ocurrió un error al registrar el presupuesto");
-      console.log(error);
       await get().getBudgets(budget.user_id);
     } else {
       toast.success("Registro exitoso");
-      router.push("/(auth)/(tabs)");
     }
     set({ loading: false });
   },
 
-  getBudgetById: async (id: string) => {
+  getBudgetById: async (id: number) => {
     set({ loading: true });
     const { data, error } = await supabase
       .from("budgets")

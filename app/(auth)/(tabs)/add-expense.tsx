@@ -1,6 +1,6 @@
 import { useUser } from "@clerk/clerk-expo";
 import { router } from "expo-router";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
@@ -33,10 +33,9 @@ import { useExpenseStore } from "~/stores/expense";
 export default function AddExpense() {
   const { addExpense, loading } = useExpenseStore();
   const { isOutOfBudget, checkBudget } = useBudgetStore();
-  const [category, setCategory] = React.useState<ICategory>({} as ICategory);
+  const [category, setCategory] = useState({ id: 0, label: "" });
   const { user } = useUser();
   const [categories, setCategories] = React.useState<ICategory[]>([]);
-  const [amount, setAmount] = React.useState(0);
   const {
     control,
     handleSubmit,
@@ -58,35 +57,29 @@ export default function AddExpense() {
     getCategories();
   }, []);
   async function onSubmit(data: IExpense) {
-    const id_category = categories.find(
-      (category) => category.label === data.categories?.label
-    )?.id;
     if (isOutOfBudget === true) {
       toast.error("No tienes suficiente fondos para registrar este gasto");
       return;
     }
-    if (!id_category) {
+    if (!category.id) {
       toast.error("Debes seleccionar una categoría");
       return;
     }
-    if (amount === 0) {
-      toast.error("Debes ingresar un monto válido");
-      return;
-    }
+    console.log(category.id);
 
     addExpense({
       ...data,
       currency: data.currency ? data.currency : "Soles",
+      user_id: user?.id as string,
       id_category: category.id,
       amount:
         data.currency === "Euros"
-          ? amount * 3.85
+          ? data.amount * 3.85
           : data.currency === "Dólares"
-          ? amount * 3.7
-          : amount,
+          ? data.amount * 3.7
+          : data.amount,
     });
     reset();
-    setAmount(0);
     checkBudget(user?.id as string);
   }
 
@@ -113,51 +106,59 @@ export default function AddExpense() {
               <Select
                 onValueChange={(value) => {
                   const selectedCategory = categories.find(
-                    (category) => category.id === Number(value)
+                    (category) => category.id === Number(value?.value)
                   );
                   if (selectedCategory) {
                     setCategory(selectedCategory);
                   }
                 }}
                 value={{
-                  value: String(category.label),
+                  value: category.id.toString(),
                   label: category.label,
                 }}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Selecciona" />
                 </SelectTrigger>
-
                 <SelectContent className="w-[90%]">
                   <SelectGroup>
-                    {categories.map((item, i) => {
-                      return (
-                        <SelectItem
-                          label={item.label}
-                          key={i}
-                          value={item.value}
-                        >
-                          {item.label}
-                        </SelectItem>
-                      );
-                    })}
+                    {categories.map((item) => (
+                      <SelectItem
+                        key={item.id}
+                        label={item.label}
+                        value={item.id.toString() || ""}
+                      >
+                        {item.label}
+                      </SelectItem>
+                    ))}
                   </SelectGroup>
                 </SelectContent>
               </Select>
             </View>
-
-            <View className="flex flex-col gap-2">
-              <Label>Monto</Label>
-
-              <Input
-                inputMode="decimal"
-                onChangeText={(e) => {
-                  setAmount(Number(e));
-                }}
-                value={String(amount)}
-                placeholder="65.00"
-              />
-            </View>
+            <Controller
+              control={control}
+              name="amount"
+              rules={{
+                required: true,
+                min: 1,
+              }}
+              render={({ field: { onChange, value } }) => (
+                <View className="flex flex-col gap-2">
+                  <Label>Monto</Label>
+                  <Input
+                    keyboardType="numeric"
+                    placeholder="50.00"
+                    value={value?.toString() || ""}
+                    onChangeText={onChange}
+                  />
+                  {errors.amount && (
+                    <Text className="text-red-500 ml-4">
+                      {errors.amount.message}
+                    </Text>
+                  )}
+                </View>
+              )}
+            />
             <View className="flex flex-col gap-2">
               <Label>Divisa</Label>
               <Controller
@@ -257,7 +258,6 @@ export default function AddExpense() {
               <Button
                 onPress={() => {
                   reset();
-                  setAmount(0);
                   router.push("/(auth)/(tabs)");
                 }}
                 size="lg"
