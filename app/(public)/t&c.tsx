@@ -1,25 +1,15 @@
-import { FlatList, ScrollView } from "react-native";
+import { useHeaderHeight } from "@react-navigation/elements";
+import React from "react";
+import { FlatList, Text, View } from "react-native";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "~/components/ui/accordion";
-import {
-  Dialog,
-  DialogClose,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "~/components/ui/dialog";
-import { Button } from "../ui/button";
-import { Text } from "../ui/text";
-import { SafeAreaView } from "react-native-safe-area-context";
 
-export function TermsPolicyModal() {
+export default function TermsConditions() {
+  const headerHeight = useHeaderHeight();
   const sections = [
     {
       id: "a1",
@@ -52,50 +42,44 @@ export function TermsPolicyModal() {
         "Nos comprometemos a operar con transparencia y responsabilidad en todas nuestras prácticas relacionadas con la privacidad y la seguridad de los datos. Buscamos crear un entorno en el que nuestros usuarios confíen plenamente en la forma en que manejamos su información. Estamos aquí para responder a tus preguntas y brindarte la información que necesitas para sentirte seguro y protegido al utilizar nuestros servicios.",
     },
   ];
+
   return (
-    <Dialog className="rounded-xl">
-      <DialogTrigger asChild>
-        <Text className="text-primary active:underline active:opacity-80 dark:text-primary">
-          Términos y Condiciones
-        </Text>
-      </DialogTrigger>
-
-      <DialogContent className="sm:max-w-[425px] h-[85%] rounded-2xl">
-        <DialogHeader>
-          <DialogTitle>Términos y Condiciones</DialogTitle>
-          <DialogDescription>
-            Bienvenido a la plataforma de la aplicación móvil de{" "}
-            <Text className="font-bold">Roomy</Text>. El objetivo de esta
-            aplicación es facilitar el acceso a los servicios de Expense Tracker
-            y a la información relacionada con los mismos, así como la
-            realización de operaciones relacionadas con la aplicación. El uso de
-            esta aplicación se rige por los términos y condiciones que se
-            describen a continuación, clasificados por secciones.
-          </DialogDescription>
-        </DialogHeader>
-
-        <Accordion
-          type="multiple"
-          collapsible
-          defaultValue={["item-1"]}
-          className="w-full max-w-sm native:max-w-md"
-        >
-          <FlatList
-            renderItem={({ item }) => (
-              <AccordionItem value={item.id}>
-                <AccordionTrigger>
-                  <Text className="font-semibold text-lg">{item.title}</Text>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <Text>{item.content}</Text>
-                </AccordionContent>
-              </AccordionItem>
-            )}
-            keyExtractor={(item) => item.id.toString()}
-            data={sections}
-          />
-        </Accordion>
-      </DialogContent>
-    </Dialog>
+    <View
+      className="bg-white  dark:bg-zinc-900"
+      style={{ paddingTop: headerHeight }}
+    >
+      <Accordion
+        type="multiple"
+        collapsible
+        defaultValue={["item-1"]}
+        className="w-full max-w-sm native:max-w-md"
+      >
+        <FlatList
+          contentContainerClassName="px-4"
+          ListHeaderComponent={
+            <Text className="text-gray-800 dark:text-white   ">
+              Bienvenido a la plataforma de la aplicación móvil de{" "}
+              <Text className="font-bold">Monedo</Text>. El objetivo de esta
+              aplicación es facilitar el seguimiento de los egresos e ingresos
+              del usuario. El uso de esta aplicación se rige por los términos y
+              condiciones que se describen a continuación, clasificados por
+              secciones.
+            </Text>
+          }
+          renderItem={({ item }) => (
+            <AccordionItem value={item.id}>
+              <AccordionTrigger>
+                <Text className="font-semibold text-lg">{item.title}</Text>
+              </AccordionTrigger>
+              <AccordionContent>
+                <Text>{item.content}</Text>
+              </AccordionContent>
+            </AccordionItem>
+          )}
+          keyExtractor={(item) => item.id.toString()}
+          data={sections}
+        />
+      </Accordion>
+    </View>
   );
 }

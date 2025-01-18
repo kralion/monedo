@@ -26,7 +26,7 @@ const carouselData: CarouselItem[] = [
     title: "Presupuestos personalizados",
     subtitle: "Crea presupuestos basados en su periodicidad.",
     svgIcon:
-      "https://img.icons8.com/?size=200&id=6QysyQNQxW7H&format=png&color=000000",
+      "https://img.icons8.com/?size=200&id=hbqNM94LZdjp&format=png&color=000000",
   },
   {
     title: "Análisis de gastos por categoría",
@@ -39,6 +39,12 @@ const carouselData: CarouselItem[] = [
     subtitle: "Prioridad en el soporte al cliente y asistencia.",
     svgIcon:
       "https://img.icons8.com/?size=200&id=C8twQXUl1qoA&format=png&color=000000",
+  },
+  {
+    title: "Perfiles múltiples",
+    subtitle: "Perfiles de usuario múltiples para manejar diferentes fuentes.",
+    svgIcon:
+      "https://img.icons8.com/?size=200&id=28kzIB2E5Rat&format=png&color=000000",
   },
 ];
 

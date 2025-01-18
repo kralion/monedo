@@ -1,18 +1,7 @@
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
-import {
-  Bell,
-  LogOut,
-  MessageSquareShare,
-  Settings,
-  SmartphoneNfc,
-  Tag,
-  Unlock,
-  User,
-  UserSquare2,
-} from "lucide-react-native";
-import { Linking, ScrollView, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Bell, Settings, Unlock, User, UserSquare2 } from "lucide-react-native";
+import { ScrollView, View } from "react-native";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -28,6 +17,7 @@ export default function ProfileScreen() {
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       className="bg-white dark:bg-zinc-900"
+      contentContainerStyle={{ paddingBottom: 100 }}
     >
       <View>
         <View className="flex flex-col items-center">
@@ -97,33 +87,7 @@ export default function ProfileScreen() {
           <Bell color={isDarkColorScheme ? "white" : "black"} />
           <Text className="dark:text-white">Notificaciones</Text>
         </Button>
-        <Button
-          onPress={() => router.push("/(auth)/(tabs)/profile/categories")}
-          size="lg"
-          variant="ghost"
-          className="flex flex-row gap-3 px-5"
-        >
-          <Tag color={isDarkColorScheme ? "white" : "black"} />
-          <Text className="dark:text-white">Categorías</Text>
-        </Button>
-        <Button
-          onPress={() => router.push("/(auth)/(tabs)/profile/feedback")}
-          size="lg"
-          variant="ghost"
-          className="flex flex-row gap-3 px-5"
-        >
-          <MessageSquareShare color={isDarkColorScheme ? "white" : "black"} />
-          <Text className="dark:text-white">Feedback</Text>
-        </Button>
-        <Button
-          onPress={() => Linking.openURL("https://cal.com/brayanpaucar/monedo")}
-          size="lg"
-          variant="ghost"
-          className="flex flex-row gap-3 px-5"
-        >
-          <SmartphoneNfc color={isDarkColorScheme ? "white" : "black"} />
-          <Text className="dark:text-white">Soporte</Text>
-        </Button>
+
         <Button
           onPress={() => {
             router.push("/(auth)/(tabs)/profile/settings");
@@ -144,11 +108,11 @@ export default function ProfileScreen() {
         Versión 3.15.1
       </Text>
 
-      <View className="absolute bottom-[100px] right-[-100px] w-[200px] h-[300px] rounded-xl rotate-[-30deg] bg-yellow-400 shadow-lg" />
+      <View className="absolute bottom-[100px] right-[-100px] w-[200px] h-[300px] rounded-xl rotate-[-30deg] bg-teal-300 shadow-lg" />
 
-      <View className="absolute bottom-[60px] right-[-100px] w-[200px] h-[300px] rounded-xl rotate-[-40deg] bg-orange-500 shadow-lg" />
+      <View className="absolute bottom-[60px] right-[-100px] w-[200px] h-[300px] rounded-xl rotate-[-40deg]  bg-primary shadow-lg" />
 
-      <View className="absolute bottom-[20px] right-[-100px] w-[200px] h-[300px] rounded-xl rotate-[-50deg] bg-primary shadow-lg" />
+      <View className="absolute bottom-[20px] right-[-100px] w-[200px] h-[300px] rounded-xl rotate-[-50deg] bg-teal-500 shadow-lg" />
     </ScrollView>
   );
 }

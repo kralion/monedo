@@ -1,17 +1,29 @@
 import { useAuth } from "@clerk/clerk-expo";
+import { router } from "expo-router";
+import {
+  Bell,
+  ChevronRight,
+  HeartHandshake,
+  MessageSquareShare,
+  SmartphoneNfc,
+  Tag,
+} from "lucide-react-native";
 import React, { useState } from "react";
 import {
   Appearance,
   Image,
+  Linking,
   ScrollView,
   TouchableOpacity,
-  useColorScheme,
   View,
 } from "react-native";
+import { TermsPolicyModal } from "~/components/auth/terms&policy";
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
+import { Separator } from "~/components/ui/separator";
 import { Text } from "~/components/ui/text";
+import { useColorScheme } from "~/lib/useColorScheme";
 function RadioGroupItemWithLabel({
   value,
   onLabelPress,
@@ -35,10 +47,11 @@ function RadioGroupItemWithLabel({
   );
 }
 export default function SettingsScreen() {
-  const colorScheme = useColorScheme();
+  const { isDarkColorScheme, setColorScheme } = useColorScheme();
+
   const { signOut } = useAuth();
   const [isDarkMode, setIsDarkMode] = useState(
-    "dark" === colorScheme ? "dark" : "light"
+    isDarkColorScheme ? "dark" : "light"
   );
 
   const toggleDarkMode = () => {
@@ -93,10 +106,59 @@ export default function SettingsScreen() {
         si deseas accede a la configuración desde la barra de menú en la esquina
         superior derecha.
       </Text>
+      <View className="flex flex-col mt-10 items-start bg-zinc-100   rounded-xl  gap-4">
+        <TouchableOpacity
+          onPress={() => router.push("/(auth)/(tabs)/profile/categories")}
+          className="flex flex-row justify-between w-full  px-4 py-2"
+        >
+          <View className="flex flex-row gap-3 items-center">
+            <Tag color={isDarkColorScheme ? "white" : "black"} />
+            <Text className="dark:text-white">Categorías</Text>
+          </View>
+          <ChevronRight color="gray" />
+        </TouchableOpacity>
+        <Separator />
+        <TouchableOpacity
+          onPress={() => router.push("/(auth)/(tabs)/profile/feedback")}
+          className="flex flex-row justify-between w-full  px-4 py-2"
+        >
+          <View className="flex flex-row gap-3 items-center">
+            <MessageSquareShare color={isDarkColorScheme ? "white" : "black"} />
+            <Text className="dark:text-white">Feedback</Text>
+          </View>
+          <ChevronRight color="gray" />
+        </TouchableOpacity>
+        <Separator />
+
+        <TouchableOpacity
+          onPress={() => router.push("/(auth)/(tabs)/profile/t&c")}
+          className="flex flex-row justify-between w-full  px-4 py-2"
+        >
+          <View className="flex flex-row gap-3 items-center">
+            <HeartHandshake color={isDarkColorScheme ? "white" : "black"} />
+
+            <Text className="dark:text-white">Términos y Condiciones</Text>
+          </View>
+          <ChevronRight color="gray" />
+        </TouchableOpacity>
+
+        <Separator />
+        <TouchableOpacity
+          onPress={() => Linking.openURL("https://cal.com/brayanpaucar/monedo")}
+          className="flex flex-row justify-between w-full  px-4 py-2"
+        >
+          <View className="flex flex-row gap-3 items-center">
+            <SmartphoneNfc color={isDarkColorScheme ? "white" : "black"} />
+            <Text className="dark:text-white">Soporte</Text>
+          </View>
+          <ChevronRight color="gray" />
+        </TouchableOpacity>
+        <Separator />
+      </View>
       <Button
         variant="destructive"
         onPress={() => signOut()}
-        style={{ marginTop: 40 }}
+        style={{ marginVertical: 40 }}
       >
         <Text>Cerrar Sesión</Text>
       </Button>

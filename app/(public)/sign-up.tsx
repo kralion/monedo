@@ -3,9 +3,7 @@ import * as Linking from "expo-linking";
 import { Link, useRouter } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import * as React from "react";
-import { Image, ScrollView, View, Platform } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { TermsPolicyModal } from "~/components/auth/terms&policy";
+import { Image, Platform, ScrollView, View } from "react-native";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 export const useWarmUpBrowser = () => {
@@ -59,12 +57,17 @@ export default function SignUpScreen() {
           <SignInWithOAuthFacebook />
           <SignInWithOAuthTiktok />
           <View className="flex flex-col  w-full">
-            <Text className=" text-sm ">
+            <Text className=" text-sm text-center">
               Al continuar aceptas las politicas de privacidad y demas clausulas
               , en estos se describen como usamos tus datos y como protegemos tu
-              privacidad.
+              privacidad.{" "}
+              <Text
+                className="text-primary active:underline"
+                onPress={() => router.push("/(public)/t&c")}
+              >
+                Términos y Condiciones
+              </Text>
             </Text>
-            <TermsPolicyModal />
           </View>
         </View>
         <View className="flex flex-row justify-center text-center w-full ">
@@ -104,7 +107,7 @@ export const SignInWithOAuthGoogle = () => {
   return (
     <Button
       className="flex flex-row gap-2 items-center"
-      variant="outline"
+      variant="secondary"
       size="lg"
       onPress={onPress}
     >
@@ -143,7 +146,7 @@ export const SignInWithOAuthTiktok = () => {
   return (
     <Button
       className="flex flex-row gap-2 items-center"
-      variant="outline"
+      variant="secondary"
       size="lg"
       onPress={onPress}
     >
@@ -182,7 +185,7 @@ export const SignInWithOAuthFacebook = () => {
   return (
     <Button
       className="flex flex-row gap-2 items-center"
-      variant="outline"
+      variant="secondary"
       size="lg"
       onPress={onPress}
     >

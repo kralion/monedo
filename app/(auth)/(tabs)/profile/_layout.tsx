@@ -1,6 +1,6 @@
 import BottomSheet from "@gorhom/bottom-sheet";
 import { router, Stack } from "expo-router";
-import { Send, X } from "lucide-react-native";
+import { X } from "lucide-react-native";
 import React, { useRef } from "react";
 
 import { Button as NativeButton, Platform, View } from "react-native";
@@ -33,10 +33,31 @@ export default function Layout() {
           }}
         />
         <Stack.Screen
+          name="t&c"
+          options={{
+            title: "Términos Legales",
+            headerLargeTitle: true,
+            headerLargeTitleShadowVisible: false,
+            headerRight: () => (
+              <Button
+                variant="link"
+                className="active:opacity-70"
+                size="icon"
+                onPress={() => {
+                  router.back();
+                }}
+                hitSlop={20}
+              >
+                <X color={isDarkColorScheme ? "white" : "black"} />
+              </Button>
+            ),
+            presentation: "modal",
+          }}
+        />
+        <Stack.Screen
           name="feedback"
           options={{
             title: "Feedback",
-            headerBackTitle: "Perfil",
             headerRight: () => (
               <Button
                 variant="link"
@@ -58,7 +79,7 @@ export default function Layout() {
           options={{
             title: "Configuración",
             headerBackTitle: "Perfil",
-            headerTransparent: true,
+            headerShadowVisible: false,
             headerLargeTitle: true,
           }}
         />
@@ -68,7 +89,7 @@ export default function Layout() {
           options={{
             title: "Tus Datos",
             headerBackTitle: "Perfil",
-            headerTransparent: true,
+            headerShadowVisible: false,
             headerLargeTitle: true,
           }}
         />
@@ -89,7 +110,7 @@ export default function Layout() {
           name="categories"
           options={{
             title: "Categorías",
-            headerBackTitle: "Perfil",
+            headerBackTitle: "Configuración",
             headerLargeTitle: true,
             headerShadowVisible: false,
             headerSearchBarOptions: {

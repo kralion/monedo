@@ -1,7 +1,6 @@
 import Stripe from "@/components/payment/stripe";
 import Yape from "@/components/payment/yape";
 import { Image } from "expo-image";
-import { router } from "expo-router";
 import * as React from "react";
 import {
   Animated as AnimatedRN,
@@ -12,7 +11,6 @@ import {
 } from "react-native";
 import { useSharedValue, withTiming } from "react-native-reanimated";
 import Carousel from "react-native-reanimated-carousel";
-import { Button } from "~/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Text } from "~/components/ui/text";
 const width = Dimensions.get("window").width;
@@ -26,7 +24,7 @@ const carouselData: CarouselItem[] = [
     title: "Presupuestos personalizados",
     subtitle: "Crea presupuestos basados en su periodicidad.",
     svgIcon:
-      "https://img.icons8.com/?size=200&id=6QysyQNQxW7H&format=png&color=000000",
+      "https://img.icons8.com/?size=200&id=hbqNM94LZdjp&format=png&color=000000",
   },
   {
     title: "Análisis de gastos por categoría",
@@ -40,6 +38,12 @@ const carouselData: CarouselItem[] = [
     svgIcon:
       "https://img.icons8.com/?size=200&id=C8twQXUl1qoA&format=png&color=000000",
   },
+  {
+    title: "Perfiles múltiples",
+    subtitle: "Perfiles de usuario múltiples para manejar diferentes fuentes.",
+    svgIcon:
+      "https://img.icons8.com/?size=200&id=28kzIB2E5Rat&format=png&color=000000",
+  },
 ];
 
 export default function BuyPremiumModal() {
@@ -49,7 +53,7 @@ export default function BuyPremiumModal() {
   const baseOptions = {
     vertical: false,
     width: width - 20,
-    height: width * 0.6,
+    height: width * 0.7,
   };
 
   const [value, setValue] = React.useState("card");
@@ -102,13 +106,18 @@ export default function BuyPremiumModal() {
               {...baseOptions}
               loop
               autoPlay
+              style={{
+                backgroundColor: "#ecf0f1",
+                borderRadius: 10,
+                paddingTop: 10,
+              }}
               autoPlayInterval={3000}
               data={carouselData}
               onProgressChange={(_, absoluteProgress) => {
                 setCurrentIndex(Math.round(absoluteProgress));
               }}
               renderItem={({ item }) => (
-                <View className="items-center justify-center px-4">
+                <View className="items-center justify-center p-4">
                   <View className="mb-6">
                     <Image
                       source={{ uri: item.svgIcon }}
@@ -177,9 +186,6 @@ export default function BuyPremiumModal() {
             </TabsContent>
           </Tabs>
         </View>
-        <Button onPress={() => router.back()} size="sm" variant="ghost">
-          <Text className="text-brand">Quizás más tarde</Text>
-        </Button>
       </ScrollView>
     </KeyboardAvoidingView>
   );

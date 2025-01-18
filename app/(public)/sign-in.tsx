@@ -51,7 +51,7 @@ export default function SignInScreen() {
 
         <View className="flex flex-row gap-2 justify-center align-middle w-full">
           <Text className="text-textmuted text-center">
-            ¿No tienes una cuenta?
+            ¿Eres nuevo en Monedo?
           </Text>
           <Text
             onPress={() => router.push("/(public)/sign-up")}
@@ -90,7 +90,7 @@ export const SignInWithOAuthGoogle = () => {
   return (
     <Button
       className="flex flex-row gap-2 items-center"
-      variant="outline"
+      variant="secondary"
       size="lg"
       onPress={onPress}
     >
@@ -130,7 +130,7 @@ export const SignInWithOAuthTiktok = () => {
   return (
     <Button
       className="flex flex-row gap-2 items-center"
-      variant="outline"
+      variant="secondary"
       size="lg"
       onPress={onPress}
     >
@@ -170,7 +170,7 @@ export const SignInWithOAuthFacebook = () => {
   return (
     <Button
       className="flex flex-row gap-2 items-center"
-      variant="outline"
+      variant="secondary"
       size="lg"
       onPress={onPress}
     >
