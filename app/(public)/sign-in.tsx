@@ -25,8 +25,11 @@ WebBrowser.maybeCompleteAuthSession();
 
 export default function SignInScreen() {
   return (
-    <ScrollView>
-      <View className="flex flex-col gap-16 w-full items-center px-4">
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      className="bg-white  dark:bg-zinc-900"
+    >
+      <View className="flex flex-col gap-12 h-screen-safe justify-center px-4 web:pt-32">
         <View className="flex flex-col items-center gap-1">
           <Image
             style={{

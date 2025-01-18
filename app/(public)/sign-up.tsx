@@ -28,8 +28,11 @@ export default function SignUpScreen() {
   const router = useRouter();
 
   return (
-    <ScrollView>
-      <View className="flex flex-col gap-12 h-screen-safe justify-center px-4">
+    <ScrollView
+      className="bg-white  dark:bg-zinc-900"
+      contentInsetAdjustmentBehavior="automatic"
+    >
+      <View className="flex flex-col gap-16 web:pt-32 h-screen-safe justify-center px-4">
         <View className="flex flex-col items-center gap-1">
           <Image
             style={{
@@ -55,14 +58,14 @@ export default function SignUpScreen() {
           <SignInWithOAuthGoogle />
           <SignInWithOAuthFacebook />
           <SignInWithOAuthTiktok />
-        </View>
-        <View className="flex flex-col  w-full">
-          <Text className=" text-sm ">
-            Al continuar aceptas las politicas de privacidad y demas clausulas ,
-            en estos se describen como usamos tus datos y como protegemos tu
-            privacidad.
-          </Text>
-          <TermsPolicyModal />
+          <View className="flex flex-col  w-full">
+            <Text className=" text-sm ">
+              Al continuar aceptas las politicas de privacidad y demas clausulas
+              , en estos se describen como usamos tus datos y como protegemos tu
+              privacidad.
+            </Text>
+            <TermsPolicyModal />
+          </View>
         </View>
         <View className="flex flex-row justify-center text-center w-full ">
           <Text className="text-sm text-center">

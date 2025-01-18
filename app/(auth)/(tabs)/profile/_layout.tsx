@@ -1,14 +1,17 @@
-import BottomSheet, { BottomSheetBackdrop } from "@gorhom/bottom-sheet";
-import { Stack } from "expo-router";
-import React, { useCallback, useRef } from "react";
+import BottomSheet from "@gorhom/bottom-sheet";
+import { router, Stack } from "expo-router";
+import { Send, X } from "lucide-react-native";
+import React, { useRef } from "react";
 
-import { Platform, Button as NativeButton, View } from "react-native";
+import { Button as NativeButton, Platform, View } from "react-native";
 import AddCategory from "~/components/profile/add-category";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
+import { useColorScheme } from "~/lib/useColorScheme";
 
 export default function Layout() {
   const bottomSheetRef = useRef<BottomSheet>(null);
+  const { isDarkColorScheme } = useColorScheme();
 
   return (
     <View className="flex-1">
@@ -27,6 +30,27 @@ export default function Layout() {
             headerBackTitle: "Perfil",
             headerTransparent: true,
             headerLargeTitle: true,
+          }}
+        />
+        <Stack.Screen
+          name="feedback"
+          options={{
+            title: "Feedback",
+            headerBackTitle: "Perfil",
+            headerRight: () => (
+              <Button
+                variant="link"
+                className="active:opacity-70"
+                size="icon"
+                onPress={() => {
+                  router.back();
+                }}
+                hitSlop={20}
+              >
+                <X color={isDarkColorScheme ? "white" : "black"} />
+              </Button>
+            ),
+            presentation: "modal",
           }}
         />
         <Stack.Screen

@@ -3,6 +3,7 @@ import { useRouter } from "expo-router";
 import {
   Bell,
   LogOut,
+  MessageSquareShare,
   Settings,
   SmartphoneNfc,
   Tag,
@@ -104,6 +105,15 @@ export default function ProfileScreen() {
         >
           <Tag color={isDarkColorScheme ? "white" : "black"} />
           <Text className="dark:text-white">Categorías</Text>
+        </Button>
+        <Button
+          onPress={() => router.push("/(auth)/(tabs)/profile/feedback")}
+          size="lg"
+          variant="ghost"
+          className="flex flex-row gap-3 px-5"
+        >
+          <MessageSquareShare color={isDarkColorScheme ? "white" : "black"} />
+          <Text className="dark:text-white">Feedback</Text>
         </Button>
         <Button
           onPress={() => Linking.openURL("https://cal.com/brayanpaucar/monedo")}

@@ -1,5 +1,5 @@
 import Notification from "~/components/notification";
-import { INotification } from "@/interfaces/notification";
+import { INotification } from "@/interfaces";
 import { createClerkSupabaseClient } from "@/lib/supabase";
 import { useUser } from "@clerk/clerk-expo";
 import { FlashList } from "@shopify/flash-list";
