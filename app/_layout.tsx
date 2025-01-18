@@ -14,7 +14,7 @@ import { router, Slot, SplashScreen, useSegments } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
-import { Platform } from "react-native";
+import { ActivityIndicator, Platform } from "react-native";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
 import { NAV_THEME } from "~/lib/constants";
 import { useColorScheme } from "~/lib/useColorScheme";
@@ -22,6 +22,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { toast, Toaster } from "sonner-native";
 import { XCircle } from "lucide-react-native";
+import OnboardingScreen from "~/components/onboarding";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -70,6 +71,20 @@ SplashScreen.preventAutoHideAsync();
 export default function RootLayout() {
   const { colorScheme, setColorScheme, isDarkColorScheme } = useColorScheme();
   const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
+  const [isOnboardingCompleted, setIsOnboardingCompleted] =
+    React.useState(false);
+  const [isLoading, setIsLoading] = React.useState(true);
+  React.useEffect(() => {
+    const checkOnboardingAndAuth = async () => {
+      const onboardingCompleted = await AsyncStorage.getItem(
+        "onboardingCompleted"
+      );
+      setIsOnboardingCompleted(onboardingCompleted === "true");
+      setIsLoading(false);
+    };
+
+    checkOnboardingAndAuth();
+  }, []);
 
   React.useEffect(() => {
     (async () => {
@@ -98,6 +113,14 @@ export default function RootLayout() {
 
   if (!isColorSchemeLoaded) {
     return null;
+  }
+  if (isLoading) {
+    return <ActivityIndicator />;
+  }
+  if (isOnboardingCompleted) {
+    return (
+      <OnboardingScreen onComplete={() => setIsOnboardingCompleted(true)} />
+    );
   }
 
   return (
