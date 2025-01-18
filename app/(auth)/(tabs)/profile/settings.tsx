@@ -106,7 +106,7 @@ export default function SettingsScreen() {
         si deseas accede a la configuración desde la barra de menú en la esquina
         superior derecha.
       </Text>
-      <View className="flex flex-col mt-10 items-start bg-zinc-100   rounded-xl  gap-4">
+      <View className="flex flex-col mt-10 items-start bg-zinc-100 py-4   rounded-xl  gap-4">
         <TouchableOpacity
           onPress={() => router.push("/(auth)/(tabs)/profile/categories")}
           className="flex flex-row justify-between w-full  px-4 py-2"
@@ -153,7 +153,6 @@ export default function SettingsScreen() {
           </View>
           <ChevronRight color="gray" />
         </TouchableOpacity>
-        <Separator />
       </View>
       <Button
         variant="destructive"

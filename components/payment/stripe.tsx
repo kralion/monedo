@@ -3,8 +3,9 @@ import { Loader } from "lucide-react-native";
 import React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
-import ConfettiCannon from "react-native-confetti-cannon";
 import { Button } from "../ui/button";
+import type { ConfettiMethods } from "react-native-fast-confetti";
+import { Confetti } from "react-native-fast-confetti";
 import { Input } from "../ui/input";
 import { Text } from "../ui/text";
 import { router } from "expo-router";
@@ -20,6 +21,7 @@ interface ICard {
 
 export default function Stripe() {
   const [showConfetti, setShowConfetti] = React.useState(false);
+  const confettiRef = React.useRef<ConfettiMethods>(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const { user } = useUser();
   const {
@@ -51,7 +53,14 @@ export default function Stripe() {
   return (
     <View className="flex flex-col py-3 gap-4">
       {showConfetti && (
-        <ConfettiCannon autoStart count={200} origin={{ x: 50, y: 50 }} />
+        <Confetti
+          ref={confettiRef}
+          autoplay={true}
+          radiusRange={[0, 15]}
+          sizeVariation={0.5}
+          flakeSize={{ width: 15, height: 10 }}
+          count={500}
+        />
       )}
       <View className="flex flex-col gap-3 ">
         <View className="flex flex-col gap-1">

@@ -2,6 +2,7 @@ import { useUser } from "@clerk/clerk-expo";
 import { router } from "expo-router";
 import React, { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
+
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -9,6 +10,7 @@ import {
   View,
 } from "react-native";
 import { toast } from "sonner-native";
+import AddExpenseModal from "~/components/add-expense-modal";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
@@ -21,6 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "~/components/ui/select";
+
 import { Separator } from "~/components/ui/separator";
 import { Switch } from "~/components/ui/switch";
 import { Text } from "~/components/ui/text";
@@ -33,7 +36,9 @@ import { useExpenseStore } from "~/stores/expense";
 export default function AddExpense() {
   const { addExpense, loading } = useExpenseStore();
   const { isOutOfBudget, checkBudget } = useBudgetStore();
+  const [openModal, setOpenModal] = React.useState(false);
   const [category, setCategory] = useState({ id: 0, label: "" });
+
   const { user } = useUser();
   const [categories, setCategories] = React.useState<ICategory[]>([]);
   const {
@@ -80,6 +85,7 @@ export default function AddExpense() {
           : data.amount,
     });
     reset();
+    setOpenModal(true);
     checkBudget(user?.id as string);
   }
 
@@ -257,7 +263,6 @@ export default function AddExpense() {
               </Button>
               <Button
                 onPress={() => {
-                  reset();
                   router.push("/(auth)/(tabs)");
                 }}
                 size="lg"
@@ -268,6 +273,7 @@ export default function AddExpense() {
             </View>
           </View>
         </View>
+        <AddExpenseModal openModal={openModal} setOpenModal={setOpenModal} />
       </ScrollView>
     </KeyboardAvoidingView>
   );

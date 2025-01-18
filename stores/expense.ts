@@ -22,9 +22,6 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
       toast.error("Ocurrió un error al registrar el gasto");
       console.log(error);
       await get().getRecentExpenses(expense.user_id);
-    } else {
-      toast.success("Gasto registrado exitosamente");
-      router.push("/(auth)/(tabs)");
     }
     set({ loading: false });
   },

@@ -101,18 +101,18 @@ export default function ProfileScreen() {
         </Button>
       </View>
 
-      <Text className="text-muted-foreground opacity-40  mt-20 mx-auto text-sm dark:text-secondary">
+      <Text className="text-muted-foreground opacity-40  mt-20 mx-10 text-sm dark:text-secondary">
         Logueado con {user?.emailAddresses[0].emailAddress}
       </Text>
-      <Text className="text-muted-foreground opacity-40 dark:text-secondary   mx-auto text-sm">
+      <Text className="text-muted-foreground opacity-40 dark:text-secondary   mx-10 text-sm">
         Versión 3.15.1
       </Text>
 
-      <View className="absolute bottom-[100px] right-[-100px] w-[200px] h-[300px] rounded-xl rotate-[-30deg] bg-teal-300 shadow-lg" />
+      <View className="absolute bottom-[100px] right-[-100px] w-[200px] h-[300px] rounded-xl rotate-[-30deg] bg-green-300 shadow-lg" />
 
-      <View className="absolute bottom-[60px] right-[-100px] w-[200px] h-[300px] rounded-xl rotate-[-40deg]  bg-primary shadow-lg" />
+      <View className="absolute bottom-[60px] right-[-100px] w-[200px] h-[300px] rounded-xl rotate-[-40deg]  bg-green-400 shadow-lg" />
 
-      <View className="absolute bottom-[20px] right-[-100px] w-[200px] h-[300px] rounded-xl rotate-[-50deg] bg-teal-500 shadow-lg" />
+      <View className="absolute bottom-[20px] right-[-100px] w-[200px] h-[300px] rounded-xl rotate-[-50deg] bg-primary shadow-lg" />
     </ScrollView>
   );
 }
