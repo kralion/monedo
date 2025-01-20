@@ -1,6 +1,7 @@
 import NoData2Svg from "@/assets/svgs/no-data.svg";
 import Card from "@/components/dashboard/card";
 import { useUser } from "@clerk/clerk-expo";
+import { Separator } from "@rn-primitives/select";
 import { FlashList } from "@shopify/flash-list";
 import { Redirect, router } from "expo-router";
 import { ChevronUp, Lock } from "lucide-react-native";
@@ -17,6 +18,7 @@ import { Expense } from "~/components/expense";
 import { ExpenseSkeleton } from "~/components/skeleton/expense";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
+import { groupExpensesByDate } from "~/helpers/groupExpenseByDate";
 import { useUserPlan } from "~/hooks/useUserPlan";
 import { useExpenseStore } from "~/stores/expense";
 
@@ -28,6 +30,7 @@ export default function Home() {
   React.useEffect(() => {
     getRecentExpenses(user?.id as string);
   }, []);
+  const groupedExpenses = groupExpensesByDate(expenses);
 
   if (!expenses) {
     return <ActivityIndicator />;
@@ -61,10 +64,10 @@ export default function Home() {
     <View>
       {showAll ? (
         <Animated.View style={{ opacity: 60 }}>
-          <SafeAreaView className="p-4">
+          <SafeAreaView>
             <View className="flex flex-col gap-5">
-              <View className="flex flex-row justify-between items-center">
-                <Text className="text-xl font-bold">Gastos Recientes</Text>
+              <View className="flex flex-row justify-between items-center px-4 pt-4">
+                <Text className="text-3xl font-bold">Gastos Recientes</Text>
                 <Text
                   onPress={() => {
                     setShowAll(false);
@@ -74,32 +77,28 @@ export default function Home() {
                   Ver Menos
                 </Text>
               </View>
-              <ScrollView className="min-h-screen-safe">
-                <FlashList
-                  data={expenses}
-                  estimatedItemSize={200}
-                  contentContainerClassName="pb-[400px]"
-                  renderItem={({ item: expense, index }) => (
-                    <View>
-                      {index === 0 ? (
-                        <>
-                          <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-600 ml-[60px]" />
-                          <Expense expense={expense} />
-                        </>
-                      ) : index === expenses.length - 1 ? (
-                        <>
-                          <Expense expense={expense} />
-                          <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-600 ml-[60px]" />
-                        </>
-                      ) : (
+              <ScrollView>
+                {Object.keys(groupedExpenses).map((dateLabel) => (
+                  <View key={dateLabel}>
+                    <Text className="text-lg  px-4 text-muted-foreground">
+                      {dateLabel}
+                    </Text>
+                    <FlashList
+                      contentContainerStyle={{
+                        paddingBottom: 50,
+                        paddingHorizontal: 20,
+                      }}
+                      data={groupedExpenses[dateLabel]}
+                      estimatedItemSize={200}
+                      ItemSeparatorComponent={() => (
+                        <View className="h-[0.75px] bg-zinc-200 dark:bg-zinc-600 ml-[60px]" />
+                      )}
+                      renderItem={({ item: expense, index }) => (
                         <Expense expense={expense} />
                       )}
-                    </View>
-                  )}
-                  ItemSeparatorComponent={() => (
-                    <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-600 ml-[60px]" />
-                  )}
-                />
+                    />
+                  </View>
+                ))}
               </ScrollView>
             </View>
           </SafeAreaView>
@@ -148,7 +147,7 @@ export default function Home() {
           >
             <View className="flex flex-row justify-between items-center pt-36  w-full pb-4">
               <Text className="text-xl font-bold dark:text-white">
-                Gastos Recientes
+                Historial de Gastos
               </Text>
               <Text
                 onPress={() => {
@@ -156,7 +155,7 @@ export default function Home() {
                 }}
                 className="text-muted-foreground dark:text-secondary px-1.5 opacity-50 "
               >
-                Ver Todos
+                Ver Más
               </Text>
             </View>
             {loading ? (
@@ -170,25 +169,11 @@ export default function Home() {
                 data={expenses}
                 contentContainerClassName="pb-[400px]"
                 estimatedItemSize={200}
-                renderItem={({ item: expense, index }) => (
-                  <View>
-                    {index === 0 ? (
-                      <>
-                        <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-800 ml-[60px]" />
-                        <Expense expense={expense} />
-                      </>
-                    ) : index === expenses.length - 1 ? (
-                      <>
-                        <Expense expense={expense} />
-                        <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-800 ml-[60px]" />
-                      </>
-                    ) : (
-                      <Expense expense={expense} />
-                    )}
-                  </View>
-                )}
                 ItemSeparatorComponent={() => (
-                  <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-800 ml-[60px]" />
+                  <View className="h-[0.75px] bg-zinc-200 dark:bg-zinc-600 ml-[60px]" />
+                )}
+                renderItem={({ item: expense }) => (
+                  <Expense expense={expense} />
                 )}
                 ListEmptyComponent={
                   <View className="flex flex-col items-center justify-center  ">
