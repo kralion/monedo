@@ -67,11 +67,26 @@ module.exports = {
           "0%": { opacity: 0, transform: "translateY(20px)" },
           "100%": { opacity: 1, transform: "translateY(0)" },
         },
+        buttonheartbeat: {
+          "0%": {
+            "box-shadow": '0 0 0 0 theme("colors.red.500")',
+            transform: "scale(1)",
+          },
+          "50%": {
+            "box-shadow": '0 0 0 7px theme("colors.red.500/0")',
+            transform: "scale(1.05)",
+          },
+          "100%": {
+            "box-shadow": '0 0 0 0 theme("colors.red.500/0")',
+            transform: "scale(1)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "fade-in": "fade-in 0.3s ease-out",
+        buttonheartbeat: "buttonheartbeat 2s infinite ease-in-out",
       },
     },
   },

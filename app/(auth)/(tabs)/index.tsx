@@ -3,10 +3,16 @@ import Card from "@/components/dashboard/card";
 import { useUser } from "@clerk/clerk-expo";
 import { Separator } from "@rn-primitives/select";
 import { FlashList } from "@shopify/flash-list";
+import { LinearGradient } from "expo-linear-gradient";
 import { Redirect, router } from "expo-router";
-import { ChevronUp, Lock } from "lucide-react-native";
+import { ChevronUp, Crown, Lock } from "lucide-react-native";
 import * as React from "react";
-import { ActivityIndicator, ScrollView, View } from "react-native";
+import {
+  ActivityIndicator,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Animated, {
   useAnimatedRef,
   useAnimatedStyle,
@@ -127,15 +133,30 @@ export default function Home() {
                   Hola, {user?.firstName} 👋
                 </Text>
               </View>
-
-              <Button
+              <TouchableOpacity
                 onPress={() => router.push("/(auth)/(modals)/buy-premium")}
-                size="icon"
-                variant="outline"
-                className="rounded-full"
               >
-                <Lock color="#27BE8B" size={20} />
-              </Button>
+                <LinearGradient
+                  colors={["#115e59", "#14b8a6", "#2dd4bf", "#5eead4"]}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={{
+                    width: 180,
+                    height: 40,
+                    borderWidth: 1,
+                    borderColor: "teal",
+                    borderRadius: 20,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <View className="flex flex-row justify-center items-center gap-2">
+                    <Text className="font-semibold">Adquiere Premium</Text>
+                    <Crown color="black" size={18} />
+                  </View>
+                </LinearGradient>
+              </TouchableOpacity>
             </View>
             <Card />
             <View style={{ height: 120 }} />

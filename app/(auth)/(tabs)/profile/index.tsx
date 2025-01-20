@@ -1,6 +1,13 @@
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
-import { Bell, Settings, Unlock, User, UserSquare2 } from "lucide-react-native";
+import {
+  Bell,
+  Crown,
+  Settings,
+  Unlock,
+  User,
+  UserSquare2,
+} from "lucide-react-native";
 import { ScrollView, View } from "react-native";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
@@ -65,7 +72,7 @@ export default function ProfileScreen() {
           variant="ghost"
           className="flex flex-row gap-3 px-5 "
         >
-          <Unlock color={isDarkColorScheme ? "white" : "black"} />
+          <Crown color={isDarkColorScheme ? "white" : "black"} />
           <Text className="dark:text-white">Adquirir Premium</Text>
         </Button>
         <Button
