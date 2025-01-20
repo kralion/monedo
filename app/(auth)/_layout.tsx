@@ -1,10 +1,37 @@
 import { router, Stack } from "expo-router";
+import { X } from "lucide-react-native";
 import { Button as NativeButton, Platform } from "react-native";
+import { Button } from "~/components/ui/button";
 
 export default function Layout() {
   return (
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+      <Stack.Screen
+        name="(modals)/add-expense"
+        options={({ route }) => {
+          const { id } = route.params as { id: string };
+          return {
+            title: "Nuevo Gasto",
+            headerBackTitle: "Gastos",
+            presentation: "modal",
+            headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
+            headerTransparent: Platform.OS === "android" ? false : true,
+            headerShadowVisible: false,
+            headerRight: () => (
+              <Button
+                className="rounded-full"
+                variant="link"
+                hitSlop={20}
+                onPress={() => router.back()}
+                size="icon"
+              >
+                <X size={20} color="black" />
+              </Button>
+            ),
+          };
+        }}
+      />
       <Stack.Screen
         name="(modals)/details/[id]"
         options={({ route }) => {

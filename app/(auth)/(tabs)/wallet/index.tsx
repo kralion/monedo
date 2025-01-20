@@ -41,7 +41,7 @@ export default function Wallet() {
             Total en billetera
           </Text>
           <Text className="text-3xl font-bold text-black text-center">
-            S/. {total}
+            S/ {total}
           </Text>
         </View>
       </View>

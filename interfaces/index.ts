@@ -29,7 +29,6 @@ export interface IUser {
 export interface ICategory {
   id: number;
   created_at: Date;
-  value: string;
   label: string;
   color: string;
   user_id: string;
@@ -61,7 +60,7 @@ export interface BudgetStore {
   updateBudget: (budget: IBudget) => Promise<void>;
   deleteBudget: (id: number) => Promise<void>;
   getBudgets: (userId: string) => Promise<void>;
-  getTotalBudget: () => Promise<number>;
+  getTotalBudget: (userId: string) => Promise<number>;
   getBudgetById: (id: number) => Promise<IBudget>;
 }
 export interface ExpenseStore {
@@ -74,7 +73,7 @@ export interface ExpenseStore {
   expenses: IExpense[];
   getExpenseById: (id: number) => Promise<IExpense>;
   updateExpense: (expense: IExpense) => void;
-  sumOfAllOfExpenses: () => Promise<number>;
+  sumOfAllOfExpenses: (userId: string) => Promise<number>;
   getExpensesByPeriodicity: ({
     startTimeOfQuery,
     endTimeOfQuery,

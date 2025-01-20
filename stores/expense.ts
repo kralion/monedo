@@ -9,7 +9,6 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
   weeklyExpenses: [],
   expense: null,
   loading: false,
-  isOutOfBudget: false,
   totalExpenses: 0,
   addExpense: async (expense: IExpense) => {
     set({ loading: true });
@@ -23,6 +22,7 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
       console.log(error);
       await get().getRecentExpenses(expense.user_id);
     }
+    toast.success("Gasto registrado");
     set({ loading: false });
   },
 
@@ -109,10 +109,13 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
     }
   },
 
-  sumOfAllOfExpenses: async () => {
+  sumOfAllOfExpenses: async (userId: string) => {
     set({ loading: true });
 
-    const { data, error } = await supabase.from("expenses").select("amount");
+    const { data, error } = await supabase
+      .from("expenses")
+      .select("amount")
+      .eq("user_id", userId);
 
     if (error) {
       console.error("Error fetching expenses:", error);
@@ -128,24 +131,5 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
     set({ totalExpenses, loading: false });
 
     return totalExpenses;
-  },
-
-  checkBudget: async () => {
-    const budget = 1000;
-
-    const total = await get().sumOfAllOfExpenses();
-
-    const isOutOfBudget = budget - total <= 0;
-
-    set({ isOutOfBudget });
-
-    if (isOutOfBudget) {
-      await supabase.from("notifications").insert({
-        title: "¡No tienes fondos suficientes!",
-        description:
-          "No puedes registrar más gastos, debes ingresar un monto menor a tu presupuesto",
-        type: "warning",
-      });
-    }
   },
 }));

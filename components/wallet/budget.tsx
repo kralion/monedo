@@ -121,7 +121,7 @@ export function Budget({ budget }: { budget: IBudget }) {
               <View className=" flex flex-row items-center">
                 <Text className="font-bold text-xl text-brand dark:text-brand">
                   <Animated.Text entering={FadeIn.duration(1500)}>
-                    + S/. {budget.amount}
+                    + S/ {budget.amount}
                   </Animated.Text>
                 </Text>
                 <Button variant="ghost" size="icon">

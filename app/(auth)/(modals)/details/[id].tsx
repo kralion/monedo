@@ -79,7 +79,7 @@ export default function ExpenseDetails() {
               />
               <View className="flex flex-col">
                 <Text className="text-5xl tracking-tighter font-bold ">
-                  S/. {expense?.amount?.toFixed(2)}
+                  S/ {expense?.amount?.toFixed(2)}
                 </Text>
               </View>
               <Separator className="text-muted-foreground" />

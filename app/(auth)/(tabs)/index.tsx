@@ -27,7 +27,7 @@ export default function Home() {
   const { getRecentExpenses, loading, expenses } = useExpenseStore();
   React.useEffect(() => {
     getRecentExpenses(user?.id as string);
-  }, [showAll]);
+  }, []);
 
   if (!expenses) {
     return <ActivityIndicator />;

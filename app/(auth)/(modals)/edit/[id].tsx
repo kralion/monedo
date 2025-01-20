@@ -110,12 +110,6 @@ export default function EditExpense() {
       updateExpense({
         ...data,
         id: Number(id),
-        amount:
-          data.currency === "Euros"
-            ? amount * 3.85
-            : data.currency === "Dólares"
-            ? amount * 3.7
-            : amount,
       });
     } catch (error) {
       console.log(error);
@@ -187,39 +181,7 @@ export default function EditExpense() {
                 placeholder="65.00"
               />
             </View>
-            <View className="flex flex-col gap-2">
-              <Label>Divisa</Label>
-              <Controller
-                name="currency"
-                control={control}
-                render={({ field: { onChange, value } }) => (
-                  <RadioGroup
-                    value={value}
-                    onValueChange={onChange}
-                    className="flex flex-row gap-3"
-                  >
-                    <RadioGroupItemWithLabel
-                      value="Soles"
-                      onLabelPress={() => {
-                        setValue("currency", "Soles");
-                      }}
-                    />
-                    <RadioGroupItemWithLabel
-                      value="Dólares"
-                      onLabelPress={() => {
-                        setValue("currency", "Dólares");
-                      }}
-                    />
-                    <RadioGroupItemWithLabel
-                      value="Euros"
-                      onLabelPress={() => {
-                        setValue("currency", "Euros");
-                      }}
-                    />
-                  </RadioGroup>
-                )}
-              />
-            </View>
+
             <Controller
               control={control}
               name="description"

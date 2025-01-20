@@ -42,9 +42,12 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
     return data;
   },
 
-  getTotalBudget: async () => {
+  getTotalBudget: async (userId: string) => {
     set({ loading: true });
-    const { data, error } = await supabase.from("budgets").select("amount");
+    const { data, error } = await supabase
+      .from("budgets")
+      .select("amount")
+      .eq("user_id", userId);
     if (error) throw error;
     const total = data.reduce((sum, budget) => sum + Number(budget.amount), 0);
     set({ totalBudget: total, loading: false });
@@ -92,7 +95,7 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
   checkBudget: async (userId: string) => {
     const budget = get().totalBudget;
     const expenseStore = useExpenseStore.getState();
-    const total = await expenseStore.sumOfAllOfExpenses();
+    const total = await expenseStore.sumOfAllOfExpenses(userId);
 
     if (budget - total <= 0) {
       set({ isOutOfBudget: true });

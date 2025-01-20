@@ -69,7 +69,7 @@ export default function BudgetDetails() {
               />
               <View className="flex flex-col">
                 <Text className="text-5xl tracking-tighter font-bold">
-                  S/. {budget.amount}
+                  S/ {budget.amount}
                 </Text>
               </View>
               <Separator className="text-muted-foreground" />

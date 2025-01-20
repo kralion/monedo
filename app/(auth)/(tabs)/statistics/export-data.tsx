@@ -158,7 +158,7 @@ export default function Export() {
                     <td align="center">${formatDate(
                       new Date(expense.date)
                     )}</td>
-                    <td class="price-col">S/. ${expense.amount.toFixed(2)}</td>
+                    <td class="price-col">S/ ${expense.amount.toFixed(2)}</td>
                 </tr>
                 `
               )
@@ -170,7 +170,7 @@ export default function Export() {
         <table width="100%">
             <tr>
                 <td><strong>Total:</strong></td>
-                <td class="price-col"><strong>S/. ${expenses
+                <td class="price-col"><strong>S/ ${expenses
                   .reduce((acc, expense) => acc + expense.amount, 0)
                   .toFixed(2)}</strong></td>
             </tr>

@@ -159,7 +159,7 @@ export default function Stripe() {
           />
         </View>
         <Button variant="outline" disabled className="font-bold" size="lg">
-          <Text className="text-black dark:text-black">S/. 15.00</Text>
+          <Text className="text-black dark:text-black">S/ 15.00</Text>
         </Button>
       </View>
 

@@ -8,14 +8,16 @@ import { useBudgetStore } from "~/stores/budget";
 import { useExpenseStore } from "~/stores/expense";
 import { Button } from "../ui/button";
 import { Text } from "../ui/text";
+import { useUser } from "@clerk/clerk-expo";
 
 export default function Card() {
   const { planName, isPremium } = useUserPlan();
+  const { user } = useUser();
   const { sumOfAllOfExpenses, totalExpenses } = useExpenseStore();
   const { totalBudget, isOutOfBudget, getTotalBudget } = useBudgetStore();
   async function calculateBalance() {
-    await sumOfAllOfExpenses();
-    await getTotalBudget();
+    await sumOfAllOfExpenses(user?.id as string);
+    await getTotalBudget(user?.id as string);
     return totalBudget - totalExpenses;
   }
   useFocusEffect(
@@ -56,7 +58,7 @@ export default function Card() {
             <Text className="text-xl text-white">Balance</Text>
 
             <Text className="text-4xl text-white font-bold ">
-              S/. {totalBudget - totalExpenses}
+              S/ {totalBudget - totalExpenses}
             </Text>
           </View>
 
@@ -77,7 +79,7 @@ export default function Card() {
             <View className="flex flex-row gap-2">
               <ArrowDownIcon color="white" />
 
-              <Text className="text-xl text-white">S/. {totalExpenses}</Text>
+              <Text className="text-xl text-white">S/ {totalExpenses}</Text>
             </View>
           </View>
 
@@ -88,7 +90,7 @@ export default function Card() {
             <View className="flex flex-row gap-2">
               <ArrowUpIcon color="white" />
 
-              <Text className="text-xl text-white">S/. {totalBudget}</Text>
+              <Text className="text-xl text-white">S/ {totalBudget}</Text>
             </View>
           </View>
         </View>

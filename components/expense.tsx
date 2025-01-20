@@ -11,7 +11,8 @@ import { Text } from "./ui/text";
 export function Expense({ expense }: { expense: IExpense }) {
   const assetIndentificador =
     expensesIdentifiers.find(
-      (icon) => icon.label.toLowerCase() === expense.categories?.value
+      (icon) =>
+        icon.label.toLowerCase() === expense.categories?.label.toLowerCase()
     )?.iconHref ||
     "https://img.icons8.com/?size=160&id=MjAYkOMsbYOO&format=png";
   return (
@@ -47,7 +48,7 @@ export function Expense({ expense }: { expense: IExpense }) {
             <View className="card-description-amount flex flex-row items-center">
               <Text className="text-xl text-red-500 dark:text-red-400  font-semibold">
                 <Animated.Text entering={FadeIn.duration(1500)}>
-                  - S/. {expense.amount}
+                  - S/ {expense.amount}
                 </Animated.Text>
               </Text>
               <Button variant="ghost" size="icon">

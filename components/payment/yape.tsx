@@ -15,7 +15,7 @@ export default function Yape() {
         <Text>Monto de yapeo</Text>
 
         <Button variant="outline" size="lg" disabled className="font-bold">
-          <Text className="text-black dark:text-black"> S/. 15.00</Text>
+          <Text className="text-black dark:text-black"> S/ 15.00</Text>
         </Button>
       </View>
       <Text className="text-sm text-foreground">

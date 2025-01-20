@@ -84,8 +84,8 @@ export default function Membership() {
         >
           <Text>
             {has?.({ permission: "premium:plan" })
-              ? "S/. 20.00 / mes"
-              : "S/. 00.00 / mes"}
+              ? "S/ 20.00 / mes"
+              : "S/ 00.00 / mes"}
           </Text>
         </Button>
       </View>

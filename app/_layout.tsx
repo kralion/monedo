@@ -130,8 +130,8 @@ export default function RootLayout() {
         <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
         <ClerkLoaded>
           <RootLayoutNav />
+          <PortalHost />
         </ClerkLoaded>
-        <PortalHost />
       </ThemeProvider>
     </ClerkProvider>
   );

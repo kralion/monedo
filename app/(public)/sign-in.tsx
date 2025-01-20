@@ -38,27 +38,15 @@ export default function SignInScreen() {
             }}
             source={require("../../assets/logo.png")}
           />
-          <Text className="text-4xl font-bold"> Inicia Sesión</Text>
+          <Text className="text-4xl font-bold">Bienvenido a Monedo</Text>
           <Text className="text-center">
-            Para empezar a usar y disfrutar de Monedo
+            Vincula una de tus cuentas para continuar
           </Text>
         </View>
         <View className="flex flex-col gap-4 justify-center align-middle w-full">
           <SignInWithOAuthGoogle />
           <SignInWithOAuthFacebook />
           <SignInWithOAuthTiktok />
-        </View>
-
-        <View className="flex flex-row gap-2 justify-center align-middle w-full">
-          <Text className="text-textmuted text-center">
-            ¿Eres nuevo en Monedo?
-          </Text>
-          <Text
-            onPress={() => router.push("/(public)/sign-up")}
-            className="text-primary active:underline dark:text-primary"
-          >
-            Regístrate
-          </Text>
         </View>
       </View>
     </ScrollView>
