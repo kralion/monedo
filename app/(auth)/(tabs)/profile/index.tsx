@@ -2,6 +2,7 @@ import { useAuth, useUser } from "@clerk/clerk-expo";
 import { useRouter } from "expo-router";
 import {
   Bell,
+  Bookmark,
   Crown,
   Settings,
   Unlock,
@@ -74,6 +75,15 @@ export default function ProfileScreen() {
         >
           <Crown color={isDarkColorScheme ? "white" : "black"} />
           <Text className="dark:text-white">Adquirir Premium</Text>
+        </Button>
+        <Button
+          onPress={() => router.push("/(auth)/(tabs)/profile/categories")}
+          size="lg"
+          variant="ghost"
+          className="flex flex-row gap-3 px-5 "
+        >
+          <Bookmark color={isDarkColorScheme ? "white" : "black"} />
+          <Text className="dark:text-white">Categorías</Text>
         </Button>
         <Button
           onPress={() => router.push("/(auth)/(tabs)/profile/membership")}

@@ -67,12 +67,14 @@ export interface ExpenseStore {
   addExpense: (expense: IExpense) => void;
   totalExpenses: number;
   deleteExpense: (id: number) => void;
+  getExpensesByCategory: (categoryId: number) => Promise<IExpense[]>;
   weeklyExpenses: IExpense[];
   loading: boolean;
   expense: IExpense | null;
   expenses: IExpense[];
   getExpenseById: (id: number) => Promise<IExpense>;
   updateExpense: (expense: IExpense) => void;
+
   sumOfAllOfExpenses: (userId: string) => Promise<number>;
   getExpensesByPeriodicity: ({
     startTimeOfQuery,
@@ -85,13 +87,13 @@ export interface ExpenseStore {
 }
 export interface CategoryStore {
   categories: ICategory[];
-  category: ICategory | null;
+  getCategoryById: (id: number) => Promise<ICategory>;
+  category: ICategory;
   loading: boolean;
-
   addCategory: (category: ICategory) => Promise<void>;
   updateCategory: (category: ICategory) => Promise<void>;
   deleteCategory: (id: number) => Promise<void>;
-  getCategories: () => Promise<void>;
+  getCategories: (userId: string) => Promise<void>;
 }
 export interface NotificationStore {
   notifications: INotification[];

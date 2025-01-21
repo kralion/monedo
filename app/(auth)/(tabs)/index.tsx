@@ -1,11 +1,10 @@
 import NoData2Svg from "@/assets/svgs/no-data.svg";
 import Card from "@/components/dashboard/card";
 import { useUser } from "@clerk/clerk-expo";
-import { Separator } from "@rn-primitives/select";
 import { FlashList } from "@shopify/flash-list";
 import { LinearGradient } from "expo-linear-gradient";
 import { Redirect, router } from "expo-router";
-import { ChevronUp, Crown, Lock } from "lucide-react-native";
+import { ChevronUp, Crown } from "lucide-react-native";
 import * as React from "react";
 import {
   ActivityIndicator,
@@ -97,7 +96,7 @@ export default function Home() {
                       data={groupedExpenses[dateLabel]}
                       estimatedItemSize={200}
                       ItemSeparatorComponent={() => (
-                        <View className="h-[0.75px] bg-zinc-200 dark:bg-zinc-600 ml-[60px]" />
+                        <View className="h-[0.75px] bg-zinc-200 dark:bg-zinc-700 ml-[60px]" />
                       )}
                       renderItem={({ item: expense, index }) => (
                         <Expense expense={expense} />
@@ -191,7 +190,7 @@ export default function Home() {
                 contentContainerClassName="pb-[400px]"
                 estimatedItemSize={200}
                 ItemSeparatorComponent={() => (
-                  <View className="h-[0.75px] bg-zinc-200 dark:bg-zinc-600 ml-[60px]" />
+                  <View className="h-[0.75px] bg-zinc-200 dark:bg-zinc-700 ml-[60px]" />
                 )}
                 renderItem={({ item: expense }) => (
                   <Expense expense={expense} />

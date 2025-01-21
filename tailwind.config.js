@@ -12,6 +12,7 @@ module.exports = {
       },
       borderRadius: {
         lg: "var(--radius)",
+        md: "var(--radius)",
       },
       colors: {
         brand: "#41D29B",

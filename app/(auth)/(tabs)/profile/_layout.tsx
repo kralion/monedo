@@ -3,10 +3,9 @@ import { router, Stack } from "expo-router";
 import { X } from "lucide-react-native";
 import React, { useRef } from "react";
 
-import { Button as NativeButton, Platform, View } from "react-native";
+import { Platform, View } from "react-native";
 import AddCategory from "~/components/profile/add-category";
 import { Button } from "~/components/ui/button";
-import { Text } from "~/components/ui/text";
 import { useColorScheme } from "~/lib/useColorScheme";
 
 export default function Layout() {
@@ -111,34 +110,7 @@ export default function Layout() {
           options={{
             title: "Categorías",
             headerBackTitle: "Configuración",
-            headerLargeTitle: true,
-            headerShadowVisible: false,
-            headerSearchBarOptions: {
-              placeholder: "Buscar ...",
-              hideWhenScrolling: false,
-              cancelButtonText: "Cancelar",
-            },
-            headerLargeTitleShadowVisible: false,
-            headerRight: () => {
-              return Platform.OS === "ios" ? (
-                <NativeButton
-                  title="Agregar"
-                  color="#27BE8B"
-                  onPress={() => {
-                    bottomSheetRef.current?.expand();
-                  }}
-                />
-              ) : (
-                <Button
-                  variant="link"
-                  onPress={() => {
-                    bottomSheetRef.current?.expand();
-                  }}
-                >
-                  <Text>Agregar</Text>
-                </Button>
-              );
-            },
+            headerShown: false,
           }}
         />
         <Stack.Screen

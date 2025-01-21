@@ -101,10 +101,10 @@ export default function Chart({ timelineQuery, data }: ChartProps) {
         <NoDataAsset width={100} height={100} />
         <View>
           <Text className="text-center text-xl text-muted-foreground">
-            No hay gastos registrados
+            Sin datos
           </Text>
           <Text className="text-center text-sm text-muted-foreground">
-            Añade un gasto haciendo tap en el botón "+"
+            Para este filtro no hay gastos registrados aún
           </Text>
         </View>
       </View>
@@ -120,12 +120,12 @@ export default function Chart({ timelineQuery, data }: ChartProps) {
       yAxisColor="gray"
       xAxisColor="white"
       yAxisThickness={0}
-      color1="teal"
+      color1="#41D29B"
       hideYAxisText
-      dataPointsColor1="teal"
+      dataPointsColor1="#41D29B"
       hideRules
       endSpacing={-20}
-      startFillColor1="teal"
+      startFillColor1="#41D29B"
       startOpacity={0.8}
       height={250}
     />

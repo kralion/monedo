@@ -1,12 +1,10 @@
 import { useAuth } from "@clerk/clerk-expo";
 import { router } from "expo-router";
 import {
-  Bell,
   ChevronRight,
   HeartHandshake,
   MessageSquareShare,
   SmartphoneNfc,
-  Tag,
 } from "lucide-react-native";
 import React, { useState } from "react";
 import {
@@ -17,7 +15,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { TermsPolicyModal } from "~/components/auth/terms&policy";
 import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "~/components/ui/radio-group";
@@ -106,18 +103,7 @@ export default function SettingsScreen() {
         si deseas accede a la configuración desde la barra de menú en la esquina
         superior derecha.
       </Text>
-      <View className="flex flex-col mt-10 items-start bg-zinc-100 py-4   rounded-xl  gap-4">
-        <TouchableOpacity
-          onPress={() => router.push("/(auth)/(tabs)/profile/categories")}
-          className="flex flex-row justify-between w-full  px-4 py-2"
-        >
-          <View className="flex flex-row gap-3 items-center">
-            <Tag color={isDarkColorScheme ? "white" : "black"} />
-            <Text className="dark:text-white">Categorías</Text>
-          </View>
-          <ChevronRight color="gray" />
-        </TouchableOpacity>
-        <Separator />
+      <View className="flex flex-col mt-10 items-start bg-zinc-100 py-4  dark:bg-zinc-700  rounded-xl  gap-4">
         <TouchableOpacity
           onPress={() => router.push("/(auth)/(tabs)/profile/feedback")}
           className="flex flex-row justify-between w-full  px-4 py-2"

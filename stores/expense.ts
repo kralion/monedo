@@ -26,18 +26,25 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
     set({ loading: false });
   },
 
+  getExpensesByCategory: async (categoryId: number) => {
+    set({ loading: true });
+    const { data, error } = await supabase
+      .from("expenses")
+      .select("*, categories:id_category(*)")
+      .eq("id_category", categoryId);
+    if (error) throw error;
+    return data;
+  },
+
   updateExpense: async (expense: IExpense) => {
     set({ loading: true });
-    set((state) => ({
-      expenses: state.expenses.map((e) => (e.id === expense.id ? expense : e)),
-    }));
-
     const { error } = await supabase
       .from("expenses")
       .update(expense)
       .eq("id", expense.id);
     if (error) {
       toast.error("Ocurrió un error al actualizar el gasto");
+      console.log(error);
       await get().getRecentExpenses(expense.user_id);
     } else {
       toast.success("Gasto actualizado exitosamente");
@@ -59,7 +66,7 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
     }
 
     toast.success("Gasto eliminado exitosamente");
-    router.push("/(auth)/(tabs)");
+    router.back();
     set({ loading: false });
   },
 
@@ -76,7 +83,6 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
   },
 
   getRecentExpenses: async (userId: string) => {
-    set({ loading: true });
     const { data } = await supabase
       .from("expenses")
       .select("*, categories:id_category(*)")
@@ -85,7 +91,7 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
       .limit(20);
 
     const expensesData = data ?? [];
-    set({ expenses: expensesData, loading: false });
+    set({ expenses: expensesData });
     return expensesData;
   },
 
@@ -94,7 +100,7 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
     try {
       const { data } = await supabase
         .from("expenses")
-        .select("*")
+        .select("*, categories:id_category(*)")
         .gte("date", startTimeOfQuery.toISOString())
         .lte("date", endTimeOfQuery.toISOString())
         .order("amount", { ascending: false })

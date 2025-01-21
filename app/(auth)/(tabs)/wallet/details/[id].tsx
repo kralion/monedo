@@ -1,6 +1,7 @@
 import { useFocusEffect, useLocalSearchParams } from "expo-router";
 import * as React from "react";
 import { ActivityIndicator, Image, ScrollView, View } from "react-native";
+import Animated, { FadeInDown } from "react-native-reanimated";
 import { Separator } from "~/components/ui/separator";
 import { Text } from "~/components/ui/text";
 import { supabase } from "~/lib/supabase";
@@ -58,11 +59,14 @@ export default function BudgetDetails() {
       <View className="flex flex-col gap-4 p-4">
         <ScrollView>
           <View className="flex flex-col gap-8">
-            <View className="flex flex-col gap-4">
+            <Animated.View
+              className="flex flex-col gap-4 items-center"
+              entering={FadeInDown.duration(300).delay(200)}
+            >
               <Image
                 width={100}
                 height={100}
-                className="bg-brand/20 rounded-full p-4"
+                className="bg-zinc-100 dark:bg-zinc-800 rounded-full p-4"
                 source={{
                   uri: "https://img.icons8.com/?size=300&id=yUTNKgUuTlsA&format=png&color=000000",
                 }}
@@ -76,7 +80,7 @@ export default function BudgetDetails() {
               <Text className="text-lg text-muted-foreground ">
                 {budget.description}
               </Text>
-            </View>
+            </Animated.View>
 
             <Separator className="text-muted-foreground" />
             <View className="flex flex-col gap-2">

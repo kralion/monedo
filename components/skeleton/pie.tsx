@@ -1,8 +1,8 @@
 import { Skeleton } from "moti/skeleton";
 import { View } from "react-native";
+import { useColorScheme } from "~/lib/useColorScheme";
 
 const SkeletonCommonProps = {
-  colorMode: "light",
   transition: {
     type: "timing",
     duration: 1000,
@@ -10,13 +10,15 @@ const SkeletonCommonProps = {
 } as const;
 
 export const PieSkeleton = () => {
+  const { isDarkColorScheme } = useColorScheme();
   return (
     <View className="flex-1 items-center justify-center">
       <Skeleton.Group show={true}>
         <Skeleton
-          height={250}
+          height={300}
+          colorMode={isDarkColorScheme ? "dark" : "light"}
           radius={300}
-          width="65%"
+          width="80%"
           {...SkeletonCommonProps}
         />
       </Skeleton.Group>

@@ -6,9 +6,8 @@ import { supabase } from "~/lib/supabase";
 
 export const useCategoryStore = create<CategoryStore>((set, get) => ({
   categories: [],
-  category: null,
+  category: {} as ICategory,
   loading: false,
-
   addCategory: async (category: ICategory) => {
     set({ loading: true });
     set((state) => ({
@@ -19,13 +18,23 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
     if (error) {
       toast.error("Ocurrió un error al registrar la categoría");
       console.log(error);
-      await get().getCategories();
     } else {
       toast.success("Categoría registrada exitosamente");
     }
     set({ loading: false });
   },
 
+  getCategoryById: async (id: number) => {
+    set({ loading: true });
+    const { data, error } = await supabase
+      .from("categories")
+      .select("*")
+      .eq("id", id)
+      .single();
+    if (error) throw error;
+    set({ loading: false, category: data });
+    return data;
+  },
   updateCategory: async (category: ICategory) => {
     set({ loading: true });
     set((state) => ({
@@ -40,7 +49,6 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
       .eq("id", category.id);
     if (error) {
       toast.error("Ocurrió un error al actualizar la categoría");
-      await get().getCategories();
     } else {
       toast.success("Categoría actualizada exitosamente");
       router.back();
@@ -57,7 +65,6 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
     const { error } = await supabase.from("categories").delete().eq("id", id);
     if (error) {
       console.error("Error deleting category:", error);
-      await get().getCategories();
       return;
     }
 
@@ -66,10 +73,13 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
     set({ loading: false });
   },
 
-  getCategories: async () => {
+  getCategories: async (userId: string) => {
     set({ loading: true });
 
-    const { data, error } = await supabase.from("categories").select("*");
+    const { data, error } = await supabase
+      .from("categories")
+      .select("*")
+      .eq("user_id", userId);
     if (error) throw error;
 
     set({ categories: data ?? [], loading: false });

@@ -26,7 +26,7 @@ export function Expense({ expense }: { expense: IExpense }) {
         <Image
           width={50}
           height={50}
-          className="bg-brand/20 rounded-full p-2"
+          className="bg-zinc-100 dark:bg-zinc-800 rounded-full p-2"
           source={{ uri: assetIndentificador }}
         />
         <View className="flex flex-row justify-between items-center px-2 py-4  w-[90%]">

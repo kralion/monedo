@@ -14,28 +14,31 @@ import { useColorScheme } from "~/lib/useColorScheme";
 import { useCategoryStore } from "~/stores/category";
 import { Separator } from "../ui/separator";
 const colors = [
-  "#6874e7",
-  "#b8304f",
-  "#758E4F",
-  "#fa3741",
-  "#F26419",
-  "#F6AE2D",
-  "#DFAEB4",
-  "#7A93AC",
-  "#33658A",
-  "#3d2b56",
-  "#42273B",
-  "#171A21",
+  "#FF6F61", // Vibrant Coral
+  "#6B5B95", // Elegant Purple
+  "#88B04B", // Fresh Green
+  "#F7CAC9", // Soft Pink
+  "#92A8D1", // Calm Blue
+  "#955251", // Rich Brown
+  "#B565A7", // Vibrant Violet
+  "#009B77", // Professional Teal
+  "#DD4124", // Bold Red
+  "#45B8AC", // Modern Aqua
+  "#EFC050", // Bright Yellow
+  "#5B5EA6", // Deep Blue
 ];
 
 export default function AddCategory({
   bottomSheetRef,
+  category,
 }: {
+  category?: ICategory;
   bottomSheetRef: React.RefObject<BottomSheet>;
 }) {
   const { user } = useUser();
   const [color, setColor] = React.useState(0);
   const { addCategory, updateCategory, loading } = useCategoryStore();
+
   const snapPoints = useMemo(() => ["25%", "50%"], []);
   const { isDarkColorScheme: isDarkMode } = useColorScheme();
   const {
@@ -57,21 +60,29 @@ export default function AddCategory({
     []
   );
 
+  useEffect(() => {
+    if (category) {
+      setValue("label", category?.label);
+      setColor(category?.color ? colors.indexOf(category?.color) : 0);
+    }
+  }, [category]);
+
   const onUpdate = async (data: ICategory) => {
     updateCategory({
       ...data,
+      id: category?.id as number,
+      created_at: category?.created_at as Date,
     });
     bottomSheetRef.current?.close();
+    reset();
   };
   const onSubmit = async (data: ICategory) => {
     addCategory({
       ...data,
       user_id: user?.id as string,
       color: colors[color],
-      value: data.label.toLowerCase(),
     });
     bottomSheetRef.current?.close();
-
     reset();
   };
 
@@ -142,8 +153,11 @@ export default function AddCategory({
           )}
         />
         {renderContent()}
-        <Button onPress={handleSubmit(onSubmit)} disabled={loading}>
-          <Text>Registrar</Text>
+        <Button
+          onPress={category ? handleSubmit(onUpdate) : handleSubmit(onSubmit)}
+          disabled={loading}
+        >
+          <Text>{category ? "Guardar" : "Registrar"}</Text>
         </Button>
       </BottomSheetView>
     </BottomSheet>
