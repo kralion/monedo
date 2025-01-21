@@ -65,7 +65,8 @@ export default function AddCategory({
       setValue("label", category?.label);
       setColor(category?.color ? colors.indexOf(category?.color) : 0);
     }
-  }, [category]);
+    console.log("category", category);
+  }, []);
 
   const onUpdate = async (data: ICategory) => {
     updateCategory({

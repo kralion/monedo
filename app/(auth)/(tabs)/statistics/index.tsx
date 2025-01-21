@@ -1,17 +1,23 @@
 import NoData2Svg from "@/assets/svgs/no-data.svg";
 import Chart from "@/components/statistics/chart";
 import { useUser } from "@clerk/clerk-expo";
-import { FlashList } from "@shopify/flash-list";
+import { LegendList } from "@legendapp/list";
 import { router, useFocusEffect } from "expo-router";
 
-import { Download, LineChart, PieChartIcon, Spline } from "lucide-react-native";
+import { Download, LineChart, PieChartIcon } from "lucide-react-native";
 import * as React from "react";
 import { useState } from "react";
-import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Expense } from "~/components/expense";
 import { ChartSkeleton } from "~/components/skeleton/chart";
-import { ExpenseSkeleton } from "~/components/skeleton/expense";
 import { PieSkeleton } from "~/components/skeleton/pie";
 import PieChart from "~/components/statistics/pie-chart";
 import { Button } from "~/components/ui/button";
@@ -91,7 +97,7 @@ export default function Statistics() {
           </View>
         </View>
         <View className="flex flex-col gap-4">
-          <FlashList
+          <FlatList
             data={queryFilters}
             renderItem={({ item }) => (
               <Button
@@ -105,7 +111,6 @@ export default function Statistics() {
                 <Text className="text-black dark:text-black">{item.label}</Text>
               </Button>
             )}
-            estimatedItemSize={16}
             horizontal
             showsHorizontalScrollIndicator={false}
           />
@@ -154,13 +159,10 @@ export default function Statistics() {
 
           <Text className="text-xl font-bold mx-4  mt-12">Top Gastos</Text>
           {loading ? (
-            <View className="flex flex-col gap-2">
-              <ExpenseSkeleton />
-              <ExpenseSkeleton />
-              <ExpenseSkeleton />
-            </View>
+            <ActivityIndicator />
           ) : (
-            <FlashList
+            <LegendList
+              recycleItems
               contentContainerStyle={{ paddingHorizontal: 16 }}
               contentContainerClassName="pb-[400px] px-4"
               data={expenses}
@@ -184,7 +186,7 @@ export default function Statistics() {
               ItemSeparatorComponent={() => (
                 <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-600 ml-[60px] " />
               )}
-              estimatedItemSize={100}
+              estimatedItemSize={320}
               ListEmptyComponent={
                 <View className="flex flex-col items-center justify-center  ">
                   <NoData2Svg width={150} height={150} />

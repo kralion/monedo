@@ -1,6 +1,7 @@
+import { LegendList } from "@legendapp/list";
 import { useHeaderHeight } from "@react-navigation/elements";
 import React from "react";
-import { FlatList, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import {
   Accordion,
   AccordionContent,
@@ -54,7 +55,8 @@ export default function TermsConditions() {
         defaultValue={["item-1"]}
         className="w-full max-w-sm native:max-w-md"
       >
-        <FlatList
+        <LegendList
+          recycleItems
           contentContainerClassName="px-4"
           ListHeaderComponent={
             <Text className="text-gray-800 dark:text-white   ">

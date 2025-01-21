@@ -1,6 +1,7 @@
 import NoData2Svg from "@/assets/svgs/no-data.svg";
 import { Budget } from "@/components/wallet/budget";
 import { useUser } from "@clerk/clerk-expo";
+import { LegendList } from "@legendapp/list";
 
 import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
@@ -65,9 +66,10 @@ export default function Wallet() {
           </View>
         )}
 
-        <FlashList
+        <LegendList
+          recycleItems
           data={budgets}
-          estimatedItemSize={100}
+          estimatedItemSize={320}
           renderItem={({ item }) => <Budget budget={item} />}
           ListEmptyComponent={
             <View className="flex flex-col items-center justify-center  ">

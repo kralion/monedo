@@ -118,7 +118,7 @@ export default function ProfileScreen() {
         </Button>
       </View>
 
-      <Text className="text-muted-foreground opacity-40  mt-20 mx-10 text-sm dark:text-secondary">
+      <Text className="text-muted-foreground opacity-40   mt-10 mx-10 text-sm dark:text-secondary">
         Logueado con {user?.emailAddresses[0].emailAddress}
       </Text>
       <Text className="text-muted-foreground opacity-40 dark:text-secondary   mx-10 text-sm">

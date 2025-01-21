@@ -98,7 +98,7 @@ export default function TabLayout() {
         />
       </Tabs>
       <TouchableOpacity
-        className="absolute right-6 bottom-28 bg-primary p-4 h-16 w-16 rounded-full flex justify-center items-center shadow-md"
+        className="absolute right-4 bottom-28 bg-primary p-4 h-16 w-16 rounded-full flex justify-center items-center shadow"
         onPress={() => router.push("/(auth)/(modals)/add-expense")}
       >
         <Plus size={30} color="white" />

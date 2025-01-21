@@ -1,7 +1,7 @@
 import NoData2Svg from "@/assets/svgs/no-data.svg";
 import Card from "@/components/dashboard/card";
 import { useUser } from "@clerk/clerk-expo";
-import { FlashList } from "@shopify/flash-list";
+import { LegendList } from "@legendapp/list";
 import { LinearGradient } from "expo-linear-gradient";
 import { Redirect, router } from "expo-router";
 import { ChevronUp, Crown } from "lucide-react-native";
@@ -20,7 +20,6 @@ import Animated, {
 } from "react-native-reanimated";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Expense } from "~/components/expense";
-import { ExpenseSkeleton } from "~/components/skeleton/expense";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 import { groupExpensesByDate } from "~/helpers/groupExpenseByDate";
@@ -31,9 +30,12 @@ export default function Home() {
   const { user, isSignedIn } = useUser();
   const { isPremium } = useUserPlan();
   const [showAll, setShowAll] = React.useState(false);
-  const { getRecentExpenses, loading, expenses } = useExpenseStore();
+  const [loading, setLoading] = React.useState(false);
+  const { getRecentExpenses, expenses } = useExpenseStore();
   React.useEffect(() => {
+    setLoading(true);
     getRecentExpenses(user?.id as string);
+    setLoading(false);
   }, []);
   const groupedExpenses = groupExpensesByDate(expenses);
 
@@ -88,19 +90,20 @@ export default function Home() {
                     <Text className="text-lg  px-4 text-muted-foreground">
                       {dateLabel}
                     </Text>
-                    <FlashList
+                    <LegendList
                       contentContainerStyle={{
                         paddingBottom: 50,
                         paddingHorizontal: 20,
                       }}
                       data={groupedExpenses[dateLabel]}
-                      estimatedItemSize={200}
+                      estimatedItemSize={320}
                       ItemSeparatorComponent={() => (
                         <View className="h-[0.75px] bg-zinc-200 dark:bg-zinc-700 ml-[60px]" />
                       )}
                       renderItem={({ item: expense, index }) => (
                         <Expense expense={expense} />
                       )}
+                      recycleItems
                     />
                   </View>
                 ))}
@@ -136,7 +139,7 @@ export default function Home() {
                 onPress={() => router.push("/(auth)/(modals)/buy-premium")}
               >
                 <LinearGradient
-                  colors={["#115e59", "#14b8a6", "#2dd4bf", "#5eead4"]}
+                  colors={["#115e59", "#14b8a6", "#2dd4bf", "#41D29B"]}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={{
@@ -179,16 +182,13 @@ export default function Home() {
               </Text>
             </View>
             {loading ? (
-              <View className="flex flex-col gap-2">
-                <ExpenseSkeleton />
-                <ExpenseSkeleton />
-                <ExpenseSkeleton />
-              </View>
+              <ActivityIndicator />
             ) : (
-              <FlashList
+              <LegendList
                 data={expenses}
-                contentContainerClassName="pb-[400px]"
-                estimatedItemSize={200}
+                contentContainerStyle={{ paddingBottom: 80 }}
+                estimatedItemSize={320}
+                recycleItems
                 ItemSeparatorComponent={() => (
                   <View className="h-[0.75px] bg-zinc-200 dark:bg-zinc-700 ml-[60px]" />
                 )}
