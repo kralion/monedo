@@ -1,12 +1,13 @@
 import { useOAuth } from "@clerk/clerk-expo";
 import * as Linking from "expo-linking";
-import { router } from "expo-router";
 import * as WebBrowser from "expo-web-browser";
 import React from "react";
-import { Image, ScrollView, View, Platform } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Platform, ScrollView, View } from "react-native";
+import SurfSvg from "@/assets/svgs/surf.svg";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
+import { Image } from "expo-image";
+import Animated, { FadeInDown } from "react-native-reanimated";
 export const useWarmUpBrowser = () => {
   React.useEffect(() => {
     if (Platform.OS !== "web") {
@@ -29,8 +30,76 @@ export default function SignInScreen() {
       contentInsetAdjustmentBehavior="automatic"
       className="bg-white  dark:bg-zinc-900"
     >
-      <View className="flex flex-col gap-12 h-screen-safe justify-center px-4 web:pt-32">
-        <View className="flex flex-col items-center gap-1">
+      <View className="flex flex-col gap-12 h-screen-safe justify-center  web:pt-32 relative">
+        <Animated.View entering={FadeInDown.duration(400)}>
+          <Image
+            source={{
+              uri: "https://img.icons8.com/?size=400&id=yUTNKgUuTlsA&format=png&color=000000",
+            }}
+            style={{
+              width: 70,
+              height: 70,
+              position: "absolute",
+              transform: [{ rotate: "-30deg" }],
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 4,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 5,
+              left: -20,
+            }}
+          />
+        </Animated.View>
+        <Image
+          source={{
+            uri: "https://img.icons8.com/?size=400&id=2WTPiYe1pxGL&format=png&color=000000",
+          }}
+          style={{
+            width: 100,
+            height: 100,
+            position: "absolute",
+            transform: [{ rotate: "20deg" }],
+
+            top: 0,
+            right: 140,
+          }}
+        />
+        <Animated.View entering={FadeInDown.duration(400).delay(400)}>
+          <Image
+            source={{
+              uri: "https://img.icons8.com/?size=400&id=1sc9MKUuuZTD&format=png&color=000000",
+            }}
+            style={{
+              width: 90,
+              height: 90,
+              position: "absolute",
+              transform: [{ rotate: "-30deg" }],
+              shadowColor: "#000",
+              shadowOffset: {
+                width: 0,
+                height: 4,
+              },
+              shadowOpacity: 0.25,
+              shadowRadius: 5,
+
+              right: 10,
+            }}
+          />
+        </Animated.View>
+        <SurfSvg
+          style={{
+            position: "absolute",
+            bottom: -130,
+            left: 0,
+            height: "50%",
+            width: "100%",
+            zIndex: -1,
+          }}
+          preserveAspectRatio="xMidYMid slice"
+        />
+        <View className="flex flex-col items-center gap-1 px-4">
           <Image
             style={{
               width: 125,
@@ -43,7 +112,7 @@ export default function SignInScreen() {
             Vincula una de tus cuentas para continuar
           </Text>
         </View>
-        <View className="flex flex-col gap-4 justify-center align-middle w-full">
+        <View className="flex flex-col gap-4 justify-center align-middle w-full p-4">
           <SignInWithOAuthGoogle />
           <SignInWithOAuthFacebook />
           <SignInWithOAuthTiktok />

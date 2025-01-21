@@ -1,5 +1,5 @@
 import BottomSheet from "@gorhom/bottom-sheet";
-import { Stack } from "expo-router";
+import { router, Stack } from "expo-router";
 import React, { useRef } from "react";
 import { View } from "react-native";
 import AddCategory from "~/components/profile/add-category";
@@ -13,9 +13,7 @@ export default function CategoriesLayout() {
   const { category } = useCategoryStore();
   return (
     <View className="flex-1">
-      <Stack
-        screenOptions={{ headerLargeTitle: true, headerShadowVisible: false }}
-      >
+      <Stack>
         <Stack.Screen
           name="index"
           options={{
@@ -29,6 +27,26 @@ export default function CategoriesLayout() {
               cancelButtonText: "Cancelar",
             },
             headerLargeTitleShadowVisible: false,
+            headerLeft: () => {
+              return Platform.OS === "ios" ? (
+                <NativeButton
+                  title="Atrás"
+                  color="#27BE8B"
+                  onPress={() => {
+                    router.back();
+                  }}
+                />
+              ) : (
+                <Button
+                  variant="link"
+                  onPress={() => {
+                    router.back();
+                  }}
+                >
+                  <Text>Configuración</Text>
+                </Button>
+              );
+            },
             headerRight: () => {
               return Platform.OS === "ios" ? (
                 <NativeButton
