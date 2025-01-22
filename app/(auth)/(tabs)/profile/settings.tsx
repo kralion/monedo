@@ -4,6 +4,7 @@ import {
   ChevronRight,
   HeartHandshake,
   MessageSquareShare,
+  Replace,
   SmartphoneNfc,
 } from "lucide-react-native";
 import React, { useState } from "react";
@@ -111,6 +112,17 @@ export default function SettingsScreen() {
           <View className="flex flex-row gap-3 items-center">
             <MessageSquareShare color={isDarkColorScheme ? "white" : "black"} />
             <Text className="dark:text-white">Feedback</Text>
+          </View>
+          <ChevronRight color="gray" />
+        </TouchableOpacity>
+        <Separator />
+        <TouchableOpacity
+          onPress={() => router.push("/(auth)/(tabs)/profile/icon")}
+          className="flex flex-row justify-between w-full  px-4 py-2"
+        >
+          <View className="flex flex-row gap-3 items-center">
+            <Replace color={isDarkColorScheme ? "white" : "black"} />
+            <Text className="dark:text-white">Icono de la App</Text>
           </View>
           <ChevronRight color="gray" />
         </TouchableOpacity>

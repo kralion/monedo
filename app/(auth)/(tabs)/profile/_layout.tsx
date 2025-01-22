@@ -54,6 +54,28 @@ export default function Layout() {
           }}
         />
         <Stack.Screen
+          name="icon"
+          options={{
+            title: "Icono de la App",
+            headerLargeTitle: true,
+            headerShadowVisible: false,
+            headerRight: () => (
+              <Button
+                variant="link"
+                className="active:opacity-70"
+                size="icon"
+                onPress={() => {
+                  router.back();
+                }}
+                hitSlop={20}
+              >
+                <X color={isDarkColorScheme ? "white" : "black"} />
+              </Button>
+            ),
+            presentation: "modal",
+          }}
+        />
+        <Stack.Screen
           name="feedback"
           options={{
             title: "Feedback",

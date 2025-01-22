@@ -13,34 +13,71 @@ export default function TermsConditions() {
   const headerHeight = useHeaderHeight();
   const sections = [
     {
-      id: "a1",
-      title: "Datos Personales",
+      id: "intro",
+      title: "Introducción",
       content:
-        "En el marco de nuestra política de privacidad, llevamos a cabo una gestión meticulosa de tus datos personales. Nos comprometemos a resguardar su confidencialidad y seguridad en todo momento. Implementamos tecnologías y medidas de seguridad avanzadas para garantizar la integridad y protección de la información que nos confías.",
+        "Al utilizar nuestra aplicación de seguimiento de gastos Monedo, aceptas estos Términos y Condiciones. La Aplicación está diseñada para ayudarte a gestionar tus finanzas personales mediante el registro de ingresos y egresos.",
+    },
+    {
+      id: "a1",
+      title: "1. Datos Personales",
+      content:
+        "Recopilamos únicamente información esencial para el funcionamiento del servicio: nombre, email y credenciales de acceso. No almacenamos datos financieros sensibles ni información de tarjetas de crédito/débito.",
     },
     {
       id: "a2",
-      title: "Privacidad y Seguridad",
+      title: "2. Privacidad y Seguridad",
       content:
-        "La privacidad de nuestros usuarios es una prioridad fundamental. Para asegurar un entorno seguro, hemos implementado protocolos de seguridad robustos. Nuestro compromiso es mantener un alto estándar de protección y confidencialidad en cada interacción que tengas con nuestra plataforma. Valoramos la confianza que depositas en nosotros y trabajamos incansablemente para preservarla.",
+        "Implementamos cifrado SSL para proteger tus datos. Aunque empleamos medidas de seguridad estándar de la industria, no podemos garantizar protección absoluta contra accesos no autorizados. Recomendamos usar contraseñas complejas y actualizarlas periódicamente.",
     },
     {
       id: "a3",
-      title: "Uso de Cookies",
+      title: "3. Propiedad Intelectual",
       content:
-        "Queremos informarte sobre nuestro uso de cookies. Estas pequeñas piezas de información nos permiten mejorar tu experiencia en nuestra plataforma. Puedes gestionar tus preferencias de cookies en cualquier momento desde la configuración de tu cuenta. A través de este mecanismo, personalizamos tu experiencia para proporcionarte un servicio más adaptado a tus necesidades y preferencias individuales.",
+        "Todos los derechos de la Aplicación (interfaz, algoritmos, diseño) son propiedad exclusiva nuestra. Queda prohibida la reproducción, modificación o ingeniería inversa del software.",
     },
     {
       id: "a4",
-      title: "Consentimiento Informado",
+      title: "4. Limitación de Responsabilidad",
       content:
-        "Consentimiento Informado: Al utilizar nuestros servicios, otorgas tu consentimiento informado para el procesamiento de datos de acuerdo con nuestras políticas de privacidad. Este consentimiento es esencial para proporcionarte nuestros servicios de manera eficaz y personalizada. Queremos asegurarnos de que estés plenamente informado sobre cómo utilizamos y protegemos tus datos personales.",
+        "No nos hacemos responsables por: a) Pérdidas financieras derivadas del uso de la Aplicación b) Errores en el registro manual de datos c) Interrupciones del servicio por causas técnicas d) Decisiones tomadas basadas en los informes generados.",
     },
     {
       id: "a5",
-      title: "Transparencia",
+      title: "5. Retención de Datos",
       content:
-        "Nos comprometemos a operar con transparencia y responsabilidad en todas nuestras prácticas relacionadas con la privacidad y la seguridad de los datos. Buscamos crear un entorno en el que nuestros usuarios confíen plenamente en la forma en que manejamos su información. Estamos aquí para responder a tus preguntas y brindarte la información que necesitas para sentirte seguro y protegido al utilizar nuestros servicios.",
+        "Conservaremos tu información durante 12 meses tras la desactivación de la cuenta. Puedes solicitar eliminación permanente mediante opción en tu perfil. Los datos anonimizados podrán conservarse para análisis estadísticos.",
+    },
+    {
+      id: "a6",
+      title: "6. Modificaciones del Servicio",
+      content:
+        "Nos reservamos el derecho de actualizar, modificar o discontinuar características de la Aplicación. Notificaremos cambios sustanciales mediante email o notificación en la plataforma.",
+    },
+    {
+      id: "a7",
+      title: "7. Términos de Pago",
+      content:
+        "Actualmente la Aplicación cuenta con 2 planes de pago: gratis y premium. En caso de adquirir el plan premium, se notificará al usuario con 5 días de anticipación el pago del primer cargo y requerirá consentimiento expreso para cargos.",
+    },
+
+    {
+      id: "a8",
+      title: "8. Cookies y Analíticos",
+      content:
+        "Utilizamos cookies técnicas para funcionalidad básica y cookies de rendimiento para métricas de uso. Puedes desactivarlas en configuración, aunque esto podría afectar algunas funciones.",
+    },
+    {
+      id: "a9",
+      title: "9. Exención de Asesoramiento Financiero",
+      content:
+        "La Aplicación es una herramienta de registro, no provee asesoramiento financiero profesional. Los informes generados no constituyen recomendaciones de inversión o manejo patrimonial.",
+    },
+    {
+      id: "a10",
+      title: "10. Términos Generales",
+      content:
+        "Nos reservamos el derecho de suspender cuentas por actividades sospechosas. La vigencia es indefinida hasta terminación por alguna de las partes. Para dudas, contactar a brayanjoanpm@gmail.com.",
     },
   ];
 
@@ -51,14 +88,13 @@ export default function TermsConditions() {
     >
       <Accordion
         type="multiple"
-        collapsible
-        defaultValue={["item-1"]}
         className="w-full max-w-sm native:max-w-md"
+        collapsible
+        defaultValue={["a1", "a2", "a3", "a4", "a5"]}
       >
         <LegendList
-          estimatedItemSize={320}
-          recycleItems
-          contentContainerClassName="px-4"
+          estimatedItemSize={500}
+          contentContainerStyle={{ padding: 16 }}
           ListHeaderComponent={
             <Text className="text-gray-800 dark:text-white   ">
               Bienvenido a la plataforma de la aplicación móvil de{" "}

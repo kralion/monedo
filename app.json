@@ -13,9 +13,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
     },
@@ -33,7 +31,24 @@
     },
     "plugins": [
       "expo-router",
-      "expo-secure-store"
+      "expo-secure-store",
+      [
+        "expo-dynamic-app-icon",
+        {
+          "blue": {
+            "image": "./assets/icons/blue.png",
+            "prerendered": true
+          },
+          "nightblue": {
+            "image": "./assets/icons/nightblue.png",
+            "prerendered": true
+          },
+          "default": {
+            "image": "./assets/icons/default.png",
+            "prerendered": true
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true

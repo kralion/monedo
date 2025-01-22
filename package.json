@@ -41,6 +41,7 @@
     "date-fns": "^4.1.0",
     "expo": "~52.0.25",
     "expo-device": "~7.0.2",
+    "expo-dynamic-app-icon": "^1.2.0",
     "expo-haptics": "~14.0.1",
     "expo-image": "~2.0.4",
     "expo-linear-gradient": "~14.0.2",
