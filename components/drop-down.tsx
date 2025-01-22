@@ -1,6 +1,7 @@
 import { Ellipsis } from "lucide-react-native";
 import React from "react";
 import * as DropdownMenu from "zeego/dropdown-menu";
+import { Button } from "./ui/button";
 
 type Props = {
   items: Array<{
@@ -17,7 +18,9 @@ export default function Dropdown({ items, onSelect }: Props) {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger>
-        <Ellipsis color="gray" size={24} />
+        <Button size="icon" className="rounded-full" variant="secondary">
+          <Ellipsis color="black" />
+        </Button>
       </DropdownMenu.Trigger>
       <DropdownMenu.Content>
         <DropdownMenu.Item key="2" onSelect={() => onSelect("2")}>

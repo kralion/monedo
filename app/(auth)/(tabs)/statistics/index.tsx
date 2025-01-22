@@ -101,7 +101,7 @@ export default function Statistics() {
           <View className="flex flex-col ">
             <Text className="text-4xl font-bold ">Estadísticas</Text>
           </View>
-
+          {/* TODO: Uncomment for production */}
           {/* <Dropdown items={items} onSelect={handleDropdownSelect} /> */}
         </View>
         <View className="flex flex-col gap-4">

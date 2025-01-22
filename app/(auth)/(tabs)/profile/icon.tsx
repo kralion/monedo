@@ -23,6 +23,8 @@ const ICONS = [
   },
 ];
 
+/* TODO: Uncomment for production */
+
 export default function IconScreen() {
   const headerHeight = useHeaderHeight();
   const iconDefault = "default";
