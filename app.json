@@ -5,13 +5,13 @@
     "version": "1.0.0",
     "newArchEnabled": true,
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/icon.png",
     "scheme": "monedo",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/icon.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#41D29B"
     },
     "assetBundlePatterns": ["**/*"],
     "ios": {
@@ -19,8 +19,8 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/icon.png",
+        "backgroundColor": "#41D29B"
       },
       "package": "com.joanpaucar.monedo"
     },
@@ -46,6 +46,33 @@
           "default": {
             "image": "./assets/icons/default.png",
             "prerendered": true
+          }
+        }
+      ],
+      [
+        "expo-quick-actions",
+        {
+          "androidIcons": {
+            "add_circle": {
+              "foregroundImage": "./assets/adaptive-add.png",
+              "backgroundColor": "#41D29B"
+            },
+            "bar_chart": {
+              "foregroundImage": "./assets/adaptive-chart.png",
+              "backgroundColor": "#41D29B"
+            }
+          }
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "backgroundColor": "#232323",
+          "resizeMode": "cover",
+          "image": "./assets/images/splash.png",
+          "dark": {
+            "image": "./assets/splash-dark.png",
+            "backgroundColor": "#000000"
           }
         }
       ]

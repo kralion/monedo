@@ -1,7 +1,9 @@
 import "~/global.css";
 import NetInfo from "@react-native-community/netinfo";
-
+import { useQuickActionRouting } from "expo-quick-actions/router";
 import { ClerkLoaded, ClerkProvider, useAuth } from "@clerk/clerk-expo";
+import QuickActionsSetup from "../components/quick-actions";
+import * as SplashScreen from "expo-splash-screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   DarkTheme,
@@ -10,7 +12,7 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { PortalHost } from "@rn-primitives/portal";
-import { router, Slot, SplashScreen, useSegments } from "expo-router";
+import { router, Slot, useSegments } from "expo-router";
 import * as SecureStore from "expo-secure-store";
 import { StatusBar } from "expo-status-bar";
 import * as React from "react";
@@ -68,12 +70,18 @@ if (!publishableKey) {
 }
 
 SplashScreen.preventAutoHideAsync();
+SplashScreen.setOptions({
+  duration: 1000,
+  fade: true,
+});
 export default function RootLayout() {
+  useQuickActionRouting();
   const { colorScheme, setColorScheme, isDarkColorScheme } = useColorScheme();
   const [isColorSchemeLoaded, setIsColorSchemeLoaded] = React.useState(false);
   const [isOnboardingCompleted, setIsOnboardingCompleted] =
     React.useState(false);
   const [isLoading, setIsLoading] = React.useState(true);
+
   React.useEffect(() => {
     const checkOnboardingAndAuth = async () => {
       const onboardingCompleted = await AsyncStorage.getItem(
@@ -107,7 +115,7 @@ export default function RootLayout() {
       setAndroidNavigationBar(colorTheme);
       setIsColorSchemeLoaded(true);
     })().finally(() => {
-      SplashScreen.hideAsync();
+      SplashScreen.hide();
     });
   }, []);
 
@@ -129,6 +137,7 @@ export default function RootLayout() {
       <ThemeProvider value={isDarkColorScheme ? DARK_THEME : LIGHT_THEME}>
         <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
         <ClerkLoaded>
+          <QuickActionsSetup />
           <RootLayoutNav />
           <PortalHost />
         </ClerkLoaded>
