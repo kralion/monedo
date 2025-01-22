@@ -1,7 +1,7 @@
 import ExportAsset from "@/assets/svgs/export.svg";
 import { useHeaderHeight } from "@react-navigation/elements";
 import * as Print from "expo-print";
-import { useLocalSearchParams } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
 import React from "react";
 import { Image, ScrollView, View } from "react-native";
 import { Button } from "~/components/ui/button";

@@ -8,6 +8,7 @@ import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 import { Image } from "expo-image";
 import Animated, { FadeInDown } from "react-native-reanimated";
+import { Stack } from "expo-router";
 export const useWarmUpBrowser = () => {
   React.useEffect(() => {
     if (Platform.OS !== "web") {

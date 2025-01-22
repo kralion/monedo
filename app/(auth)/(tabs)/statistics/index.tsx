@@ -4,7 +4,12 @@ import { useUser } from "@clerk/clerk-expo";
 import { LegendList } from "@legendapp/list";
 import { router, useFocusEffect } from "expo-router";
 
-import { Download, LineChart, PieChartIcon } from "lucide-react-native";
+import {
+  Download,
+  LineChart,
+  PieChartIcon,
+  Ellipsis,
+} from "lucide-react-native";
 import * as React from "react";
 import { useState } from "react";
 import {
@@ -27,6 +32,33 @@ import { IExpense } from "~/interfaces";
 import { getDateRange } from "~/lib/rangeDate";
 import { useCategoryStore } from "~/stores/category";
 import { useExpenseStore } from "~/stores/expense";
+import Dropdown from "~/components/drop-down";
+const items = [
+  {
+    label: "Grafico de línea",
+    key: "line",
+    title: "Grafico de línea",
+    icon: "chart.bar.fill",
+    iconAndroid: "asset:line_chart",
+    value: "line",
+  },
+  {
+    label: "Grafico de pie",
+    key: "pie",
+    title: "Grafico de pie",
+    icon: "pie.chart.fill",
+    iconAndroid: "asset:pie_chart",
+    value: "pie",
+  },
+  {
+    label: "Exportar datos",
+    key: "export",
+    title: "Exportar datos",
+    icon: "arrow.down.square.fill",
+    iconAndroid: "asset:download",
+    value: "export",
+  },
+];
 export default function Statistics() {
   const [expenses, setExpenses] = useState<IExpense[]>([]);
   const { user } = useUser();
@@ -48,6 +80,17 @@ export default function Statistics() {
     }, [timelineQuery])
   );
 
+  function handleDropdownSelect(key: string) {
+    if (key === "export") {
+      router.push({
+        pathname: "/(auth)/(tabs)/statistics/export-data",
+        params: { periodicity: timelineQuery.value },
+      });
+    } else {
+      setChartType(key as "pie" | "line");
+    }
+  }
+
   React.useEffect(() => {
     getCategories(user?.id as string);
   }, []);
@@ -58,43 +101,8 @@ export default function Statistics() {
           <View className="flex flex-col ">
             <Text className="text-4xl font-bold ">Estadísticas</Text>
           </View>
-          <View className="flex flex-row gap-6 items-center justify-end">
-            <TouchableOpacity
-              onPress={() => {
-                setChartType("pie");
-              }}
-              hitSlop={10}
-            >
-              <PieChartIcon
-                color="#27BE8B"
-                size={24}
-                fill={chartType === "pie" ? "#41D29B" : "transparent"}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                setChartType("line");
-              }}
-              hitSlop={10}
-            >
-              <LineChart
-                color="#27BE8B"
-                size={24}
-                fill={chartType === "line" ? "#41D29B" : "transparent"}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => {
-                router.push({
-                  pathname: "/(auth)/(tabs)/statistics/export-data",
-                  params: { periodicity: timelineQuery.value },
-                });
-              }}
-              hitSlop={10}
-            >
-              <Download color="#27BE8B" size={24} />
-            </TouchableOpacity>
-          </View>
+
+          {/* <Dropdown items={items} onSelect={handleDropdownSelect} /> */}
         </View>
         <View className="flex flex-col gap-4">
           <FlatList

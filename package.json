@@ -16,6 +16,7 @@
     "@legendapp/list": "^1.0.0-beta.0",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/netinfo": "11.4.1",
+    "@react-native-menu/menu": "^1.2.1",
     "@react-navigation/native": "^7.0.0",
     "@rn-primitives/accordion": "^1.1.0",
     "@rn-primitives/alert-dialog": "^1.1.0",
@@ -77,6 +78,7 @@
     "tailwind-merge": "^2.2.1",
     "tailwindcss": "3.3.5",
     "tailwindcss-animate": "^1.0.7",
+    "zeego": "^2.0.4",
     "zustand": "^4.4.7"
   },
   "devDependencies": {
