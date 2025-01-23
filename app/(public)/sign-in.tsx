@@ -37,6 +37,7 @@ export default function SignInScreen() {
             source={{
               uri: "https://img.icons8.com/?size=400&id=yUTNKgUuTlsA&format=png&color=000000",
             }}
+            className="web:hidden"
             style={{
               width: 70,
               height: 70,
@@ -57,6 +58,7 @@ export default function SignInScreen() {
           source={{
             uri: "https://img.icons8.com/?size=400&id=2WTPiYe1pxGL&format=png&color=000000",
           }}
+          className="web:hidden"
           style={{
             width: 100,
             height: 100,
@@ -72,6 +74,7 @@ export default function SignInScreen() {
             source={{
               uri: "https://img.icons8.com/?size=400&id=1sc9MKUuuZTD&format=png&color=000000",
             }}
+            className="web:hidden"
             style={{
               width: 90,
               height: 90,
@@ -98,9 +101,10 @@ export default function SignInScreen() {
             width: "100%",
             zIndex: -1,
           }}
+          className="web:-bottom-[280]"
           preserveAspectRatio="xMidYMid slice"
         />
-        <View className="flex flex-col items-center gap-1 px-4">
+        <View className="flex flex-col items-center gap-1 px-4 ">
           <Image
             style={{
               width: 125,
@@ -108,7 +112,9 @@ export default function SignInScreen() {
             }}
             source={require("../../assets/logo.png")}
           />
-          <Text className="text-4xl font-bold">Bienvenido a Monedo</Text>
+          <Text className="text-4xl font-bold text-center">
+            Bienvenido a Monedo
+          </Text>
           <Text className="text-center">
             Vincula una de tus cuentas para continuar
           </Text>

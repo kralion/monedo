@@ -26,6 +26,7 @@ const OnboardingScreen = ({ onComplete }: { onComplete: () => void }) => {
       pages={[
         {
           backgroundColor: colorScheme === "dark" ? "#000" : "#81DFBB",
+
           image: <Image source={require("../assets/images/onboarding.gif")} />,
           title: "Bienvenido a Monedo",
           subtitle:

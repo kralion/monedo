@@ -125,8 +125,7 @@ export default function RootLayout() {
   if (isLoading) {
     return <ActivityIndicator />;
   }
-  //COMMENT THIS TO if (isOnboardingCompleted) FOR TESTING PURPOSES
-  if (!isOnboardingCompleted) {
+  if (!isOnboardingCompleted && Platform.OS !== "web") {
     return (
       <OnboardingScreen onComplete={() => setIsOnboardingCompleted(true)} />
     );
