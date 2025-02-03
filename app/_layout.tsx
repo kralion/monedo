@@ -1,10 +1,6 @@
-import "~/global.css";
-import NetInfo from "@react-native-community/netinfo";
-import { useQuickActionRouting } from "expo-quick-actions/router";
 import { ClerkLoaded, ClerkProvider, useAuth } from "@clerk/clerk-expo";
-import QuickActionsSetup from "../components/quick-actions";
-import * as SplashScreen from "expo-splash-screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import NetInfo from "@react-native-community/netinfo";
 import {
   DarkTheme,
   DefaultTheme,
@@ -12,19 +8,23 @@ import {
   ThemeProvider,
 } from "@react-navigation/native";
 import { PortalHost } from "@rn-primitives/portal";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useQuickActionRouting } from "expo-quick-actions/router";
 import { router, Slot, useSegments } from "expo-router";
 import * as SecureStore from "expo-secure-store";
+import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
+import { XCircle } from "lucide-react-native";
 import * as React from "react";
 import { ActivityIndicator, Platform } from "react-native";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { toast, Toaster } from "sonner-native";
+import OnboardingScreen from "~/components/onboarding";
+import "~/global.css";
 import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
 import { NAV_THEME } from "~/lib/constants";
 import { useColorScheme } from "~/lib/useColorScheme";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { toast, Toaster } from "sonner-native";
-import { XCircle } from "lucide-react-native";
-import OnboardingScreen from "~/components/onboarding";
+import QuickActionsSetup from "../components/quick-actions";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -147,6 +147,7 @@ export default function RootLayout() {
 
 function RootLayoutNav() {
   const { isLoaded, isSignedIn } = useAuth();
+
   const segments = useSegments();
   const client = new QueryClient();
   React.useEffect(() => {

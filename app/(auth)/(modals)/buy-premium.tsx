@@ -1,17 +1,20 @@
-import Stripe from "@/components/payment/stripe";
 import Yape from "@/components/payment/yape";
+import { useAuth } from "@clerk/clerk-expo";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import * as React from "react";
 import {
+  ActivityIndicator,
   Animated as AnimatedRN,
   Dimensions,
   KeyboardAvoidingView,
+  Linking,
   ScrollView,
   View,
 } from "react-native";
 import { useSharedValue, withTiming } from "react-native-reanimated";
 import Carousel from "react-native-reanimated-carousel";
+import { toast } from "sonner-native";
 import { Button } from "~/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Text } from "~/components/ui/text";
@@ -48,10 +51,14 @@ const carouselData: CarouselItem[] = [
   },
 ];
 
+const POLAR_CHECKOUT_URL = "https://api.polar.sh/api/v1/checkout/sessions";
+
 export default function BuyPremiumModal() {
   const [yapePaymentMethod, setYapePaymentMethod] = React.useState(false);
   const [cardPaymentMethod, setCardPaymentMethod] = React.useState(true);
   const [currentIndex, setCurrentIndex] = React.useState(0);
+  const [loading, setLoading] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
   const baseOptions = {
     vertical: false,
     width: width - 20,
@@ -69,6 +76,34 @@ export default function BuyPremiumModal() {
 
   const fadeAnimCard = React.useRef(new AnimatedRN.Value(1)).current;
   const fadeAnimYape = React.useRef(new AnimatedRN.Value(1)).current;
+  const { getToken, userId } = useAuth();
+
+  React.useEffect(() => {
+    const handleDeepLink = async ({ url }: { url: string }) => {
+      if (url.includes("/checkout/success")) {
+        try {
+          await fetch(`https://api.clerk.com/v1/users/${userId}`, {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${await getToken()}`,
+            },
+            body: JSON.stringify({
+              public_metadata: { is_premium: true },
+            }),
+          });
+
+          toast.success("Premium activated!");
+          router.back();
+        } catch (error) {
+          toast.error("Update failed");
+        }
+      }
+    };
+
+    const sub = Linking.addEventListener("url", handleDeepLink);
+    return () => sub.remove();
+  }, [userId, getToken]);
   React.useEffect(() => {
     AnimatedRN.timing(fadeAnimCard, {
       toValue: yapePaymentMethod ? 0 : 1,
@@ -94,6 +129,36 @@ export default function BuyPremiumModal() {
     setYapePaymentMethod(false);
     setCardPaymentMethod(true);
     handlePress(0);
+  };
+
+  const handleCheckout = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const response = await fetch(POLAR_CHECKOUT_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.POLAR_API_KEY}`,
+        },
+        body: JSON.stringify({
+          price_id: process.env.POLAR_PRICE_ID,
+          success_url: "monedo://checkout-redirect?checkout_id={CHECKOUT_ID}",
+          cancel_url: "monedo://checkout-redirect",
+        }),
+      });
+
+      if (!response.ok) throw new Error(`Payment failed: ${response.status}`);
+
+      const { url } = await response.json();
+      if (!url) throw new Error("No checkout URL received");
+
+      await Linking.openURL(url);
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -146,6 +211,7 @@ export default function BuyPremiumModal() {
           </View>
 
           <Text className="text-2xl font-bold ">Método de Pago</Text>
+
           <Tabs
             value={value}
             onValueChange={setValue}
@@ -157,7 +223,7 @@ export default function BuyPremiumModal() {
                 value="card"
                 className="flex-1 rounded-lg"
               >
-                <Text className="text-black dark:text-black">Tarjeta</Text>
+                <Text className="text-black dark:text-black">Polar</Text>
               </TabsTrigger>
               <TabsTrigger
                 onPress={handleYapePayment}
@@ -168,18 +234,29 @@ export default function BuyPremiumModal() {
               </TabsTrigger>
             </TabsList>
             <TabsContent value="card">
-              {cardPaymentMethod && (
+              {/* {cardPaymentMethod && (
                 <AnimatedRN.View style={{ opacity: fadeAnimCard }}>
                   <Stripe />
                 </AnimatedRN.View>
-              )}
+              )} */}
+              <View className="p-4 bg-white dark:bg-gray-900">
+                {loading ? (
+                  <ActivityIndicator
+                    animating={loading}
+                    color="#FFFFFF"
+                    size="large"
+                  />
+                ) : (
+                  <Button onPress={handleCheckout} disabled={loading}>
+                    <Text className="text-white font-bold">Buy Premium</Text>
+                  </Button>
+                )}
+              </View>
             </TabsContent>
             <TabsContent value="yape">
-              {yapePaymentMethod && (
-                <AnimatedRN.View style={{ opacity: fadeAnimYape }}>
-                  <Yape />
-                </AnimatedRN.View>
-              )}
+              <AnimatedRN.View style={{ opacity: fadeAnimYape }}>
+                <Yape />
+              </AnimatedRN.View>
             </TabsContent>
           </Tabs>
         </View>

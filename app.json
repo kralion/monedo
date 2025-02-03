@@ -22,7 +22,23 @@
         "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#41D29B"
       },
-      "package": "com.joanpaucar.monedo"
+      "package": "com.joanpaucar.monedo",
+      "intentFilters": [
+        {
+          "action": "VIEW",
+          "data": [
+            {
+              "scheme": "monedo",
+              "host": "checkout.polar.sh",
+              "pathPrefix": "/monedo"
+            }
+          ],
+          "category": [
+            "BROWSABLE",
+            "DEFAULT"
+          ]
+        }
+      ]
     },
     "web": {
       "bundler": "metro",
