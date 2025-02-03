@@ -2,6 +2,7 @@ import Yape from "@/components/payment/yape";
 import { useAuth } from "@clerk/clerk-expo";
 import { Image } from "expo-image";
 import { router } from "expo-router";
+import { openBrowserAsync } from "expo-web-browser";
 import * as React from "react";
 import {
   ActivityIndicator,
@@ -54,18 +55,16 @@ const carouselData: CarouselItem[] = [
 const POLAR_CHECKOUT_URL = "https://api.polar.sh/api/v1/checkout/sessions";
 
 export default function BuyPremiumModal() {
-  const [yapePaymentMethod, setYapePaymentMethod] = React.useState(false);
-  const [cardPaymentMethod, setCardPaymentMethod] = React.useState(true);
+  const [yapePaymentMethod, setYapePaymentMethod] = React.useState(true);
+  const [cardPaymentMethod, setCardPaymentMethod] = React.useState(false);
   const [currentIndex, setCurrentIndex] = React.useState(0);
-  const [loading, setLoading] = React.useState(false);
-  const [error, setError] = React.useState<string | null>(null);
   const baseOptions = {
     vertical: false,
     width: width - 20,
     height: width * 0.6,
   };
 
-  const [value, setValue] = React.useState("card");
+  const [value, setValue] = React.useState("yape");
   const screenWidth = Dimensions.get("window").width;
   const animation = useSharedValue(0);
   const handlePress = (index: number) => {
@@ -92,6 +91,7 @@ export default function BuyPremiumModal() {
               public_metadata: { is_premium: true },
             }),
           });
+          console.log("updated");
 
           toast.success("Premium activated!");
           router.back();
@@ -103,7 +103,8 @@ export default function BuyPremiumModal() {
 
     const sub = Linking.addEventListener("url", handleDeepLink);
     return () => sub.remove();
-  }, [userId, getToken]);
+  }, []);
+
   React.useEffect(() => {
     AnimatedRN.timing(fadeAnimCard, {
       toValue: yapePaymentMethod ? 0 : 1,
@@ -123,42 +124,12 @@ export default function BuyPremiumModal() {
   const handleYapePayment = () => {
     setYapePaymentMethod(true);
     setCardPaymentMethod(false);
-    handlePress(1);
+    handlePress(0);
   };
   const handleCardPayment = () => {
     setYapePaymentMethod(false);
     setCardPaymentMethod(true);
-    handlePress(0);
-  };
-
-  const handleCheckout = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const response = await fetch(POLAR_CHECKOUT_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.POLAR_API_KEY}`,
-        },
-        body: JSON.stringify({
-          price_id: process.env.POLAR_PRICE_ID,
-          success_url: "monedo://checkout-redirect?checkout_id={CHECKOUT_ID}",
-          cancel_url: "monedo://checkout-redirect",
-        }),
-      });
-
-      if (!response.ok) throw new Error(`Payment failed: ${response.status}`);
-
-      const { url } = await response.json();
-      if (!url) throw new Error("No checkout URL received");
-
-      await Linking.openURL(url);
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setLoading(false);
-    }
+    handlePress(1);
   };
 
   return (
@@ -219,48 +190,64 @@ export default function BuyPremiumModal() {
           >
             <TabsList className="flex-row w-full rounded-xl">
               <TabsTrigger
-                onPress={handleCardPayment}
-                value="card"
-                className="flex-1 rounded-lg"
-              >
-                <Text className="text-black dark:text-black">Polar</Text>
-              </TabsTrigger>
-              <TabsTrigger
                 onPress={handleYapePayment}
                 value="yape"
                 className="flex-1 rounded-lg"
               >
                 <Text className="text-black dark:text-black">Yape</Text>
               </TabsTrigger>
+              <TabsTrigger
+                onPress={handleCardPayment}
+                value="card"
+                className="flex-1 rounded-lg"
+              >
+                <Text className="text-black dark:text-black">Tarjeta</Text>
+              </TabsTrigger>
             </TabsList>
-            <TabsContent value="card">
-              {/* {cardPaymentMethod && (
-                <AnimatedRN.View style={{ opacity: fadeAnimCard }}>
-                  <Stripe />
-                </AnimatedRN.View>
-              )} */}
-              <View className="p-4 bg-white dark:bg-gray-900">
-                {loading ? (
-                  <ActivityIndicator
-                    animating={loading}
-                    color="#FFFFFF"
-                    size="large"
-                  />
-                ) : (
-                  <Button onPress={handleCheckout} disabled={loading}>
-                    <Text className="text-white font-bold">Buy Premium</Text>
-                  </Button>
-                )}
-              </View>
-            </TabsContent>
             <TabsContent value="yape">
-              <AnimatedRN.View style={{ opacity: fadeAnimYape }}>
-                <Yape />
-              </AnimatedRN.View>
+              {yapePaymentMethod && (
+                <AnimatedRN.View style={{ opacity: fadeAnimYape }}>
+                  <Yape />
+                </AnimatedRN.View>
+              )}
+            </TabsContent>
+            <TabsContent value="card">
+              {cardPaymentMethod && (
+                <AnimatedRN.View style={{ opacity: fadeAnimCard }}>
+                  <Image
+                    source={{
+                      uri: "https://threedio-prod-var-cdn.icons8.com/rq/preview_sets/previews/S7L7zuWA_mepY_1h.webp",
+                    }}
+                    style={{
+                      width: 200,
+                      height: 200,
+                      marginHorizontal: "auto",
+                    }}
+                  />
+
+                  <Button
+                    className="mt-4"
+                    onPress={() =>
+                      openBrowserAsync(
+                        "https://sandbox-api.polar.sh/v1/checkout-links/polar_cl_VxYZzkqV8AyaaWQjQLVgrGBVN5h7WiUwyEPMN3iL7O7/redirect"
+                      )
+                    }
+                  >
+                    <Text className="text-white font-bold">
+                      Comprar con Tarjeta
+                    </Text>
+                  </Button>
+                </AnimatedRN.View>
+              )}
             </TabsContent>
           </Tabs>
         </View>
-        <Button onPress={() => router.back()} size="sm" variant="ghost">
+        <Button
+          onPress={() => router.back()}
+          size="sm"
+          className="mt-4"
+          variant="ghost"
+        >
           <Text className="text-brand">Quizás más tarde</Text>
         </Button>
       </ScrollView>
