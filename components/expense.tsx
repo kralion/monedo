@@ -15,6 +15,10 @@ export function Expense({ expense }: { expense: IExpense }) {
         icon.label.toLowerCase() === expense.categories?.label.toLowerCase()
     )?.iconHref ||
     "https://img.icons8.com/?size=160&id=MjAYkOMsbYOO&format=png";
+  const formattedDate = new Date(expense.date).toLocaleDateString("es-ES", {
+    month: "short",
+    day: "2-digit",
+  });
   return (
     <Animated.View entering={FadeIn.duration(200)}>
       <TouchableOpacity
@@ -44,17 +48,15 @@ export function Expense({ expense }: { expense: IExpense }) {
               </Text>
             </View>
           </View>
-          <View className="card-description flex flex-row items-center justify-between">
-            <View className="card-description-amount flex flex-row items-center">
-              <Text className="text-xl text-red-500 dark:text-red-400  font-semibold">
-                <Animated.Text entering={FadeIn.duration(1500)}>
-                  - S/ {expense.amount}
-                </Animated.Text>
-              </Text>
-              <Button variant="ghost" size="icon">
-                <ChevronRight size={20} color="gray" />
-              </Button>
-            </View>
+          <View className="flex flex-col items-end gap-1 px-4">
+            <Text className="text-2xl text-red-500 dark:text-red-400  font-semibold">
+              <Animated.Text entering={FadeIn.duration(1500)}>
+                - S/{expense.amount}
+              </Animated.Text>
+            </Text>
+            <Text className="text-xs text-muted-foreground">
+              {formattedDate}
+            </Text>
           </View>
         </View>
       </TouchableOpacity>

@@ -113,12 +113,7 @@ export default function Home() {
         </Animated.View>
       ) : (
         <>
-          <View
-            className={`pt-16  rounded-b-3xl
-             bg-${isPremium ? "yellow-500" : "primary"}
-
-              `}
-          >
+          <View className="pt-16  rounded-b-3xl">
             <View className="flex flex-row justify-between items-center px-4">
               <View className="flex flex-col">
                 <Text className="text-sm">
@@ -154,21 +149,23 @@ export default function Home() {
                   }}
                 >
                   <View className="flex flex-row justify-center items-center gap-2">
-                    <Text className="font-semibold">Adquiere Premium</Text>
-                    <Crown color="black" size={18} />
+                    <Text className="font-semibold text-white">
+                      Adquiere Premium
+                    </Text>
+                    <Crown color="white" size={18} />
                   </View>
                 </LinearGradient>
               </TouchableOpacity>
             </View>
             <Card />
-            <View style={{ height: 120 }} />
           </View>
 
           <ScrollView
             ref={scrollRef}
-            className="bg-white dark:bg-zinc-900 px-4"
+            className="bg-white dark:bg-zinc-900 "
+            contentContainerClassName="p-4 pt-20 "
           >
-            <View className="flex flex-row justify-between items-center pt-36  w-full pb-4">
+            <View className="flex flex-row justify-between items-center   w-full">
               <Text className="text-xl font-bold dark:text-white">
                 Historial de Gastos
               </Text>
@@ -186,7 +183,7 @@ export default function Home() {
             ) : (
               <LegendList
                 data={expenses}
-                contentContainerStyle={{ paddingBottom: 80 }}
+                contentContainerStyle={{ paddingBottom: 80, paddingTop: 16 }}
                 estimatedItemSize={320}
                 recycleItems
                 ItemSeparatorComponent={() => (
