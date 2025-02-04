@@ -3,7 +3,7 @@ import { createClerkSupabaseClient } from "@/lib/supabase";
 import { useUser } from "@clerk/clerk-expo";
 import { LegendList } from "@legendapp/list";
 import { router, useFocusEffect } from "expo-router";
-import { ChevronRight } from "lucide-react-native";
+import { ChevronRight, Tag } from "lucide-react-native";
 import * as React from "react";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
@@ -66,9 +66,11 @@ export default function Categories() {
         >
           <View className="flex-row items-center gap-3">
             <View
-              className="w-10 h-10 rounded-full items-center justify-center"
+              className="w-14 h-14 rounded-full items-center justify-center"
               style={{ backgroundColor: item.color }}
-            />
+            >
+              <Tag size={20} color="white" />
+            </View>
             <View>
               <Text className="text-lg font-medium">{item.label}</Text>
               <Text className="text-sm text-muted-foreground">
@@ -95,6 +97,14 @@ export default function Categories() {
       keyboardDismissMode="on-drag"
       className="bg-white dark:bg-zinc-900"
     >
+      <View className="flex flex-col p-4 gap-2">
+        <Text className="text-3xl font-bold text-black dark:text-white ">
+          Creadas
+        </Text>
+        <Text className=" text-muted-foreground ">
+          Crea tus propias categorías para organizar tus gastos intuitivamente.
+        </Text>
+      </View>
       <LegendList
         recycleItems
         data={categories}

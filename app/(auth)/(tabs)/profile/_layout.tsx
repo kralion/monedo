@@ -26,7 +26,6 @@ export default function Layout() {
           name="membership"
           options={{
             title: "Plan Actual",
-            headerBackTitle: "Perfil",
             headerTransparent: true,
             headerLargeTitle: true,
           }}
@@ -99,7 +98,6 @@ export default function Layout() {
           name="settings"
           options={{
             title: "Configuración",
-            headerBackTitle: "Perfil",
             headerShadowVisible: false,
             headerLargeTitle: true,
           }}
@@ -109,7 +107,6 @@ export default function Layout() {
           name="personal-info"
           options={{
             title: "Tus Datos",
-            headerBackTitle: "Perfil",
             headerShadowVisible: false,
             headerLargeTitle: true,
           }}
@@ -119,7 +116,6 @@ export default function Layout() {
           name="buy-premium"
           options={{
             title: "Adquirir Premium",
-            headerBackTitle: "Perfil",
             headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
             headerTransparent: Platform.OS === "android" ? false : true,
             headerStyle: {
@@ -131,7 +127,6 @@ export default function Layout() {
           name="categories"
           options={{
             title: "Categorías",
-            headerBackTitle: "Configuración",
             headerShown: false,
           }}
         />
@@ -139,7 +134,6 @@ export default function Layout() {
           name="notifications"
           options={{
             title: "Notificaciones",
-            headerBackTitle: "Perfil",
             headerLargeTitle: true,
             headerShadowVisible: false,
             headerSearchBarOptions: {

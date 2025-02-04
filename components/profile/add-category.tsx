@@ -5,9 +5,9 @@ import BottomSheet, {
   BottomSheetTextInput,
   BottomSheetView,
 } from "@gorhom/bottom-sheet";
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useMemo } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { TouchableOpacity, View } from "react-native";
+import { Alert, TouchableOpacity, View } from "react-native";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
 import { useColorScheme } from "~/lib/useColorScheme";
@@ -30,14 +30,20 @@ const colors = [
 
 export default function AddCategory({
   bottomSheetRef,
-  category,
+  id,
 }: {
-  category?: ICategory;
   bottomSheetRef: React.RefObject<BottomSheet>;
+  id?: number | null;
 }) {
   const { user } = useUser();
   const [color, setColor] = React.useState(0);
-  const { addCategory, updateCategory, loading } = useCategoryStore();
+  const {
+    addCategory,
+    updateCategory,
+    deleteCategory,
+    category,
+    getCategoryById,
+  } = useCategoryStore();
 
   const snapPoints = useMemo(() => ["25%", "50%"], []);
   const { isDarkColorScheme: isDarkMode } = useColorScheme();
@@ -48,6 +54,12 @@ export default function AddCategory({
     formState: { errors },
     reset,
   } = useForm<ICategory>();
+
+  React.useEffect(() => {
+    getCategoryById(id as number);
+    setValue("label", category?.label);
+    setColor(category?.color ? colors.indexOf(category?.color) : 0);
+  }, [id]);
 
   const renderBackdrop = useCallback(
     (props: any) => (
@@ -60,14 +72,6 @@ export default function AddCategory({
     []
   );
 
-  useEffect(() => {
-    if (category) {
-      setValue("label", category?.label);
-      setColor(category?.color ? colors.indexOf(category?.color) : 0);
-    }
-    console.log("category", category);
-  }, []);
-
   const onUpdate = async (data: ICategory) => {
     updateCategory({
       ...data,
@@ -75,6 +79,7 @@ export default function AddCategory({
       created_at: category?.created_at as Date,
     });
     bottomSheetRef.current?.close();
+
     reset();
   };
   const onSubmit = async (data: ICategory) => {
@@ -87,9 +92,6 @@ export default function AddCategory({
     reset();
   };
 
-  useEffect(() => {
-    bottomSheetRef.current?.close();
-  }, []);
   const renderContent = useCallback(
     () => (
       <View className="flex flex-col gap-2 mb-4">
@@ -128,6 +130,9 @@ export default function AddCategory({
       handleIndicatorStyle={{ backgroundColor: "gray" }}
       backgroundStyle={{ backgroundColor: isDarkMode ? "#262626" : "white" }}
       backdropComponent={renderBackdrop}
+      onClose={() => {
+        reset();
+      }}
     >
       <BottomSheetView className="p-4 flex flex-col  gap-4">
         <Controller
@@ -154,12 +159,34 @@ export default function AddCategory({
           )}
         />
         {renderContent()}
-        <Button
-          onPress={category ? handleSubmit(onUpdate) : handleSubmit(onSubmit)}
-          disabled={loading}
-        >
-          <Text>{category ? "Guardar" : "Registrar"}</Text>
+        <Button onPress={id ? handleSubmit(onUpdate) : handleSubmit(onSubmit)}>
+          <Text>{id ? "Guardar" : "Registrar"}</Text>
         </Button>
+        {id && (
+          <Button
+            variant="destructive"
+            onPress={() => {
+              Alert.alert(
+                "¿Estás seguro?",
+                "Esta acción eliminará la categoría y no se puede deshacer",
+                [
+                  {
+                    text: "Cancelar",
+                    style: "cancel",
+                  },
+                  {
+                    text: "Eliminar",
+                    onPress: () => deleteCategory(category?.id as number),
+                    style: "destructive",
+                  },
+                ],
+                { cancelable: false }
+              );
+            }}
+          >
+            <Text>Eliminar</Text>
+          </Button>
+        )}
       </BottomSheetView>
     </BottomSheet>
   );

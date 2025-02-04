@@ -33,6 +33,7 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
       .select("*, categories:id_category(*)")
       .eq("id_category", categoryId);
     if (error) throw error;
+    set({ loading: false });
     return data;
   },
 

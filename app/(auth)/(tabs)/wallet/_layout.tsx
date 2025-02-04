@@ -114,7 +114,6 @@ export default function Layout() {
           options={{
             title: "Detalles",
             headerLargeTitle: true,
-            headerBackTitle: "Atrás",
             headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
             headerTransparent: Platform.OS === "android" ? false : true,
             headerShadowVisible: false,

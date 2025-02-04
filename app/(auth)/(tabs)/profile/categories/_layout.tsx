@@ -1,16 +1,15 @@
 import BottomSheet from "@gorhom/bottom-sheet";
 import { router, Stack } from "expo-router";
 import React, { useRef } from "react";
-import { View } from "react-native";
+import { Button as NativeButton, Platform, View } from "react-native";
 import AddCategory from "~/components/profile/add-category";
-import { useCategoryStore } from "~/stores/category";
-import { Button as NativeButton, Platform } from "react-native";
-import { Text } from "~/components/ui/text";
 import { Button } from "~/components/ui/button";
+import { Text } from "~/components/ui/text";
 
 export default function CategoriesLayout() {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const { category } = useCategoryStore();
+  const [id, setId] = React.useState<number | null>(null);
+
   return (
     <View className="flex-1">
       <Stack>
@@ -18,19 +17,13 @@ export default function CategoriesLayout() {
           name="index"
           options={{
             title: "Categorías",
-            headerBackTitle: "Configuración",
-            headerLargeTitle: true,
+            headerLargeTitle: false,
             headerShadowVisible: false,
-            headerSearchBarOptions: {
-              placeholder: "Buscar ...",
-              hideWhenScrolling: false,
-              cancelButtonText: "Cancelar",
-            },
             headerLargeTitleShadowVisible: false,
             headerLeft: () => {
               return Platform.OS === "ios" ? (
                 <NativeButton
-                  title="Atrás"
+                  title="Perfil"
                   color="#27BE8B"
                   onPress={() => {
                     router.back();
@@ -53,6 +46,7 @@ export default function CategoriesLayout() {
                   title="Agregar"
                   color="#27BE8B"
                   onPress={() => {
+                    setId(null);
                     bottomSheetRef.current?.expand();
                   }}
                 />
@@ -60,6 +54,7 @@ export default function CategoriesLayout() {
                 <Button
                   variant="link"
                   onPress={() => {
+                    setId(null);
                     bottomSheetRef.current?.expand();
                   }}
                 >
@@ -71,26 +66,29 @@ export default function CategoriesLayout() {
         />
         <Stack.Screen
           name="details/[id]"
-          options={{
-            title: "Gastos",
-            headerShadowVisible: false,
-            headerLargeTitle: true,
-            headerRight: () => {
-              return (
-                <NativeButton
-                  title="Editar"
-                  color="#41D29B"
-                  onPress={() => {
-                    bottomSheetRef.current?.expand();
-                  }}
-                />
-              );
-            },
+          options={({ route }) => {
+            const { id }: { id: number } = route.params as { id: number };
+            return {
+              title: "Gasto",
+              headerShadowVisible: false,
+              headerLargeTitle: true,
+              headerRight: () => {
+                return (
+                  <NativeButton
+                    title="Editar"
+                    color="#41D29B"
+                    onPress={() => {
+                      bottomSheetRef.current?.expand();
+                      setId(id);
+                    }}
+                  />
+                );
+              },
+            };
           }}
         />
       </Stack>
-
-      <AddCategory category={category} bottomSheetRef={bottomSheetRef} />
+      <AddCategory id={id} bottomSheetRef={bottomSheetRef} />
     </View>
   );
 }

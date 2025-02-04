@@ -11,7 +11,6 @@ export default function Layout() {
           const { id } = route.params as { id: number };
           return {
             title: id ? "Editar Gasto" : "Nuevo Gasto",
-            headerBackTitle: "Gastos",
             presentation: "modal",
             headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
             headerTransparent: Platform.OS === "android" ? false : true,
@@ -23,7 +22,6 @@ export default function Layout() {
         name="(modals)/details/[id]"
         options={{
           title: "Detalles",
-          headerBackTitle: "Gastos",
           headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
           headerTransparent: Platform.OS === "android" ? false : true,
           headerShadowVisible: false,
