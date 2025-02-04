@@ -25,6 +25,7 @@ import { setAndroidNavigationBar } from "~/lib/android-navigation-bar";
 import { NAV_THEME } from "~/lib/constants";
 import { useColorScheme } from "~/lib/useColorScheme";
 import QuickActionsSetup from "../components/quick-actions";
+import WhatsNewModal from "~/components/news-modal";
 
 const LIGHT_THEME: Theme = {
   ...DefaultTheme,
@@ -137,6 +138,7 @@ export default function RootLayout() {
         <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
         <ClerkLoaded>
           <QuickActionsSetup />
+          <WhatsNewModal />
           <RootLayoutNav />
           <PortalHost />
         </ClerkLoaded>
