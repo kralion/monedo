@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Modal, View, Text, Pressable } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Image } from "expo-image";
+import React, { useEffect, useState } from "react";
+import { Modal, Text, View } from "react-native";
 import { Button } from "./ui/button";
 const CURRENT_VERSION = "1.0.1";
-import { MaterialIcons } from "@expo/vector-icons";
-import { Image } from "expo-image";
 
 type Feature = {
   icon: string;

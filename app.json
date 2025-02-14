@@ -8,11 +8,6 @@
     "icon": "./assets/icon.png",
     "scheme": "monedo",
     "userInterfaceStyle": "automatic",
-    "splash": {
-      "image": "./assets/icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#41D29B"
-    },
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true
@@ -33,10 +28,7 @@
               "pathPrefix": "/monedo"
             }
           ],
-          "category": [
-            "BROWSABLE",
-            "DEFAULT"
-          ]
+          "category": ["BROWSABLE", "DEFAULT"]
         }
       ]
     },
@@ -83,13 +75,13 @@
       [
         "expo-splash-screen",
         {
-          "backgroundColor": "#232323",
-          "resizeMode": "cover",
-          "image": "./assets/images/splash.png",
+          "backgroundColor": "#FFFFFF",
+          "image": "./assets/images/splash-icon.png",
           "dark": {
-            "image": "./assets/splash-dark.png",
+            "image": "./assets/images/splash-icon-dark.png",
             "backgroundColor": "#000000"
-          }
+          },
+          "imageWidth": 200
         }
       ]
     ],
