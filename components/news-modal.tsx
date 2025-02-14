@@ -55,6 +55,9 @@ const WhatsNewModal = () => {
 
   return (
     <Modal visible={showModal} animationType="slide">
+      <Button className="mt-10 web:md:hidden native:hidden" onPress={() => setShowModal(false)}>
+          <Text className="text-white text-lg font-mono">Continuar</Text>
+        </Button>
       <View className="flex-1 bg-white p-6">
         <Image
           source={require("../assets/icons/default.png")}
