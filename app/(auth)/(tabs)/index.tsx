@@ -84,7 +84,7 @@ export default function Home() {
                   Ver Menos
                 </Text>
               </View>
-              <ScrollView>
+              <ScrollView contentContainerClassName="pb-64">
                 {Object.keys(groupedExpenses).map((dateLabel) => (
                   <View key={dateLabel}>
                     <Text className="text-lg  px-4 text-muted-foreground">
@@ -163,7 +163,7 @@ export default function Home() {
           <ScrollView
             ref={scrollRef}
             className="bg-white dark:bg-zinc-900 "
-            contentContainerClassName="p-4 pt-20 "
+            contentContainerClassName="p-4 pt-20 pb-96"
           >
             <View className="flex flex-row justify-between items-center   w-full">
               <Text className="text-xl font-bold dark:text-white">
@@ -212,7 +212,7 @@ export default function Home() {
                 onPress={scrollToTop}
                 size="icon"
                 variant="outline"
-                className="w-14 h-14 rounded-full absolute z-50 right-2 bottom-12 shadow-xl"
+                className="w-16 h-16 rounded-full absolute z-50 right-20 bottom-5 shadow"
               >
                 <ChevronUp color="gray" />
               </Button>
