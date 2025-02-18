@@ -30,7 +30,10 @@ export default function IconScreen() {
   const iconDefault = "default";
   // const icon = getAppIcon();
   return (
-    <View style={{ flex: 1, paddingTop: headerHeight }}>
+    <View
+      style={{ flex: 1, paddingTop: headerHeight }}
+      className="web:md:w-1/2 mx-auto"
+    >
       {ICONS.map((icon) => (
         <TouchableOpacity
           className={`flex flex-row justify-between py-2 pl-2 pr-6 mx-4 my-2 items-center border rounded-2xl border-zinc-200 dark:border-zinc-700 ${

@@ -32,7 +32,7 @@ function RadioGroupItemWithLabel({
   label: string;
 }) {
   return (
-    <View className="flex-col gap-2 items-center">
+    <View className="flex-col gap-2 items-center ">
       <RadioGroupItem
         aria-labelledby={`label-for-${value}`}
         value={value}
@@ -64,7 +64,7 @@ export default function SettingsScreen() {
 
   return (
     <ScrollView
-      className=" p-4 bg-white dark:bg-zinc-900"
+      className=" p-4 bg-white dark:bg-zinc-900 web:md:w-1/2 mx-auto"
       contentInsetAdjustmentBehavior="automatic"
     >
       <RadioGroup

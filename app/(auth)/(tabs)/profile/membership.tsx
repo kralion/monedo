@@ -21,7 +21,7 @@ export default function Membership() {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      className="bg-white dark:bg-zinc-900"
+      className="bg-white dark:bg-zinc-900 web:md:w-1/2 mx-auto"
     >
       <View className="flex flex-col gap-6 px-4 py-8 ">
         <View className="flex flex-row gap-4 items-center ">

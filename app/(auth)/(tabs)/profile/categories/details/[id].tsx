@@ -23,7 +23,10 @@ export default function CategoryDetails() {
     );
 
   return (
-    <ScrollView contentInsetAdjustmentBehavior="automatic">
+    <ScrollView
+      className="web:md:w-1/2 mx-auto"
+      contentInsetAdjustmentBehavior="automatic"
+    >
       <LegendList
         contentContainerStyle={{
           paddingBottom: 50,

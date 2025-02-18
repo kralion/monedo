@@ -2,7 +2,7 @@ import { useOAuth } from "@clerk/clerk-expo";
 import * as Linking from "expo-linking";
 import * as WebBrowser from "expo-web-browser";
 import React from "react";
-import { Platform, ScrollView, View } from "react-native";
+import { Platform, ScrollView, useWindowDimensions, View } from "react-native";
 import SurfSvg from "@/assets/svgs/surf.svg";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
@@ -26,10 +26,11 @@ export const useWarmUpBrowser = () => {
 WebBrowser.maybeCompleteAuthSession();
 
 export default function SignInScreen() {
+  const isMobile = useWindowDimensions().width < 768;
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      className="bg-white  dark:bg-zinc-900"
+      className="bg-white  dark:bg-zinc-900 "
     >
       <View className="flex flex-col gap-12 h-screen-safe justify-center  web:pt-32 relative">
         <Animated.View entering={FadeInDown.duration(400)}>
@@ -95,9 +96,9 @@ export default function SignInScreen() {
         <SurfSvg
           style={{
             position: "absolute",
-            bottom: -130,
+            bottom: isMobile ? -130 : -200,
             left: 0,
-            height: "50%",
+            height: isMobile ? "50%" : "100%",
             width: "100%",
             zIndex: -1,
           }}
@@ -119,7 +120,7 @@ export default function SignInScreen() {
             Vincula una de tus cuentas para continuar
           </Text>
         </View>
-        <View className="flex flex-col gap-4 justify-center align-middle w-full p-4">
+        <View className="flex flex-col gap-4 justify-center align-middle w-full p-4 web:md:w-1/2 mx-auto">
           <SignInWithOAuthGoogle />
           <SignInWithOAuthFacebook />
           <SignInWithOAuthTiktok />
@@ -154,7 +155,6 @@ export const SignInWithOAuthGoogle = () => {
   return (
     <Button
       className="flex flex-row gap-2 items-center"
-      variant="secondary"
       size="lg"
       onPress={onPress}
     >

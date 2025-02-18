@@ -30,7 +30,7 @@ export default function Notifications() {
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       keyboardDismissMode="on-drag"
-      className="bg-white dark:bg-zinc-900"
+      className="bg-white dark:bg-zinc-900 web:md:w-1/2 mx-auto"
     >
       <LegendList
         data={notifications}

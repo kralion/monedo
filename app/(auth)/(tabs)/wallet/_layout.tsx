@@ -91,8 +91,8 @@ export default function Layout() {
             title: "Billetera",
             headerLargeTitle: true,
             headerShadowVisible: false,
-            headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
-            headerTransparent: Platform.OS === "android" ? false : true,
+            headerBlurEffect: Platform.OS === "ios" ? "regular" : "none",
+            headerTransparent: Platform.OS === "ios" ? true : false,
             headerLargeTitleShadowVisible: false,
             headerRight: () => {
               return (
@@ -114,8 +114,8 @@ export default function Layout() {
           options={{
             title: "Detalles",
             headerLargeTitle: true,
-            headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
-            headerTransparent: Platform.OS === "android" ? false : true,
+            headerBlurEffect: Platform.OS === "ios" ? "regular" : "none",
+            headerTransparent: Platform.OS === "ios" ? true : false,
             headerShadowVisible: false,
             headerRight: () => {
               return Platform.OS === "ios" ? (
@@ -141,9 +141,9 @@ export default function Layout() {
             title: "Editar Registro",
             headerBackVisible: true,
             headerLargeTitle: true,
-            headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
-            headerTransparent: Platform.OS === "android" ? false : true,
-            headerShadowVisible: true,
+            headerBlurEffect: Platform.OS === "ios" ? "regular" : "none",
+            headerTransparent: Platform.OS === "ios" ? true : false,
+            headerShadowVisible: false,
             presentation: "modal",
 
             headerLeft: () => {

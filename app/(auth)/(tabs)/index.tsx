@@ -71,7 +71,7 @@ export default function Home() {
     <View>
       {showAll ? (
         <Animated.View style={{ opacity: 60 }}>
-          <SafeAreaView>
+          <SafeAreaView className="web:md:w-1/2 mx-auto">
             <View className="flex flex-col gap-5">
               <View className="flex flex-row justify-between items-center px-4 pt-4">
                 <Text className="text-3xl font-bold">Gastos Recientes</Text>
@@ -113,7 +113,7 @@ export default function Home() {
         </Animated.View>
       ) : (
         <>
-          <View className="pt-16  rounded-b-3xl">
+          <View className="pt-16  rounded-b-3xl web:md:w-1/2 mx-auto">
             <View className="flex flex-row justify-between items-center px-4">
               <View className="flex flex-col">
                 <Text className="text-sm">
@@ -162,7 +162,7 @@ export default function Home() {
 
           <ScrollView
             ref={scrollRef}
-            className="bg-white dark:bg-zinc-900 "
+            className="bg-white dark:bg-zinc-900 web:md:w-1/2 mx-auto"
             contentContainerClassName="p-4 pt-20 pb-96"
           >
             <View className="flex flex-row justify-between items-center   w-full">

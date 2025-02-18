@@ -16,7 +16,7 @@ export default function Feedback() {
   return (
     <ScrollView
       contentContainerStyle={{ flexGrow: 1 }}
-      className="bg-gray-100 p-4 dark:bg-zinc-900"
+      className="bg-gray-100 p-4 dark:bg-zinc-900 web:md:w-1/2 mx-auto"
     >
       <View className="flex-1 mt-10">
         <Image

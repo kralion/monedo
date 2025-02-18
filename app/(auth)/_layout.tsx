@@ -22,8 +22,8 @@ export default function Layout() {
         name="(modals)/details/[id]"
         options={{
           title: "Detalles",
-          headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
-          headerTransparent: Platform.OS === "android" ? false : true,
+          headerBlurEffect: Platform.OS === "ios" ? "regular" : "none",
+          headerTransparent: Platform.OS === "ios" ? false : true,
           headerShadowVisible: false,
         }}
       />
