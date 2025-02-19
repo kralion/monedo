@@ -32,7 +32,7 @@ export default function IconScreen() {
   return (
     <View
       style={{ flex: 1, paddingTop: headerHeight }}
-      className="web:md:w-1/2 mx-auto"
+      className="web:md:w-1/2 web:md:mx-auto"
     >
       {ICONS.map((icon) => (
         <TouchableOpacity

@@ -26,8 +26,9 @@ export default function Layout() {
           name="membership"
           options={{
             title: "Plan Actual",
-            headerTransparent: true,
+            headerBackTitle: "Perfil",
             headerLargeTitle: true,
+            headerLargeTitleShadowVisible: false,
           }}
         />
         <Stack.Screen
@@ -116,11 +117,9 @@ export default function Layout() {
           name="buy-premium"
           options={{
             title: "Adquirir Premium",
-            headerBlurEffect: Platform.OS === "android" ? "none" : "regular",
-            headerTransparent: Platform.OS === "android" ? false : true,
-            headerStyle: {
-              backgroundColor: "transparent",
-            },
+            headerBackTitle: "Perfil",
+            headerBlurEffect: Platform.OS === "ios" ? "regular" : "none",
+            headerTransparent: Platform.OS === "ios" ? true : false,
           }}
         />
         <Stack.Screen

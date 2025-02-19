@@ -91,7 +91,6 @@ export default function BuyPremiumModal() {
               public_metadata: { is_premium: true },
             }),
           });
-          console.log("updated");
 
           toast.success("Premium activated!");
           router.back();

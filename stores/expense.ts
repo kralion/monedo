@@ -12,15 +12,11 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
   totalExpenses: 0,
   addExpense: async (expense: IExpense) => {
     set({ loading: true });
-    set((state) => ({
-      expenses: [...state.expenses, { ...expense, id: Date.now() }],
-    }));
-
     const { error } = await supabase.from("expenses").insert(expense);
+    await get().getRecentExpenses(expense.user_id);
+
     if (error) {
       toast.error("Ocurrió un error al registrar el gasto");
-      console.log(error);
-      await get().getRecentExpenses(expense.user_id);
     }
     toast.success("Gasto registrado");
     set({ loading: false });
@@ -39,17 +35,16 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
 
   updateExpense: async (expense: IExpense) => {
     set({ loading: true });
-    const { error } = await supabase
+    const { error, data } = await supabase
       .from("expenses")
       .update(expense)
-      .eq("id", expense.id);
+      .eq("id", expense.id)
+      .select()
+      .single();
+    set({ expense: data });
+    await get().getRecentExpenses(expense.user_id);
     if (error) {
       toast.error("Ocurrió un error al actualizar el gasto");
-      console.log(error);
-      await get().getRecentExpenses(expense.user_id);
-    } else {
-      toast.success("Gasto actualizado exitosamente");
-      router.back();
     }
     set({ loading: false });
   },
@@ -65,7 +60,6 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
       await get().getRecentExpenses(currentUserId as string);
       return;
     }
-
     toast.success("Gasto eliminado exitosamente");
     router.back();
     set({ loading: false });

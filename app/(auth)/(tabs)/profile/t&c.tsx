@@ -108,10 +108,14 @@ export default function TermsConditions() {
           renderItem={({ item }) => (
             <AccordionItem value={item.id}>
               <AccordionTrigger>
-                <Text className="font-semibold text-lg">{item.title}</Text>
+                <Text className="font-semibold text-lg text-black dark:text-white">
+                  {item.title}
+                </Text>
               </AccordionTrigger>
               <AccordionContent>
-                <Text>{item.content}</Text>
+                <Text className="text-muted-foreground dark:text-white">
+                  {item.content}
+                </Text>
               </AccordionContent>
             </AccordionItem>
           )}

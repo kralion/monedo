@@ -1,11 +1,10 @@
 import { expensesIdentifiers } from "@/constants/ExpensesIdentifiers";
 import { router } from "expo-router";
-import { ChevronRight } from "lucide-react-native";
 import React from "react";
 import { Image, TouchableOpacity, View } from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
+import { formatDate } from "~/helpers/dateFormatter";
 import { IExpense } from "~/interfaces";
-import { Button } from "./ui/button";
 import { Text } from "./ui/text";
 
 export function Expense({ expense }: { expense: IExpense }) {
@@ -15,10 +14,7 @@ export function Expense({ expense }: { expense: IExpense }) {
         icon.label.toLowerCase() === expense.categories?.label.toLowerCase()
     )?.iconHref ||
     "https://img.icons8.com/?size=160&id=MjAYkOMsbYOO&format=png";
-  const formattedDate = new Date(expense.date).toLocaleDateString("es-ES", {
-    month: "short",
-    day: "2-digit",
-  });
+
   return (
     <Animated.View entering={FadeIn.duration(200)}>
       <TouchableOpacity
@@ -55,7 +51,7 @@ export function Expense({ expense }: { expense: IExpense }) {
               </Animated.Text>
             </Text>
             <Text className="text-xs text-muted-foreground">
-              {formattedDate}
+              {formatDate(expense?.date as Date)}
             </Text>
           </View>
         </View>
