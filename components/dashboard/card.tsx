@@ -46,12 +46,15 @@ export default function Card() {
         }
       }}
     >
-      <View className="relative w-[90%] mx-auto my-10   h-[200px] ">
+      <View
+        className="relative w-full
+      mx-auto my-10   h-[200px] "
+      >
         <Animated.View entering={FadeInDown}>
-          <View className="absolute top-16 bg-green-800 shadow-sm rounded-xl w-full h-[200px] scale-[0.70]" />
+          <View className="absolute top-16 bg-green-800 shadow-sm rounded-xl w-full h-[200px] scale-[0.75]" />
         </Animated.View>
         <Animated.View entering={FadeInDown}>
-          <View className="absolute top-8 bg-green-700 shadow-sm rounded-xl w-full h-[200px] scale-[0.85]" />
+          <View className="absolute top-8 bg-green-700 shadow-sm rounded-xl w-full h-[200px] scale-[0.90]" />
         </Animated.View>
         <Animated.View entering={FadeInUp}>
           <LinearGradient
