@@ -4,6 +4,7 @@ import { useLocalSearchParams } from "expo-router";
 import React from "react";
 import { ActivityIndicator, ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { ExpenseDetail } from "~/components/expense-detail";
 import { IExpense } from "~/interfaces";
 import { useExpenseStore } from "~/stores/expense";
 
@@ -37,7 +38,9 @@ export default function CategoryDetails() {
         ItemSeparatorComponent={() => (
           <View className="h-[0.75px] bg-zinc-200 dark:bg-zinc-700 ml-[60px]" />
         )}
-        renderItem={({ item: expense, index }) => <Expense expense={expense} />}
+        renderItem={({ item: expense, index }) => (
+          <ExpenseDetail expense={expense} />
+        )}
         recycleItems
       />
     </ScrollView>

@@ -14,7 +14,6 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
     set({ loading: true });
     const { error } = await supabase.from("expenses").insert(expense);
     await get().getRecentExpenses(expense.user_id);
-
     if (error) {
       toast.error("Ocurrió un error al registrar el gasto");
     }

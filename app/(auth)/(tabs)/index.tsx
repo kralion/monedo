@@ -10,20 +10,16 @@ import {
   ScrollView,
   View,
 } from "react-native";
-import Animated, {
-  useAnimatedRef,
-  useAnimatedStyle,
-  useScrollViewOffset,
-  withTiming,
-} from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import { Expense } from "~/components/expense";
 import { Text } from "~/components/ui/text";
 import { groupExpensesByDate } from "~/helpers/groupExpenseByDate";
-import { useUserPlan } from "~/hooks/useUserPlan";
+import { useBudgetStore } from "~/stores/budget";
 import { useExpenseStore } from "~/stores/expense";
 
 export default function Home() {
   const { user, isSignedIn } = useUser();
+  const { checkBudget } = useBudgetStore();
   const [showAll, setShowAll] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
@@ -31,6 +27,7 @@ export default function Home() {
   const onRefresh = async () => {
     setRefreshing(true);
     await getRecentExpenses(user?.id as string);
+    checkBudget(user?.id as string);
     setRefreshing(false);
   };
   const { getRecentExpenses, expenses } = useExpenseStore();
@@ -47,15 +44,6 @@ export default function Home() {
     return;
   }
 
-  const scrollRef = useAnimatedRef<Animated.ScrollView>();
-  const scrollHandler = useScrollViewOffset(scrollRef);
-
-  const buttonStyle = useAnimatedStyle(() => {
-    return {
-      opacity: scrollHandler.value > 2 ? withTiming(1) : withTiming(0),
-    };
-  });
-
   if (!isSignedIn) {
     router.replace("/(public)/sign-in");
   }
@@ -66,7 +54,7 @@ export default function Home() {
   }));
 
   return (
-    <View>
+    <View className="flex-1">
       {showAll ? (
         <ScrollView
           contentContainerClassName="pb-14"
@@ -100,7 +88,7 @@ export default function Home() {
                           paddingHorizontal: 20,
                         }}
                         data={groupExpensesByDate(parsedExpenses)[dateLabel]}
-                        estimatedItemSize={320}
+                        estimatedItemSize={400}
                         ItemSeparatorComponent={() => (
                           <View className="h-[0.75px] bg-zinc-200 dark:bg-zinc-700 ml-[60px]" />
                         )}
@@ -118,7 +106,6 @@ export default function Home() {
         </ScrollView>
       ) : (
         <ScrollView
-          ref={scrollRef}
           className="bg-white dark:bg-zinc-900 web:md:w-1/2 web:md:mx-auto"
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

@@ -1,5 +1,6 @@
 import BottomSheet from "@gorhom/bottom-sheet";
 import { router, Stack } from "expo-router";
+import { ChevronLeft } from "lucide-react-native";
 import React, { useRef } from "react";
 import { Button as NativeButton, Platform, View } from "react-native";
 import AddCategory from "~/components/profile/add-category";
@@ -20,26 +21,19 @@ export default function CategoriesLayout() {
             headerLargeTitle: false,
             headerShadowVisible: false,
             headerLargeTitleShadowVisible: false,
-            headerLeft: () => {
-              return Platform.OS === "ios" ? (
-                <NativeButton
-                  title="Perfil"
-                  color="#27BE8B"
-                  onPress={() => {
-                    router.back();
-                  }}
-                />
-              ) : (
-                <Button
-                  variant="link"
-                  onPress={() => {
-                    router.back();
-                  }}
-                >
-                  <Text>Configuración</Text>
-                </Button>
-              );
-            },
+            headerLeft: () => (
+              <Button
+                variant="secondary"
+                onPress={() => {
+                  router.back();
+                }}
+                className="rounded-full"
+                size="icon"
+              >
+                <ChevronLeft size={20} color="#41D29B" />
+              </Button>
+            ),
+
             headerRight: () => {
               return Platform.OS === "ios" ? (
                 <NativeButton
@@ -69,7 +63,7 @@ export default function CategoriesLayout() {
           options={({ route }) => {
             const { id }: { id: number } = route.params as { id: number };
             return {
-              title: "Gasto",
+              title: "Gastos",
               headerShadowVisible: false,
               headerLargeTitle: true,
               headerRight: () => {

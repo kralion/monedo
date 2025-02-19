@@ -10,6 +10,7 @@ import {
   UserSquare2,
 } from "lucide-react-native";
 import { ScrollView, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
@@ -22,41 +23,36 @@ export default function ProfileScreen() {
   const router = useRouter();
 
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior="automatic"
-      className="bg-white dark:bg-zinc-900 web:md:w-1/2 web:md:mx-auto"
-      contentContainerStyle={{ paddingBottom: 100 }}
-    >
-      <View>
-        <View className="flex flex-col items-center">
-          <Avatar className="bg-teal-500 self-center w-36 h-36" alt="avatar">
-            <AvatarImage
-              accessibilityLabel="avatar"
-              source={{ uri: user?.imageUrl }}
-            />
-            <AvatarFallback className="rounded-xl bg-slate-500" />
-          </Avatar>
+    <SafeAreaView className="bg-white dark:bg-zinc-900 web:md:w-1/2 web:md:mx-auto justify-center  flex-1">
+      <View className="flex flex-col items-center">
+        <Avatar className="bg-teal-500 self-center w-36 h-36" alt="avatar">
+          <AvatarImage
+            accessibilityLabel="avatar"
+            source={{ uri: user?.imageUrl }}
+          />
+          <AvatarFallback className="rounded-xl bg-slate-500" />
+        </Avatar>
 
-          <View className="flex flex-col gap-1">
-            <Text className="font-bold text-2xl dark:text-white">{`${user?.firstName} ${user?.lastName}`}</Text>
-            <Badge
-              className={` text-white py-2  rounded-full
+        <View className="flex flex-col gap-1">
+          <Text className="font-bold text-2xl dark:text-white">{`${user?.firstName} ${user?.lastName}`}</Text>
+          <Badge
+            className={` text-white py-2  rounded-full
                 bg-${
                   has?.({ permission: "org:premium:plan" })
                     ? "green-500"
                     : "orange-500"
                 }
                 `}
-            >
-              <Text className="text-md">
-                {`Cuenta ${
-                  has?.({ permission: "org:premium:plan" }) ? "Premium" : "Free"
-                }`}
-              </Text>
-            </Badge>
-          </View>
+          >
+            <Text className="text-md">
+              {`Cuenta ${
+                has?.({ permission: "org:premium:plan" }) ? "Premium" : "Free"
+              }`}
+            </Text>
+          </Badge>
         </View>
       </View>
+
       <View className="flex flex-col mt-10 items-start ml-4">
         <Button
           onPress={() => router.push("/(auth)/(tabs)/profile/personal-info")}
@@ -130,6 +126,6 @@ export default function ProfileScreen() {
       <View className="absolute bottom-[60px] right-[-100px] w-[200px] h-[300px] rounded-xl rotate-[-40deg]  bg-green-400 shadow-lg" />
 
       <View className="absolute bottom-[20px] right-[-100px] w-[200px] h-[300px] rounded-xl rotate-[-50deg] bg-primary shadow-lg" />
-    </ScrollView>
+    </SafeAreaView>
   );
 }

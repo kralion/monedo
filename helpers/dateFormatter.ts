@@ -5,11 +5,18 @@ import {
   format,
 } from "date-fns";
 
-export function formatDate(fecha: Date): string {
+export function formatDate(fecha: Date | string): string {
+  let date: Date;
+  if (typeof fecha === "string") {
+    date = new Date(fecha);
+  } else {
+    date = fecha;
+  }
+
   const now = new Date();
-  const minutesDifference = differenceInMinutes(now, fecha);
-  const hoursDifference = differenceInHours(now, fecha);
-  const daysDifference = differenceInDays(now, fecha);
+  const minutesDifference = differenceInMinutes(now, date);
+  const hoursDifference = differenceInHours(now, date);
+  const daysDifference = differenceInDays(now, date);
 
   if (minutesDifference < 60) {
     return (
@@ -18,19 +25,19 @@ export function formatDate(fecha: Date): string {
       " minuto" +
       (minutesDifference > 1 ? "s" : "")
     );
-  } else if (daysDifference < 1 && fecha.getDate() === now.getDate()) {
+  } else if (daysDifference < 1 && date.getDate() === now.getDate()) {
     return (
       "hace " + hoursDifference + " hora" + (hoursDifference > 1 ? "s" : "")
     );
   } else if (
     daysDifference === 1 ||
-    (daysDifference < 1 && fecha.getDate() !== now.getDate())
+    (daysDifference < 1 && date.getDate() !== now.getDate())
   ) {
     return "ayer";
   } else if (daysDifference <= 3) {
     return daysDifference + " día" + (daysDifference > 1 ? "s" : "") + " atrás";
-  } else if (fecha instanceof Date && !isNaN(fecha.getTime())) {
-    return format(fecha, "dd/MM/yyyy");
+  } else if (date instanceof Date && !isNaN(date.getTime())) {
+    return format(date, "dd/MM/yyyy");
   } else {
     console.error("Fecha inválida:", fecha);
     return "";

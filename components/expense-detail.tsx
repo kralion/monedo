@@ -6,9 +6,8 @@ import Animated, { FadeIn } from "react-native-reanimated";
 import { formatDate } from "~/helpers/dateFormatter";
 import { IExpense } from "~/interfaces";
 import { Text } from "./ui/text";
-import { ChevronRight } from "lucide-react-native";
 
-export function Expense({ expense }: { expense: IExpense }) {
+export function ExpenseDetail({ expense }: { expense: IExpense }) {
   const assetIndentificador =
     expensesIdentifiers.find(
       (icon) =>
@@ -18,12 +17,7 @@ export function Expense({ expense }: { expense: IExpense }) {
 
   return (
     <Animated.View entering={FadeIn.duration(200)}>
-      <TouchableOpacity
-        onPress={() => {
-          router.push(`/(auth)/(modals)/details/${expense.id}`);
-        }}
-        className="card active:opacity-80 flex flex-row gap-1   items-center"
-      >
+      <TouchableOpacity className="card active:opacity-80 flex flex-row gap-1   items-center">
         <Image
           width={50}
           height={50}
@@ -45,18 +39,15 @@ export function Expense({ expense }: { expense: IExpense }) {
               </Text>
             </View>
           </View>
-          <View className="flex flex-row  items-center mr-4 gap-4">
-            <View className="flex flex-col items-end gap-1 ">
-              <Text className="text-2xl text-red-500 dark:text-red-400  font-semibold">
-                <Animated.Text entering={FadeIn.duration(1500)}>
-                  - S/{expense.amount}
-                </Animated.Text>
-              </Text>
-              <Text className="text-xs text-muted-foreground">
-                {formatDate(expense?.date as Date)}
-              </Text>
-            </View>
-            <ChevronRight size={20} color="gray" />
+          <View className="flex flex-col items-end gap-1 px-4">
+            <Text className="text-2xl text-red-500 dark:text-red-400  font-semibold">
+              <Animated.Text entering={FadeIn.duration(1500)}>
+                - S/{expense.amount}
+              </Animated.Text>
+            </Text>
+            <Text className="text-xs text-muted-foreground">
+              {formatDate(expense?.date as Date)}
+            </Text>
           </View>
         </View>
       </TouchableOpacity>

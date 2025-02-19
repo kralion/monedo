@@ -109,6 +109,7 @@ export default function Layout() {
           options={{
             title: "Tus Datos",
             headerShadowVisible: false,
+            headerBackTitle: "Perfil",
             headerLargeTitle: true,
           }}
         />

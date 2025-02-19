@@ -34,7 +34,8 @@ export default function TabLayout() {
         <Tabs.Screen
           name="index"
           options={{
-            title: "",
+            title: "Inicio",
+            headerTitle: () => null,
             headerShown: true,
             headerShadowVisible: false,
             headerBackground: () => <View className="h-64 w-full" />,
