@@ -64,7 +64,7 @@ export default function SettingsScreen() {
 
   return (
     <ScrollView
-      className=" p-4 bg-white dark:bg-zinc-900 web:md:w-1/2 mx-auto"
+      className=" p-4 bg-white dark:bg-zinc-900 web:md:w-1/2 web:md:mx-auto"
       contentInsetAdjustmentBehavior="automatic"
     >
       <RadioGroup

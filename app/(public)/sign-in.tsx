@@ -120,7 +120,7 @@ export default function SignInScreen() {
             Vincula una de tus cuentas para continuar
           </Text>
         </View>
-        <View className="flex flex-col gap-4 justify-center align-middle w-full p-4 web:md:w-1/2 mx-auto">
+        <View className="flex flex-col gap-4 justify-center align-middle w-full p-4 web:md:w-1/2 web:md:mx-auto">
           <SignInWithOAuthGoogle />
           <SignInWithOAuthFacebook />
           <SignInWithOAuthTiktok />

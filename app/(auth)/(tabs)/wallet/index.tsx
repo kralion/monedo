@@ -2,8 +2,6 @@ import NoData2Svg from "@/assets/svgs/no-data.svg";
 import { Budget } from "@/components/wallet/budget";
 import { useUser } from "@clerk/clerk-expo";
 import { LegendList } from "@legendapp/list";
-
-import { FlashList } from "@shopify/flash-list";
 import { Image } from "expo-image";
 import React, { useEffect, useState } from "react";
 import { ScrollView, View } from "react-native";
@@ -52,7 +50,7 @@ export default function Wallet() {
   return (
     <ScrollView
       ref={scrollRef}
-      className="bg-white dark:bg-zinc-900 web:md:w-1/2 mx-auto"
+      className="bg-white dark:bg-zinc-900 web:md:w-1/2 web:md:mx-auto"
       contentInsetAdjustmentBehavior="automatic"
       keyboardDismissMode="on-drag"
     >

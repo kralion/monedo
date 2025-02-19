@@ -87,7 +87,7 @@ export default function PersonalInfoScreen() {
   return (
     <KeyboardAvoidingView behavior="height" enabled style={{ flex: 1 }}>
       <ScrollView
-        className="flex-1 bg-white dark:bg-zinc-900 web:md:w-1/2 mx-auto"
+        className="flex-1 bg-white dark:bg-zinc-900 web:md:w-1/2 web:md:mx-auto"
         contentInsetAdjustmentBehavior="automatic"
       >
         <View className="flex-1 px-4 pt-10">

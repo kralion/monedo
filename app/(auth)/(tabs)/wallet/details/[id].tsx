@@ -49,7 +49,7 @@ export default function BudgetDetails() {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      className="bg-white dark:bg-zinc-900 web:md:w-1/2 mx-auto"
+      className="bg-white dark:bg-zinc-900 web:md:w-1/2 web:md:mx-auto"
     >
       {loading && (
         <View className="flex flex-col justify-center items-center min-h-full">

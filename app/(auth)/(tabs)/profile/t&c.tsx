@@ -83,7 +83,7 @@ export default function TermsConditions() {
 
   return (
     <View
-      className="bg-white  dark:bg-zinc-900 web:md:w-1/2 mx-auto"
+      className="bg-white  dark:bg-zinc-900 web:md:w-1/2 web:md:mx-auto"
       style={{ paddingTop: headerHeight }}
     >
       <Accordion

@@ -87,7 +87,7 @@ export default function ExpenseDetails() {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      className="bg-white dark:bg-zinc-900 web:md:w-1/2 mx-auto web:md:pt-16"
+      className="bg-white dark:bg-zinc-900 web:md:w-1/2 web:md:mx-auto web:md:pt-16"
     >
       <View className="flex flex-col gap-4 p-4">
         {loading ? (

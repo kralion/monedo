@@ -199,7 +199,7 @@ export default function Export() {
   return (
     <ScrollView
       style={{ paddingTop: headerHeight }}
-      className="bg-white dark:bg-zinc-900"
+      className="bg-white dark:bg-zinc-900 web:md:w-1/2 web:md:mx-auto"
     >
       <View className="flex flex-col gap-4 p-4 items-center">
         <ExportAsset width={300} height={300} />

@@ -127,6 +127,7 @@ export default function Layout() {
           name="categories"
           options={{
             title: "Categorías",
+            presentation: "modal",
             headerShown: false,
           }}
         />

@@ -24,7 +24,7 @@ export default function CategoryDetails() {
 
   return (
     <ScrollView
-      className="web:md:w-1/2 mx-auto"
+      className="web:md:w-1/2 web:md:mx-auto"
       contentInsetAdjustmentBehavior="automatic"
     >
       <LegendList

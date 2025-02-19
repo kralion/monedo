@@ -24,7 +24,7 @@ export default function ProfileScreen() {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      className="bg-white dark:bg-zinc-900 web:md:w-1/2 mx-auto"
+      className="bg-white dark:bg-zinc-900 web:md:w-1/2 web:md:mx-auto"
       contentContainerStyle={{ paddingBottom: 100 }}
     >
       <View>

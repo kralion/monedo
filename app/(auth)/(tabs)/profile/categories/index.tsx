@@ -95,7 +95,7 @@ export default function Categories() {
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
       keyboardDismissMode="on-drag"
-      className="bg-white dark:bg-zinc-900 web:md:w-1/2 mx-auto"
+      className="bg-white dark:bg-zinc-900 web:md:w-1/2 web:md:mx-auto"
     >
       <View className="flex flex-col p-4 gap-2">
         <Text className="text-3xl font-bold text-black dark:text-white ">

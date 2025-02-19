@@ -4,9 +4,17 @@ import { router, Tabs } from "expo-router";
 import { TouchableOpacity, useColorScheme, View } from "react-native";
 import { Platform, StyleSheet } from "react-native";
 import { Button } from "~/components/ui/button";
-import { Plus } from "lucide-react-native";
+import { Crown, Lock, Plus } from "lucide-react-native";
+import { Text } from "~/components/ui/text";
+import { LinearGradient } from "expo-linear-gradient";
+import { useUser } from "@clerk/clerk-expo";
 
 export default function TabLayout() {
+  function capitalizeFirstLetter(string: string) {
+    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+  }
+  const { user, isSignedIn } = useUser();
+
   const colorScheme = useColorScheme();
   return (
     <View style={{ flex: 1 }}>
@@ -26,8 +34,43 @@ export default function TabLayout() {
         <Tabs.Screen
           name="index"
           options={{
-            title: "Inicio",
-            headerShown: false,
+            title: "",
+            headerShown: true,
+            headerShadowVisible: false,
+            headerBackground: () => <View className="h-64 w-full" />,
+            headerStyle: {
+              height: 120,
+            },
+            headerLeft: () => (
+              <View className="flex-row gap-4 items-center p-4">
+                <Image
+                  source={{ uri: user?.imageUrl }}
+                  style={{ width: 40, height: 40, borderRadius: 20 }}
+                />
+                <View className="flex flex-col">
+                  <Text className="text-sm">
+                    {capitalizeFirstLetter(
+                      new Date().toLocaleDateString("es-ES", {
+                        weekday: "long",
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                      })
+                    )}
+                  </Text>
+                  <Text className="font-bold">Hola, {user?.firstName} 👋</Text>
+                </View>
+              </View>
+            ),
+            headerRight: () => (
+              <Button
+                className="mr-4 rounded-full"
+                size="icon"
+                onPress={() => router.push("/(auth)/(modals)/buy-premium")}
+              >
+                <Lock size={18} color="white" />
+              </Button>
+            ),
             tabBarIcon: ({ color, focused }) => (
               <Image
                 style={{ width: 28, height: 28, tintColor: color }}
