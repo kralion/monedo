@@ -1,7 +1,7 @@
 import NoData2Svg from "@/assets/svgs/no-data.svg";
 import Card from "@/components/dashboard/card";
 import { useUser } from "@clerk/clerk-expo";
-import { LegendList } from "@legendapp/list";
+import { FlashList } from "@shopify/flash-list";
 import { Redirect, router } from "expo-router";
 import * as React from "react";
 import {
@@ -82,21 +82,23 @@ export default function Home() {
                       <Text className="text-lg  px-4 text-muted-foreground">
                         {dateLabel}
                       </Text>
-                      <LegendList
-                        contentContainerStyle={{
-                          paddingBottom: 16,
-                          paddingHorizontal: 20,
-                        }}
-                        data={groupExpensesByDate(parsedExpenses)[dateLabel]}
-                        estimatedItemSize={400}
-                        ItemSeparatorComponent={() => (
-                          <View className="h-[0.75px] bg-zinc-200 dark:bg-zinc-700 ml-[60px]" />
-                        )}
-                        renderItem={({ item: expense, index }) => {
-                          return <Expense expense={expense} />;
-                        }}
-                        recycleItems
-                      />
+                      <View className="flex-1">
+                        <FlashList
+                          contentContainerStyle={{
+                            paddingBottom: 16,
+                            paddingHorizontal: 20,
+                          }}
+                          data={groupExpensesByDate(parsedExpenses)[dateLabel]}
+                          estimatedItemSize={400}
+                          scrollsToTop
+                          ItemSeparatorComponent={() => (
+                            <View className="h-[0.75px] bg-zinc-200 dark:bg-zinc-700 ml-[60px]" />
+                          )}
+                          renderItem={({ item: expense, index }) => {
+                            return <Expense expense={expense} />;
+                          }}
+                        />
+                      </View>
                     </View>
                   )
                 )}
@@ -131,31 +133,33 @@ export default function Home() {
           {loading ? (
             <ActivityIndicator />
           ) : (
-            <LegendList
-              data={parsedExpenses}
-              contentContainerStyle={{ paddingTop: 16, paddingBottom: 48 }}
-              estimatedItemSize={320}
-              recycleItems
-              ItemSeparatorComponent={() => (
-                <View className="h-[0.75px] bg-zinc-200 dark:bg-zinc-700 ml-[60px]" />
-              )}
-              renderItem={({ item: expense }) => {
-                return <Expense expense={expense} />;
-              }}
-              ListEmptyComponent={
-                <View className="flex flex-col items-center justify-center  ">
-                  <NoData2Svg width={150} height={150} />
-                  <View>
-                    <Text className="text-center text-xl text-muted-foreground">
-                      No hay gastos registrados
-                    </Text>
-                    <Text className="text-center text-sm text-muted-foreground">
-                      Haz click en el botón "+" para registrar un gasto
-                    </Text>
+            <View className="flex-1">
+              <FlashList
+                data={parsedExpenses}
+                contentContainerStyle={{ paddingTop: 16, paddingBottom: 48 }}
+                estimatedItemSize={320}
+                scrollsToTop
+                ItemSeparatorComponent={() => (
+                  <View className="h-[0.75px] bg-zinc-200 dark:bg-zinc-700 ml-[60px]" />
+                )}
+                renderItem={({ item: expense }) => {
+                  return <Expense expense={expense} />;
+                }}
+                ListEmptyComponent={
+                  <View className="flex flex-col items-center justify-center  ">
+                    <NoData2Svg width={150} height={150} />
+                    <View>
+                      <Text className="text-center text-xl text-muted-foreground">
+                        No hay gastos registrados
+                      </Text>
+                      <Text className="text-center text-sm text-muted-foreground">
+                        Haz click en el botón "+" para registrar un gasto
+                      </Text>
+                    </View>
                   </View>
-                </View>
-              }
-            />
+                }
+              />
+            </View>
           )}
         </ScrollView>
       )}

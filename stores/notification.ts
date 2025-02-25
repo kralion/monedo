@@ -1,27 +1,52 @@
 import { NotificationStore, INotification } from "@/interfaces";
 import { create } from "zustand";
 import { supabase } from "~/lib/supabase";
+import { toast } from "sonner-native";
 
 export const useNotificationStore = create<NotificationStore>((set, get) => ({
   notifications: [],
   loading: false,
 
   addNotification: async (notification: INotification) => {
-    set({ loading: true });
+    // Generate a temporary ID for optimistic update
+    const tempNotification = { ...notification, id: Date.now() };
+    
+    // Optimistically update the UI
     set((state) => ({
       notifications: [
         ...state.notifications,
-        { ...notification, id: Date.now() },
+        tempNotification
       ],
+      loading: true
     }));
-    const { error } = await supabase.from("notifications").insert(notification);
+    
+    // Attempt to save to the backend
+    const { data, error } = await supabase
+      .from("notifications")
+      .insert(notification)
+      .select()
+      .single();
+    
     if (error) {
+      // Revert optimistic update on error
+      set((state) => ({
+        notifications: state.notifications.filter(n => n.id !== tempNotification.id),
+        loading: false
+      }));
       console.error("Error adding notification:", error);
-      await get().getNotifications();
-    } else {
-      await get().getNotifications();
+      toast.error("Error al crear la notificación");
+      return;
     }
-    set({ loading: false });
+    
+    // Update with the real data from the server
+    set((state) => ({
+      notifications: state.notifications.map(n => 
+        n.id === tempNotification.id ? data : n
+      ),
+      loading: false
+    }));
+    
+    toast.success("Notificación creada exitosamente");
   },
 
   getNotifications: async () => {
@@ -35,23 +60,35 @@ export const useNotificationStore = create<NotificationStore>((set, get) => ({
   },
 
   deleteNotification: async (id: number) => {
-    set({ loading: true });
+    // Store the original notifications for rollback if needed
+    const originalNotifications = [...get().notifications];
+    
+    // Optimistically update the UI
     set((state) => ({
       notifications: state.notifications.filter(
         (notification) => notification.id !== id
       ),
+      loading: true
     }));
 
+    // Attempt to delete from the backend
     const { error } = await supabase
       .from("notifications")
       .delete()
       .eq("id", id);
+    
     if (error) {
+      // Revert optimistic update on error
+      set({
+        notifications: originalNotifications,
+        loading: false
+      });
       console.error("Error deleting notification:", error);
-      await get().getNotifications();
-    } else {
-      await get().getNotifications();
+      toast.error("Error al eliminar la notificación");
+      return;
     }
+    
     set({ loading: false });
+    toast.success("Notificación eliminada exitosamente");
   },
 }));

@@ -1,5 +1,5 @@
 import { Expense } from "@/components/expense";
-import { LegendList } from "@legendapp/list";
+import { FlashList } from "@shopify/flash-list";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
 import { ActivityIndicator, ScrollView, View } from "react-native";
@@ -24,25 +24,21 @@ export default function CategoryDetails() {
     );
 
   return (
-    <ScrollView
-      className="web:md:w-1/2 web:md:mx-auto"
+    <FlashList
+      contentContainerStyle={{
+        paddingBottom: 50,
+        paddingHorizontal: 20,
+      }}
       contentInsetAdjustmentBehavior="automatic"
-    >
-      <LegendList
-        contentContainerStyle={{
-          paddingBottom: 50,
-          paddingHorizontal: 20,
-        }}
-        data={expenses}
-        estimatedItemSize={320}
-        ItemSeparatorComponent={() => (
-          <View className="h-[0.75px] bg-zinc-200 dark:bg-zinc-700 ml-[60px]" />
-        )}
-        renderItem={({ item: expense, index }) => (
-          <ExpenseDetail expense={expense} />
-        )}
-        recycleItems
-      />
-    </ScrollView>
+      contentContainerClassName="web:md:w-1/2 web:md:mx-auto"
+      data={expenses}
+      estimatedItemSize={320}
+      ItemSeparatorComponent={() => (
+        <View className="h-[0.75px] bg-zinc-200 dark:bg-zinc-700 ml-[60px]" />
+      )}
+      renderItem={({ item: expense, index }) => (
+        <ExpenseDetail expense={expense} />
+      )}
+    />
   );
 }

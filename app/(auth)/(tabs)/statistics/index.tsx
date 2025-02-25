@@ -1,7 +1,7 @@
 import NoData2Svg from "@/assets/svgs/no-data.svg";
 import Chart from "@/components/statistics/chart";
 import { useUser } from "@clerk/clerk-expo";
-import { LegendList } from "@legendapp/list";
+import { FlashList } from "@shopify/flash-list";
 import { router, useFocusEffect } from "expo-router";
 
 import {
@@ -128,7 +128,6 @@ export default function Statistics() {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         className="bg-white dark:bg-zinc-900"
-        contentContainerClassName="pb-44"
       >
         <View className="flex flex-col gap-4 justify-center mt-4">
           {loading ? (
@@ -170,46 +169,47 @@ export default function Statistics() {
           {loading ? (
             <ActivityIndicator />
           ) : (
-            <LegendList
-              recycleItems
-              contentContainerStyle={{ paddingHorizontal: 16 }}
-              contentContainerClassName="pb-[400px] px-4"
-              data={expenses}
-              renderItem={({ item: expense, index }) => (
-                <View>
-                  {index === 0 ? (
-                    <>
-                      <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-600 ml-[60px]" />
-                      <Expense expense={expense} />
-                    </>
-                  ) : index === expenses.length - 1 ? (
-                    <>
-                      <Expense expense={expense} />
-                      <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-600 ml-[60px]" />
-                    </>
-                  ) : (
-                    <Expense expense={expense} />
-                  )}
-                </View>
-              )}
-              ItemSeparatorComponent={() => (
-                <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-600 ml-[60px] " />
-              )}
-              estimatedItemSize={320}
-              ListEmptyComponent={
-                <View className="flex flex-col items-center justify-center  ">
-                  <NoData2Svg width={150} height={150} />
+            <View className="flex-1">
+              <FlashList
+                contentContainerStyle={{ paddingHorizontal: 16 }}
+                contentContainerClassName="pb-48 px-4"
+                data={expenses}
+                renderItem={({ item: expense, index }) => (
                   <View>
-                    <Text className="text-center text-xl text-muted-foreground">
-                      Sin datos
-                    </Text>
-                    <Text className="text-center text-sm text-muted-foreground">
-                      Para este filtro no hay gastos registrados aún
-                    </Text>
+                    {index === 0 ? (
+                      <>
+                        <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-600 ml-[60px]" />
+                        <Expense expense={expense} />
+                      </>
+                    ) : index === expenses.length - 1 ? (
+                      <>
+                        <Expense expense={expense} />
+                        <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-600 ml-[60px]" />
+                      </>
+                    ) : (
+                      <Expense expense={expense} />
+                    )}
                   </View>
-                </View>
-              }
-            />
+                )}
+                ItemSeparatorComponent={() => (
+                  <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-600 ml-[60px] " />
+                )}
+                estimatedItemSize={320}
+                ListEmptyComponent={
+                  <View className="flex flex-col items-center justify-center  ">
+                    <NoData2Svg width={150} height={150} />
+                    <View>
+                      <Text className="text-center text-xl text-muted-foreground">
+                        No hay gastos registrados
+                      </Text>
+                      <Text className="text-center text-sm text-muted-foreground">
+                        Haz click en el botón "+" para registrar un gasto
+                      </Text>
+                    </View>
+                  </View>
+                }
+              />
+            </View>
           )}
         </View>
       </ScrollView>

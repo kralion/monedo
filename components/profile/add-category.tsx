@@ -45,7 +45,7 @@ export default function AddCategory({
     getCategoryById,
   } = useCategoryStore();
 
-  const snapPoints = useMemo(() => ["25%", "50%"], []);
+  const snapPoints = useMemo(() => ["60%"], []);
   const { isDarkColorScheme: isDarkMode } = useColorScheme();
   const {
     control,
@@ -159,12 +159,16 @@ export default function AddCategory({
           )}
         />
         {renderContent()}
-        <Button onPress={id ? handleSubmit(onUpdate) : handleSubmit(onSubmit)}>
+        <Button
+          size="lg"
+          onPress={id ? handleSubmit(onUpdate) : handleSubmit(onSubmit)}
+        >
           <Text>{id ? "Guardar" : "Registrar"}</Text>
         </Button>
         {id && (
           <Button
             variant="destructive"
+            size="lg"
             onPress={() => {
               Alert.alert(
                 "¿Estás seguro?",
@@ -176,7 +180,10 @@ export default function AddCategory({
                   },
                   {
                     text: "Eliminar",
-                    onPress: () => deleteCategory(category?.id as number),
+                    onPress: () => {
+                      deleteCategory(category?.id as number);
+                      bottomSheetRef.current?.close();
+                    },
                     style: "destructive",
                   },
                 ],

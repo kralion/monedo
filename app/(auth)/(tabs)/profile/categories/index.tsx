@@ -1,7 +1,7 @@
 import { ICategory, IExpense } from "@/interfaces";
 import { createClerkSupabaseClient } from "@/lib/supabase";
 import { useUser } from "@clerk/clerk-expo";
-import { LegendList } from "@legendapp/list";
+import { FlashList } from "@shopify/flash-list";
 import { router, useFocusEffect } from "expo-router";
 import { ChevronRight, Tag } from "lucide-react-native";
 import * as React from "react";
@@ -14,47 +14,19 @@ import {
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
+import { useCategoryStore } from "~/stores/category";
 import { useExpenseStore } from "~/stores/expense";
 
 export default function Categories() {
-  const [categories, setCategories] = React.useState<ICategory[]>([]);
   const { user } = useUser();
   const { expenses } = useExpenseStore();
-  const supabase = createClerkSupabaseClient();
-  async function getCategories() {
-    const { data } = await supabase
-      .from("categories")
-      .select("*")
-      .eq("user_id", user?.id);
-    setCategories(data as ICategory[]);
-    return data;
-  }
+  const { categories, getCategories, loading } = useCategoryStore();
+
   React.useEffect(() => {
-    getCategories();
+    (async () => {
+      await getCategories(user?.id as string);
+    })();
   }, []);
-
-  useFocusEffect(
-    React.useCallback(() => {
-      const channel = supabase.channel("realtime-categories").on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "categories",
-          filter: `user_id=eq.${user?.id}`,
-        },
-        () => {
-          getCategories();
-        }
-      );
-
-      channel.subscribe();
-
-      return () => {
-        channel.unsubscribe();
-      };
-    }, [])
-  );
 
   const renderItem = ({ item }: { item: ICategory }) => {
     const categoryExpenses = expenses.filter(
@@ -111,14 +83,16 @@ export default function Categories() {
           Crea tus propias categorías para organizar tus gastos intuitivamente.
         </Text>
       </View>
-      <LegendList
-        recycleItems
-        data={categories}
-        keyExtractor={(item) => String(item.id)}
-        renderItem={renderItem}
-        estimatedItemSize={80}
-        ItemSeparatorComponent={() => <View className="h-2" />}
-      />
+      <View className="flex-1">
+        <FlashList
+          data={categories}
+          keyExtractor={(item) => String(item.id)}
+          renderItem={renderItem}
+          estimatedItemSize={80}
+          ItemSeparatorComponent={() => <View className="h-2" />}
+          contentInsetAdjustmentBehavior="automatic"
+        />
+      </View>
     </ScrollView>
   );
 }

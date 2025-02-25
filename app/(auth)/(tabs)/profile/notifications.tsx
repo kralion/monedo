@@ -3,8 +3,8 @@ import { INotification } from "@/interfaces";
 import { createClerkSupabaseClient } from "@/lib/supabase";
 import { useUser } from "@clerk/clerk-expo";
 import * as React from "react";
-import { ScrollView } from "react-native";
-import { LegendList } from "@legendapp/list";
+import { ScrollView, View } from "react-native";
+import { FlashList } from "@shopify/flash-list";
 
 export default function Notifications() {
   const [notifications, setNotifications] = React.useState<INotification[]>([]);
@@ -32,12 +32,13 @@ export default function Notifications() {
       keyboardDismissMode="on-drag"
       className="bg-white dark:bg-zinc-900 web:md:w-1/2 web:md:mx-auto"
     >
-      <LegendList
-        data={notifications}
-        renderItem={({ item }) => <Notification notification={item} />}
-        estimatedItemSize={320}
-        recycleItems
-      />
+      <View className="flex-1">
+        <FlashList
+          data={notifications}
+          renderItem={({ item }) => <Notification notification={item} />}
+          estimatedItemSize={320}
+        />
+      </View>
     </ScrollView>
   );
 }

@@ -2,7 +2,12 @@ import BottomSheet from "@gorhom/bottom-sheet";
 import { router, Stack } from "expo-router";
 import { ChevronLeft } from "lucide-react-native";
 import React, { useRef } from "react";
-import { Button as NativeButton, Platform, View } from "react-native";
+import {
+  Button as NativeButton,
+  Platform,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import AddCategory from "~/components/profile/add-category";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
@@ -18,20 +23,15 @@ export default function CategoriesLayout() {
           name="index"
           options={{
             title: "Categorías",
-            headerLargeTitle: false,
-            headerShadowVisible: false,
-            headerLargeTitleShadowVisible: false,
             headerLeft: () => (
-              <Button
-                variant="secondary"
+              <TouchableOpacity
+                hitSlop={10}
                 onPress={() => {
                   router.back();
                 }}
-                className="rounded-full"
-                size="icon"
               >
-                <ChevronLeft size={20} color="#41D29B" />
-              </Button>
+                <ChevronLeft size={30} color="#41D29B" />
+              </TouchableOpacity>
             ),
 
             headerRight: () => {

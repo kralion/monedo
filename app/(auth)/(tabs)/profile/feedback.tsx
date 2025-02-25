@@ -1,17 +1,65 @@
+import { useUser } from "@clerk/clerk-expo";
 import { Send } from "lucide-react-native";
 import React, { useState } from "react";
-import { Image, Linking, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, Image, ScrollView, Text, View } from "react-native";
+import { toast } from "sonner-native";
 import { Button } from "~/components/ui/button";
 import { Textarea } from "~/components/ui/textarea";
-
+const pageId = process.env.EXPO_PUBLIC_NOTION_DATABASE_ID!;
+const apiKey = process.env.EXPO_PUBLIC_NOTION_TOKEN!;
 export default function Feedback() {
   const [feedback, setFeedback] = useState("");
-  const handleSubmit = () => {
-    const subject = encodeURIComponent("Monedo Feedback");
-    const body = encodeURIComponent(`Feedback: ${feedback}`);
-    const email = "brayanjoanpm@gmail.com";
-    const mailto = `mailto:${email}?subject=${subject}&body=${body}`;
-    Linking.openURL(mailto);
+  const { user } = useUser();
+  const [isSendingFeedback, setIsSendingFeedback] = React.useState(false);
+  const handleSendFeedback = async () => {
+    if (!feedback.trim()) return;
+
+    try {
+      setIsSendingFeedback(true);
+      const response = await fetch("https://api.notion.com/v1/pages", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          "Content-Type": "application/json",
+          "Notion-Version": "2022-06-28",
+        },
+        body: JSON.stringify({
+          parent: { database_id: pageId },
+          properties: {
+            Name: {
+              title: [
+                {
+                  text: {
+                    content: ` ${user?.firstName || "Anonymous"}`,
+                  },
+                },
+              ],
+            },
+            Message: {
+              rich_text: [
+                {
+                  text: {
+                    content: feedback,
+                  },
+                },
+              ],
+            },
+          },
+        }),
+      });
+
+      const responseData = await response.json();
+
+      if (!response.ok) {
+        console.error("Notion API Error:", responseData);
+      }
+
+      toast.success("¡Feedback enviado con éxito!");
+    } catch (error) {
+      toast.error("No se pudo enviar el feedback");
+    } finally {
+      setIsSendingFeedback(false);
+    }
   };
   return (
     <ScrollView
@@ -36,11 +84,19 @@ export default function Feedback() {
         />
 
         <Button
-          onPress={handleSubmit}
+          onPress={handleSendFeedback}
+          disabled={!feedback.trim() || isSendingFeedback}
           className="flex flex-row gap-2 items-center"
+          size="lg"
         >
-          <Text>Enviar Feedback</Text>
-          <Send color="black" size={18} />
+          {isSendingFeedback ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <>
+              <Text>Enviar Feedback</Text>
+              <Send color="black" size={18} />
+            </>
+          )}
         </Button>
       </View>
     </ScrollView>

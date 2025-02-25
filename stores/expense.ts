@@ -4,6 +4,22 @@ import { toast } from "sonner-native";
 import { create } from "zustand";
 import { supabase } from "~/lib/supabase";
 
+const formatExpenseDate = (expense: Partial<IExpense>): string => {
+  if (!expense.date) {
+    return new Date().toISOString();
+  }
+  // If it's already a string in ISO format, return it
+  if (typeof expense.date === "string") {
+    return expense.date;
+  }
+  // If it's a Date object, convert to ISO string
+  if (expense.date instanceof Date) {
+    return expense.date.toISOString();
+  }
+  // Default fallback
+  return new Date().toISOString();
+};
+
 export const useExpenseStore = create<ExpenseStore>((set, get) => ({
   expenses: [],
   weeklyExpenses: [],
@@ -11,88 +27,210 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
   loading: false,
   totalExpenses: 0,
   addExpense: async (expense: IExpense) => {
-    set({ loading: true });
-    const { error } = await supabase.from("expenses").insert(expense);
-    await get().getRecentExpenses(expense.user_id);
-    if (error) {
+    const timestamp = Date.now();
+    // Format the expense with proper date handling
+    const formattedExpense = {
+      ...expense,
+      date: formatExpenseDate(expense),
+    };
+
+    // Create temporary expense for optimistic update
+    const tempExpense = {
+      ...formattedExpense,
+      id: timestamp,
+    };
+
+    // Optimistically update the UI
+    set((state) => ({
+      expenses: [tempExpense, ...state.expenses],
+      loading: true,
+    }));
+
+    try {
+      // Attempt to save to the backend
+      const { data, error } = await supabase
+        .from("expenses")
+        .insert(formattedExpense)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Update with the real data from the server
+      set((state) => ({
+        expenses: state.expenses.map((e) => (e.id === timestamp ? data : e)),
+        loading: false,
+      }));
+
+      toast.success("Gasto registrado");
+
+      // Refresh data in the background
+      await get().getRecentExpenses(expense.user_id);
+    } catch (error) {
+      // Revert optimistic update on error
+      set((state) => ({
+        expenses: state.expenses.filter((e) => e.id !== timestamp),
+        loading: false,
+      }));
+      console.error("Error adding expense:", error);
       toast.error("Ocurrió un error al registrar el gasto");
     }
-    toast.success("Gasto registrado");
-    set({ loading: false });
-  },
-
-  getExpensesByCategory: async (categoryId: number) => {
-    set({ loading: true });
-    const { data, error } = await supabase
-      .from("expenses")
-      .select("*, categories:id_category(*)")
-      .eq("id_category", categoryId);
-    if (error) throw error;
-    set({ loading: false });
-    return data;
   },
 
   updateExpense: async (expense: IExpense) => {
-    set({ loading: true });
-    const { error, data } = await supabase
-      .from("expenses")
-      .update(expense)
-      .eq("id", expense.id)
-      .select()
-      .single();
-    set({ expense: data });
-    await get().getRecentExpenses(expense.user_id);
-    if (error) {
+    // Store the original state for rollback
+    const originalExpenses = [...get().expenses];
+    const originalExpense = get().expense;
+
+    // Format the expense with proper date handling
+    const formattedExpense = {
+      ...expense,
+      date: formatExpenseDate(expense),
+    };
+
+    // Optimistically update the UI
+    set((state) => ({
+      expenses: state.expenses.map((e) =>
+        e.id === expense.id ? formattedExpense : e
+      ),
+      expense: formattedExpense,
+      loading: true,
+    }));
+
+    try {
+      // Attempt to update in the backend
+      const { data, error } = await supabase
+        .from("expenses")
+        .update(formattedExpense)
+        .eq("id", expense.id)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      // Update with the real data from the server
+      set((state) => ({
+        expenses: state.expenses.map((e) => (e.id === expense.id ? data : e)),
+        expense: data,
+        loading: false,
+      }));
+
+      // Refresh data in the background
+      await get().getRecentExpenses(expense.user_id);
+    } catch (error) {
+      // Revert optimistic update on error
+      set({
+        expenses: originalExpenses,
+        expense: originalExpense,
+        loading: false,
+      });
+      console.error("Error updating expense:", error);
       toast.error("Ocurrió un error al actualizar el gasto");
     }
-    set({ loading: false });
   },
 
   deleteExpense: async (id: number) => {
-    set({ loading: true });
-    set((state) => ({ expenses: state.expenses.filter((e) => e.id !== id) }));
+    // Store the original state for rollback
+    const originalExpenses = [...get().expenses];
+    const deletedExpense = get().expenses.find((e) => e.id === id);
 
-    const { error } = await supabase.from("expenses").delete().eq("id", id);
-    if (error) {
-      console.error("Error deleting expense:", error);
-      const currentUserId = get().expenses.find((e) => e.id === id)?.user_id;
-      await get().getRecentExpenses(currentUserId as string);
+    if (!deletedExpense) {
+      toast.error("No se encontró el gasto a eliminar");
       return;
     }
-    toast.success("Gasto eliminado exitosamente");
-    router.back();
-    set({ loading: false });
+
+    // Optimistically update the UI
+    set((state) => ({
+      expenses: state.expenses.filter((e) => e.id !== id),
+      loading: true,
+    }));
+
+    try {
+      // Attempt to delete from the backend
+      const { error } = await supabase.from("expenses").delete().eq("id", id);
+
+      if (error) throw error;
+
+      set({ loading: false });
+      toast.success("Gasto eliminado exitosamente");
+      router.back();
+    } catch (error) {
+      // Revert optimistic update on error
+      set({
+        expenses: originalExpenses,
+        loading: false,
+      });
+      console.error("Error deleting expense:", error);
+      toast.error("Ocurrió un error al eliminar el gasto");
+    }
   },
 
   getExpenseById: async (id: number) => {
     set({ loading: true });
-    const { data, error } = await supabase
-      .from("expenses")
-      .select("*, categories:id_category(*)")
-      .eq("id", id)
-      .single();
-    if (error) throw error;
-    set({ expense: data, loading: false });
-    return data;
+    try {
+      const { data, error } = await supabase
+        .from("expenses")
+        .select("*, categories:id_category(*)")
+        .eq("id", id)
+        .single();
+
+      if (error) throw error;
+
+      set({ expense: data, loading: false });
+      return data;
+    } catch (error) {
+      set({ loading: false });
+      console.error("Error fetching expense:", error);
+      toast.error("Error al obtener el gasto");
+      throw error;
+    }
+  },
+
+  getExpensesByCategory: async (categoryId: number) => {
+    set({ loading: true });
+    try {
+      const { data, error } = await supabase
+        .from("expenses")
+        .select("*, categories:id_category(*)")
+        .eq("id_category", categoryId);
+
+      if (error) throw error;
+
+      set({ loading: false });
+      return data;
+    } catch (error) {
+      set({ loading: false });
+      console.error("Error fetching expenses by category:", error);
+      toast.error("Error al obtener los gastos por categoría");
+      return [];
+    }
   },
 
   getRecentExpenses: async (userId: string) => {
-    const { data } = await supabase
-      .from("expenses")
-      .select("*, categories:id_category(*)")
-      .eq("user_id", userId)
-      .order("date", { ascending: false })
-      .limit(20);
+    try {
+      const { data, error } = await supabase
+        .from("expenses")
+        .select("*, categories:id_category(*)")
+        .eq("user_id", userId)
+        .order("date", { ascending: false })
+        .limit(20);
 
-    const expensesData = data ?? [];
-    set({ expenses: expensesData });
-    return expensesData;
+      if (error) throw error;
+
+      const expensesData = data ?? [];
+      set({ expenses: expensesData });
+      return expensesData;
+    } catch (error) {
+      console.error("Error fetching recent expenses:", error);
+      toast.error("Error al obtener los gastos recientes");
+      return [];
+    }
   },
 
   getExpensesByPeriodicity: async ({ startTimeOfQuery, endTimeOfQuery }) => {
     set({ loading: true });
     try {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("expenses")
         .select("*, categories:id_category(*)")
         .gte("date", startTimeOfQuery.toISOString())
@@ -100,36 +238,37 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
         .order("amount", { ascending: false })
         .limit(15);
 
-      set({ loading: false });
-      return data ?? [];
+      if (error) throw error;
+
+      const expensesData = data ?? [];
+      set({ weeklyExpenses: expensesData, loading: false });
+      return expensesData;
     } catch (error) {
-      console.log("ERROR in getExpensesByPeriodicity", error);
+      console.error("Error fetching expenses by periodicity:", error);
       set({ loading: false });
-      return [];
+      toast.error("Error al obtener los gastos por periodo");
+      return null;
     }
   },
 
   sumOfAllOfExpenses: async (userId: string) => {
-    set({ loading: true });
+    try {
+      const { data, error } = await supabase
+        .from("expenses")
+        .select("amount")
+        .eq("user_id", userId);
 
-    const { data, error } = await supabase
-      .from("expenses")
-      .select("amount")
-      .eq("user_id", userId);
+      if (error) throw error;
 
-    if (error) {
-      console.error("Error fetching expenses:", error);
-      set({ loading: false });
+      const total =
+        data?.reduce((sum, expense) => sum + Number(expense.amount), 0) ?? 0;
+
+      set({ totalExpenses: total });
+      return total;
+    } catch (error) {
+      console.error("Error calculating sum of expenses:", error);
+      toast.error("Error al calcular el total de gastos");
       return 0;
     }
-
-    const totalExpenses = data.reduce(
-      (total, expense) => total + Number(expense.amount),
-      0
-    );
-
-    set({ totalExpenses, loading: false });
-
-    return totalExpenses;
   },
 }));

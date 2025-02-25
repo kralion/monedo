@@ -169,7 +169,7 @@ export default function PersonalInfoScreen() {
             </View>
             <View className="flex flex-col gap-4 mt-10">
               {/* Submit Button */}
-              <Button onPress={handleSubmit(onSubmit)} disabled={isUpdating}>
+              <Button size="lg" onPress={handleSubmit(onSubmit)} disabled={isUpdating}>
                 {isUpdating ? (
                   <ActivityIndicator color="white" />
                 ) : (
@@ -177,6 +177,7 @@ export default function PersonalInfoScreen() {
                 )}
               </Button>
               <Button
+                size="lg"
                 onPress={handleDeleteAccount}
                 variant="ghost"
                 disabled={isUpdating}

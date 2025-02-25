@@ -1,4 +1,4 @@
-import { LegendList } from "@legendapp/list";
+import { FlashList } from "@shopify/flash-list";
 import { useHeaderHeight } from "@react-navigation/elements";
 import React from "react";
 import { Text, View } from "react-native";
@@ -92,36 +92,38 @@ export default function TermsConditions() {
         collapsible
         defaultValue={["a1", "a2", "a3", "a4", "a5"]}
       >
-        <LegendList
-          estimatedItemSize={500}
-          contentContainerStyle={{ padding: 16 }}
-          ListHeaderComponent={
-            <Text className="text-gray-800 dark:text-white   ">
-              Bienvenido a la plataforma de la aplicación móvil de{" "}
-              <Text className="font-bold">Monedo</Text>. El objetivo de esta
-              aplicación es facilitar el seguimiento de los egresos e ingresos
-              del usuario. El uso de esta aplicación se rige por los términos y
-              condiciones que se describen a continuación, clasificados por
-              secciones.
-            </Text>
-          }
-          renderItem={({ item }) => (
-            <AccordionItem value={item.id}>
-              <AccordionTrigger>
-                <Text className="font-semibold text-lg text-black dark:text-white">
-                  {item.title}
-                </Text>
-              </AccordionTrigger>
-              <AccordionContent>
-                <Text className="text-muted-foreground dark:text-white">
-                  {item.content}
-                </Text>
-              </AccordionContent>
-            </AccordionItem>
-          )}
-          keyExtractor={(item) => item.id.toString()}
-          data={sections}
-        />
+        <View className="flex-1">
+          <FlashList
+            estimatedItemSize={500}
+            contentContainerStyle={{ padding: 16 }}
+            ListHeaderComponent={
+              <Text className="text-gray-800 dark:text-white   ">
+                Bienvenido a la plataforma de la aplicación móvil de{" "}
+                <Text className="font-bold">Monedo</Text>. El objetivo de esta
+                aplicación es facilitar el seguimiento de los egresos e ingresos
+                del usuario. El uso de esta aplicación se rige por los términos y
+                condiciones que se describen a continuación, clasificados por
+                secciones.
+              </Text>
+            }
+            renderItem={({ item }) => (
+              <AccordionItem value={item.id}>
+                <AccordionTrigger>
+                  <Text className="font-semibold text-lg text-black dark:text-white">
+                    {item.title}
+                  </Text>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <Text className="text-muted-foreground dark:text-white">
+                    {item.content}
+                  </Text>
+                </AccordionContent>
+              </AccordionItem>
+            )}
+            keyExtractor={(item) => item.id.toString()}
+            data={sections}
+          />
+        </View>
       </Accordion>
     </View>
   );
