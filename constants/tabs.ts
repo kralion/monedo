@@ -2,7 +2,7 @@ export const Tabs = [
   {
     name: "index",
     title: "Dashboard",
-    icon: ["mingcute:home-4-fill.svg", "mingcute:mingcute:home-4-line.svg"],
+    icon: ["mingcute:home-4-fill.svg", "mingcute:home-4-line.svg"],
   },
   {
     name: "statistics",

@@ -92,34 +92,34 @@ export function Budget({ budget }: { budget: IBudget }) {
           onPress={() => {
             router.push(`/wallet/details/${budget.id}`);
           }}
-          className="card active:opacity-80"
+          className="card active:opacity-80 web:md:hover:bg-zinc-50 web:md:dark:hover:bg-zinc-800 web:md:transition-colors web:md:duration-200"
         >
-          <View className="card-header flex flex-row justify-between items-center  py-3">
+          <View className="card-header flex flex-row justify-between items-center py-3 web:md:py-4 web:md:px-2">
             <View className="card-title flex flex-row items-center gap-2">
               <Image
                 width={45}
                 height={45}
-                className="bg-brand/20 rounded-full p-2"
+                className="bg-brand/20 rounded-full p-2 web:md:w-14 web:md:h-14"
                 source={{
                   uri: "https://img.icons8.com/?size=100&id=KV6GFslVNJhZ&format=png&color=000000",
                 }}
               />
               <View className="card-title-details flex flex-col gap-1">
-                <Text className="text-lg">
+                <Text className="text-lg web:md:text-xl">
                   <Animated.Text entering={FadeIn.duration(1500)}>
                     {budget.description.length > 25
                       ? `${budget.description.slice(0, 25)}...`
                       : budget.description}
                   </Animated.Text>
                 </Text>
-                <Text className="text-muted-foreground dark:text-secondary text-sm">
+                <Text className="text-muted-foreground dark:text-secondary text-sm web:md:text-base">
                   {formattedDate}
                 </Text>
               </View>
             </View>
             <View className="card-description flex flex-row items-center justify-between">
               <View className=" flex flex-row items-center">
-                <Text className="font-bold text-xl text-brand dark:text-brand">
+                <Text className="font-bold text-xl text-brand dark:text-brand web:md:text-2xl">
                   <Animated.Text entering={FadeIn.duration(1500)}>
                     + S/ {budget.amount}
                   </Animated.Text>
@@ -164,10 +164,6 @@ const styles = StyleSheet.create({
   },
   textContent: {
     flexShrink: 1,
-  },
-  productCount: {
-    fontSize: 12,
-    color: "gray",
   },
   rightContent: {
     flexDirection: "row",

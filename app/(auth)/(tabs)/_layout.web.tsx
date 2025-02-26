@@ -33,7 +33,7 @@ function SidebarItem({
     colorScheme === "dark"
       ? "rgba(255, 59, 48, 0.1)"
       : "rgba(255, 59, 48, 0.1)";
-  const size = compact ? 28 : 24;
+  const size = compact ? 24 : 22;
 
   return (
     <Pressable
@@ -41,10 +41,13 @@ function SidebarItem({
         window?.scrollTo({ top: 0, behavior: "smooth" });
         router.push(href as any);
       }}
-      className={`flex flex-row items-center p-2 rounded-lg gap-3 mb-0.5
-        hover:dark:bg-zinc-700 hover:bg-zinc-100 transition-all duration-200  ${
-          compact ? "justify-center w-10 h-10 mx-auto" : "pl-2 pr-6 mr-8"
-        } ${isActive ? "bg-zinc-200 dark:bg-zinc-600" : ""}`}
+      className={`flex flex-row items-center rounded-lg gap-3 transition-all duration-200 ${
+        compact ? "justify-center w-12 h-12 mx-auto" : "px-4 py-2.5"
+      } ${
+        isActive
+          ? "bg-zinc-100 dark:bg-zinc-700"
+          : "hover:bg-zinc-100 dark:hover:bg-zinc-800"
+      }`}
       style={({ pressed, hovered }) => [
         (pressed || hovered) && { backgroundColor: hoverBg },
       ]}
@@ -53,6 +56,7 @@ function SidebarItem({
         style={{
           width: size,
           height: size,
+          opacity: isActive ? 1 : 0.7,
         }}
         source={{
           uri: isActive ? icon : unfocusedIcon,
@@ -61,10 +65,10 @@ function SidebarItem({
       />
       {!compact && (
         <Text
-          className={`text-lg  font-semibold ${
+          className={`text-base ${
             isActive
-              ? "font-bold dark:text-white text-black"
-              : "text-black  dark:text-white"
+              ? "font-semibold text-black dark:text-white"
+              : "text-gray-700 dark:text-gray-300"
           }`}
         >
           {title}
@@ -87,6 +91,10 @@ export default function WebLayout() {
   const isCompact = width < 1024;
   const isMobile = width < 768;
   const borderColor = colorScheme === "dark" ? "#2f3336" : "#eee";
+  const sidebarWidth = isCompact ? "w-[82px]" : "w-[260px]";
+  const contentWidth = isCompact
+    ? "max-w-[calc(100%-82px)]"
+    : "max-w-[calc(100%-260px)]";
 
   const tabIcon = (
     focusedIcon: string,
@@ -119,29 +127,27 @@ export default function WebLayout() {
       <View className="flex-row left-0 right-0 bg-white dark:bg-zinc-800 justify-center relative">
         {!isMobile && (
           <View
-            className={`${
-              isCompact ? "w-[72px]" : ""
-            } items-end sticky top-0 h-screen border-r `}
+            className={`${sidebarWidth} items-end sticky top-0 h-screen border-r`}
             style={{
               borderRightColor: borderColor,
             }}
           >
             <View
               className={`sticky ${
-                isCompact ? "w-[82px] p-2" : "w-[275px] p-2"
-              } h-full`}
+                isCompact ? "w-[82px] px-2" : "w-[260px] px-4"
+              } h-full overflow-y-auto`}
             >
-              <View className="mb-8 web:md:pl-2 pt-3 flex flex-row items-center gap-2 ">
+              <View className="mb-8 pt-6 flex flex-row items-center gap-2">
                 <Image
-                  className="w-12 h-12"
+                  className="w-16 h-16"
                   source={require("../../../assets/logo.png")}
                 />
-                <Text className="text-2xl web:md:hidden text-[#FF6247] font-bold">
-                  Ordee
-                </Text>
+                {!isCompact && (
+                  <Text className="text-2xl font-bold">Monedo</Text>
+                )}
               </View>
 
-              <View className="flex flex-col gap-4">
+              <View className="flex flex-col gap-2">
                 {Tabs.map((tab) => (
                   <SidebarItem
                     key={tab.name}
@@ -162,7 +168,9 @@ export default function WebLayout() {
           </View>
         )}
         {!isMobile && (
-          <View className="flex-1 w-full max-w-[611px] bg-transparent">
+          <View
+            className={`flex-1 w-full ${contentWidth} bg-transparent web:md:pl-6 web:md:pr-4 overflow-y-auto h-screen`}
+          >
             <Stack
               screenOptions={{
                 headerShown: false,
@@ -199,14 +207,11 @@ export default function WebLayout() {
                   segments.includes(tab.name as never)
                 )}
                 <Text
-                  className="text-xs font-medium"
-                  style={{
-                    color: segments.includes(tab.name as never)
-                      ? "#FA2E47"
-                      : colorScheme === "dark"
-                      ? "#999"
-                      : "#666",
-                  }}
+                  className={`text-xs ${
+                    segments.includes(tab.name as never)
+                      ? "text-[#41D29B]"
+                      : "text-gray-500 dark:text-gray-400"
+                  }`}
                 >
                   {tab.title}
                 </Text>
@@ -216,10 +221,10 @@ export default function WebLayout() {
         )}
       </View>
       <TouchableOpacity
-        className="absolute right-4 bottom-28 bg-primary p-4 h-16 w-16 rounded-full flex justify-center items-center shadow"
+        className="absolute right-4 bottom-28 bg-primary p-4 h-16 w-16 rounded-full flex justify-center items-center shadow web:md:h-18 web:md:w-18 web:md:right-8 web:md:bottom-32"
         onPress={() => router.push("/(auth)/(modals)/add-expense")}
       >
-        <Plus size={30} color="white" />
+        <Plus size={30} color="white" className="web:md:scale-110" />
       </TouchableOpacity>
     </>
   );

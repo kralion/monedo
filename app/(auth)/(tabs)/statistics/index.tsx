@@ -95,11 +95,11 @@ export default function Statistics() {
     getCategories(user?.id as string);
   }, []);
   return (
-    <SafeAreaView className="py-4 bg-white dark:bg-zinc-900">
+    <SafeAreaView className="py-4 bg-white dark:bg-zinc-900 web:md:max-w-4xl web:md:mx-auto">
       <View className="flex flex-col gap-8">
-        <View className="flex flex-row  justify-between px-4 pt-7">
-          <View className="flex flex-col ">
-            <Text className="text-4xl font-bold ">Estadísticas</Text>
+        <View className="flex flex-row justify-between px-4 pt-7">
+          <View className="flex flex-col">
+            <Text className="text-4xl font-bold web:md:text-5xl">Estadísticas</Text>
           </View>
           {/* TODO: Uncomment for production */}
           {/* <Dropdown items={items} onSelect={handleDropdownSelect} /> */}
@@ -109,25 +109,26 @@ export default function Statistics() {
             data={queryFilters}
             renderItem={({ item }) => (
               <Button
-                className="rounded-full ml-4 px-6"
+                className="rounded-full ml-4 px-6 web:md:px-8"
                 size="sm"
                 variant={
                   timelineQuery.value === item.value ? "default" : "outline"
                 }
                 onPress={() => setTimelineQuery(item)}
               >
-                <Text className="text-black dark:text-black">{item.label}</Text>
+                <Text className="text-black dark:text-black web:md:text-base">{item.label}</Text>
               </Button>
             )}
             horizontal
             showsHorizontalScrollIndicator={false}
+            className="web:md:px-2"
           />
           <Separator className="text-muted-foreground" />
         </View>
       </View>
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
-        className="bg-white dark:bg-zinc-900"
+        className="bg-white dark:bg-zinc-900 web:md:px-4"
       >
         <View className="flex flex-col gap-4 justify-center mt-4">
           {loading ? (
@@ -135,28 +136,32 @@ export default function Statistics() {
           ) : (
             <>
               {chartType === "pie" ? (
-                <View className="flex flex-col gap-2">
-                  <PieChart timelineQuery={timelineQuery} data={expenses} />
-                  <View style={styles.grid}>
+                <View className="flex flex-col gap-2 web:md:items-center">
+                  <View className="web:md:w-full web:md:max-w-2xl">
+                    <PieChart timelineQuery={timelineQuery} data={expenses} />
+                  </View>
+                  <View style={[styles.grid, { width: '100%' }]} className="web:md:max-w-2xl web:md:justify-center web:md:gap-4">
                     {categories.map((item, index) => (
                       <View
                         key={index}
-                        className="flex flex-row items-center gap-1"
+                        className="flex flex-row items-center gap-1 web:md:gap-2"
                       >
                         <View
-                          className="w-4 h-4 rounded-full"
+                          className="w-4 h-4 rounded-full web:md:w-5 web:md:h-5"
                           style={{ backgroundColor: item.color }}
                         />
-                        <Text className="text-gray-700">{item.label}</Text>
+                        <Text className="text-gray-700 web:md:text-base">{item.label}</Text>
                       </View>
                     ))}
                   </View>
                 </View>
               ) : (
-                <View className="flex flex-col items-center gap-4 mt-4">
-                  <Chart timelineQuery={timelineQuery} data={expenses} />
+                <View className="flex flex-col items-center gap-4 mt-4 web:md:px-6">
+                  <View className="web:md:w-full web:md:max-w-3xl">
+                    <Chart timelineQuery={timelineQuery} data={expenses} />
+                  </View>
                   {timelineQuery.value === "mensual" && (
-                    <Text className="text-muted-foreground text-sm">
+                    <Text className="text-muted-foreground text-sm web:md:text-base">
                       Scrollable horizontalmente
                     </Text>
                   )}
@@ -165,14 +170,14 @@ export default function Statistics() {
             </>
           )}
 
-          <Text className="text-xl font-bold mx-4  mt-12">Top Gastos</Text>
+          <Text className="text-xl font-bold mx-4 mt-12 web:md:text-2xl">Top Gastos</Text>
           {loading ? (
             <ActivityIndicator />
           ) : (
             <View className="flex-1">
               <FlashList
                 contentContainerStyle={{ paddingHorizontal: 16 }}
-                contentContainerClassName="pb-48 px-4"
+                contentContainerClassName="pb-48 px-4 web:md:px-6"
                 data={expenses}
                 renderItem={({ item: expense, index }) => (
                   <View>

@@ -28,18 +28,19 @@ export default function Wallet() {
       0
     );
     return (
-      <View className="flex flex-col items-center">
+      <View className="flex flex-col items-center web:md:py-8">
         <Image
           source={{
             uri: "https://img.icons8.com/?size=200&id=JQX2fDPyQq4E&format=png&color=000000",
           }}
           style={{ width: 100, height: 100 }}
+          className="web:md:w-32 web:md:h-32"
         />
-        <View className="p-4 ">
-          <Text className="  text-center mb-1 text-muted-foreground">
+        <View className="p-4">
+          <Text className="text-center mb-1 text-muted-foreground web:md:text-lg">
             Total en billetera
           </Text>
-          <Text className="text-3xl font-bold text-black text-center">
+          <Text className="text-3xl font-bold text-black dark:text-white text-center web:md:text-4xl">
             S/ {total}
           </Text>
         </View>
@@ -50,13 +51,14 @@ export default function Wallet() {
   return (
     <ScrollView
       ref={scrollRef}
-      className="bg-white dark:bg-zinc-900 web:md:w-1/2 web:md:mx-auto"
+      className="bg-white dark:bg-zinc-900 web:md:max-w-4xl web:md:mx-auto"
       contentInsetAdjustmentBehavior="automatic"
       keyboardDismissMode="on-drag"
+      contentContainerClassName="web:md:px-6"
     >
       <ListTotal />
 
-      <View className="flex flex-col gap-3 rounded-b-xl p-4">
+      <View className="flex flex-col gap-3 rounded-b-xl p-4 web:md:px-6">
         {loading && (
           <View className="flex flex-col gap-2">
             <BudgetSkeleton />
@@ -69,15 +71,16 @@ export default function Wallet() {
             data={budgets}
             scrollsToTop
             estimatedItemSize={320}
+            contentContainerClassName="web:md:px-4"
             renderItem={({ item }) => <Budget budget={item} />}
             ListEmptyComponent={
-              <View className="flex flex-col items-center justify-center  ">
+              <View className="flex flex-col items-center justify-center py-8">
                 <NoData2Svg width={150} height={150} />
                 <View>
-                  <Text className="text-center text-xl text-muted-foreground">
+                  <Text className="text-center text-xl text-muted-foreground web:md:text-2xl">
                     No hay presupuestos registrados
                   </Text>
-                  <Text className="text-center text-sm text-muted-foreground">
+                  <Text className="text-center text-sm text-muted-foreground web:md:text-base">
                     Rellena el formulario y registra uno para el mes actual.
                   </Text>
                 </View>

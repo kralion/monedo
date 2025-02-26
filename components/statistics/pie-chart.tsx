@@ -1,4 +1,4 @@
-import { Dimensions, View } from "react-native";
+import { Dimensions, View, useWindowDimensions } from "react-native";
 import { PieChart as Pie } from "react-native-gifted-charts";
 import { IExpense } from "~/interfaces";
 import { useColorScheme } from "~/lib/useColorScheme";
@@ -15,6 +15,9 @@ type ChartProps = {
 };
 export default function PieChart({ timelineQuery, data }: ChartProps) {
   const { isDarkColorScheme } = useColorScheme();
+  const { width } = useWindowDimensions();
+  const isMobile = width < 768;
+
   const filterExpensesByTimeline = (expenses: IExpense[]) => {
     return expenses.filter((expense) => {
       const expenseDate = new Date(expense.date);
@@ -64,8 +67,25 @@ export default function PieChart({ timelineQuery, data }: ChartProps) {
   };
   const pieData = aggregateByCategory(data);
 
+  // Calculate responsive dimensions based on screen width
+  const getRadius = () => {
+    if (isMobile) {
+      return width * 0.4; // Original mobile size
+    }
+    return Math.min(width * 0.25, 180); // Desktop size, capped at 180
+  };
+
+  const getInnerRadius = () => {
+    if (isMobile) {
+      return width * 0.25; // Original mobile size
+    }
+    return Math.min(width * 0.15, 110); // Desktop size, capped at 110
+  };
+
+  const textSize = isMobile ? 12 : 14;
+
   return (
-    <View style={{ alignItems: "center" }}>
+    <View className="items-center web:md:w-full">
       <Pie
         data={pieData}
         donut
@@ -75,10 +95,22 @@ export default function PieChart({ timelineQuery, data }: ChartProps) {
         strokeColor={isDarkColorScheme ? "#18181b" : "white"}
         strokeDashArray={[5, 5]}
         textColor="black"
-        radius={width * 0.4}
-        innerRadius={width * 0.25}
-        textSize={12}
+        radius={getRadius()}
+        innerRadius={getInnerRadius()}
+        textSize={textSize}
         focusOnPress
+        labelsPosition="outward"
+        centerLabelComponent={() => {
+          return pieData.length > 0 ? (
+            <View className="items-center justify-center">
+              <View className="bg-white dark:bg-zinc-800 rounded-full p-2">
+                <View className="items-center justify-center">
+                  <View className="w-2 h-2 rounded-full bg-teal-500" />
+                </View>
+              </View>
+            </View>
+          ) : null;
+        }}
       />
     </View>
   );

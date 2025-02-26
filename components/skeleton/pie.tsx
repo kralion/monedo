@@ -1,5 +1,5 @@
 import { Skeleton } from "moti/skeleton";
-import { View } from "react-native";
+import { View, useWindowDimensions } from "react-native";
 import { useColorScheme } from "~/lib/useColorScheme";
 
 const SkeletonCommonProps = {
@@ -11,17 +11,26 @@ const SkeletonCommonProps = {
 
 export const PieSkeleton = () => {
   const { isDarkColorScheme } = useColorScheme();
+  const { width } = useWindowDimensions();
+  const isMobile = width < 768;
+  
+  // Adjust size based on screen width
+  const skeletonSize = isMobile ? 300 : 350;
+  const skeletonWidth = isMobile ? "80%" : "60%";
+  
   return (
     <View className="flex-1 items-center justify-center">
-      <Skeleton.Group show={true}>
-        <Skeleton
-          height={300}
-          colorMode={isDarkColorScheme ? "dark" : "light"}
-          radius={300}
-          width="80%"
-          {...SkeletonCommonProps}
-        />
-      </Skeleton.Group>
+      <View className="web:md:max-w-2xl web:md:w-full items-center">
+        <Skeleton.Group show={true}>
+          <Skeleton
+            height={skeletonSize}
+            colorMode={isDarkColorScheme ? "dark" : "light"}
+            radius={skeletonSize}
+            width={skeletonWidth}
+            {...SkeletonCommonProps}
+          />
+        </Skeleton.Group>
+      </View>
     </View>
   );
 };

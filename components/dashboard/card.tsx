@@ -7,7 +7,7 @@ import {
   ArrowUpIcon,
 } from "lucide-react-native";
 import * as React from "react";
-import { Alert, Pressable, StyleSheet, View } from "react-native";
+import { Alert, Pressable, StyleSheet, View, Dimensions } from "react-native";
 import { useUserPlan } from "~/hooks/useUserPlan";
 import { useBudgetStore } from "~/stores/budget";
 import { useExpenseStore } from "~/stores/expense";
@@ -22,6 +22,7 @@ export default function Card() {
   const { user } = useUser();
   const { sumOfAllOfExpenses, totalExpenses } = useExpenseStore();
   const { totalBudget, isOutOfBudget, getTotalBudget } = useBudgetStore();
+  const { width } = Dimensions.get("window");
   async function calculateBalance() {
     await sumOfAllOfExpenses(user?.id as string);
     await getTotalBudget(user?.id as string);
@@ -35,7 +36,7 @@ export default function Card() {
 
   return (
     <Pressable
-      className=" z-10"
+      className="z-10 web:md:max-w-4xl web:md:mx-auto"
       onPress={() => {
         if (isPremium) {
           Alert.alert(
@@ -49,20 +50,20 @@ export default function Card() {
     >
       <View
         className="relative w-full
-      mx-auto my-6   h-[200px] "
+      mx-auto my-6 h-[200px] web:md:h-[220px] web:md:w-[420px]"
       >
         <Animated.View entering={FadeInDown}>
           <View
             className={`absolute top-16 ${
               isPremium ? "bg-black/70" : "bg-green-800"
-            } shadow-sm rounded-xl w-full h-[200px] scale-[0.75]`}
+            } shadow-sm rounded-xl w-full h-[200px] scale-[0.75] web:md:h-[220px]`}
           />
         </Animated.View>
         <Animated.View entering={FadeInDown}>
           <View
             className={`absolute top-8 ${
               isPremium ? "bg-black/90" : "bg-green-700"
-            } shadow-sm rounded-xl w-full h-[200px] scale-[0.90]`}
+            } shadow-sm rounded-xl w-full h-[200px] scale-[0.90] web:md:h-[220px]`}
           />
         </Animated.View>
         <Animated.View entering={FadeInUp}>
@@ -76,13 +77,16 @@ export default function Card() {
             }
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-            style={styles.cardStyle}
+            style={[styles.cardStyle, { height: width < 768 ? 200 : 220 }]}
+            className="web:md:rounded-2xl"
           >
             <View className="flex flex-row justify-between">
               <View className="flex flex-col gap-2">
-                <Text className="text-xl text-white">Balance</Text>
+                <Text className="text-xl text-white web:md:text-2xl">
+                  Balance
+                </Text>
 
-                <Text className="text-4xl text-white font-bold ">
+                <Text className="text-4xl text-white font-bold web:md:text-5xl">
                   S/ {totalBudget - totalExpenses}
                 </Text>
               </View>
@@ -109,17 +113,21 @@ export default function Card() {
               <View className="flex flex-col gap-2">
                 <View className="flex flex-row gap-1 items-center">
                   <ArrowDownCircle color="white" size={16} />
-                  <Text className="text-white ">Gastos</Text>
+                  <Text className="text-white web:md:text-lg">Gastos</Text>
                 </View>
-                <Text className="text-xl text-white">S/ {totalExpenses}</Text>
+                <Text className="text-xl text-white web:md:text-2xl">
+                  S/ {totalExpenses}
+                </Text>
               </View>
 
               <View className="flex flex-col gap-2 items-end">
                 <View className="flex flex-row gap-1 items-center">
                   <ArrowUpCircle color="white" size={16} />
-                  <Text className="text-white ">Billetera</Text>
+                  <Text className="text-white web:md:text-lg">Billetera</Text>
                 </View>
-                <Text className="text-xl text-white">S/ {totalBudget}</Text>
+                <Text className="text-xl text-white web:md:text-2xl">
+                  S/ {totalBudget}
+                </Text>
               </View>
             </View>
           </LinearGradient>

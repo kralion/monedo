@@ -101,13 +101,13 @@ export default function Chart({ timelineQuery, data }: ChartProps) {
   }
   if (data.length === 0) {
     return (
-      <View className="flex flex-col items-center justify-center gap-5  ">
+      <View className="flex flex-col items-center justify-center gap-5">
         <NoDataAsset width={100} height={100} />
         <View>
-          <Text className="text-center text-xl text-muted-foreground">
+          <Text className="text-center text-xl text-muted-foreground web:md:text-2xl">
             Sin datos
           </Text>
-          <Text className="text-center text-sm text-muted-foreground">
+          <Text className="text-center text-sm text-muted-foreground web:md:text-base">
             Para este filtro no hay gastos registrados aún
           </Text>
         </View>
@@ -115,23 +115,64 @@ export default function Chart({ timelineQuery, data }: ChartProps) {
     );
   }
 
+  // Calculate responsive spacing and height based on screen width
+  const getSpacing = () => {
+    if (!isMobile) {
+      // Desktop spacing
+      return timelineQuery.value === "semanal"
+        ? width * 0.15
+        : timelineQuery.value === "mensual"
+        ? width * 0.07
+        : width * 0.08;
+    }
+    // Mobile spacing (original)
+    return timelineQuery.value === "semanal" ? width * 0.28 : width * 0.14;
+  };
+
+  const chartHeight = isMobile ? 250 : 300;
+
   return (
-    <LineChart
-      areaChart
-      curved
-      data={chartData}
-      spacing={timelineQuery.value === "semanal" ? width * 0.28 : width * 0.14}
-      yAxisColor="gray"
-      xAxisColor="white"
-      yAxisThickness={0}
-      height={250}
-      color1="#41D29B"
-      hideYAxisText
-      dataPointsColor1="#41D29B"
-      hideRules
-      endSpacing={-20}
-      startFillColor1="#41D29B"
-      startOpacity={0.8}
-    />
+    <View className="web:md:w-full">
+      <LineChart
+        areaChart
+        curved
+        data={chartData}
+        spacing={getSpacing()}
+        yAxisColor="gray"
+        xAxisColor="white"
+        yAxisThickness={0}
+        height={chartHeight}
+        color1="#41D29B"
+        hideYAxisText
+        dataPointsColor1="#41D29B"
+        hideRules
+        endSpacing={-20}
+        startFillColor1="#41D29B"
+        startOpacity={0.8}
+        textFontSize={isMobile ? 10 : 12}
+        textShiftY={isMobile ? 0 : 2}
+        textShiftX={isMobile ? 0 : 2}
+        pointerConfig={{
+          pointerStripHeight: chartHeight,
+          pointerStripWidth: 2,
+          pointerStripColor: "#41D29B",
+          pointerColor: "#41D29B",
+          radius: 6,
+          pointerLabelWidth: 100,
+          pointerLabelHeight: 40,
+          activatePointersOnLongPress: true,
+          autoAdjustPointerLabelPosition: true,
+          pointerLabelComponent: (items: any[]) => {
+            return (
+              <View className="bg-white dark:bg-zinc-800 p-2 rounded-md shadow-md">
+                <Text className="text-black dark:text-white font-medium">
+                  {items[0].value}
+                </Text>
+              </View>
+            );
+          },
+        }}
+      />
+    </View>
   );
 }

@@ -59,9 +59,10 @@ export default function Home() {
   }));
 
   return (
-    <View className="flex-1">
+    <View className="flex-1 bg-white dark:bg-zinc-900">
       {showAll ? (
         <ScrollView
+          className="web:md:max-w-4xl"
           contentContainerClassName="pb-14 flex-1"
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -70,12 +71,12 @@ export default function Home() {
           <Animated.View style={{ opacity: 60 }}>
             <View>
               <View className="flex flex-col gap-4">
-                <View className="flex flex-row  justify-end items-end px-4 ">
+                <View className="flex flex-row justify-end items-end px-4 web:md:px-6">
                   <Text
                     onPress={() => {
                       setShowAll(false);
                     }}
-                    className="text-muted-foreground px-1.5 opacity-50 "
+                    className="text-muted-foreground px-1.5 opacity-50 web:md:text-base"
                   >
                     Ver Menos
                   </Text>
@@ -84,15 +85,15 @@ export default function Home() {
                 {Object.keys(groupExpensesByDate(parsedExpenses)).map(
                   (dateLabel) => (
                     <View key={dateLabel}>
-                      <Text className="text-lg  px-4 text-muted-foreground">
+                      <Text className="text-lg px-4 web:md:px-6 text-muted-foreground web:md:text-xl">
                         {dateLabel}
                       </Text>
                       <View className="flex-1">
                         <FlashList
                           contentContainerStyle={{
                             paddingBottom: 16,
-                            paddingHorizontal: 20,
                           }}
+                          contentContainerClassName="px-4 web:md:px-6"
                           data={groupExpensesByDate(parsedExpenses)[dateLabel]}
                           estimatedItemSize={400}
                           scrollsToTop
@@ -113,24 +114,24 @@ export default function Home() {
         </ScrollView>
       ) : (
         <ScrollView
-          className="bg-white dark:bg-zinc-900  flex-1"
+          className="flex-1 web:md:max-w-4xl"
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
-          contentContainerClassName="px-4"
+          contentContainerClassName="px-4 web:md:px-6"
         >
-          <View className=" rounded-b-3xl pb-10 ">
+          <View className="rounded-b-3xl pb-10 web:md:pb-12">
             <Card />
           </View>
-          <View className="flex flex-row justify-between items-center   w-full">
-            <Text className="text-xl font-bold dark:text-white">
+          <View className="flex flex-row justify-between items-center w-full web:md:mt-6">
+            <Text className="text-xl font-bold dark:text-white web:md:text-2xl">
               Historial de Gastos
             </Text>
             <Text
               onPress={() => {
                 setShowAll(true);
               }}
-              className="text-muted-foreground dark:text-secondary px-1.5 opacity-50 "
+              className="text-muted-foreground dark:text-secondary px-1.5 opacity-50 web:md:text-base"
             >
               Ver más
             </Text>
@@ -142,6 +143,7 @@ export default function Home() {
               <FlashList
                 data={parsedExpenses}
                 contentContainerStyle={{ paddingTop: 16, paddingBottom: 48 }}
+                contentContainerClassName="web:md:px-2"
                 estimatedItemSize={320}
                 scrollsToTop
                 ItemSeparatorComponent={() => (
@@ -151,13 +153,13 @@ export default function Home() {
                   return <Expense expense={expense} />;
                 }}
                 ListEmptyComponent={
-                  <View className="flex flex-col items-center justify-center  ">
+                  <View className="flex flex-col items-center justify-center">
                     <NoData2Svg width={150} height={150} />
                     <View>
-                      <Text className="text-center text-xl text-muted-foreground">
+                      <Text className="text-center text-xl text-muted-foreground web:md:text-2xl">
                         No hay gastos registrados
                       </Text>
-                      <Text className="text-center text-sm text-muted-foreground">
+                      <Text className="text-center text-sm text-muted-foreground web:md:text-base">
                         Haz click en el botón "+" para registrar un gasto
                       </Text>
                     </View>

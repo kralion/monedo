@@ -138,7 +138,7 @@ export default function RootLayout() {
         <StatusBar style={isDarkColorScheme ? "light" : "dark"} />
         <ClerkLoaded>
           <QuickActionsSetup />
-          <WhatsNewModal />
+          {/* <WhatsNewModal /> */}
           <RootLayoutNav />
           <PortalHost />
         </ClerkLoaded>
