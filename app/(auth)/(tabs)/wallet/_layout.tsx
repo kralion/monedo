@@ -29,7 +29,7 @@ import { useBudgetStore } from "~/stores/budget";
 export default function Layout() {
   const incomeBottomSheetRef = useRef<BottomSheet>(null);
   const { user } = useUser();
-  const snapPoints = useMemo(() => ["25%", "50%"], []);
+  const snapPoints = useMemo(() => ["45%"], []);
   const { addBudget, budget, updateBudget } = useBudgetStore();
   const [loading, setIsLoading] = useState(false);
   const { isDarkColorScheme } = useColorScheme();
@@ -235,6 +235,7 @@ export default function Layout() {
             onPress={
               budget?.id ? handleSubmit(onUpdate) : handleSubmit(onSubmit)
             }
+            size="lg"
             disabled={loading}
           >
             <Text>{budget?.id ? "Actualizar" : "Registrar Ingreso"}</Text>

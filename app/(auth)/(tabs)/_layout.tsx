@@ -1,13 +1,19 @@
 import Colors from "@/lib/constants";
+import { useUser } from "@clerk/clerk-expo";
+import { BlurView } from "expo-blur";
 import { Image } from "expo-image";
 import { router, Tabs } from "expo-router";
-import { TouchableOpacity, useColorScheme, View } from "react-native";
-import { Platform, StyleSheet } from "react-native";
+import { Lock, Plus } from "lucide-react-native";
+import {
+  Platform,
+  StatusBar,
+  StyleSheet,
+  TouchableOpacity,
+  useColorScheme,
+  View,
+} from "react-native";
 import { Button } from "~/components/ui/button";
-import { Crown, Lock, Plus } from "lucide-react-native";
 import { Text } from "~/components/ui/text";
-import { LinearGradient } from "expo-linear-gradient";
-import { useUser } from "@clerk/clerk-expo";
 import { useUserPlan } from "~/hooks/useUserPlan";
 
 export default function TabLayout() {
@@ -22,15 +28,38 @@ export default function TabLayout() {
     <View style={{ flex: 1 }}>
       <Tabs
         screenOptions={{
+          animation: "shift",
+          headerShown: false,
+          lazy: true,
           tabBarActiveTintColor: Colors.NAV_THEME[colorScheme ?? "light"].tint,
           tabBarStyle: {
-            height: 80,
-            paddingTop: 10,
+            position: "absolute",
+            backgroundColor:
+              colorScheme === "dark"
+                ? "black"
+                : Platform.select({
+                    ios: "transparent",
+                    android: "rgba(255, 255, 255, 1)",
+                  }),
+            borderTopWidth: StyleSheet.hairlineWidth,
+            borderTopColor: "rgba(0,0,0,0.2)",
+            elevation: 0,
+          },
+          headerStyle: {
+            height: Platform.OS === "android" ? StatusBar.currentHeight : 0,
           },
           tabBarHideOnKeyboard: true,
           freezeOnBlur: true,
-          headerShown: false,
-          tabBarShowLabel: Platform.OS === "web" ? false : true,
+          tabBarBackground: () =>
+            Platform.OS === "ios" ? (
+              <BlurView
+                tint={
+                  colorScheme === "dark" ? "dark" : "systemThickMaterialLight"
+                }
+                intensity={70}
+                style={StyleSheet.absoluteFill}
+              />
+            ) : null,
         }}
       >
         <Tabs.Screen

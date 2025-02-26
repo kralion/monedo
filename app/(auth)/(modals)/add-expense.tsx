@@ -85,7 +85,7 @@ export default function AddExpense() {
   return (
     <ScrollView
       contentInsetAdjustmentBehavior="automatic"
-      className="flex flex-col gap-4 bg-white dark:bg-zinc-900"
+      className="flex flex-col gap-4 bg-white dark:bg-zinc-900 web:md:w-1/2 web:md:mx-auto"
     >
       <View className="flex flex-col gap-6 p-4">
         <Controller

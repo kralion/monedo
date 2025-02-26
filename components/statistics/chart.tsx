@@ -1,6 +1,6 @@
 import NoDataAsset from "@/assets/svgs/no-data.svg";
 import React from "react";
-import { View } from "react-native";
+import { useWindowDimensions, View } from "react-native";
 import { LineChart } from "react-native-gifted-charts";
 import { IExpense } from "~/interfaces";
 import { Text } from "../ui/text";
@@ -22,6 +22,10 @@ type ChartProps = {
   data: IExpense[];
 };
 export default function Chart({ timelineQuery, data }: ChartProps) {
+  const { width } = useWindowDimensions();
+  const isCompact = width < 1024;
+  const isMobile = width < 768;
+
   const aggregateData = (
     data: IExpense[],
     timeLabels: string[],
@@ -120,6 +124,7 @@ export default function Chart({ timelineQuery, data }: ChartProps) {
       yAxisColor="gray"
       xAxisColor="white"
       yAxisThickness={0}
+      height={250}
       color1="#41D29B"
       hideYAxisText
       dataPointsColor1="#41D29B"
@@ -127,7 +132,6 @@ export default function Chart({ timelineQuery, data }: ChartProps) {
       endSpacing={-20}
       startFillColor1="#41D29B"
       startOpacity={0.8}
-      height={250}
     />
   );
 }

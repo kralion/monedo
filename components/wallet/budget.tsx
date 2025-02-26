@@ -45,7 +45,7 @@ export function Budget({ budget }: { budget: IBudget }) {
         {
           text: "Eliminar",
           onPress: async () => {
-            deleteBudget(budget.id);
+            deleteBudget(budget.id as number);
           },
           style: "destructive",
         },
@@ -101,7 +101,7 @@ export function Budget({ budget }: { budget: IBudget }) {
                 height={45}
                 className="bg-brand/20 rounded-full p-2"
                 source={{
-                  uri: "https://img.icons8.com/?size=100&id=yUTNKgUuTlsA&format=png&color=000000",
+                  uri: "https://img.icons8.com/?size=100&id=KV6GFslVNJhZ&format=png&color=000000",
                 }}
               />
               <View className="card-title-details flex flex-col gap-1">

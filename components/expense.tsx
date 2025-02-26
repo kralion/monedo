@@ -1,7 +1,12 @@
 import { expensesIdentifiers } from "@/constants/ExpensesIdentifiers";
 import { router } from "expo-router";
 import React from "react";
-import { Image, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  TouchableOpacity,
+  useWindowDimensions,
+  View,
+} from "react-native";
 import Animated, { FadeIn } from "react-native-reanimated";
 import { formatDate } from "~/helpers/dateFormatter";
 import { IExpense } from "~/interfaces";
@@ -9,6 +14,9 @@ import { Text } from "./ui/text";
 import { ChevronRight } from "lucide-react-native";
 
 export function Expense({ expense }: { expense: IExpense }) {
+  const { width } = useWindowDimensions();
+  const isCompact = width < 1024;
+  const isMobile = width < 768;
   const assetIndentificador =
     expensesIdentifiers.find(
       (icon) =>
@@ -25,8 +33,10 @@ export function Expense({ expense }: { expense: IExpense }) {
         className="card active:opacity-80 flex flex-row gap-1   items-center"
       >
         <Image
-          width={50}
-          height={50}
+          style={{
+            width: 50,
+            height: 50,
+          }}
           className="bg-zinc-100 dark:bg-zinc-800 rounded-full p-2"
           source={{ uri: assetIndentificador }}
         />

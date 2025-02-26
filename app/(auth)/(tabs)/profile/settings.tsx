@@ -8,6 +8,7 @@ import {
   SmartphoneNfc,
 } from "lucide-react-native";
 import React, { useState } from "react";
+import { useWindowDimensions } from "react-native";
 import {
   Appearance,
   Image,
@@ -46,6 +47,9 @@ function RadioGroupItemWithLabel({
 }
 export default function SettingsScreen() {
   const { isDarkColorScheme, setColorScheme } = useColorScheme();
+  const { width } = useWindowDimensions();
+  const isCompact = width < 1024;
+  const isMobile = width < 768;
 
   const { signOut } = useAuth();
   const [isDarkMode, setIsDarkMode] = useState(
@@ -64,8 +68,10 @@ export default function SettingsScreen() {
 
   return (
     <ScrollView
-      className=" p-4 bg-white dark:bg-zinc-900 web:md:w-1/2 web:md:mx-auto"
+      className=" p-6 bg-white dark:bg-zinc-900"
       contentInsetAdjustmentBehavior="automatic"
+      contentContainerClassName="pb-24"
+      showsVerticalScrollIndicator={false}
     >
       <RadioGroup
         value={isDarkMode}
@@ -74,28 +80,32 @@ export default function SettingsScreen() {
       >
         <View className="flex-row justify-between mb-8">
           <View className="items-center">
-            <Image
-              source={require("../../../../assets/images/light.png")}
-              className="w-48 h-72 rounded-lg mb-2"
-            />
+            <TouchableOpacity onPress={() => toggleLightMode()}>
+              <Image
+                source={require("../../../../assets/images/light.png")}
+                className="w-48 h-72 rounded-lg mb-2"
+              />
 
-            <RadioGroupItemWithLabel
-              value="light"
-              label="Modo Claro"
-              onLabelPress={() => toggleLightMode()}
-            />
+              <RadioGroupItemWithLabel
+                value="light"
+                label="Modo Claro"
+                onLabelPress={() => toggleLightMode()}
+              />
+            </TouchableOpacity>
           </View>
-          <View className="items-center">
-            <Image
-              source={require("../../../../assets/images/dark.png")}
-              className="w-48 h-72 rounded-lg mb-2"
-            />
-            <RadioGroupItemWithLabel
-              value="dark"
-              label="Modo Oscuro"
-              onLabelPress={toggleDarkMode}
-            />
-          </View>
+          <TouchableOpacity onPress={toggleDarkMode}>
+            <View className="items-center">
+              <Image
+                source={require("../../../../assets/images/dark.png")}
+                className="w-48 h-72 rounded-lg mb-2"
+              />
+              <RadioGroupItemWithLabel
+                value="dark"
+                label="Modo Oscuro"
+                onLabelPress={toggleDarkMode}
+              />
+            </View>
+          </TouchableOpacity>
         </View>
       </RadioGroup>
 

@@ -164,7 +164,7 @@ function RootLayoutNav() {
   }, []);
   React.useEffect(() => {
     if (!isSignedIn && segments[0] === "(auth)") {
-      router.push("/(public)");
+      router.push("/(public)/sign-in");
     } else if (isSignedIn && segments[0] === "(public)") {
       router.push("/(auth)/(tabs)");
     }

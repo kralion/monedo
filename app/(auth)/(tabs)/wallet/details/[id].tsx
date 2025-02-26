@@ -76,14 +76,14 @@ export default function BudgetDetails() {
                   S/ {budget.amount}
                 </Text>
               </View>
-              <Separator className="text-muted-foreground" />
-              <Text className="text-lg text-muted-foreground ">
-                {budget.description}
-              </Text>
+              <View className="bg-zinc-100 dark:bg-zinc-800 rounded-lg p-4 w-full">
+                <Text className="text-lg text-muted-foreground ">
+                  {budget.description}
+                </Text>
+              </View>
             </Animated.View>
 
-            <Separator className="text-muted-foreground" />
-            <View className="flex flex-col gap-2">
+            <View className="flex flex-col gap-2  bg-zinc-100 dark:bg-zinc-800 rounded-lg p-4">
               <View className="flex flex-col gap-4">
                 <View className="flex flex-row justify-between items-center">
                   <Text className="text-muted-foreground">Fecha Registro</Text>

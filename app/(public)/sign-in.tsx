@@ -8,7 +8,6 @@ import { Platform, ScrollView, useWindowDimensions, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { Button } from "~/components/ui/button";
 import { Text } from "~/components/ui/text";
-import { useUserPlan } from "~/hooks/useUserPlan";
 
 export const useWarmUpBrowser = () => {
   React.useEffect(() => {
@@ -165,6 +164,7 @@ export const SignInWithOAuthGoogle = () => {
     <Button
       className="flex flex-row gap-2 items-center"
       size="lg"
+      variant="outline"
       onPress={onPress}
     >
       <Image

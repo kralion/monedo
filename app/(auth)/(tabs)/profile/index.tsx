@@ -25,7 +25,7 @@ export default function ProfileScreen() {
   const router = useRouter();
 
   return (
-    <SafeAreaView className="bg-white dark:bg-zinc-900 web:md:w-1/2 web:md:mx-auto justify-center  flex-1">
+    <SafeAreaView className="bg-white dark:bg-zinc-900 justify-center  flex-1">
       <View className="flex flex-col items-center">
         <Avatar className="bg-teal-500 self-center w-36 h-36" alt="avatar">
           <AvatarImage

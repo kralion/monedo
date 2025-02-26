@@ -9,15 +9,6 @@ export default function AuthRoutesLayout() {
   }
 
   return (
-    <Stack>
-      <Stack.Screen
-        name="index"
-        options={{ title: "Welcome", headerShown: false }}
-      />
-      <Stack.Screen
-        name="sign-in"
-        options={{ title: "Iniciar Sesión", headerShown: false }}
-      />
-    </Stack>
+    <Stack screenOptions={{headerShown: false}} />
   );
 }

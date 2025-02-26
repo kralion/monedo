@@ -62,13 +62,13 @@ export default function Home() {
     <View className="flex-1">
       {showAll ? (
         <ScrollView
-          contentContainerClassName="pb-14"
+          contentContainerClassName="pb-14 flex-1"
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
         >
           <Animated.View style={{ opacity: 60 }}>
-            <View className="web:md:w-1/2">
+            <View>
               <View className="flex flex-col gap-4">
                 <View className="flex flex-row  justify-end items-end px-4 ">
                   <Text
@@ -113,13 +113,13 @@ export default function Home() {
         </ScrollView>
       ) : (
         <ScrollView
-          className="bg-white dark:bg-zinc-900 web:md:w-1/2 web:md:mx-auto"
+          className="bg-white dark:bg-zinc-900  flex-1"
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
           contentContainerClassName="px-4"
         >
-          <View className=" rounded-b-3xl pb-10 web:md:w-1/2 ">
+          <View className=" rounded-b-3xl pb-10 ">
             <Card />
           </View>
           <View className="flex flex-row justify-between items-center   w-full">
@@ -132,7 +132,7 @@ export default function Home() {
               }}
               className="text-muted-foreground dark:text-secondary px-1.5 opacity-50 "
             >
-              Ver Más
+              Ver más
             </Text>
           </View>
           {loading ? (
