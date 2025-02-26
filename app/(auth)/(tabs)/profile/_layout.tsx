@@ -131,20 +131,6 @@ export default function Layout() {
             headerShown: false,
           }}
         />
-        <Stack.Screen
-          name="notifications"
-          options={{
-            title: "Notificaciones",
-            headerLargeTitle: true,
-            headerShadowVisible: false,
-            headerSearchBarOptions: {
-              placeholder: "Buscar ...",
-              hideWhenScrolling: false,
-              cancelButtonText: "Cancelar",
-            },
-            headerLargeTitleShadowVisible: false,
-          }}
-        />
       </Stack>
       <AddCategory bottomSheetRef={bottomSheetRef} />
     </View>

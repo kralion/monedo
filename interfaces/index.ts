@@ -95,14 +95,7 @@ export interface CategoryStore {
   deleteCategory: (id: number) => Promise<void>;
   getCategories: (userId: string) => Promise<void>;
 }
-export interface NotificationStore {
-  notifications: INotification[];
-  loading: boolean;
 
-  addNotification: (notification: INotification) => Promise<void>;
-  getNotifications: () => Promise<void>;
-  deleteNotification: (id: number) => Promise<void>;
-}
 export interface IBudgetContextProvider {
   addBudget: (budget: IBudget) => void;
   getTotalBudget: () => Promise<number>;

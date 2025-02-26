@@ -1,15 +1,17 @@
 import { useAuth, useUser } from "@clerk/clerk-expo";
+import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import {
-  Bell,
   Bookmark,
+  CheckCircle,
+  CheckCircle2,
   Crown,
   Settings,
-  Unlock,
   User,
   UserSquare2,
 } from "lucide-react-native";
-import { ScrollView, View } from "react-native";
+import { TouchableOpacity } from "react-native";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
@@ -63,15 +65,30 @@ export default function ProfileScreen() {
           <User color={isDarkColorScheme ? "white" : "black"} />
           <Text className="dark:text-white">Mis Datos</Text>
         </Button>
-        <Button
-          onPress={() => router.push("/(auth)/(tabs)/profile/buy-premium")}
-          size="lg"
-          variant="ghost"
-          className="flex flex-row gap-3 px-5 "
-        >
-          <Crown color={isDarkColorScheme ? "white" : "black"} />
-          <Text className="dark:text-white">Adquirir Premium</Text>
-        </Button>
+        {has?.({ permission: "org:premium:plan" }) && (
+          <LinearGradient
+            colors={["#41D29B", "#2E865F"]}
+            style={{ marginTop: 10, borderRadius: 10, width: "100%" }}
+          >
+            <TouchableOpacity
+              className="flex-row flex items-center justify-between  p-4"
+              onPress={() => router.push("/(auth)/(tabs)/profile/buy-premium")}
+            >
+              <View className=" flex flex-col gap-4 w-4/5">
+                <Text className="text-xl font-semibold text-white">
+                  Adquirir Pro
+                </Text>
+                <Text className="opacity-80 text-white">
+                  Para poder tener acceso a todas las funcionalidades premium.
+                </Text>
+              </View>
+              <View className="bg-white/20 rounded-full p-2 ">
+                <CheckCircle2 size={32} color="white" />
+              </View>
+            </TouchableOpacity>
+          </LinearGradient>
+        )}
+
         <Button
           onPress={() => router.push("/(auth)/(tabs)/profile/categories")}
           size="lg"
@@ -89,16 +106,6 @@ export default function ProfileScreen() {
         >
           <UserSquare2 color={isDarkColorScheme ? "white" : "black"} />
           <Text className="dark:text-white">Membresía</Text>
-        </Button>
-
-        <Button
-          onPress={() => router.push("/(auth)/(tabs)/profile/notifications")}
-          size="lg"
-          variant="ghost"
-          className="flex flex-row gap-3 px-5"
-        >
-          <Bell color={isDarkColorScheme ? "white" : "black"} />
-          <Text className="dark:text-white">Notificaciones</Text>
         </Button>
 
         <Button

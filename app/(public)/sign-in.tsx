@@ -1,10 +1,11 @@
-import { useOAuth } from "@clerk/clerk-expo";
+import { useSSO } from "@clerk/clerk-expo";
 import * as Linking from "expo-linking";
 import * as WebBrowser from "expo-web-browser";
 import React from "react";
 import { Platform, ScrollView, useWindowDimensions, View } from "react-native";
 import SurfSvg from "@/assets/svgs/surf.svg";
 import { Button } from "~/components/ui/button";
+import * as AuthSession from "expo-auth-session";
 import { Text } from "~/components/ui/text";
 import { Image } from "expo-image";
 import Animated, { FadeInDown } from "react-native-reanimated";
@@ -133,13 +134,14 @@ export default function SignInScreen() {
 export const SignInWithOAuthGoogle = () => {
   useWarmUpBrowser();
 
-  const { startOAuthFlow } = useOAuth({ strategy: "oauth_google" });
+  const { startSSOFlow } = useSSO();
 
   const onPress = React.useCallback(async () => {
     try {
       const { createdSessionId, signIn, signUp, setActive } =
-        await startOAuthFlow({
-          redirectUrl: Linking.createURL("/(tabs)", { scheme: "monedo" }),
+        await startSSOFlow({
+          strategy: "oauth_google",
+          redirectUrl: AuthSession.makeRedirectUri(),
         });
 
       if (createdSessionId) {
@@ -172,13 +174,14 @@ export const SignInWithOAuthGoogle = () => {
 export const SignInWithOAuthTiktok = () => {
   useWarmUpBrowser();
 
-  const { startOAuthFlow } = useOAuth({ strategy: "oauth_tiktok" });
+  const { startSSOFlow } = useSSO();
 
   const onPress = React.useCallback(async () => {
     try {
       const { createdSessionId, signIn, signUp, setActive } =
-        await startOAuthFlow({
-          redirectUrl: Linking.createURL("/(tabs)", { scheme: "monedo" }),
+        await startSSOFlow({
+          strategy: "oauth_tiktok",
+          redirectUrl: AuthSession.makeRedirectUri(),
         });
 
       if (createdSessionId) {
@@ -212,13 +215,14 @@ export const SignInWithOAuthTiktok = () => {
 export const SignInWithOAuthFacebook = () => {
   useWarmUpBrowser();
 
-  const { startOAuthFlow } = useOAuth({ strategy: "oauth_facebook" });
+  const { startSSOFlow } = useSSO();
 
   const onPress = React.useCallback(async () => {
     try {
       const { createdSessionId, signIn, signUp, setActive } =
-        await startOAuthFlow({
-          redirectUrl: Linking.createURL("/(tabs)", { scheme: "monedo" }),
+        await startSSOFlow({
+          strategy: "oauth_facebook",
+          redirectUrl: AuthSession.makeRedirectUri(),
         });
 
       if (createdSessionId) {
