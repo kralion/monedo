@@ -1,15 +1,15 @@
-import { useSSO } from "@clerk/clerk-expo";
-import * as Linking from "expo-linking";
+import SurfSvg from "@/assets/svgs/surf.svg";
+import { useSSO, useUser } from "@clerk/clerk-expo";
+import * as AuthSession from "expo-auth-session";
+import { Image } from "expo-image";
 import * as WebBrowser from "expo-web-browser";
 import React from "react";
 import { Platform, ScrollView, useWindowDimensions, View } from "react-native";
-import SurfSvg from "@/assets/svgs/surf.svg";
-import { Button } from "~/components/ui/button";
-import * as AuthSession from "expo-auth-session";
-import { Text } from "~/components/ui/text";
-import { Image } from "expo-image";
 import Animated, { FadeInDown } from "react-native-reanimated";
-import { Stack } from "expo-router";
+import { Button } from "~/components/ui/button";
+import { Text } from "~/components/ui/text";
+import { useUserPlan } from "~/hooks/useUserPlan";
+
 export const useWarmUpBrowser = () => {
   React.useEffect(() => {
     if (Platform.OS !== "web") {
@@ -25,6 +25,26 @@ export const useWarmUpBrowser = () => {
 };
 
 WebBrowser.maybeCompleteAuthSession();
+
+// Helper function to handle SSO authentication and metadata setting
+const handleSSOAuth = async (
+  strategy: "oauth_google" | "oauth_tiktok" | "oauth_facebook",
+  startSSOFlow: ReturnType<typeof useSSO>["startSSOFlow"],
+  user: ReturnType<typeof useUser>["user"]
+): Promise<void> => {
+  try {
+    const { createdSessionId, setActive } = await startSSOFlow({
+      strategy,
+      redirectUrl: AuthSession.makeRedirectUri(),
+    });
+
+    if (createdSessionId) {
+      await setActive!({ session: createdSessionId });
+    }
+  } catch (err) {
+    console.error(`OAuth error with ${strategy}:`, err);
+  }
+};
 
 export default function SignInScreen() {
   const isMobile = useWindowDimensions().width < 768;
@@ -135,24 +155,11 @@ export const SignInWithOAuthGoogle = () => {
   useWarmUpBrowser();
 
   const { startSSOFlow } = useSSO();
+  const { user } = useUser();
 
   const onPress = React.useCallback(async () => {
-    try {
-      const { createdSessionId, signIn, signUp, setActive } =
-        await startSSOFlow({
-          strategy: "oauth_google",
-          redirectUrl: AuthSession.makeRedirectUri(),
-        });
-
-      if (createdSessionId) {
-        setActive!({ session: createdSessionId });
-      } else {
-        // Use signIn or signUp for next steps such as MFA
-      }
-    } catch (err) {
-      console.error("OAuth error", err);
-    }
-  }, []);
+    await handleSSOAuth("oauth_google", startSSOFlow, user);
+  }, [startSSOFlow, user]);
 
   return (
     <Button
@@ -171,28 +178,16 @@ export const SignInWithOAuthGoogle = () => {
     </Button>
   );
 };
+
 export const SignInWithOAuthTiktok = () => {
   useWarmUpBrowser();
 
   const { startSSOFlow } = useSSO();
+  const { user } = useUser();
 
   const onPress = React.useCallback(async () => {
-    try {
-      const { createdSessionId, signIn, signUp, setActive } =
-        await startSSOFlow({
-          strategy: "oauth_tiktok",
-          redirectUrl: AuthSession.makeRedirectUri(),
-        });
-
-      if (createdSessionId) {
-        setActive!({ session: createdSessionId });
-      } else {
-        // Use signIn or signUp for next steps such as MFA
-      }
-    } catch (err) {
-      console.error("OAuth error", err);
-    }
-  }, []);
+    await handleSSOAuth("oauth_tiktok", startSSOFlow, user);
+  }, [startSSOFlow, user]);
 
   return (
     <Button
@@ -212,28 +207,16 @@ export const SignInWithOAuthTiktok = () => {
     </Button>
   );
 };
+
 export const SignInWithOAuthFacebook = () => {
   useWarmUpBrowser();
 
   const { startSSOFlow } = useSSO();
+  const { user } = useUser();
 
   const onPress = React.useCallback(async () => {
-    try {
-      const { createdSessionId, signIn, signUp, setActive } =
-        await startSSOFlow({
-          strategy: "oauth_facebook",
-          redirectUrl: AuthSession.makeRedirectUri(),
-        });
-
-      if (createdSessionId) {
-        setActive!({ session: createdSessionId });
-      } else {
-        // Use signIn or signUp for next steps such as MFA
-      }
-    } catch (err) {
-      console.error("OAuth error", err);
-    }
-  }, []);
+    await handleSSOAuth("oauth_facebook", startSSOFlow, user);
+  }, [startSSOFlow, user]);
 
   return (
     <Button

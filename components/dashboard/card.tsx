@@ -15,6 +15,7 @@ import { Button } from "../ui/button";
 import { Text } from "../ui/text";
 import { useUser } from "@clerk/clerk-expo";
 import Animated, { FadeInDown, FadeInUp } from "react-native-reanimated";
+import { Image } from "expo-image";
 
 export default function Card() {
   const { planName, isPremium } = useUserPlan();
@@ -48,13 +49,21 @@ export default function Card() {
     >
       <View
         className="relative w-full
-      mx-auto my-10   h-[200px] "
+      mx-auto my-6   h-[200px] "
       >
         <Animated.View entering={FadeInDown}>
-          <View className="absolute top-16 bg-green-800 shadow-sm rounded-xl w-full h-[200px] scale-[0.75]" />
+          <View
+            className={`absolute top-16 ${
+              isPremium ? "bg-black/70" : "bg-green-800"
+            } shadow-sm rounded-xl w-full h-[200px] scale-[0.75]`}
+          />
         </Animated.View>
         <Animated.View entering={FadeInDown}>
-          <View className="absolute top-8 bg-green-700 shadow-sm rounded-xl w-full h-[200px] scale-[0.90]" />
+          <View
+            className={`absolute top-8 ${
+              isPremium ? "bg-black/90" : "bg-green-700"
+            } shadow-sm rounded-xl w-full h-[200px] scale-[0.90]`}
+          />
         </Animated.View>
         <Animated.View entering={FadeInUp}>
           <LinearGradient
@@ -62,7 +71,7 @@ export default function Card() {
               isOutOfBudget
                 ? ["#FF0000", "#FF7F7F"]
                 : isPremium
-                ? ["#D4AF37", "#FFD700", "#A79647"]
+                ? ["#000000", "#353535", "#000000"]
                 : ["#10B981", "#047857"]
             }
             start={{ x: 0, y: 0 }}
@@ -78,14 +87,23 @@ export default function Card() {
                 </Text>
               </View>
 
-              <Button
-                size="sm"
-                className={` rounded-full
-                bg-${isPremium ? "yellow-500" : "orange-500"}
-                `}
-              >
-                <Text className="text-white">Cuenta {planName}</Text>
-              </Button>
+              {!isPremium && (
+                <Button
+                  size="sm"
+                  className="rounded-full
+                 bg-orange-500"
+                >
+                  <Text className="text-white">Cuenta {planName}</Text>
+                </Button>
+              )}
+              {isPremium && (
+                <Image
+                  source={{
+                    uri: "https://img.icons8.com/?size=100&id=kiERC418GbAI&format=png&color=000000",
+                  }}
+                  style={{ width: 50, height: 50, borderRadius: 24 }}
+                />
+              )}
             </View>
             <View className="flex flex-row justify-between">
               <View className="flex flex-col gap-2">

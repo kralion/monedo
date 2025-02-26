@@ -179,14 +179,6 @@ export default function AddExpense() {
           </Text>
         )}
       </Button>
-      <Button
-        className="mx-6 rounded-full mt-4"
-        variant="secondary"
-        onPress={() => router.back()}
-        size="lg"
-      >
-        <Text className="dark:text-black">Cancelar</Text>
-      </Button>
     </ScrollView>
   );
 }

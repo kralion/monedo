@@ -16,11 +16,16 @@ import { Text } from "~/components/ui/text";
 import { groupExpensesByDate } from "~/helpers/groupExpenseByDate";
 import { useBudgetStore } from "~/stores/budget";
 import { useExpenseStore } from "~/stores/expense";
+import type { ConfettiMethods } from "react-native-fast-confetti";
+import { Confetti } from "react-native-fast-confetti";
+import { useUserPlan } from "~/hooks/useUserPlan";
 
 export default function Home() {
   const { user, isSignedIn } = useUser();
+  const { isPremium } = useUserPlan();
   const { checkBudget } = useBudgetStore();
   const [showAll, setShowAll] = React.useState(false);
+  const confettiRef = React.useRef<ConfettiMethods>(null);
   const [loading, setLoading] = React.useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -112,7 +117,7 @@ export default function Home() {
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
-          contentContainerClassName="p-4  "
+          contentContainerClassName="px-4"
         >
           <View className=" rounded-b-3xl pb-10 web:md:w-1/2 ">
             <Card />

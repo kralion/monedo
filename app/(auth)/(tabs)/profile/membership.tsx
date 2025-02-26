@@ -1,17 +1,20 @@
 import { useAuth, useUser } from "@clerk/clerk-expo";
 import { Image } from "expo-image";
+import { router } from "expo-router";
 import { Info } from "lucide-react-native";
 import { SafeAreaView, ScrollView, View } from "react-native";
+import { toast } from "sonner-native";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { Text } from "~/components/ui/text";
+import { useUserPlan } from "~/hooks/useUserPlan";
 
 export default function Membership() {
-  const { user: userData } = useUser();
-  const { has } = useAuth();
+  const { user } = useUser();
+  const { isPremium, planName } = useUserPlan();
 
-  const dateFormatted = userData?.createdAt
-    ? new Date(userData.createdAt).toLocaleDateString("es-ES", {
+  const dateFormatted = user?.createdAt
+    ? new Date(user.createdAt).toLocaleDateString("es-ES", {
         year: "numeric",
         month: "2-digit",
         day: "2-digit",
@@ -31,30 +34,22 @@ export default function Membership() {
           />
 
           <View className="flex flex-col gap-1">
-            <Text className="font-bold text-xl">
-              {has?.({ permission: "premium:plan" })
-                ? "Plan Pro"
-                : "Plan Gratuito"}
-            </Text>
+            <Text className="font-bold text-xl">Plan: {planName}</Text>
 
             <Text className="text-foreground">
               Adquisición: <Text> {dateFormatted}</Text>
             </Text>
             <Text className="text-foreground">
-              Ciclo Facturación:{" "}
-              <Text className="text-sm font-semibold">
-                {has?.({ permission: "premium:plan" }) ? "20/12" : "15/12"}
-              </Text>
+              Ciclo Facturación: <Text className="font-semibold">Mensual</Text>
             </Text>
           </View>
         </View>
-        <Separator className="text-gray-500" />
-        <View className="flex flex-col gap-4 rounded-xl">
+        <View className="flex flex-col gap-4 p-4 rounded-xl bg-zinc-100 dark:bg-zinc-800">
           <View className="flex flex-row gap-2 items-center">
             <Info size={24} className="text-primary" />
-            <Text className="text-xl">Información del Plan</Text>
+            <Text className="text-lg">Información del Plan</Text>
           </View>
-          <View className="flex flex-col gap-4 p-4">
+          <View className="flex flex-col gap-4 p-4 text-muted-foreground">
             <Text>
               Esta información es de caracter informativo y no puede ser editada
               o modificada. Se cauteloso con la información que compartas.
@@ -63,30 +58,19 @@ export default function Membership() {
             <View className="flex flex-row gap-1 items-center">
               <Text className="text-foreground">Titular de la cuenta: </Text>
               <Text className="font-bold">
-                {userData?.firstName} {userData?.lastName}
+                {user?.firstName} {user?.lastName}
               </Text>
             </View>
           </View>
         </View>
-        <Separator className="text-gray-500" />
 
         <Text className="text-xl font-bold">Monto de Recargo</Text>
         <Button
           size="lg"
-          className={`
-            ${
-              has?.({ permission: "premium:plan" })
-                ? "bg-primary"
-                : "bg-orange-500"
-            }
-            text-white
-            `}
+          onPress={() => router.push("/(auth)/(modals)/buy-premium")}
+          disabled={isPremium}
         >
-          <Text>
-            {has?.({ permission: "premium:plan" })
-              ? "S/ 20.00 / mes"
-              : "S/ 00.00 / mes"}
-          </Text>
+          <Text>{isPremium ? "S/ 20.00 / mes" : "S/ 00.00 / mes"}</Text>
         </Button>
       </View>
     </ScrollView>

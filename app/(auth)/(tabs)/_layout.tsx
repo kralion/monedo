@@ -8,12 +8,14 @@ import { Crown, Lock, Plus } from "lucide-react-native";
 import { Text } from "~/components/ui/text";
 import { LinearGradient } from "expo-linear-gradient";
 import { useUser } from "@clerk/clerk-expo";
+import { useUserPlan } from "~/hooks/useUserPlan";
 
 export default function TabLayout() {
   function capitalizeFirstLetter(string: string) {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
   }
-  const { user, isSignedIn } = useUser();
+  const { user } = useUser();
+  const { isPremium } = useUserPlan();
 
   const colorScheme = useColorScheme();
   return (
@@ -38,7 +40,7 @@ export default function TabLayout() {
             headerTitle: () => null,
             headerShown: true,
             headerShadowVisible: false,
-            headerBackground: () => <View className="h-64 w-full" />,
+            headerBackground: () => <View className=" w-full" />,
             headerStyle: {
               height: 120,
             },
@@ -46,7 +48,7 @@ export default function TabLayout() {
               <View className="flex-row gap-4 items-center p-4">
                 <Image
                   source={{ uri: user?.imageUrl }}
-                  style={{ width: 40, height: 40, borderRadius: 20 }}
+                  style={{ width: 50, height: 50, borderRadius: 999 }}
                 />
                 <View className="flex flex-col">
                   <Text className="text-sm">
@@ -59,19 +61,22 @@ export default function TabLayout() {
                       })
                     )}
                   </Text>
-                  <Text className="font-bold">Hola, {user?.firstName} 👋</Text>
+                  <Text className="font-bold text-lg">
+                    Hola, {user?.firstName} 👋
+                  </Text>
                 </View>
               </View>
             ),
-            headerRight: () => (
-              <Button
-                className="mr-4 rounded-full"
-                size="icon"
-                onPress={() => router.push("/(auth)/(modals)/buy-premium")}
-              >
-                <Lock size={18} color="white" />
-              </Button>
-            ),
+            headerRight: () =>
+              isPremium ? null : (
+                <Button
+                  className="mr-4 rounded-full"
+                  size="icon"
+                  onPress={() => router.push("/(auth)/(modals)/buy-premium")}
+                >
+                  <Lock size={18} color="white" />
+                </Button>
+              ),
             tabBarIcon: ({ color, focused }) => (
               <Image
                 style={{ width: 28, height: 28, tintColor: color }}

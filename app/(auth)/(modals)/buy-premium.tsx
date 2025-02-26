@@ -1,5 +1,5 @@
 import Yape from "@/components/payment/yape";
-import { useAuth } from "@clerk/clerk-expo";
+import { useAuth, useUser } from "@clerk/clerk-expo";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { openBrowserAsync } from "expo-web-browser";
@@ -16,6 +16,7 @@ import {
 import { useSharedValue, withTiming } from "react-native-reanimated";
 import Carousel from "react-native-reanimated-carousel";
 import { toast } from "sonner-native";
+import Stripe from "~/components/payment/stripe";
 import { Button } from "~/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
 import { Text } from "~/components/ui/text";
@@ -58,6 +59,7 @@ export default function BuyPremiumModal() {
   const [yapePaymentMethod, setYapePaymentMethod] = React.useState(true);
   const [cardPaymentMethod, setCardPaymentMethod] = React.useState(false);
   const [currentIndex, setCurrentIndex] = React.useState(0);
+  const { user } = useUser();
   const baseOptions = {
     vertical: false,
     width: width - 20,
@@ -76,6 +78,16 @@ export default function BuyPremiumModal() {
   const fadeAnimCard = React.useRef(new AnimatedRN.Value(1)).current;
   const fadeAnimYape = React.useRef(new AnimatedRN.Value(1)).current;
   const { getToken, userId } = useAuth();
+
+  function handleUpgrade() {
+    user?.update({
+      unsafeMetadata: {
+        plan: "premium",
+        updatedAt: new Date(),
+      },
+    });
+    toast.success("Plan actualizado");
+  }
 
   React.useEffect(() => {
     const handleDeepLink = async ({ url }: { url: string }) => {
@@ -213,29 +225,7 @@ export default function BuyPremiumModal() {
             <TabsContent value="card">
               {cardPaymentMethod && (
                 <AnimatedRN.View style={{ opacity: fadeAnimCard }}>
-                  <Image
-                    source={{
-                      uri: "https://threedio-prod-var-cdn.icons8.com/rq/preview_sets/previews/S7L7zuWA_mepY_1h.webp",
-                    }}
-                    style={{
-                      width: 200,
-                      height: 200,
-                      marginHorizontal: "auto",
-                    }}
-                  />
-
-                  <Button
-                    className="mt-4"
-                    onPress={() =>
-                      openBrowserAsync(
-                        "https://sandbox-api.polar.sh/v1/checkout-links/polar_cl_VxYZzkqV8AyaaWQjQLVgrGBVN5h7WiUwyEPMN3iL7O7/redirect"
-                      )
-                    }
-                  >
-                    <Text className="text-white font-bold">
-                      Comprar con Tarjeta
-                    </Text>
-                  </Button>
+                  <Stripe />
                 </AnimatedRN.View>
               )}
             </TabsContent>

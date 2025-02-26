@@ -100,6 +100,7 @@ export default function Layout() {
           options={{
             title: "Configuración",
             headerShadowVisible: false,
+            headerBackTitle: "Perfil",
             headerLargeTitle: true,
           }}
         />
@@ -114,15 +115,6 @@ export default function Layout() {
           }}
         />
 
-        <Stack.Screen
-          name="buy-premium"
-          options={{
-            title: "Adquirir Premium",
-            headerBackTitle: "Perfil",
-            headerBlurEffect: Platform.OS === "ios" ? "regular" : "none",
-            headerTransparent: Platform.OS === "ios" ? true : false,
-          }}
-        />
         <Stack.Screen
           name="categories"
           options={{
