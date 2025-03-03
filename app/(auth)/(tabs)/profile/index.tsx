@@ -9,11 +9,13 @@ import {
   UserSquare2,
 } from "lucide-react-native";
 import React from "react";
+import { ScrollView } from "react-native";
 import { Platform, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
+import { Separator } from "~/components/ui/separator";
 import { Text } from "~/components/ui/text";
 import { useUserPlan } from "~/hooks/useUserPlan";
 import { useColorScheme } from "~/lib/useColorScheme";
@@ -26,8 +28,11 @@ export default function ProfileScreen() {
   const isMobile = Platform.OS !== "web";
 
   return (
-    <SafeAreaView className="bg-white dark:bg-zinc-900  flex-1 web:md:max-w-4xl ">
-      <View className="flex flex-col items-center web:md:mt-8">
+    <ScrollView
+      contentInsetAdjustmentBehavior="automatic"
+      className="bg-white dark:bg-zinc-900  flex-1 web:md:max-w-4xl "
+    >
+      <View className="flex flex-col items-center mt-8">
         <Avatar
           className="bg-teal-500 self-center w-36 h-36 web:md:w-40 web:md:h-40"
           alt="avatar"
@@ -74,45 +79,56 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </LinearGradient>
       )}
-      <View className="flex flex-col mt-10 items-start ml-4 web:md:mt-12  ">
-        <Button
+      <View className="flex flex-col gap-4  mt-10 items-start ml-4 web:md:mt-12  ">
+        <Separator />
+
+        <TouchableOpacity
           onPress={() => router.push("/(auth)/(tabs)/profile/personal-info")}
-          size="lg"
-          variant="ghost"
-          className="flex flex-row gap-3 px-5 web:md:py-4 web:md:hover:bg-zinc-100 web:md:dark:hover:bg-zinc-800 w-full"
+          className="flex flex-row gap-3 px-5 web:md:py-4 web:md:hover:bg-zinc-100 web:md:dark:hover:bg-zinc-800"
         >
           <User color={isDarkColorScheme ? "white" : "black"} />
-          <Text className="dark:text-white">Mis Datos</Text>
-        </Button>
+          <Text className="dark:text-white font-semibold">Mis Datos</Text>
+        </TouchableOpacity>
+        <Separator />
 
-        <Button
+        <TouchableOpacity
           onPress={() => router.push("/(auth)/(tabs)/profile/categories")}
-          size="lg"
-          variant="ghost"
-          className="flex flex-row gap-3 px-5 web:md:py-4 web:md:hover:bg-zinc-100 web:md:dark:hover:bg-zinc-800 w-full"
+          className="flex flex-row gap-3 px-5 web:md:py-4 web:md:hover:bg-zinc-100 web:md:dark:hover:bg-zinc-800 "
         >
           <Bookmark color={isDarkColorScheme ? "white" : "black"} />
-          <Text className="dark:text-white">Categorías</Text>
-        </Button>
-        <Button
+          <Text className="dark:text-white font-semibold">Categorías</Text>
+        </TouchableOpacity>
+        <Separator />
+
+        <TouchableOpacity
           onPress={() => router.push("/(auth)/(tabs)/profile/membership")}
-          size="lg"
-          className="flex flex-row gap-3 px-5 web:md:py-4 web:md:hover:bg-zinc-100 web:md:dark:hover:bg-zinc-800 w-full"
-          variant="ghost"
+          className="flex flex-row gap-3 px-5 web:md:py-4 web:md:hover:bg-zinc-100 web:md:dark:hover:bg-zinc-800"
         >
           <UserSquare2 color={isDarkColorScheme ? "white" : "black"} />
-          <Text className="dark:text-white">Membresía</Text>
-        </Button>
-        <Button
+          <Text className="dark:text-white font-semibold">Membresía</Text>
+        </TouchableOpacity>
+        <Separator />
+        <TouchableOpacity
           onPress={() => router.push("/(auth)/(tabs)/profile/settings")}
-          size="lg"
-          className="flex flex-row gap-3 px-5 web:md:py-4 web:md:hover:bg-zinc-100 web:md:dark:hover:bg-zinc-800 w-full"
-          variant="ghost"
+          className="flex flex-row gap-3 px-5 web:md:py-4 web:md:hover:bg-zinc-100 web:md:dark:hover:bg-zinc-800 "
         >
           <Settings color={isDarkColorScheme ? "white" : "black"} />
-          <Text className="dark:text-white">Ajustes</Text>
-        </Button>
+          <Text className="dark:text-white font-semibold">Ajustes</Text>
+        </TouchableOpacity>
+        <Separator />
       </View>
-    </SafeAreaView>
+      <Text className="text-muted-foreground opacity-40 mt-40 mx-10 text-sm dark:text-secondary">
+        Logueado con {user?.emailAddresses[0].emailAddress}
+      </Text>
+      <Text className="text-muted-foreground opacity-40 dark:text-secondary   mx-10 text-sm">
+        Versión 3.15.1
+      </Text>
+
+      <View className="absolute bottom-[80px] right-[-100px] w-[200px] h-[300px] rounded-xl rotate-[-30deg] bg-green-300 shadow-lg" />
+
+      <View className="absolute bottom-[40px] right-[-100px] w-[200px] h-[300px] rounded-xl rotate-[-40deg]  bg-green-400 shadow-lg" />
+
+      <View className="absolute bottom-[00px] right-[-100px] w-[200px] h-[300px] rounded-xl rotate-[-50deg] bg-primary shadow-lg" />
+    </ScrollView>
   );
 }

@@ -16,7 +16,7 @@ export const expensesIdentifiers: expenseIcon[] = [
     iconHref: "https://img.icons8.com/?size=160&id=9shlfoGKqCS7&format=png",
   },
   {
-    label: "Alimentacion",
+    label: "Alimentación",
     iconHref: "https://img.icons8.com/?size=160&id=dkL9eYC61t89&format=png",
   },
   {
@@ -24,7 +24,7 @@ export const expensesIdentifiers: expenseIcon[] = [
     iconHref: "https://img.icons8.com/?size=160&id=yUTNKgUuTlsA&format=png",
   },
   {
-    label: "Educacion",
+    label: "Educación",
     iconHref: "https://img.icons8.com/?size=160&id=XAg8ooTyo7Dl&format=png",
   },
   {

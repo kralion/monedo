@@ -61,7 +61,7 @@ export default function AddExpense() {
       return;
     }
 
-    if (expense) {
+    if (id) {
       updateExpense({
         ...data,
         id_category: category.id,
