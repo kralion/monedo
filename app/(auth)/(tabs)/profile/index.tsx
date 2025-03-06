@@ -79,8 +79,7 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </LinearGradient>
       )}
-      <View className="flex flex-col gap-4  mt-10 items-start ml-4 web:md:mt-12  ">
-        <Separator />
+      <View className="flex flex-col gap-4  mt-10 items-start m-4 py-4 web:md:mt-12 bg-zinc-100 rounded-xl  ">
 
         <TouchableOpacity
           onPress={() => router.push("/(auth)/(tabs)/profile/personal-info")}
@@ -115,20 +114,15 @@ export default function ProfileScreen() {
           <Settings color={isDarkColorScheme ? "white" : "black"} />
           <Text className="dark:text-white font-semibold">Ajustes</Text>
         </TouchableOpacity>
-        <Separator />
       </View>
-      <Text className="text-muted-foreground opacity-40 mt-40 mx-10 text-sm dark:text-secondary">
+      <Text className="text-muted-foreground opacity-40 text-center mt-10 mx-10 text-sm dark:text-secondary">
         Logueado con {user?.emailAddresses[0].emailAddress}
       </Text>
-      <Text className="text-muted-foreground opacity-40 dark:text-secondary   mx-10 text-sm">
+      <Text className="text-muted-foreground opacity-40  text-center dark:text-secondary   mx-10 text-sm">
         Versión 3.15.1
       </Text>
 
-      <View className="absolute bottom-[80px] right-[-100px] w-[200px] h-[300px] rounded-xl rotate-[-30deg] bg-green-300 shadow-lg" />
 
-      <View className="absolute bottom-[40px] right-[-100px] w-[200px] h-[300px] rounded-xl rotate-[-40deg]  bg-green-400 shadow-lg" />
-
-      <View className="absolute bottom-[00px] right-[-100px] w-[200px] h-[300px] rounded-xl rotate-[-50deg] bg-primary shadow-lg" />
     </ScrollView>
   );
 }

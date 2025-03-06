@@ -28,7 +28,7 @@ export default function Wallet() {
       0
     );
     return (
-      <View className="flex flex-col items-center web:md:py-8">
+      <View className="flex flex-col items-center web:md:py-8 bg-zinc-100 rounded-2xl  m-4">
         <Image
           source={{
             uri: "https://img.icons8.com/?size=200&id=JQX2fDPyQq4E&format=png&color=000000",
@@ -54,7 +54,7 @@ export default function Wallet() {
       className="bg-white dark:bg-zinc-900 web:md:max-w-4xl web:md:mx-auto"
       contentInsetAdjustmentBehavior="automatic"
       keyboardDismissMode="on-drag"
-      contentContainerClassName="web:md:px-6"
+      contentContainerClassName="web:md:px-6 pb-28"
     >
       <ListTotal />
 

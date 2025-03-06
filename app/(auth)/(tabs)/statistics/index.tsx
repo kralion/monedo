@@ -129,6 +129,7 @@ export default function Statistics() {
       <ScrollView
         contentInsetAdjustmentBehavior="automatic"
         className="bg-white dark:bg-zinc-900 web:md:px-4"
+        contentContainerClassName="pb-28"
       >
         <View className="flex flex-col gap-4 justify-center mt-4">
           {loading ? (

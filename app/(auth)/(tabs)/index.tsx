@@ -118,7 +118,7 @@ export default function Home() {
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }
-          contentContainerClassName="px-4 web:md:px-6"
+          contentContainerClassName="px-4 pb-28 web:md:px-6"
         >
           <View className="rounded-b-3xl pb-10 web:md:pb-12">
             <Card />
