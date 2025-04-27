@@ -1,8 +1,7 @@
 import { ICategory, IExpense } from "@/interfaces";
-import { createClerkSupabaseClient } from "@/lib/supabase";
 import { useUser } from "@clerk/clerk-expo";
 import { FlashList } from "@shopify/flash-list";
-import { router, useFocusEffect } from "expo-router";
+import { router } from "expo-router";
 import { ChevronRight, Tag } from "lucide-react-native";
 import * as React from "react";
 import {
@@ -39,6 +38,7 @@ export default function Categories() {
           onPress={() =>
             router.push(`/(auth)/(tabs)/profile/categories/details/${item.id}`)
           }
+
           className="flex-row items-center justify-between p-4 mb-2  border border-border dark:border-zinc-800 bg-card dark:bg-zinc-700"
         >
           <View className="flex-row items-center gap-3">

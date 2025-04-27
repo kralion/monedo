@@ -143,7 +143,6 @@ export default function SignInScreen() {
         <View className="flex flex-col gap-4 justify-center align-middle w-full p-4 web:md:w-1/2 web:md:mx-auto">
           <SignInWithOAuthGoogle />
           <SignInWithOAuthFacebook />
-          <SignInWithOAuthTiktok />
         </View>
       </View>
     </ScrollView>
@@ -154,18 +153,20 @@ export const SignInWithOAuthGoogle = () => {
   useWarmUpBrowser();
 
   const { startSSOFlow } = useSSO();
-  const { user } = useUser();
+  const handlePress = () => {
+    startSSOFlow({
+      strategy: "oauth_google",
+      redirectUrl: AuthSession.makeRedirectUri(),
 
-  const onPress = React.useCallback(async () => {
-    await handleSSOAuth("oauth_google", startSSOFlow, user);
-  }, [startSSOFlow, user]);
+    });
+  };
 
   return (
     <Button
       className="flex flex-row gap-2 items-center"
       size="lg"
       variant="outline"
-      onPress={onPress}
+      onPress={handlePress}
     >
       <Image
         style={{ width: 24, height: 24 }}
@@ -175,35 +176,6 @@ export const SignInWithOAuthGoogle = () => {
         alt="google"
       />
       <Text className="text-black dark:text-black">Continuar con Google</Text>
-    </Button>
-  );
-};
-
-export const SignInWithOAuthTiktok = () => {
-  useWarmUpBrowser();
-
-  const { startSSOFlow } = useSSO();
-  const { user } = useUser();
-
-  const onPress = React.useCallback(async () => {
-    await handleSSOAuth("oauth_tiktok", startSSOFlow, user);
-  }, [startSSOFlow, user]);
-
-  return (
-    <Button
-      className="flex flex-row gap-2 items-center"
-      variant="secondary"
-      size="lg"
-      onPress={onPress}
-    >
-      <Image
-        style={{ width: 24, height: 24 }}
-        source={{
-          uri: "https://cdn-icons-png.flaticon.com/128/3046/3046121.png",
-        }}
-        alt="tiktok"
-      />
-      <Text className="text-black dark:text-black">Continuar con TikTok</Text>
     </Button>
   );
 };
