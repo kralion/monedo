@@ -4,12 +4,6 @@ import { useUser } from "@clerk/clerk-expo";
 import { FlashList } from "@shopify/flash-list";
 import { router, useFocusEffect } from "expo-router";
 
-import {
-  Download,
-  LineChart,
-  PieChartIcon,
-  Ellipsis,
-} from "lucide-react-native";
 import * as React from "react";
 import { useState } from "react";
 import {
@@ -17,7 +11,6 @@ import {
   FlatList,
   ScrollView,
   StyleSheet,
-  TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -32,7 +25,6 @@ import { IExpense } from "~/interfaces";
 import { getDateRange } from "~/lib/rangeDate";
 import { useCategoryStore } from "~/stores/category";
 import { useExpenseStore } from "~/stores/expense";
-import Dropdown from "~/components/drop-down";
 const items = [
   {
     label: "Grafico de línea",
@@ -99,7 +91,9 @@ export default function Statistics() {
       <View className="flex flex-col gap-8">
         <View className="flex flex-row justify-between px-4 pt-7">
           <View className="flex flex-col">
-            <Text className="text-4xl font-bold web:md:text-5xl">Estadísticas</Text>
+            <Text className="text-4xl font-bold web:md:text-5xl">
+              Estadísticas
+            </Text>
           </View>
           {/* TODO: Uncomment for production */}
           {/* <Dropdown items={items} onSelect={handleDropdownSelect} /> */}
@@ -116,7 +110,9 @@ export default function Statistics() {
                 }
                 onPress={() => setTimelineQuery(item)}
               >
-                <Text className="text-black dark:text-black web:md:text-base">{item.label}</Text>
+                <Text className="text-black dark:text-black web:md:text-base">
+                  {item.label}
+                </Text>
               </Button>
             )}
             horizontal
@@ -141,7 +137,10 @@ export default function Statistics() {
                   <View className="web:md:w-full web:md:max-w-2xl">
                     <PieChart timelineQuery={timelineQuery} data={expenses} />
                   </View>
-                  <View style={[styles.grid, { width: '100%' }]} className="web:md:max-w-2xl web:md:justify-center web:md:gap-4">
+                  <View
+                    style={[styles.grid, { width: "100%" }]}
+                    className="web:md:max-w-2xl web:md:justify-center web:md:gap-4"
+                  >
                     {categories.map((item, index) => (
                       <View
                         key={index}
@@ -151,7 +150,9 @@ export default function Statistics() {
                           className="w-4 h-4 rounded-full web:md:w-5 web:md:h-5"
                           style={{ backgroundColor: item.color }}
                         />
-                        <Text className="text-gray-700 web:md:text-base">{item.label}</Text>
+                        <Text className="text-gray-700 web:md:text-base">
+                          {item.label}
+                        </Text>
                       </View>
                     ))}
                   </View>
@@ -171,7 +172,9 @@ export default function Statistics() {
             </>
           )}
 
-          <Text className="text-xl font-bold mx-4 mt-12 web:md:text-2xl">Top Gastos</Text>
+          <Text className="text-xl font-bold mx-4 mt-12 web:md:text-2xl">
+            Top Gastos
+          </Text>
           {loading ? (
             <ActivityIndicator />
           ) : (
@@ -200,7 +203,6 @@ export default function Statistics() {
                 ItemSeparatorComponent={() => (
                   <View className="h-[0.5px] bg-zinc-200 dark:bg-zinc-600 ml-[60px] " />
                 )}
-                estimatedItemSize={320}
                 ListEmptyComponent={
                   <View className="flex flex-col items-center justify-center  ">
                     <NoData2Svg width={150} height={150} />

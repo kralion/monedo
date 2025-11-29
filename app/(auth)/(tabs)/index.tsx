@@ -16,16 +16,11 @@ import { Text } from "~/components/ui/text";
 import { groupExpensesByDate } from "~/helpers/groupExpenseByDate";
 import { useBudgetStore } from "~/stores/budget";
 import { useExpenseStore } from "~/stores/expense";
-import type { ConfettiMethods } from "react-native-fast-confetti";
-import { Confetti } from "react-native-fast-confetti";
-import { useUserPlan } from "~/hooks/useUserPlan";
 
 export default function Home() {
   const { user, isSignedIn } = useUser();
-  const { isPremium } = useUserPlan();
   const { checkBudget } = useBudgetStore();
   const [showAll, setShowAll] = React.useState(false);
-  const confettiRef = React.useRef<ConfettiMethods>(null);
   const [loading, setLoading] = React.useState(false);
   const [refreshing, setRefreshing] = React.useState(false);
 
@@ -95,7 +90,6 @@ export default function Home() {
                           }}
                           contentContainerClassName="px-4 web:md:px-6"
                           data={groupExpensesByDate(parsedExpenses)[dateLabel]}
-                          estimatedItemSize={400}
                           scrollsToTop
                           ItemSeparatorComponent={() => (
                             <View className="h-[0.75px] bg-zinc-200 dark:bg-zinc-700 ml-[60px]" />
@@ -144,7 +138,6 @@ export default function Home() {
                 data={parsedExpenses}
                 contentContainerStyle={{ paddingTop: 16, paddingBottom: 48 }}
                 contentContainerClassName="web:md:px-2"
-                estimatedItemSize={320}
                 scrollsToTop
                 ItemSeparatorComponent={() => (
                   <View className="h-[0.75px] bg-zinc-200 dark:bg-zinc-700 ml-[60px]" />

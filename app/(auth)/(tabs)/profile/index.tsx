@@ -9,12 +9,9 @@ import {
   UserSquare2,
 } from "lucide-react-native";
 import React from "react";
-import { ScrollView } from "react-native";
-import { Platform, TouchableOpacity, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Platform, ScrollView, TouchableOpacity, View } from "react-native";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import { Badge } from "~/components/ui/badge";
-import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
 import { Text } from "~/components/ui/text";
 import { useUserPlan } from "~/hooks/useUserPlan";
@@ -80,7 +77,6 @@ export default function ProfileScreen() {
         </LinearGradient>
       )}
       <View className="flex flex-col gap-4  mt-10 items-start m-4 py-4 web:md:mt-12 bg-zinc-100 rounded-xl  ">
-
         <TouchableOpacity
           onPress={() => router.push("/(auth)/(tabs)/profile/personal-info")}
           className="flex flex-row gap-3 px-5 web:md:py-4 web:md:hover:bg-zinc-100 web:md:dark:hover:bg-zinc-800"
@@ -121,8 +117,6 @@ export default function ProfileScreen() {
       <Text className="text-muted-foreground opacity-40  text-center dark:text-secondary   mx-10 text-sm">
         Versión 3.15.1
       </Text>
-
-
     </ScrollView>
   );
 }

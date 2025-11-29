@@ -1,8 +1,7 @@
-import { Expense } from "@/components/expense";
 import { FlashList } from "@shopify/flash-list";
 import { useLocalSearchParams } from "expo-router";
 import React from "react";
-import { ActivityIndicator, ScrollView, View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ExpenseDetail } from "~/components/expense-detail";
 import { IExpense } from "~/interfaces";
@@ -32,7 +31,6 @@ export default function CategoryDetails() {
       contentInsetAdjustmentBehavior="automatic"
       contentContainerClassName="web:md:w-1/2 web:md:mx-auto"
       data={expenses}
-      estimatedItemSize={320}
       ItemSeparatorComponent={() => (
         <View className="h-[0.75px] bg-zinc-200 dark:bg-zinc-700 ml-[60px]" />
       )}

@@ -1,11 +1,9 @@
-import { useAuth, useUser } from "@clerk/clerk-expo";
+import { useUser } from "@clerk/clerk-expo";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { Info } from "lucide-react-native";
-import { SafeAreaView, ScrollView, View } from "react-native";
-import { toast } from "sonner-native";
+import { ScrollView, View } from "react-native";
 import { Button } from "~/components/ui/button";
-import { Separator } from "~/components/ui/separator";
 import { Text } from "~/components/ui/text";
 import { useUserPlan } from "~/hooks/useUserPlan";
 
