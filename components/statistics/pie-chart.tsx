@@ -1,8 +1,5 @@
-import { Dimensions, View, useWindowDimensions } from "react-native";
-import { PieChart as Pie } from "react-native-gifted-charts";
+import { PieChart as RechartsPie, Pie, Cell, ResponsiveContainer } from "recharts";
 import { IExpense } from "~/interfaces";
-import { useColorScheme } from "~/lib/useColorScheme";
-const width = Dimensions.get("window").width;
 
 type ChartProps = {
   timelineQuery: {
@@ -13,11 +10,8 @@ type ChartProps = {
   };
   data: IExpense[];
 };
-export default function PieChart({ timelineQuery, data }: ChartProps) {
-  const { isDarkColorScheme } = useColorScheme();
-  const { width } = useWindowDimensions();
-  const isMobile = width < 768;
 
+export default function PieChart({ timelineQuery, data }: ChartProps) {
   const filterExpensesByTimeline = (expenses: IExpense[]) => {
     return expenses.filter((expense) => {
       const expenseDate = new Date(expense.date);
@@ -53,65 +47,42 @@ export default function PieChart({ timelineQuery, data }: ChartProps) {
       .map(([categoryId, amount]) => ({
         value: amount,
         percentage: Math.round((amount / total) * 100),
-        label: categoryId,
-        categoryName: categoryNames.get(categoryId) || "",
+        name: categoryNames.get(categoryId) || "",
         color: categoryColors.get(categoryId) || "#41D29B",
       }))
-      .filter(({ percentage }) => percentage >= 2)
-      .map(({ value, percentage, categoryName, color }) => ({
-        value,
-        text: `${percentage}%`,
-        label: categoryName,
-        color,
-      }));
+      .filter(({ percentage }) => percentage >= 2);
   };
+
   const pieData = aggregateByCategory(data);
 
-  // Calculate responsive dimensions based on screen width
-  const getRadius = () => {
-    if (isMobile) {
-      return width * 0.4; // Original mobile size
-    }
-    return Math.min(width * 0.25, 180); // Desktop size, capped at 180
-  };
-
-  const getInnerRadius = () => {
-    if (isMobile) {
-      return width * 0.25; // Original mobile size
-    }
-    return Math.min(width * 0.15, 110); // Desktop size, capped at 110
-  };
-
-  const textSize = isMobile ? 12 : 14;
+  if (pieData.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-5 py-8">
+        <p className="text-center text-xl text-muted-foreground">Sin datos</p>
+      </div>
+    );
+  }
 
   return (
-    <View className="items-center web:md:w-full">
-      <Pie
-        data={pieData}
-        donut
-        showText
-        strokeWidth={4}
-        backgroundColor="transparent"
-        strokeColor={isDarkColorScheme ? "#18181b" : "white"}
-        strokeDashArray={[5, 5]}
-        textColor="black"
-        radius={getRadius()}
-        innerRadius={getInnerRadius()}
-        textSize={textSize}
-        focusOnPress
-        labelsPosition="outward"
-        centerLabelComponent={() => {
-          return pieData.length > 0 ? (
-            <View className="items-center justify-center">
-              <View className="bg-white dark:bg-zinc-800 rounded-full p-2">
-                <View className="items-center justify-center">
-                  <View className="w-2 h-2 rounded-full bg-teal-500" />
-                </View>
-              </View>
-            </View>
-          ) : null;
-        }}
-      />
-    </View>
+    <div className="w-full max-w-md h-[300px] mx-auto">
+      <ResponsiveContainer width="100%" height="100%">
+        <RechartsPie>
+          <Pie
+            data={pieData}
+            cx="50%"
+            cy="50%"
+            innerRadius={60}
+            outerRadius={120}
+            paddingAngle={2}
+            dataKey="value"
+            label={({ name, percentage }) => `${name} ${percentage}%`}
+          >
+            {pieData.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={entry.color} />
+            ))}
+          </Pie>
+        </RechartsPie>
+      </ResponsiveContainer>
+    </div>
   );
 }

@@ -1,28 +1,21 @@
+import { Link } from "@tanstack/react-router";
+import { ChevronRight, Trash } from "lucide-react";
 import { IBudget } from "@/interfaces";
-import * as Haptics from "expo-haptics";
-import { router } from "expo-router";
-import { ChevronRight, Trash } from "lucide-react-native";
-import * as React from "react";
-import {
-  Alert,
-  Image,
-  Pressable,
-  StyleSheet,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import ReanimatedSwipeable from "react-native-gesture-handler/ReanimatedSwipeable";
-import {
-  default as Animated,
-  FadeIn,
-  default as Reanimated,
-  SharedValue,
-  useAnimatedStyle,
-} from "react-native-reanimated";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
 import { Text } from "../ui/text";
 import { useBudgetStore } from "~/stores/budget";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "../ui/alert-dialog";
 
 export function Budget({ budget }: { budget: IBudget }) {
   const date = new Date(budget.created_At);
@@ -34,160 +27,68 @@ export function Budget({ budget }: { budget: IBudget }) {
   const { deleteBudget } = useBudgetStore();
 
   const onDelete = () => {
-    Alert.alert(
-      "¿Estás seguro?",
-      "Esta acción eliminará el presupuesto seleccionado y no se puede deshacer",
-      [
-        {
-          text: "Cancelar",
-          style: "cancel",
-        },
-        {
-          text: "Eliminar",
-          onPress: async () => {
-            deleteBudget(budget.id as number);
-          },
-          style: "destructive",
-        },
-      ],
-      { cancelable: true }
-    );
-  };
-
-  const RightAction = (
-    prog: SharedValue<number>,
-    drag: SharedValue<number>
-  ) => {
-    const styleAnimation = useAnimatedStyle(() => ({
-      transform: [{ translateX: drag.value + 200 }],
-    }));
-    return (
-      <Pressable
-        onPress={() => {
-          if (process.env.EXPO_OS === "ios") {
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
-          }
-          onDelete();
-        }}
-      >
-        <Reanimated.View style={[styleAnimation, styles.rightAction]}>
-          <Trash color="white" size={24} />
-        </Reanimated.View>
-      </Pressable>
-    );
+    deleteBudget(budget.id as number);
   };
 
   return (
-    <Animated.View entering={FadeIn.duration(200)}>
-      <ReanimatedSwipeable
-        key={budget.id}
-        friction={2}
-        enableTrackpadTwoFingerGesture
-        rightThreshold={40}
-        renderRightActions={RightAction}
-        overshootRight={false}
-        enableContextMenu
-      >
-        <TouchableOpacity
-          onPress={() => {
-            router.push(`/wallet/details/${budget.id}`);
-          }}
-          className="card active:opacity-80 web:md:hover:bg-zinc-50 web:md:dark:hover:bg-zinc-800 web:md:transition-colors web:md:duration-200"
+    <>
+      <div className="group flex flex-row items-center">
+        <Link
+          to="/wallet/edit/$id"
+          params={{ id: String(budget.id) }}
+          className="flex-1 flex flex-row justify-between items-center py-3 md:py-4 px-2 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
         >
-          <View className="card-header flex flex-row justify-between items-center py-3 web:md:py-4 web:md:px-2">
-            <View className="card-title flex flex-row items-center gap-2">
-              <Image
-                width={45}
-                height={45}
-                className="bg-brand/20 rounded-full p-2 web:md:w-14 web:md:h-14"
-                source={{
-                  uri: "https://img.icons8.com/?size=100&id=KV6GFslVNJhZ&format=png&color=000000",
-                }}
+          <div className="flex flex-row items-center gap-2">
+            <div className="w-12 h-12 bg-brand/20 rounded-full p-2 flex items-center justify-center">
+              <img
+                src="https://img.icons8.com/?size=100&id=KV6GFslVNJhZ&format=png&color=000000"
+                alt=""
+                className="w-8 h-8"
               />
-              <View className="card-title-details flex flex-col gap-1">
-                <Text className="text-lg web:md:text-xl">
-                  <Animated.Text entering={FadeIn.duration(1500)}>
-                    {budget.description.length > 25
-                      ? `${budget.description.slice(0, 25)}...`
-                      : budget.description}
-                  </Animated.Text>
-                </Text>
-                <Text className="text-muted-foreground dark:text-secondary text-sm web:md:text-base">
-                  {formattedDate}
-                </Text>
-              </View>
-            </View>
-            <View className="card-description flex flex-row items-center justify-between">
-              <View className=" flex flex-row items-center">
-                <Text className="font-bold text-xl text-brand dark:text-brand web:md:text-2xl">
-                  <Animated.Text entering={FadeIn.duration(1500)}>
-                    + S/ {budget.amount}
-                  </Animated.Text>
-                </Text>
-                <Button variant="ghost" size="icon">
-                  <ChevronRight size={20} color="gray" />
-                </Button>
-              </View>
-            </View>
-          </View>
-        </TouchableOpacity>
-      </ReanimatedSwipeable>
-      <Separator className="bg-zinc-200 dark:bg-zinc-800 " />
-    </Animated.View>
+            </div>
+            <div className="flex flex-col gap-1">
+              <Text className="text-lg md:text-xl">
+                {budget.description.length > 25
+                  ? `${budget.description.slice(0, 25)}...`
+                  : budget.description}
+              </Text>
+              <Text className="text-muted-foreground text-sm">{formattedDate}</Text>
+            </div>
+          </div>
+          <div className="flex flex-row items-center">
+            <Text className="font-bold text-xl text-brand md:text-2xl">
+              + S/ {budget.amount}
+            </Text>
+            <ChevronRight className="w-5 h-5 text-gray-500" />
+          </div>
+        </Link>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="opacity-0 group-hover:opacity-100 text-destructive shrink-0"
+            >
+              <Trash className="w-4 h-4" />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
+              <AlertDialogDescription>
+                Esta acción eliminará el presupuesto seleccionado y no se puede deshacer
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction onClick={onDelete} className="bg-destructive text-white">
+                Eliminar
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
+      <Separator className="bg-zinc-200 dark:bg-zinc-800" />
+    </>
   );
 }
-
-const styles = StyleSheet.create({
-  rightAction: {
-    width: 200,
-    height: 70,
-    backgroundColor: "#FF3F3F",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  swipeable: {
-    width: "100%",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: "#FF0000",
-    gap: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  leftContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-    flexShrink: 1,
-  },
-  textContent: {
-    flexShrink: 1,
-  },
-  rightContent: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-  },
-  nicknameContainer: {
-    flexDirection: "row",
-    marginRight: 4,
-  },
-  nicknameCircle: {
-    fontSize: 12,
-    color: "white",
-    borderWidth: 1,
-    borderColor: "white",
-    borderRadius: 16,
-    padding: 1,
-    width: 24,
-    height: 24,
-    textAlign: "center",
-    lineHeight: 20,
-  },
-  ellipsisCircle: {
-    lineHeight: 0,
-    marginLeft: -6,
-  },
-});

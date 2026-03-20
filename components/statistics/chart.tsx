@@ -1,17 +1,16 @@
-import NoDataAsset from "@/assets/svgs/no-data.svg";
-import React from "react";
-import { useWindowDimensions, View } from "react-native";
-import { LineChart } from "react-native-gifted-charts";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Area,
+  AreaChart,
+} from "recharts";
 import { IExpense } from "~/interfaces";
-import { Text } from "../ui/text";
-import { Dimensions } from "react-native";
-const width = Dimensions.get("window").width;
 
-interface ChartDataPoint {
-  label: string;
-  value: number;
-  dataPointText: string;
-}
 type ChartProps = {
   timelineQuery: {
     value: string;
@@ -21,42 +20,30 @@ type ChartProps = {
   };
   data: IExpense[];
 };
+
+function aggregateData(
+  data: IExpense[],
+  timeLabels: string[],
+  getTimeKey: (date: Date) => string
+) {
+  const totals = new Map<string, number>();
+  data.forEach((expense) => {
+    const expenseDate = new Date(expense.date);
+    const key = getTimeKey(expenseDate);
+    totals.set(key, (totals.get(key) || 0) + expense.amount);
+  });
+  return timeLabels.map((label) => ({
+    name: label,
+    value: totals.get(label) || 0,
+  }));
+}
+
 export default function Chart({ timelineQuery, data }: ChartProps) {
-  const { width } = useWindowDimensions();
-  const isCompact = width < 1024;
-  const isMobile = width < 768;
+  let chartData: { name: string; value: number }[] = [];
 
-  const aggregateData = (
-    data: IExpense[],
-    timeLabels: string[],
-    getTimeKey: (date: Date) => string
-  ): ChartDataPoint[] => {
-    const totals = new Map<string, number>();
-    data.forEach((expense) => {
-      const expenseDate = new Date(expense.date);
-      const key = getTimeKey(expenseDate);
-      totals.set(key, (totals.get(key) || 0) + expense.amount);
-    });
-    const result = timeLabels.map((label) => ({
-      label,
-      value: totals.get(label) || 0,
-      dataPointText: String(totals.get(label) || 0),
-    }));
-    return result;
-  };
-
-  let chartData: ChartDataPoint[] = [];
   switch (timelineQuery.value) {
     case "hoy": {
-      const hours = [
-        "05:00",
-        "08:00",
-        "11:00",
-        "14:00",
-        "17:00",
-        "20:00",
-        "23:59",
-      ];
+      const hours = ["05:00", "08:00", "11:00", "14:00", "17:00", "20:00", "23:59"];
       chartData = aggregateData(
         data,
         hours,
@@ -68,9 +55,7 @@ export default function Chart({ timelineQuery, data }: ChartProps) {
       const days = Array.from({ length: 7 }, (_, i) => {
         const date = new Date();
         date.setDate(date.getDate() - (6 - i));
-        return date
-          .toLocaleDateString("es-ES", { weekday: "short" })
-          .toUpperCase();
+        return date.toLocaleDateString("es-ES", { weekday: "short" }).toUpperCase();
       });
       chartData = aggregateData(data, days, (date) =>
         date.toLocaleDateString("es-ES", { weekday: "short" }).toUpperCase()
@@ -89,9 +74,7 @@ export default function Chart({ timelineQuery, data }: ChartProps) {
       const months = Array.from({ length: 12 }, (_, i) => {
         const date = new Date();
         date.setMonth(date.getMonth() - (11 - i));
-        return date
-          .toLocaleDateString("es-ES", { month: "short" })
-          .toUpperCase();
+        return date.toLocaleDateString("es-ES", { month: "short" }).toUpperCase();
       });
       chartData = aggregateData(data, months, (date) =>
         date.toLocaleDateString("es-ES", { month: "short" }).toUpperCase()
@@ -99,80 +82,47 @@ export default function Chart({ timelineQuery, data }: ChartProps) {
       break;
     }
   }
+
   if (data.length === 0) {
     return (
-      <View className="flex flex-col items-center justify-center gap-5">
-        <NoDataAsset width={100} height={100} />
-        <View>
-          <Text className="text-center text-xl text-muted-foreground web:md:text-2xl">
-            Sin datos
-          </Text>
-          <Text className="text-center text-sm text-muted-foreground web:md:text-base">
-            Para este filtro no hay gastos registrados aún
-          </Text>
-        </View>
-      </View>
+      <div className="flex flex-col items-center justify-center gap-5 py-8">
+        <p className="text-center text-xl text-muted-foreground">Sin datos</p>
+        <p className="text-center text-sm text-muted-foreground">
+          Para este filtro no hay gastos registrados aún
+        </p>
+      </div>
     );
   }
 
-  // Calculate responsive spacing and height based on screen width
-  const getSpacing = () => {
-    if (!isMobile) {
-      // Desktop spacing
-      return timelineQuery.value === "semanal"
-        ? width * 0.15
-        : timelineQuery.value === "mensual"
-        ? width * 0.07
-        : width * 0.08;
-    }
-    // Mobile spacing (original)
-    return timelineQuery.value === "semanal" ? width * 0.28 : width * 0.14;
-  };
-
-  const chartHeight = isMobile ? 250 : 300;
-
   return (
-    <View className="web:md:w-full">
-      <LineChart
-        areaChart
-        curved
-        data={chartData}
-        spacing={getSpacing()}
-        yAxisColor="gray"
-        xAxisColor="white"
-        yAxisThickness={0}
-        height={chartHeight}
-        color1="#41D29B"
-        hideYAxisText
-        dataPointsColor1="#41D29B"
-        hideRules
-        endSpacing={-20}
-        startFillColor1="#41D29B"
-        startOpacity={0.8}
-        textFontSize={isMobile ? 10 : 12}
-        textShiftY={isMobile ? 0 : 2}
-        textShiftX={isMobile ? 0 : 2}
-        pointerConfig={{
-          pointerStripHeight: chartHeight,
-          pointerStripWidth: 2,
-          pointerStripColor: "#41D29B",
-          pointerColor: "#41D29B",
-          radius: 6,
-          pointerLabelWidth: 100,
-          pointerLabelHeight: 40,
-          activatePointersOnLongPress: true,
-          autoAdjustPointerLabelPosition: true,
-          pointerLabelComponent: (items: any[]) => {
-            return (
-              <View className="bg-white dark:bg-zinc-800 p-2 rounded-md shadow-md">
-                <Text className="text-black dark:text-white font-medium">
-                  {items[0].value}
-                </Text>
-              </View>
-            );
-          },
-        }}
-      />
-    </View>
+    <div className="w-full h-[300px]">
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={chartData}>
+          <defs>
+            <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="#41D29B" stopOpacity={0.8} />
+              <stop offset="95%" stopColor="#41D29B" stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" stroke="#e4e4e7" />
+          <XAxis dataKey="name" stroke="#71717a" fontSize={12} />
+          <YAxis hide />
+          <Tooltip
+            contentStyle={{
+              backgroundColor: "hsl(var(--card))",
+              border: "1px solid hsl(var(--border))",
+              borderRadius: "8px",
+            }}
+          />
+          <Area
+            type="monotone"
+            dataKey="value"
+            stroke="#41D29B"
+            fillOpacity={1}
+            fill="url(#colorValue)"
+          />
+        </AreaChart>
+      </ResponsiveContainer>
+    </div>
   );
 }

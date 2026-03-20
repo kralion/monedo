@@ -1,39 +1,23 @@
 import * as React from "react";
-import { TextInput, type TextInputProps } from "react-native";
 import { cn } from "~/lib/utils";
 
-const Textarea = React.forwardRef<
-  React.ElementRef<typeof TextInput>,
-  TextInputProps
->(
-  (
-    {
-      className,
-      multiline = true,
-      numberOfLines = 4,
-      placeholderClassName,
-      ...props
-    },
-    ref
-  ) => {
+export interface TextareaProps
+  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
+
+const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(
+  ({ className, ...props }, ref) => {
     return (
-      <TextInput
-        ref={ref}
+      <textarea
         className={cn(
-          "web:flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-base lg:text-sm native:text-lg native:leading-[1.25] text-foreground web:ring-offset-background dark:bg-zinc-700 dark:border-zinc-800 web:focus-visible:outline-none web:focus-visible:ring-2 web:focus-visible:ring-ring web:focus-visible:ring-offset-2 dark:text-white",
-          props.editable === false && "opacity-50 web:cursor-not-allowed",
+          "flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
           className
         )}
-        placeholderClassName={cn("text-muted-foreground", placeholderClassName)}
-        multiline={multiline}
-        numberOfLines={numberOfLines}
-        textAlignVertical="top"
+        ref={ref}
         {...props}
       />
     );
   }
 );
-
 Textarea.displayName = "Textarea";
 
 export { Textarea };

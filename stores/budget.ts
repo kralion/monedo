@@ -1,6 +1,5 @@
 import { BudgetStore, IBudget } from "@/interfaces";
-import { router } from "expo-router";
-import { toast } from "sonner-native";
+import { toast } from "sonner";
 import { create } from "zustand";
 import { supabase } from "~/lib/supabase";
 import { useExpenseStore } from "./expense";
@@ -12,16 +11,10 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
   totalBudget: 0,
   isOutOfBudget: false,
   addBudget: async (budget: IBudget) => {
-    // Generate a temporary ID for optimistic update
     const tempBudget = { ...budget, id: Date.now() };
 
-    // Optimistically update the UI
-    set((state) => ({
-      budgets: [...state.budgets, tempBudget],
-      loading: true,
-    }));
+    set((state) => ({ budgets: [...state.budgets, tempBudget], loading: true }));
 
-    // Attempt to save to the backend
     const { data, error } = await supabase
       .from("budgets")
       .insert(budget)
@@ -29,7 +22,6 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
       .single();
 
     if (error) {
-      // Revert optimistic update on error
       set((state) => ({
         budgets: state.budgets.filter((b) => b.id !== tempBudget.id),
         loading: false,
@@ -38,15 +30,12 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
       return;
     }
 
-    // Update with the real data from the server
     set((state) => ({
       budgets: state.budgets.map((b) => (b.id === tempBudget.id ? data : b)),
       loading: false,
     }));
 
-    // Update total budget
     get().getTotalBudget(budget.user_id);
-
     toast.success("Registro exitoso");
   },
 
@@ -58,7 +47,6 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
       .eq("id", id)
       .single();
     if (error) {
-      console.error("Error fetching budget by ID:", error);
       set({ loading: false });
       throw error;
     }
@@ -79,19 +67,15 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
   },
 
   updateBudget: async (budget: IBudget) => {
-    // Store the original budgets for rollback if needed
     const originalBudgets = [...get().budgets];
     const originalBudget = get().budget;
 
-    // Optimistically update the UI
     set((state) => ({
       budgets: state.budgets.map((b) => (b.id === budget.id ? budget : b)),
-      budget:
-        budget.id === (originalBudget?.id || -1) ? budget : originalBudget,
+      budget: budget.id === (originalBudget?.id || -1) ? budget : originalBudget,
       loading: true,
     }));
 
-    // Attempt to update in the backend
     const { data, error } = await supabase
       .from("budgets")
       .update(budget)
@@ -100,61 +84,44 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
       .single();
 
     if (error) {
-      // Revert optimistic update on error
-      set({
-        budgets: originalBudgets,
-        budget: originalBudget,
-        loading: false,
-      });
+      set({ budgets: originalBudgets, budget: originalBudget, loading: false });
       toast.error("Ocurrió un error al actualizar el presupuesto");
       return;
     }
 
-    // Update with the real data from the server if available
     if (data) {
       set((state) => ({
         budgets: state.budgets.map((b) => (b.id === budget.id ? data : b)),
-        budget:
-          budget.id === (originalBudget?.id || -1) ? data : originalBudget,
+        budget: budget.id === (originalBudget?.id || -1) ? data : originalBudget,
         loading: false,
       }));
     } else {
       set({ loading: false });
     }
 
-    // Update total budget
     get().getTotalBudget(budget.user_id);
-
     toast.success("Billetera actualizada");
-    router.back();
+    if (typeof window !== "undefined") window.history.back();
   },
 
   deleteBudget: async (id: number) => {
-    // Store the original budgets for rollback if needed
     const originalBudgets = [...get().budgets];
     const deletedBudget = get().budgets.find((b) => b.id === id);
 
-    // Optimistically update the UI
     set((state) => ({
       budgets: state.budgets.filter((b) => b.id !== id),
       loading: true,
     }));
 
-    // Attempt to delete from the backend
     const { error } = await supabase.from("budgets").delete().eq("id", id);
 
     if (error) {
-      // Revert optimistic update on error
-      set({
-        budgets: originalBudgets,
-        loading: false,
-      });
+      set({ budgets: originalBudgets, loading: false });
       toast.error("Error al eliminar ingreso");
       return;
     }
 
-    // Update total budget if we have user_id
-    if (deletedBudget && deletedBudget.user_id) {
+    if (deletedBudget?.user_id) {
       get().getTotalBudget(deletedBudget.user_id);
     }
 
@@ -176,10 +143,6 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
     const budget = get().totalBudget;
     const expenseStore = useExpenseStore.getState();
     const total = await expenseStore.sumOfAllOfExpenses(userId);
-    if (budget - total <= 0) {
-      set({ isOutOfBudget: true });
-    } else {
-      set({ isOutOfBudget: false });
-    }
+    set({ isOutOfBudget: budget - total <= 0 });
   },
 }));

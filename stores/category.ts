@@ -1,6 +1,5 @@
 import { CategoryStore, ICategory } from "@/interfaces";
-import { router } from "expo-router";
-import { toast } from "sonner-native";
+import { toast } from "sonner";
 import { create } from "zustand";
 import { supabase } from "~/lib/supabase";
 
@@ -9,16 +8,13 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
   category: {} as ICategory,
   loading: false,
   addCategory: async (category: ICategory) => {
-    // Generate a temporary ID for optimistic update
     const tempCategory = { ...category, id: Date.now() };
 
-    // Optimistically update the UI
     set((state) => ({
       categories: [...state.categories, tempCategory],
       loading: true,
     }));
 
-    // Attempt to save to the backend
     const { data, error } = await supabase
       .from("categories")
       .insert(category)
@@ -26,21 +22,16 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
       .single();
 
     if (error) {
-      // Revert optimistic update on error
       set((state) => ({
         categories: state.categories.filter((c) => c.id !== tempCategory.id),
         loading: false,
       }));
       toast.error("Ocurrió un error al registrar la categoría");
-      console.log(error);
       return;
     }
 
-    // Update with the real data from the server
     set((state) => ({
-      categories: state.categories.map((c) =>
-        c.id === tempCategory.id ? data : c
-      ),
+      categories: state.categories.map((c) => (c.id === tempCategory.id ? data : c)),
       loading: false,
     }));
 
@@ -60,20 +51,15 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
   },
 
   updateCategory: async (category: ICategory) => {
-    // Store the original categories for rollback if needed
     const originalCategories = [...get().categories];
     const originalCategory = get().category;
 
-    // Optimistically update the UI
     set((state) => ({
-      categories: state.categories.map((c) =>
-        c.id === category.id ? category : c
-      ),
+      categories: state.categories.map((c) => (c.id === category.id ? category : c)),
       category: category,
       loading: true,
     }));
 
-    // Attempt to update in the backend
     const { data, error } = await supabase
       .from("categories")
       .update(category)
@@ -82,7 +68,6 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
       .single();
 
     if (error) {
-      // Revert optimistic update on error
       set({
         categories: originalCategories,
         category: originalCategory,
@@ -92,12 +77,9 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
       return;
     }
 
-    // Update with the real data from the server if available
     if (data) {
       set((state) => ({
-        categories: state.categories.map((c) =>
-          c.id === category.id ? data : c
-        ),
+        categories: state.categories.map((c) => (c.id === category.id ? data : c)),
         category: data,
         loading: false,
       }));
@@ -106,47 +88,37 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
     }
 
     toast.success("Categoría actualizada exitosamente");
-    router.back();
+    if (typeof window !== "undefined") window.history.back();
   },
 
   deleteCategory: async (id: number) => {
-    // Store the original categories for rollback if needed
     const originalCategories = [...get().categories];
 
-    // Optimistically update the UI
     set((state) => ({
       categories: state.categories.filter((c) => c.id !== id),
       loading: true,
     }));
 
-    // Attempt to delete from the backend
     const { error } = await supabase.from("categories").delete().eq("id", id);
 
     if (error) {
-      // Revert optimistic update on error
-      set({
-        categories: originalCategories,
-        loading: false,
-      });
+      set({ categories: originalCategories, loading: false });
       toast.error("Ocurrió un error al eliminar la categoría");
-      console.error("Error deleting category:", error);
       return;
     }
 
     set({ loading: false });
     toast.success("Categoría eliminada exitosamente");
-    router.back();
+    if (typeof window !== "undefined") window.history.back();
   },
 
   getCategories: async (userId: string) => {
     set({ loading: true });
-
     const { data, error } = await supabase
       .from("categories")
       .select("*")
       .eq("user_id", userId);
     if (error) throw error;
-
     set({ categories: data ?? [], loading: false });
   },
 }));

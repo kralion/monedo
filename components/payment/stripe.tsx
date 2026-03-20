@@ -1,17 +1,15 @@
-import { useUser } from "@clerk/clerk-expo";
-import { Loader } from "lucide-react-native";
-import React from "react";
+import * as React from "react";
+import { useUser } from "@clerk/clerk-react";
+import { Loader2 } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
-import { View } from "react-native";
-import { Button } from "../ui/button";
-import { Input } from "../ui/input";
-import { Text } from "../ui/text";
-import { router } from "expo-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { usePaymentStore } from "~/stores/payment";
-import { toast } from "sonner-native";
-import { ActivityIndicator } from "react-native";
+import { toast } from "sonner";
+import { useNavigate } from "@tanstack/react-router";
+import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Text } from "../ui/text";
 
 type CardType = "visa" | "mastercard" | "amex" | "discover" | "unknown";
 
@@ -59,6 +57,7 @@ export default function Stripe() {
   const { user } = useUser();
   const { addPayment, isLoading } = usePaymentStore();
   const [cardType, setCardType] = React.useState<CardType>("unknown");
+  const navigate = useNavigate();
 
   const {
     control,
@@ -79,12 +78,10 @@ export default function Stripe() {
     onChange: (value: string) => void
   ) => {
     let number = value.replace(/\D/g, "");
+    const detected = detectCardType(number);
+    setCardType(detected);
 
-    // Update card type
-    setCardType(detectCardType(number));
-
-    // Format based on card type
-    if (cardType === "amex") {
+    if (detected === "amex") {
       number = number.slice(0, 15);
       number = number.replace(/(\d{4})(\d{6})(\d{5})?/, "$1 $2 $3").trim();
     } else {
@@ -117,17 +114,15 @@ export default function Stripe() {
     }
 
     try {
-      // Process payment and add to database
       await addPayment({
-        amount: 20, // Premium plan cost
-        card_last4: data.cardNumber.slice(-4),
+        amount: 20,
+        card_last4: data.cardNumber.replace(/\s/g, "").slice(-4),
         card_type: cardType,
         status: "success",
         plan: "premium",
         user_id: user.id,
       });
 
-      // Update user metadata
       await user.update({
         unsafeMetadata: {
           plan: "premium",
@@ -135,7 +130,7 @@ export default function Stripe() {
       });
 
       reset();
-      router.back();
+      navigate({ to: "/" });
     } catch (error) {
       console.error("Payment error:", error);
       toast.error("Error al procesar el pago");
@@ -143,9 +138,9 @@ export default function Stripe() {
   }
 
   return (
-    <View className="flex flex-col py-3 gap-4">
-      <View className="flex flex-col gap-3">
-        <View className="flex flex-col gap-1">
+    <div className="flex flex-col py-3 gap-4">
+      <div className="flex flex-col gap-3">
+        <div className="flex flex-col gap-1">
           <Text>
             Número de Tarjeta{" "}
             {cardType !== "unknown" && `(${cardType.toUpperCase()})`}
@@ -156,15 +151,16 @@ export default function Stripe() {
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                autoCapitalize="none"
                 className={`py-3 flex-1 ${
                   errors.cardNumber ? "border-red-500" : ""
                 }`}
                 placeholder="1234 1234 1234 1234"
-                onChangeText={(val) => handleCardNumberChange(val, onChange)}
+                onChange={(e) =>
+                  handleCardNumberChange(e.target.value, onChange)
+                }
                 onBlur={onBlur}
                 value={value}
-                keyboardType="number-pad"
+                type="text"
                 maxLength={cardType === "amex" ? 17 : 19}
               />
             )}
@@ -172,24 +168,23 @@ export default function Stripe() {
           {errors.cardNumber && (
             <Text className="text-red-500">{errors.cardNumber.message}</Text>
           )}
-        </View>
+        </div>
 
-        <View className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1">
           <Text>CVC / CVV</Text>
 
           <Controller
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                onChangeText={(val) =>
-                  onChange(val.replace(/\D/g, "").slice(0, 4))
+                onChange={(e) =>
+                  onChange(e.target.value.replace(/\D/g, "").slice(0, 4))
                 }
                 onBlur={onBlur}
                 value={value}
                 placeholder={cardType === "amex" ? "1234" : "123"}
-                autoCapitalize="none"
                 className={`py-3 flex-1 ${errors.cvc ? "border-red-500" : ""}`}
-                keyboardType="number-pad"
+                type="text"
                 maxLength={cardType === "amex" ? 4 : 3}
               />
             )}
@@ -198,24 +193,25 @@ export default function Stripe() {
           {errors.cvc && (
             <Text className="text-red-500">{errors.cvc.message}</Text>
           )}
-        </View>
+        </div>
 
-        <View className="flex flex-col gap-1">
+        <div className="flex flex-col gap-1">
           <Text>Fecha Expiración</Text>
           <Controller
             name="expiracion"
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
               <Input
-                onChangeText={(val) => handleExpirationChange(val, onChange)}
+                onChange={(e) =>
+                  handleExpirationChange(e.target.value, onChange)
+                }
                 onBlur={onBlur}
                 value={value}
                 placeholder="MM/YY"
-                autoCapitalize="none"
                 className={`py-3 flex-1 ${
                   errors.expiracion ? "border-red-500" : ""
                 }`}
-                keyboardType="number-pad"
+                type="text"
                 maxLength={5}
               />
             )}
@@ -223,21 +219,21 @@ export default function Stripe() {
           {errors.expiracion && (
             <Text className="text-red-500">{errors.expiracion.message}</Text>
           )}
-        </View>
+        </div>
 
         <Button
           disabled={isLoading}
-          onPress={handleSubmit(onSubmit)}
+          onClick={handleSubmit(onSubmit)}
           className="mt-4"
           size="lg"
         >
           {isLoading ? (
-            <ActivityIndicator color="white" />
+            <Loader2 className="w-5 h-5 animate-spin" />
           ) : (
             <Text className="text-white">Pagar</Text>
           )}
         </Button>
-      </View>
-    </View>
+      </div>
+    </div>
   );
 }

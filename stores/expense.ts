@@ -1,22 +1,12 @@
 import { ExpenseStore, IExpense } from "@/interfaces";
-import { router } from "expo-router";
-import { toast } from "sonner-native";
+import { toast } from "sonner";
 import { create } from "zustand";
 import { supabase } from "~/lib/supabase";
 
 const formatExpenseDate = (expense: Partial<IExpense>): string => {
-  if (!expense.date) {
-    return new Date().toISOString();
-  }
-  // If it's already a string in ISO format, return it
-  if (typeof expense.date === "string") {
-    return expense.date;
-  }
-  // If it's a Date object, convert to ISO string
-  if (expense.date instanceof Date) {
-    return expense.date.toISOString();
-  }
-  // Default fallback
+  if (!expense.date) return new Date().toISOString();
+  if (typeof expense.date === "string") return expense.date;
+  if (expense.date instanceof Date) return expense.date.toISOString();
   return new Date().toISOString();
 };
 
@@ -28,26 +18,12 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
   totalExpenses: 0,
   addExpense: async (expense: IExpense) => {
     const timestamp = Date.now();
-    // Format the expense with proper date handling
-    const formattedExpense = {
-      ...expense,
-      date: formatExpenseDate(expense),
-    };
+    const formattedExpense = { ...expense, date: formatExpenseDate(expense) };
+    const tempExpense = { ...formattedExpense, id: timestamp };
 
-    // Create temporary expense for optimistic update
-    const tempExpense = {
-      ...formattedExpense,
-      id: timestamp,
-    };
-
-    // Optimistically update the UI
-    set((state) => ({
-      expenses: [tempExpense, ...state.expenses],
-      loading: true,
-    }));
+    set((state) => ({ expenses: [tempExpense, ...state.expenses], loading: true }));
 
     try {
-      // Attempt to save to the backend
       const { data, error } = await supabase
         .from("expenses")
         .insert(formattedExpense)
@@ -56,18 +32,14 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
 
       if (error) throw error;
 
-      // Update with the real data from the server
       set((state) => ({
         expenses: state.expenses.map((e) => (e.id === timestamp ? data : e)),
         loading: false,
       }));
 
       toast.success("Gasto registrado");
-
-      // Refresh data in the background
       await get().getRecentExpenses(expense.user_id);
     } catch (error) {
-      // Revert optimistic update on error
       set((state) => ({
         expenses: state.expenses.filter((e) => e.id !== timestamp),
         loading: false,
@@ -78,27 +50,17 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
   },
 
   updateExpense: async (expense: IExpense) => {
-    // Store the original state for rollback
     const originalExpenses = [...get().expenses];
     const originalExpense = get().expense;
+    const formattedExpense = { ...expense, date: formatExpenseDate(expense) };
 
-    // Format the expense with proper date handling
-    const formattedExpense = {
-      ...expense,
-      date: formatExpenseDate(expense),
-    };
-
-    // Optimistically update the UI
     set((state) => ({
-      expenses: state.expenses.map((e) =>
-        e.id === expense.id ? formattedExpense : e
-      ),
+      expenses: state.expenses.map((e) => (e.id === expense.id ? formattedExpense : e)),
       expense: formattedExpense,
       loading: true,
     }));
 
     try {
-      // Attempt to update in the backend
       const { data, error } = await supabase
         .from("expenses")
         .update(formattedExpense)
@@ -108,29 +70,21 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
 
       if (error) throw error;
 
-      // Update with the real data from the server
       set((state) => ({
         expenses: state.expenses.map((e) => (e.id === expense.id ? data : e)),
         expense: data,
         loading: false,
       }));
 
-      // Refresh data in the background
       await get().getRecentExpenses(expense.user_id);
     } catch (error) {
-      // Revert optimistic update on error
-      set({
-        expenses: originalExpenses,
-        expense: originalExpense,
-        loading: false,
-      });
+      set({ expenses: originalExpenses, expense: originalExpense, loading: false });
       console.error("Error updating expense:", error);
       toast.error("Ocurrió un error al actualizar el gasto");
     }
   },
 
   deleteExpense: async (id: number) => {
-    // Store the original state for rollback
     const originalExpenses = [...get().expenses];
     const deletedExpense = get().expenses.find((e) => e.id === id);
 
@@ -139,27 +93,18 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
       return;
     }
 
-    // Optimistically update the UI
-    set((state) => ({
-      expenses: state.expenses.filter((e) => e.id !== id),
-      loading: true,
-    }));
+    set((state) => ({ expenses: state.expenses.filter((e) => e.id !== id), loading: true }));
 
     try {
-      // Attempt to delete from the backend
       const { error } = await supabase.from("expenses").delete().eq("id", id);
 
       if (error) throw error;
 
       set({ loading: false });
       toast.success("Gasto eliminado exitosamente");
-      router.back();
+      if (typeof window !== "undefined") window.history.back();
     } catch (error) {
-      // Revert optimistic update on error
-      set({
-        expenses: originalExpenses,
-        loading: false,
-      });
+      set({ expenses: originalExpenses, loading: false });
       console.error("Error deleting expense:", error);
       toast.error("Ocurrió un error al eliminar el gasto");
     }
@@ -244,7 +189,6 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
       set({ weeklyExpenses: expensesData, loading: false });
       return expensesData;
     } catch (error) {
-      console.error("Error fetching expenses by periodicity:", error);
       set({ loading: false });
       toast.error("Error al obtener los gastos por periodo");
       return null;

@@ -1,8 +1,7 @@
 import { create } from "zustand";
-import { createJSONStorage, persist } from "zustand/middleware";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { persist } from "zustand/middleware";
 import { supabase } from "~/lib/supabase";
-import { toast } from "sonner-native";
+import { toast } from "sonner";
 
 export interface Payment {
   id: string;
@@ -27,6 +26,21 @@ interface PaymentState {
   setIsPayed: (value: boolean) => void;
   setIsLoading: (value: boolean) => void;
 }
+
+const storage = {
+  getItem: (name: string) => {
+    try {
+      const str = localStorage.getItem(name);
+      return str ? JSON.parse(str) : undefined;
+    } catch {
+      return undefined;
+    }
+  },
+  setItem: (name: string, value: unknown) => {
+    localStorage.setItem(name, JSON.stringify(value));
+  },
+  removeItem: (name: string) => localStorage.removeItem(name),
+};
 
 export const usePaymentStore = create<PaymentState>()(
   persist(
@@ -53,11 +67,7 @@ export const usePaymentStore = create<PaymentState>()(
 
           if (error) throw error;
 
-          set((state) => ({
-            payments: [...state.payments, data],
-          }));
-
-          // Trigger confetti animation
+          set((state) => ({ payments: [...state.payments, data] }));
           set({ isPayed: true });
 
           toast.success("Ahora eres premium !", {
@@ -137,10 +147,7 @@ export const usePaymentStore = create<PaymentState>()(
       deletePayment: async (id) => {
         try {
           set({ isLoading: true });
-          const { error } = await supabase
-            .from("payments")
-            .delete()
-            .eq("id", id);
+          const { error } = await supabase.from("payments").delete().eq("id", id);
 
           if (error) throw error;
 
@@ -157,17 +164,9 @@ export const usePaymentStore = create<PaymentState>()(
         }
       },
 
-      setIsPayed: (value) => {
-        set({ isPayed: value });
-      },
-
-      setIsLoading: (value) => {
-        set({ isLoading: value });
-      },
+      setIsPayed: (value) => set({ isPayed: value }),
+      setIsLoading: (value) => set({ isLoading: value }),
     }),
-    {
-      name: "payment-storage",
-      storage: createJSONStorage(() => AsyncStorage),
-    }
+    { name: "payment-storage", storage }
   )
 );
