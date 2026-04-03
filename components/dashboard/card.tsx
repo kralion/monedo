@@ -5,7 +5,6 @@ import { useUserPlan } from "~/hooks/useUserPlan";
 import { useBudgetStore } from "~/stores/budget";
 import { useExpenseStore } from "~/stores/expense";
 import { Button } from "../ui/button";
-import { Text } from "../ui/text";
 import { useEffect } from "react";
 
 export default function Card() {
@@ -36,14 +35,12 @@ export default function Card() {
       >
         <div className="flex flex-row justify-between">
           <div className="flex flex-col gap-2">
-            <Text className="text-xl text-white md:text-2xl">Balance</Text>
-            <Text className="text-4xl text-white font-bold md:text-5xl">
-              S/ {balance}
-            </Text>
+            <h2 className="text-xl text-white md:text-2xl">Balance</h2>
+            <p className="text-4xl font-bold text-white md:text-5xl">S/ {balance}</p>
           </div>
           {!isPremium && (
             <Button size="sm" className="rounded-full bg-orange-500">
-              <Text className="text-white">Cuenta {planName}</Text>
+              <span className="text-white">Cuenta {planName}</span>
             </Button>
           )}
         </div>
@@ -51,20 +48,16 @@ export default function Card() {
           <div className="flex flex-col gap-2">
             <div className="flex flex-row gap-1 items-center">
               <ArrowDownCircle className="text-white w-4 h-4" />
-              <Text className="text-white md:text-lg">Gastos</Text>
+              <span className="text-white md:text-lg">Gastos</span>
             </div>
-            <Text className="text-xl text-white md:text-2xl">
-              S/ {totalExpenses}
-            </Text>
+            <p className="text-xl text-white md:text-2xl">S/ {totalExpenses}</p>
           </div>
           <div className="flex flex-col gap-2 items-end">
             <div className="flex flex-row gap-1 items-center">
               <ArrowUpCircle className="text-white w-4 h-4" />
-              <Text className="text-white md:text-lg">Billetera</Text>
+              <span className="text-white md:text-lg">Billetera</span>
             </div>
-            <Text className="text-xl text-white md:text-2xl">
-              S/ {totalBudget}
-            </Text>
+            <p className="text-xl text-white md:text-2xl">S/ {totalBudget}</p>
           </div>
         </div>
       </div>

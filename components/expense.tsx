@@ -3,8 +3,6 @@ import { ChevronRight } from "lucide-react";
 import { expensesIdentifiers } from "@/constants/ExpensesIdentifiers";
 import { formatDate } from "~/helpers/dateFormatter";
 import { IExpense } from "~/interfaces";
-import { Text } from "./ui/text";
-
 export function Expense({ expense }: { expense: IExpense }) {
   const assetIndentificador =
     expensesIdentifiers.find(
@@ -26,23 +24,23 @@ export function Expense({ expense }: { expense: IExpense }) {
       />
       <div className="flex flex-row justify-between items-center flex-1 py-4">
         <div className="flex flex-col gap-1">
-          <Text className="text-xl font-semibold dark:text-white">
+          <h3 className="text-xl font-semibold dark:text-white">
             {expense.categories?.label}
-          </Text>
-          <Text className="text-sm text-muted-foreground">
+          </h3>
+          <p className="text-sm text-muted-foreground">
             {expense.description.length > 25
               ? `${expense.description.slice(0, 25)}...`
               : expense.description}
-          </Text>
+          </p>
         </div>
         <div className="flex flex-row items-center gap-4">
           <div className="flex flex-col items-end gap-1">
-            <Text className="text-2xl text-red-500 dark:text-red-400 font-semibold">
+            <p className="text-2xl font-semibold text-red-500 dark:text-red-400">
               - S/{expense.amount}
-            </Text>
-            <Text className="text-xs text-muted-foreground">
+            </p>
+            <p className="text-xs text-muted-foreground">
               {formatDate(expense?.date as Date)}
-            </Text>
+            </p>
           </div>
           <ChevronRight className="w-5 h-5 text-gray-500" />
         </div>

@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Text } from "~/components/ui/text";
 import { useUserPlan } from "~/hooks/useUserPlan";
 import { Link } from "@tanstack/react-router";
 
@@ -12,9 +11,9 @@ function MembershipPage() {
 
   return (
     <div className="max-w-xl mx-auto p-4 pb-28">
-      <Text className="text-2xl font-bold mb-4">Membresía</Text>
+      <h1 className="mb-4 text-2xl font-bold">Membresía</h1>
       <div className="flex flex-col gap-4">
-        <Text>Plan actual: {planName}</Text>
+        <p>Plan actual: {planName}</p>
         {!isPremium && (
           <Link to="/buy-premium">
             <span className="text-primary font-semibold">Actualizar a Premium</span>

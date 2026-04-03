@@ -6,7 +6,6 @@ import PieChart from "~/components/statistics/pie-chart";
 import { Expense } from "~/components/expense";
 import { Button } from "~/components/ui/button";
 import { Separator } from "~/components/ui/separator";
-import { Text } from "~/components/ui/text";
 import { getDateRange } from "~/lib/rangeDate";
 import { useCategoryStore } from "~/stores/category";
 import { useExpenseStore } from "~/stores/expense";
@@ -45,7 +44,7 @@ function StatisticsPage() {
     <div className="py-4 bg-white dark:bg-zinc-900 max-w-4xl mx-auto">
       <div className="flex flex-col gap-8">
         <div className="flex flex-row justify-between px-4 pt-7">
-          <Text className="text-4xl font-bold md:text-5xl">Estadísticas</Text>
+          <h1 className="text-4xl font-bold md:text-5xl">Estadísticas</h1>
         </div>
         <div className="flex flex-col gap-4">
           <div className="flex gap-2 overflow-x-auto px-4 pb-2">
@@ -81,7 +80,7 @@ function StatisticsPage() {
                         className="w-4 h-4 rounded-full"
                         style={{ backgroundColor: item.color }}
                       />
-                      <Text className="text-gray-700">{item.label}</Text>
+                      <span className="text-gray-700">{item.label}</span>
                     </div>
                   ))}
                 </div>
@@ -93,7 +92,7 @@ function StatisticsPage() {
             </div>
           )}
 
-          <Text className="text-xl font-bold mt-12 md:text-2xl">Top Gastos</Text>
+          <h2 className="mt-12 text-xl font-bold md:text-2xl">Top Gastos</h2>
           <div className="space-y-0">
             {expenses.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-8">

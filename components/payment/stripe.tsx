@@ -9,7 +9,6 @@ import { toast } from "sonner";
 import { useNavigate } from "@tanstack/react-router";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { Text } from "../ui/text";
 
 type CardType = "visa" | "mastercard" | "amex" | "discover" | "unknown";
 
@@ -141,10 +140,10 @@ export default function Stripe() {
     <div className="flex flex-col py-3 gap-4">
       <div className="flex flex-col gap-3">
         <div className="flex flex-col gap-1">
-          <Text>
+          <span className="text-base text-foreground select-text dark:text-white">
             Número de Tarjeta{" "}
             {cardType !== "unknown" && `(${cardType.toUpperCase()})`}
-          </Text>
+          </span>
 
           <Controller
             name="cardNumber"
@@ -166,12 +165,14 @@ export default function Stripe() {
             )}
           />
           {errors.cardNumber && (
-            <Text className="text-red-500">{errors.cardNumber.message}</Text>
+            <p className="text-sm text-red-500">{errors.cardNumber.message}</p>
           )}
         </div>
 
         <div className="flex flex-col gap-1">
-          <Text>CVC / CVV</Text>
+          <span className="text-base text-foreground select-text dark:text-white">
+            CVC / CVV
+          </span>
 
           <Controller
             control={control}
@@ -191,12 +192,14 @@ export default function Stripe() {
             name="cvc"
           />
           {errors.cvc && (
-            <Text className="text-red-500">{errors.cvc.message}</Text>
+            <p className="text-sm text-red-500">{errors.cvc.message}</p>
           )}
         </div>
 
         <div className="flex flex-col gap-1">
-          <Text>Fecha Expiración</Text>
+          <span className="text-base text-foreground select-text dark:text-white">
+            Fecha Expiración
+          </span>
           <Controller
             name="expiracion"
             control={control}
@@ -217,7 +220,7 @@ export default function Stripe() {
             )}
           />
           {errors.expiracion && (
-            <Text className="text-red-500">{errors.expiracion.message}</Text>
+            <p className="text-sm text-red-500">{errors.expiracion.message}</p>
           )}
         </div>
 
@@ -230,7 +233,7 @@ export default function Stripe() {
           {isLoading ? (
             <Loader2 className="w-5 h-5 animate-spin" />
           ) : (
-            <Text className="text-white">Pagar</Text>
+            <span className="text-white">Pagar</span>
           )}
         </Button>
       </div>

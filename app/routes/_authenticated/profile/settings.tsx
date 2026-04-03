@@ -1,5 +1,4 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Text } from "~/components/ui/text";
 import { useColorScheme } from "~/lib/useColorScheme";
 import { Button } from "~/components/ui/button";
 
@@ -12,10 +11,10 @@ function SettingsPage() {
 
   return (
     <div className="max-w-xl mx-auto p-4 pb-28">
-      <Text className="text-2xl font-bold mb-4">Ajustes</Text>
+      <h1 className="mb-4 text-2xl font-bold">Ajustes</h1>
       <div className="flex flex-col gap-4">
         <div className="flex flex-row items-center justify-between">
-          <Text>Tema</Text>
+          <span>Tema</span>
           <div className="flex gap-2">
             <Button
               size="sm"

@@ -3,7 +3,6 @@ import { useUser } from "@clerk/clerk-react";
 import { useState } from "react";
 import { Button } from "~/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { Text } from "~/components/ui/text";
 import Yape from "~/components/payment/yape";
 import Stripe from "~/components/payment/stripe";
 
@@ -52,12 +51,10 @@ function BuyPremiumPage() {
             className="w-[150px] h-[150px]"
           />
           <div className="flex flex-col gap-0 px-4 text-center">
-            <Text className="text-xl font-semibold">
-              {carouselData[currentIndex].title}
-            </Text>
-            <Text className="text-muted-foreground text-sm">
+            <h2 className="text-xl font-semibold">{carouselData[currentIndex].title}</h2>
+            <p className="text-sm text-muted-foreground">
               {carouselData[currentIndex].subtitle}
-            </Text>
+            </p>
           </div>
         </div>
         <div className="flex flex-row justify-center gap-2">
@@ -72,7 +69,7 @@ function BuyPremiumPage() {
           ))}
         </div>
 
-        <Text className="text-2xl font-bold">Método de Pago</Text>
+        <h2 className="text-2xl font-bold">Método de Pago</h2>
 
         <Tabs value={value} onValueChange={setValue} className="w-full">
           <TabsList className="flex-row w-full rounded-xl">
@@ -93,7 +90,7 @@ function BuyPremiumPage() {
 
         <Link to="/">
           <Button variant="ghost" size="sm" className="mt-4">
-            <Text className="text-brand">Quizás más tarde</Text>
+            <span className="text-brand">Quizás más tarde</span>
           </Button>
         </Link>
       </div>

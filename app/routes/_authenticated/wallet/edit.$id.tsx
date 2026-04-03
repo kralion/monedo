@@ -5,7 +5,6 @@ import { useForm } from "react-hook-form";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
-import { Text } from "~/components/ui/text";
 import { IBudget } from "~/interfaces";
 import { useBudgetStore } from "~/stores/budget";
 import { useNavigate } from "@tanstack/react-router";
@@ -65,7 +64,7 @@ function EditBudgetPage() {
             placeholder="Ej: Salario mensual"
           />
           {errors.description && (
-            <Text className="text-red-500">Campo requerido</Text>
+            <p className="text-sm text-red-500">Campo requerido</p>
           )}
         </div>
         <div className="flex flex-col gap-2">
@@ -75,9 +74,7 @@ function EditBudgetPage() {
             {...register("amount", { required: true, min: 1, valueAsNumber: true })}
             placeholder="0.00"
           />
-          {errors.amount && (
-            <Text className="text-red-500">Monto inválido</Text>
-          )}
+          {errors.amount && <p className="text-sm text-red-500">Monto inválido</p>}
         </div>
         <Button type="submit" size="lg">
           Guardar

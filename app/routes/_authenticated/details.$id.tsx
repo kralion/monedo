@@ -6,7 +6,6 @@ import { Badge } from "~/components/ui/badge";
 import { Button } from "~/components/ui/button";
 import { Progress } from "~/components/ui/progress";
 import { Separator } from "~/components/ui/separator";
-import { Text } from "~/components/ui/text";
 import { useBudgetStore } from "~/stores/budget";
 import { useExpenseStore } from "~/stores/expense";
 import { supabase } from "~/lib/supabase";
@@ -19,6 +18,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
+  AlertDialogTrigger,
 } from "~/components/ui/alert-dialog";
 import { Link, useNavigate } from "@tanstack/react-router";
 
@@ -93,37 +93,33 @@ function ExpenseDetailsPage() {
             alt=""
             className="w-[150px] h-[150px] bg-zinc-100 dark:bg-zinc-800 rounded-full p-8 object-contain"
           />
-          <Text className="text-5xl tracking-tighter font-bold">
-            S/ {expense?.amount}
-          </Text>
-          <Text className="text-lg text-muted-foreground">
-            {expense.description}
-          </Text>
+          <p className="text-5xl font-bold tracking-tighter">S/ {expense?.amount}</p>
+          <p className="text-lg text-muted-foreground">{expense.description}</p>
         </div>
         <div className="flex flex-col gap-4 bg-zinc-100 dark:bg-zinc-800 rounded-lg p-4">
           <div className="flex flex-row justify-between items-center">
-            <Text className="text-muted-foreground">Fecha</Text>
-            <Text>
+            <span className="text-muted-foreground">Fecha</span>
+            <span>
               {new Date(expense.date).toLocaleDateString("es-PE", {
                 month: "long",
                 day: "numeric",
               })}
-            </Text>
+            </span>
           </div>
           <Separator />
           <div className="flex flex-row justify-between items-center">
-            <Text className="text-muted-foreground">Hora</Text>
-            <Text>
+            <span className="text-muted-foreground">Hora</span>
+            <span>
               {new Date(expense.date).toLocaleTimeString("es-PE", {
                 hour: "2-digit",
                 minute: "2-digit",
                 hour12: true,
               })}
-            </Text>
+            </span>
           </div>
           <Separator />
           <div className="flex flex-row justify-between items-center">
-            <Text className="text-muted-foreground">Categoria</Text>
+            <span className="text-muted-foreground">Categoria</span>
             <Badge variant="outline">{expense?.categories?.label}</Badge>
           </div>
           <div className="flex flex-col gap-3">
@@ -132,16 +128,16 @@ function ExpenseDetailsPage() {
               className="w-full"
             />
             <div className="flex flex-row justify-between items-center">
-              <Text>0%</Text>
-              <Text>100%</Text>
+              <span>0%</span>
+              <span>100%</span>
             </div>
-            <Text className="text-muted-foreground text-sm text-center">
+            <p className="text-center text-sm text-muted-foreground">
               Consumido{" "}
-              <Text className="font-bold text-primary">
+              <span className="font-bold text-primary">
                 {Number((percentage / 10).toFixed(2))}%
-              </Text>{" "}
+              </span>{" "}
               del presupuesto para el mes actual.
-            </Text>
+            </p>
           </div>
         </div>
         <div className="flex flex-col gap-4">

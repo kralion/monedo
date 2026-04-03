@@ -3,7 +3,6 @@ import { useUser } from "@clerk/clerk-react";
 import { useEffect, useState } from "react";
 import Card from "~/components/dashboard/card";
 import { Expense } from "~/components/expense";
-import { Text } from "~/components/ui/text";
 import { groupExpensesByDate } from "~/helpers/groupExpenseByDate";
 import { useBudgetStore } from "~/stores/budget";
 import { useExpenseStore } from "~/stores/expense";
@@ -64,9 +63,9 @@ function DashboardPage() {
             {Object.entries(groupExpensesByDate(parsedExpenses)).map(
               ([dateLabel, dateExpenses]) => (
                 <div key={dateLabel}>
-                  <Text className="text-lg px-4 md:px-6 text-muted-foreground md:text-xl">
+                  <h2 className="px-4 text-lg text-muted-foreground md:px-6 md:text-xl">
                     {dateLabel}
-                  </Text>
+                  </h2>
                   <div className="space-y-0">
                     {dateExpenses.map((expense) => (
                       <div
@@ -88,9 +87,9 @@ function DashboardPage() {
             <Card />
           </div>
           <div className="flex flex-row justify-between items-center w-full md:mt-6">
-            <Text className="text-xl font-bold dark:text-white md:text-2xl">
+            <h2 className="text-xl font-bold dark:text-white md:text-2xl">
               Historial de Gastos
-            </Text>
+            </h2>
             <button
               onClick={() => setShowAll(true)}
               className="text-muted-foreground dark:text-secondary px-1.5 opacity-50"

@@ -10,7 +10,6 @@ import {
   CollapsibleTrigger,
 } from "~/components/ui/collapsible";
 import { ChevronsUpDown, Check } from "lucide-react";
-import { Text } from "~/components/ui/text";
 import { Textarea } from "~/components/ui/textarea";
 import { ICategory, IExpense } from "~/interfaces";
 import { useBudgetStore } from "~/stores/budget";
@@ -114,7 +113,7 @@ function AddExpensePage() {
                 className="justify-between flex flex-row dark:bg-zinc-700 dark:border-zinc-900"
               >
                 {category?.label ? (
-                  <Text className="dark:text-white">{category.label}</Text>
+                  <span className="dark:text-white">{category.label}</span>
                 ) : (
                   <span>Categoría</span>
                 )}
@@ -170,9 +169,9 @@ function AddExpensePage() {
         {loading ? (
           <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
         ) : (
-          <Text className="dark:text-black">
+          <span className="dark:text-black">
             {id ? "Guardar Cambios" : "Registrar"}
-          </Text>
+          </span>
         )}
       </Button>
     </div>

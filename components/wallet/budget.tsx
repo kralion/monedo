@@ -3,7 +3,6 @@ import { ChevronRight, Trash } from "lucide-react";
 import { IBudget } from "@/interfaces";
 import { Button } from "../ui/button";
 import { Separator } from "../ui/separator";
-import { Text } from "../ui/text";
 import { useBudgetStore } from "~/stores/budget";
 import {
   AlertDialog,
@@ -47,18 +46,16 @@ export function Budget({ budget }: { budget: IBudget }) {
               />
             </div>
             <div className="flex flex-col gap-1">
-              <Text className="text-lg md:text-xl">
+              <p className="text-lg md:text-xl text-foreground">
                 {budget.description.length > 25
                   ? `${budget.description.slice(0, 25)}...`
                   : budget.description}
-              </Text>
-              <Text className="text-muted-foreground text-sm">{formattedDate}</Text>
+              </p>
+              <p className="text-sm text-muted-foreground">{formattedDate}</p>
             </div>
           </div>
           <div className="flex flex-row items-center">
-            <Text className="font-bold text-xl text-brand md:text-2xl">
-              + S/ {budget.amount}
-            </Text>
+            <p className="font-bold text-xl text-brand md:text-2xl">+ S/ {budget.amount}</p>
             <ChevronRight className="w-5 h-5 text-gray-500" />
           </div>
         </Link>

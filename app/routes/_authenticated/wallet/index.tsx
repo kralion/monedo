@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useUser } from "@clerk/clerk-react";
 import { useEffect } from "react";
 import { Budget } from "~/components/wallet/budget";
-import { Text } from "~/components/ui/text";
 import { useBudgetStore } from "~/stores/budget";
 
 export const Route = createFileRoute("/_authenticated/wallet/")({
@@ -28,23 +27,21 @@ function WalletPage() {
           className="w-24 h-24 md:w-32 md:h-32"
         />
         <div className="p-4">
-          <Text className="text-center mb-1 text-muted-foreground md:text-lg">
+          <p className="mb-1 text-center text-muted-foreground md:text-lg">
             Total en billetera
-          </Text>
-          <Text className="text-3xl font-bold text-center md:text-4xl">
-            S/ {total}
-          </Text>
+          </p>
+          <p className="text-center text-3xl font-bold md:text-4xl">S/ {total}</p>
         </div>
       </div>
       <div className="flex flex-col gap-3 rounded-b-xl p-4 md:px-6">
         {budgets.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-8">
-            <Text className="text-center text-xl text-muted-foreground md:text-2xl">
+            <p className="text-center text-xl text-muted-foreground md:text-2xl">
               No hay presupuestos registrados
-            </Text>
-            <Text className="text-center text-sm text-muted-foreground">
+            </p>
+            <p className="text-center text-sm text-muted-foreground">
               Rellena el formulario y registra uno para el mes actual.
-            </Text>
+            </p>
           </div>
         ) : (
           budgets.map((budget) => <Budget key={budget.id} budget={budget} />)
