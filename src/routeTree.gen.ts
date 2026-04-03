@@ -8,336 +8,336 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
-import { Route as rootRouteImport } from "./routes/__root";
-import { Route as SignInRouteImport } from "./routes/sign-in";
-import { Route as AuthenticatedRouteImport } from "./routes/_authenticated";
-import { Route as Char43notFoundRouteImport } from "./routes/+not-found";
-import { Route as AuthenticatedIndexRouteImport } from "./routes/_authenticated/index";
-import { Route as AuthenticatedStatisticsRouteImport } from "./routes/_authenticated/statistics";
-import { Route as AuthenticatedBuyPremiumRouteImport } from "./routes/_authenticated/buy-premium";
-import { Route as AuthenticatedAddExpenseRouteImport } from "./routes/_authenticated/add-expense";
-import { Route as AuthenticatedWalletIndexRouteImport } from "./routes/_authenticated/wallet/index";
-import { Route as AuthenticatedProfileIndexRouteImport } from "./routes/_authenticated/profile/index";
-import { Route as AuthenticatedProfileSettingsRouteImport } from "./routes/_authenticated/profile/settings";
-import { Route as AuthenticatedProfilePersonalInfoRouteImport } from "./routes/_authenticated/profile/personal-info";
-import { Route as AuthenticatedProfileMembershipRouteImport } from "./routes/_authenticated/profile/membership";
-import { Route as AuthenticatedProfileCategoriesRouteImport } from "./routes/_authenticated/profile/categories";
-import { Route as AuthenticatedDetailsIdRouteImport } from "./routes/_authenticated/details.$id";
-import { Route as AuthenticatedWalletEditIdRouteImport } from "./routes/_authenticated/wallet/edit.$id";
+import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignInRouteImport } from './routes/sign-in'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
+import { Route as Char43notFoundRouteImport } from './routes/+not-found'
+import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedStatisticsRouteImport } from './routes/_authenticated/statistics'
+import { Route as AuthenticatedBuyPremiumRouteImport } from './routes/_authenticated/buy-premium'
+import { Route as AuthenticatedAddExpenseRouteImport } from './routes/_authenticated/add-expense'
+import { Route as AuthenticatedWalletIndexRouteImport } from './routes/_authenticated/wallet/index'
+import { Route as AuthenticatedProfileIndexRouteImport } from './routes/_authenticated/profile/index'
+import { Route as AuthenticatedProfileSettingsRouteImport } from './routes/_authenticated/profile/settings'
+import { Route as AuthenticatedProfilePersonalInfoRouteImport } from './routes/_authenticated/profile/personal-info'
+import { Route as AuthenticatedProfileMembershipRouteImport } from './routes/_authenticated/profile/membership'
+import { Route as AuthenticatedProfileCategoriesRouteImport } from './routes/_authenticated/profile/categories'
+import { Route as AuthenticatedDetailsIdRouteImport } from './routes/_authenticated/details.$id'
+import { Route as AuthenticatedWalletEditIdRouteImport } from './routes/_authenticated/wallet/edit.$id'
 
 const SignInRoute = SignInRouteImport.update({
-  id: "/sign-in",
-  path: "/sign-in",
+  id: '/sign-in',
+  path: '/sign-in',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
-  id: "/_authenticated",
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const Char43notFoundRoute = Char43notFoundRouteImport.update({
-  id: "/+not-found",
-  path: "/+not-found",
+  id: '/+not-found',
+  path: '/+not-found',
   getParentRoute: () => rootRouteImport,
-} as any);
+} as any)
 const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
-  id: "/",
-  path: "/",
+  id: '/',
+  path: '/',
   getParentRoute: () => AuthenticatedRoute,
-} as any);
+} as any)
 const AuthenticatedStatisticsRoute = AuthenticatedStatisticsRouteImport.update({
-  id: "/statistics",
-  path: "/statistics",
+  id: '/statistics',
+  path: '/statistics',
   getParentRoute: () => AuthenticatedRoute,
-} as any);
+} as any)
 const AuthenticatedBuyPremiumRoute = AuthenticatedBuyPremiumRouteImport.update({
-  id: "/buy-premium",
-  path: "/buy-premium",
+  id: '/buy-premium',
+  path: '/buy-premium',
   getParentRoute: () => AuthenticatedRoute,
-} as any);
+} as any)
 const AuthenticatedAddExpenseRoute = AuthenticatedAddExpenseRouteImport.update({
-  id: "/add-expense",
-  path: "/add-expense",
+  id: '/add-expense',
+  path: '/add-expense',
   getParentRoute: () => AuthenticatedRoute,
-} as any);
+} as any)
 const AuthenticatedWalletIndexRoute =
   AuthenticatedWalletIndexRouteImport.update({
-    id: "/wallet/",
-    path: "/wallet/",
+    id: '/wallet/',
+    path: '/wallet/',
     getParentRoute: () => AuthenticatedRoute,
-  } as any);
+  } as any)
 const AuthenticatedProfileIndexRoute =
   AuthenticatedProfileIndexRouteImport.update({
-    id: "/profile/",
-    path: "/profile/",
+    id: '/profile/',
+    path: '/profile/',
     getParentRoute: () => AuthenticatedRoute,
-  } as any);
+  } as any)
 const AuthenticatedProfileSettingsRoute =
   AuthenticatedProfileSettingsRouteImport.update({
-    id: "/profile/settings",
-    path: "/profile/settings",
+    id: '/profile/settings',
+    path: '/profile/settings',
     getParentRoute: () => AuthenticatedRoute,
-  } as any);
+  } as any)
 const AuthenticatedProfilePersonalInfoRoute =
   AuthenticatedProfilePersonalInfoRouteImport.update({
-    id: "/profile/personal-info",
-    path: "/profile/personal-info",
+    id: '/profile/personal-info',
+    path: '/profile/personal-info',
     getParentRoute: () => AuthenticatedRoute,
-  } as any);
+  } as any)
 const AuthenticatedProfileMembershipRoute =
   AuthenticatedProfileMembershipRouteImport.update({
-    id: "/profile/membership",
-    path: "/profile/membership",
+    id: '/profile/membership',
+    path: '/profile/membership',
     getParentRoute: () => AuthenticatedRoute,
-  } as any);
+  } as any)
 const AuthenticatedProfileCategoriesRoute =
   AuthenticatedProfileCategoriesRouteImport.update({
-    id: "/profile/categories",
-    path: "/profile/categories",
+    id: '/profile/categories',
+    path: '/profile/categories',
     getParentRoute: () => AuthenticatedRoute,
-  } as any);
+  } as any)
 const AuthenticatedDetailsIdRoute = AuthenticatedDetailsIdRouteImport.update({
-  id: "/details/$id",
-  path: "/details/$id",
+  id: '/details/$id',
+  path: '/details/$id',
   getParentRoute: () => AuthenticatedRoute,
-} as any);
+} as any)
 const AuthenticatedWalletEditIdRoute =
   AuthenticatedWalletEditIdRouteImport.update({
-    id: "/wallet/edit/$id",
-    path: "/wallet/edit/$id",
+    id: '/wallet/edit/$id',
+    path: '/wallet/edit/$id',
     getParentRoute: () => AuthenticatedRoute,
-  } as any);
+  } as any)
 
 export interface FileRoutesByFullPath {
-  "/+not-found": typeof Char43notFoundRoute;
-  "/": typeof AuthenticatedIndexRoute;
-  "/sign-in": typeof SignInRoute;
-  "/add-expense": typeof AuthenticatedAddExpenseRoute;
-  "/buy-premium": typeof AuthenticatedBuyPremiumRoute;
-  "/statistics": typeof AuthenticatedStatisticsRoute;
-  "/details/$id": typeof AuthenticatedDetailsIdRoute;
-  "/profile/categories": typeof AuthenticatedProfileCategoriesRoute;
-  "/profile/membership": typeof AuthenticatedProfileMembershipRoute;
-  "/profile/personal-info": typeof AuthenticatedProfilePersonalInfoRoute;
-  "/profile/settings": typeof AuthenticatedProfileSettingsRoute;
-  "/profile/": typeof AuthenticatedProfileIndexRoute;
-  "/wallet/": typeof AuthenticatedWalletIndexRoute;
-  "/wallet/edit/$id": typeof AuthenticatedWalletEditIdRoute;
+  '/+not-found': typeof Char43notFoundRoute
+  '/': typeof AuthenticatedIndexRoute
+  '/sign-in': typeof SignInRoute
+  '/add-expense': typeof AuthenticatedAddExpenseRoute
+  '/buy-premium': typeof AuthenticatedBuyPremiumRoute
+  '/statistics': typeof AuthenticatedStatisticsRoute
+  '/details/$id': typeof AuthenticatedDetailsIdRoute
+  '/profile/categories': typeof AuthenticatedProfileCategoriesRoute
+  '/profile/membership': typeof AuthenticatedProfileMembershipRoute
+  '/profile/personal-info': typeof AuthenticatedProfilePersonalInfoRoute
+  '/profile/settings': typeof AuthenticatedProfileSettingsRoute
+  '/profile/': typeof AuthenticatedProfileIndexRoute
+  '/wallet/': typeof AuthenticatedWalletIndexRoute
+  '/wallet/edit/$id': typeof AuthenticatedWalletEditIdRoute
 }
 export interface FileRoutesByTo {
-  "/+not-found": typeof Char43notFoundRoute;
-  "/sign-in": typeof SignInRoute;
-  "/add-expense": typeof AuthenticatedAddExpenseRoute;
-  "/buy-premium": typeof AuthenticatedBuyPremiumRoute;
-  "/statistics": typeof AuthenticatedStatisticsRoute;
-  "/": typeof AuthenticatedIndexRoute;
-  "/details/$id": typeof AuthenticatedDetailsIdRoute;
-  "/profile/categories": typeof AuthenticatedProfileCategoriesRoute;
-  "/profile/membership": typeof AuthenticatedProfileMembershipRoute;
-  "/profile/personal-info": typeof AuthenticatedProfilePersonalInfoRoute;
-  "/profile/settings": typeof AuthenticatedProfileSettingsRoute;
-  "/profile": typeof AuthenticatedProfileIndexRoute;
-  "/wallet": typeof AuthenticatedWalletIndexRoute;
-  "/wallet/edit/$id": typeof AuthenticatedWalletEditIdRoute;
+  '/+not-found': typeof Char43notFoundRoute
+  '/sign-in': typeof SignInRoute
+  '/add-expense': typeof AuthenticatedAddExpenseRoute
+  '/buy-premium': typeof AuthenticatedBuyPremiumRoute
+  '/statistics': typeof AuthenticatedStatisticsRoute
+  '/': typeof AuthenticatedIndexRoute
+  '/details/$id': typeof AuthenticatedDetailsIdRoute
+  '/profile/categories': typeof AuthenticatedProfileCategoriesRoute
+  '/profile/membership': typeof AuthenticatedProfileMembershipRoute
+  '/profile/personal-info': typeof AuthenticatedProfilePersonalInfoRoute
+  '/profile/settings': typeof AuthenticatedProfileSettingsRoute
+  '/profile': typeof AuthenticatedProfileIndexRoute
+  '/wallet': typeof AuthenticatedWalletIndexRoute
+  '/wallet/edit/$id': typeof AuthenticatedWalletEditIdRoute
 }
 export interface FileRoutesById {
-  __root__: typeof rootRouteImport;
-  "/+not-found": typeof Char43notFoundRoute;
-  "/_authenticated": typeof AuthenticatedRouteWithChildren;
-  "/sign-in": typeof SignInRoute;
-  "/_authenticated/add-expense": typeof AuthenticatedAddExpenseRoute;
-  "/_authenticated/buy-premium": typeof AuthenticatedBuyPremiumRoute;
-  "/_authenticated/statistics": typeof AuthenticatedStatisticsRoute;
-  "/_authenticated/": typeof AuthenticatedIndexRoute;
-  "/_authenticated/details/$id": typeof AuthenticatedDetailsIdRoute;
-  "/_authenticated/profile/categories": typeof AuthenticatedProfileCategoriesRoute;
-  "/_authenticated/profile/membership": typeof AuthenticatedProfileMembershipRoute;
-  "/_authenticated/profile/personal-info": typeof AuthenticatedProfilePersonalInfoRoute;
-  "/_authenticated/profile/settings": typeof AuthenticatedProfileSettingsRoute;
-  "/_authenticated/profile/": typeof AuthenticatedProfileIndexRoute;
-  "/_authenticated/wallet/": typeof AuthenticatedWalletIndexRoute;
-  "/_authenticated/wallet/edit/$id": typeof AuthenticatedWalletEditIdRoute;
+  __root__: typeof rootRouteImport
+  '/+not-found': typeof Char43notFoundRoute
+  '/_authenticated': typeof AuthenticatedRouteWithChildren
+  '/sign-in': typeof SignInRoute
+  '/_authenticated/add-expense': typeof AuthenticatedAddExpenseRoute
+  '/_authenticated/buy-premium': typeof AuthenticatedBuyPremiumRoute
+  '/_authenticated/statistics': typeof AuthenticatedStatisticsRoute
+  '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/details/$id': typeof AuthenticatedDetailsIdRoute
+  '/_authenticated/profile/categories': typeof AuthenticatedProfileCategoriesRoute
+  '/_authenticated/profile/membership': typeof AuthenticatedProfileMembershipRoute
+  '/_authenticated/profile/personal-info': typeof AuthenticatedProfilePersonalInfoRoute
+  '/_authenticated/profile/settings': typeof AuthenticatedProfileSettingsRoute
+  '/_authenticated/profile/': typeof AuthenticatedProfileIndexRoute
+  '/_authenticated/wallet/': typeof AuthenticatedWalletIndexRoute
+  '/_authenticated/wallet/edit/$id': typeof AuthenticatedWalletEditIdRoute
 }
 export interface FileRouteTypes {
-  fileRoutesByFullPath: FileRoutesByFullPath;
+  fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | "/+not-found"
-    | "/"
-    | "/sign-in"
-    | "/add-expense"
-    | "/buy-premium"
-    | "/statistics"
-    | "/details/$id"
-    | "/profile/categories"
-    | "/profile/membership"
-    | "/profile/personal-info"
-    | "/profile/settings"
-    | "/profile/"
-    | "/wallet/"
-    | "/wallet/edit/$id";
-  fileRoutesByTo: FileRoutesByTo;
+    | '/+not-found'
+    | '/'
+    | '/sign-in'
+    | '/add-expense'
+    | '/buy-premium'
+    | '/statistics'
+    | '/details/$id'
+    | '/profile/categories'
+    | '/profile/membership'
+    | '/profile/personal-info'
+    | '/profile/settings'
+    | '/profile/'
+    | '/wallet/'
+    | '/wallet/edit/$id'
+  fileRoutesByTo: FileRoutesByTo
   to:
-    | "/+not-found"
-    | "/sign-in"
-    | "/add-expense"
-    | "/buy-premium"
-    | "/statistics"
-    | "/"
-    | "/details/$id"
-    | "/profile/categories"
-    | "/profile/membership"
-    | "/profile/personal-info"
-    | "/profile/settings"
-    | "/profile"
-    | "/wallet"
-    | "/wallet/edit/$id";
+    | '/+not-found'
+    | '/sign-in'
+    | '/add-expense'
+    | '/buy-premium'
+    | '/statistics'
+    | '/'
+    | '/details/$id'
+    | '/profile/categories'
+    | '/profile/membership'
+    | '/profile/personal-info'
+    | '/profile/settings'
+    | '/profile'
+    | '/wallet'
+    | '/wallet/edit/$id'
   id:
-    | "__root__"
-    | "/+not-found"
-    | "/_authenticated"
-    | "/sign-in"
-    | "/_authenticated/add-expense"
-    | "/_authenticated/buy-premium"
-    | "/_authenticated/statistics"
-    | "/_authenticated/"
-    | "/_authenticated/details/$id"
-    | "/_authenticated/profile/categories"
-    | "/_authenticated/profile/membership"
-    | "/_authenticated/profile/personal-info"
-    | "/_authenticated/profile/settings"
-    | "/_authenticated/profile/"
-    | "/_authenticated/wallet/"
-    | "/_authenticated/wallet/edit/$id";
-  fileRoutesById: FileRoutesById;
+    | '__root__'
+    | '/+not-found'
+    | '/_authenticated'
+    | '/sign-in'
+    | '/_authenticated/add-expense'
+    | '/_authenticated/buy-premium'
+    | '/_authenticated/statistics'
+    | '/_authenticated/'
+    | '/_authenticated/details/$id'
+    | '/_authenticated/profile/categories'
+    | '/_authenticated/profile/membership'
+    | '/_authenticated/profile/personal-info'
+    | '/_authenticated/profile/settings'
+    | '/_authenticated/profile/'
+    | '/_authenticated/wallet/'
+    | '/_authenticated/wallet/edit/$id'
+  fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  Char43notFoundRoute: typeof Char43notFoundRoute;
-  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren;
-  SignInRoute: typeof SignInRoute;
+  Char43notFoundRoute: typeof Char43notFoundRoute
+  AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
+  SignInRoute: typeof SignInRoute
 }
 
-declare module "@tanstack/react-router" {
+declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    "/sign-in": {
-      id: "/sign-in";
-      path: "/sign-in";
-      fullPath: "/sign-in";
-      preLoaderRoute: typeof SignInRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/_authenticated": {
-      id: "/_authenticated";
-      path: "";
-      fullPath: "/";
-      preLoaderRoute: typeof AuthenticatedRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/+not-found": {
-      id: "/+not-found";
-      path: "/+not-found";
-      fullPath: "/+not-found";
-      preLoaderRoute: typeof Char43notFoundRouteImport;
-      parentRoute: typeof rootRouteImport;
-    };
-    "/_authenticated/": {
-      id: "/_authenticated/";
-      path: "/";
-      fullPath: "/";
-      preLoaderRoute: typeof AuthenticatedIndexRouteImport;
-      parentRoute: typeof AuthenticatedRoute;
-    };
-    "/_authenticated/statistics": {
-      id: "/_authenticated/statistics";
-      path: "/statistics";
-      fullPath: "/statistics";
-      preLoaderRoute: typeof AuthenticatedStatisticsRouteImport;
-      parentRoute: typeof AuthenticatedRoute;
-    };
-    "/_authenticated/buy-premium": {
-      id: "/_authenticated/buy-premium";
-      path: "/buy-premium";
-      fullPath: "/buy-premium";
-      preLoaderRoute: typeof AuthenticatedBuyPremiumRouteImport;
-      parentRoute: typeof AuthenticatedRoute;
-    };
-    "/_authenticated/add-expense": {
-      id: "/_authenticated/add-expense";
-      path: "/add-expense";
-      fullPath: "/add-expense";
-      preLoaderRoute: typeof AuthenticatedAddExpenseRouteImport;
-      parentRoute: typeof AuthenticatedRoute;
-    };
-    "/_authenticated/wallet/": {
-      id: "/_authenticated/wallet/";
-      path: "/wallet";
-      fullPath: "/wallet/";
-      preLoaderRoute: typeof AuthenticatedWalletIndexRouteImport;
-      parentRoute: typeof AuthenticatedRoute;
-    };
-    "/_authenticated/profile/": {
-      id: "/_authenticated/profile/";
-      path: "/profile";
-      fullPath: "/profile/";
-      preLoaderRoute: typeof AuthenticatedProfileIndexRouteImport;
-      parentRoute: typeof AuthenticatedRoute;
-    };
-    "/_authenticated/profile/settings": {
-      id: "/_authenticated/profile/settings";
-      path: "/profile/settings";
-      fullPath: "/profile/settings";
-      preLoaderRoute: typeof AuthenticatedProfileSettingsRouteImport;
-      parentRoute: typeof AuthenticatedRoute;
-    };
-    "/_authenticated/profile/personal-info": {
-      id: "/_authenticated/profile/personal-info";
-      path: "/profile/personal-info";
-      fullPath: "/profile/personal-info";
-      preLoaderRoute: typeof AuthenticatedProfilePersonalInfoRouteImport;
-      parentRoute: typeof AuthenticatedRoute;
-    };
-    "/_authenticated/profile/membership": {
-      id: "/_authenticated/profile/membership";
-      path: "/profile/membership";
-      fullPath: "/profile/membership";
-      preLoaderRoute: typeof AuthenticatedProfileMembershipRouteImport;
-      parentRoute: typeof AuthenticatedRoute;
-    };
-    "/_authenticated/profile/categories": {
-      id: "/_authenticated/profile/categories";
-      path: "/profile/categories";
-      fullPath: "/profile/categories";
-      preLoaderRoute: typeof AuthenticatedProfileCategoriesRouteImport;
-      parentRoute: typeof AuthenticatedRoute;
-    };
-    "/_authenticated/details/$id": {
-      id: "/_authenticated/details/$id";
-      path: "/details/$id";
-      fullPath: "/details/$id";
-      preLoaderRoute: typeof AuthenticatedDetailsIdRouteImport;
-      parentRoute: typeof AuthenticatedRoute;
-    };
-    "/_authenticated/wallet/edit/$id": {
-      id: "/_authenticated/wallet/edit/$id";
-      path: "/wallet/edit/$id";
-      fullPath: "/wallet/edit/$id";
-      preLoaderRoute: typeof AuthenticatedWalletEditIdRouteImport;
-      parentRoute: typeof AuthenticatedRoute;
-    };
+    '/sign-in': {
+      id: '/sign-in'
+      path: '/sign-in'
+      fullPath: '/sign-in'
+      preLoaderRoute: typeof SignInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/+not-found': {
+      id: '/+not-found'
+      path: '/+not-found'
+      fullPath: '/+not-found'
+      preLoaderRoute: typeof Char43notFoundRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/': {
+      id: '/_authenticated/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/statistics': {
+      id: '/_authenticated/statistics'
+      path: '/statistics'
+      fullPath: '/statistics'
+      preLoaderRoute: typeof AuthenticatedStatisticsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/buy-premium': {
+      id: '/_authenticated/buy-premium'
+      path: '/buy-premium'
+      fullPath: '/buy-premium'
+      preLoaderRoute: typeof AuthenticatedBuyPremiumRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/add-expense': {
+      id: '/_authenticated/add-expense'
+      path: '/add-expense'
+      fullPath: '/add-expense'
+      preLoaderRoute: typeof AuthenticatedAddExpenseRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/wallet/': {
+      id: '/_authenticated/wallet/'
+      path: '/wallet'
+      fullPath: '/wallet/'
+      preLoaderRoute: typeof AuthenticatedWalletIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/profile/': {
+      id: '/_authenticated/profile/'
+      path: '/profile'
+      fullPath: '/profile/'
+      preLoaderRoute: typeof AuthenticatedProfileIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/profile/settings': {
+      id: '/_authenticated/profile/settings'
+      path: '/profile/settings'
+      fullPath: '/profile/settings'
+      preLoaderRoute: typeof AuthenticatedProfileSettingsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/profile/personal-info': {
+      id: '/_authenticated/profile/personal-info'
+      path: '/profile/personal-info'
+      fullPath: '/profile/personal-info'
+      preLoaderRoute: typeof AuthenticatedProfilePersonalInfoRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/profile/membership': {
+      id: '/_authenticated/profile/membership'
+      path: '/profile/membership'
+      fullPath: '/profile/membership'
+      preLoaderRoute: typeof AuthenticatedProfileMembershipRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/profile/categories': {
+      id: '/_authenticated/profile/categories'
+      path: '/profile/categories'
+      fullPath: '/profile/categories'
+      preLoaderRoute: typeof AuthenticatedProfileCategoriesRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/details/$id': {
+      id: '/_authenticated/details/$id'
+      path: '/details/$id'
+      fullPath: '/details/$id'
+      preLoaderRoute: typeof AuthenticatedDetailsIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/wallet/edit/$id': {
+      id: '/_authenticated/wallet/edit/$id'
+      path: '/wallet/edit/$id'
+      fullPath: '/wallet/edit/$id'
+      preLoaderRoute: typeof AuthenticatedWalletEditIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
   }
 }
 
 interface AuthenticatedRouteChildren {
-  AuthenticatedAddExpenseRoute: typeof AuthenticatedAddExpenseRoute;
-  AuthenticatedBuyPremiumRoute: typeof AuthenticatedBuyPremiumRoute;
-  AuthenticatedStatisticsRoute: typeof AuthenticatedStatisticsRoute;
-  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute;
-  AuthenticatedDetailsIdRoute: typeof AuthenticatedDetailsIdRoute;
-  AuthenticatedProfileCategoriesRoute: typeof AuthenticatedProfileCategoriesRoute;
-  AuthenticatedProfileMembershipRoute: typeof AuthenticatedProfileMembershipRoute;
-  AuthenticatedProfilePersonalInfoRoute: typeof AuthenticatedProfilePersonalInfoRoute;
-  AuthenticatedProfileSettingsRoute: typeof AuthenticatedProfileSettingsRoute;
-  AuthenticatedProfileIndexRoute: typeof AuthenticatedProfileIndexRoute;
-  AuthenticatedWalletIndexRoute: typeof AuthenticatedWalletIndexRoute;
-  AuthenticatedWalletEditIdRoute: typeof AuthenticatedWalletEditIdRoute;
+  AuthenticatedAddExpenseRoute: typeof AuthenticatedAddExpenseRoute
+  AuthenticatedBuyPremiumRoute: typeof AuthenticatedBuyPremiumRoute
+  AuthenticatedStatisticsRoute: typeof AuthenticatedStatisticsRoute
+  AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedDetailsIdRoute: typeof AuthenticatedDetailsIdRoute
+  AuthenticatedProfileCategoriesRoute: typeof AuthenticatedProfileCategoriesRoute
+  AuthenticatedProfileMembershipRoute: typeof AuthenticatedProfileMembershipRoute
+  AuthenticatedProfilePersonalInfoRoute: typeof AuthenticatedProfilePersonalInfoRoute
+  AuthenticatedProfileSettingsRoute: typeof AuthenticatedProfileSettingsRoute
+  AuthenticatedProfileIndexRoute: typeof AuthenticatedProfileIndexRoute
+  AuthenticatedWalletIndexRoute: typeof AuthenticatedWalletIndexRoute
+  AuthenticatedWalletEditIdRoute: typeof AuthenticatedWalletEditIdRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
@@ -353,17 +353,26 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedProfileIndexRoute: AuthenticatedProfileIndexRoute,
   AuthenticatedWalletIndexRoute: AuthenticatedWalletIndexRoute,
   AuthenticatedWalletEditIdRoute: AuthenticatedWalletEditIdRoute,
-};
+}
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
   AuthenticatedRouteChildren,
-);
+)
 
 const rootRouteChildren: RootRouteChildren = {
   Char43notFoundRoute: Char43notFoundRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   SignInRoute: SignInRoute,
-};
+}
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
-  ._addFileTypes<FileRouteTypes>();
+  ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}
