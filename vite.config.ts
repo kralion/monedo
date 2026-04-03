@@ -19,13 +19,13 @@ export default defineConfig({
   plugins: [
     devtools(),
     TanStackRouterVite({
-      routesDirectory: "./app/routes",
-      generatedRouteTree: "./app/routeTree.gen.ts",
+      routesDirectory: "./src/routes",
+      generatedRouteTree: "./src/routeTree.gen.ts",
     }),
-    nitro({ rollupConfig: { external: [/^@sentry\//] } }),
+    nitro({ config: { rollupConfig: { external: [/^@sentry\//] } } }),
     tailwindcss(),
     tanstackStart({
-      srcDirectory: "app",
+      srcDirectory: "src",
       router: {
         routesDirectory: "routes",
         generatedRouteTree: "routeTree.gen.ts",
