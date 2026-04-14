@@ -1,0 +1,36 @@
+import { defineConfig } from "vite";
+import { devtools } from "@tanstack/devtools-vite";
+import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
+import viteReact from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+import { nitro } from "nitro/vite";
+
+export default defineConfig({
+  resolve: {
+    tsconfigPaths: true,
+  },
+  build: {
+    sourcemap: true,
+  },
+  server: {
+    port: 3000,
+  },
+  plugins: [
+    devtools(),
+    TanStackRouterVite({
+      routesDirectory: "./src/routes",
+      generatedRouteTree: "./src/routeTree.gen.ts",
+    }),
+    nitro({ config: { rollupConfig: { external: [/^@sentry\//] } } }),
+    tailwindcss(),
+    tanstackStart({
+      srcDirectory: "src",
+      router: {
+        routesDirectory: "routes",
+        generatedRouteTree: "routeTree.gen.ts",
+      },
+    }),
+    viteReact(),
+  ],
+});
