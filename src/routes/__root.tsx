@@ -1,7 +1,6 @@
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
 import { AuthProvider } from "@/store/auth";
 import { Toaster } from "sonner";
-
 import appCss from "../styles.css?url";
 import { seo } from "@/lib/seo";
 import { TooltipProvider } from "@/components/ui/tooltip";

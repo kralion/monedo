@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useUser } from "@clerk/clerk-react";
+import { useNeonUser } from "@/hooks/useNeonUser";
 import { useState } from "react";
 import { Bookmark, User, UserSquare2, Settings, CheckCircle2 } from "lucide-react";
 import { BuyPremiumModal } from "@/components/buy-premium";
@@ -13,7 +13,7 @@ export const Route = createFileRoute("/_authenticated/profile/")({
 });
 
 function ProfilePage() {
-  const { user } = useUser();
+  const { user } = useNeonUser();
   const { planName, isPremium } = useUserPlan();
   const [buyPremiumOpen, setBuyPremiumOpen] = useState(false);
 
@@ -21,7 +21,7 @@ function ProfilePage() {
     <div className="bg-white dark:bg-zinc-900 flex-1 max-w-4xl mx-auto overflow-y-auto pb-28">
       <div className="flex flex-col items-center mt-8">
         <Avatar className="bg-teal-500 self-center w-36 h-36 md:w-40 md:h-40">
-          <AvatarImage src={user?.imageUrl} />
+          <AvatarImage src={user?.image ?? undefined} />
           <AvatarFallback className="rounded-xl bg-slate-500" />
         </Avatar>
         <div className="flex flex-col gap-1 md:gap-2 md:mt-2">
@@ -97,7 +97,7 @@ function ProfilePage() {
         </Link>
       </div>
       <p className="mx-10 mt-10 text-center text-sm text-muted-foreground opacity-40">
-        Logueado con {user?.emailAddresses?.[0]?.emailAddress ?? ""}
+        Logueado con {user?.email ?? ""}
       </p>
       <p className="mx-10 text-center text-sm text-muted-foreground opacity-40">
         Versión 1.0.0

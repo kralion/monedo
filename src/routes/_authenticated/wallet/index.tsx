@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useUser } from "@clerk/clerk-react";
+import { useNeonUser } from "@/hooks/useNeonUser";
 import { useEffect } from "react";
 import { Budget } from "@/components/wallet/budget";
 import { useBudgetStore } from "@/stores/budget";
@@ -10,7 +10,7 @@ export const Route = createFileRoute("/_authenticated/wallet/")({
 
 function WalletPage() {
   const { budgets, getBudgets } = useBudgetStore();
-  const { user } = useUser();
+  const { user } = useNeonUser();
 
   useEffect(() => {
     if (user?.id) getBudgets(user.id);

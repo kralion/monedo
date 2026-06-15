@@ -1,7 +1,9 @@
 import { BudgetStore, IBudget } from "@/interfaces";
 import { toast } from "sonner";
 import { create } from "zustand";
-import { supabase } from "@/lib/supabase";
+import { db } from "@/db";
+import { budgets } from "@/schema";
+import { eq } from "drizzle-orm";
 import { useExpenseStore } from "./expense";
 
 export const useBudgetStore = create<BudgetStore>((set, get) => ({
@@ -15,55 +17,69 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
 
     set((state) => ({ budgets: [...state.budgets, tempBudget], loading: true }));
 
-    const { data, error } = await supabase
-      .from("budgets")
-      .insert(budget)
-      .select()
-      .single();
+    try {
+      const [data] = await db
+        .insert(budgets)
+        .values({
+          amount: budget.amount,
+          description: budget.description,
+          user_id: budget.user_id,
+        })
+        .returning();
 
-    if (error) {
+      if (!data) throw new Error("No data returned");
+
+      set((state) => ({
+        budgets: state.budgets.map((b) =>
+          b.id === tempBudget.id ? (data as unknown as IBudget) : b,
+        ),
+        loading: false,
+      }));
+
+      get().getTotalBudget(budget.user_id);
+      toast.success("Registro exitoso");
+    } catch (error) {
       set((state) => ({
         budgets: state.budgets.filter((b) => b.id !== tempBudget.id),
         loading: false,
       }));
       toast.error("Ocurrió un error al registrar el presupuesto");
-      return;
     }
-
-    set((state) => ({
-      budgets: state.budgets.map((b) => (b.id === tempBudget.id ? data : b)),
-      loading: false,
-    }));
-
-    get().getTotalBudget(budget.user_id);
-    toast.success("Registro exitoso");
   },
 
   getBudgetById: async (id: number) => {
     set({ loading: true });
-    const { data, error } = await supabase
-      .from("budgets")
-      .select("*")
-      .eq("id", id)
-      .single();
-    if (error) {
+    try {
+      const [data] = await db
+        .select()
+        .from(budgets)
+        .where(eq(budgets.id, id));
+
+      if (!data) throw new Error("Budget not found");
+
+      set({ budget: data as unknown as IBudget, loading: false });
+      return data as unknown as IBudget;
+    } catch (error) {
       set({ loading: false });
       throw error;
     }
-    set({ budget: data, loading: false });
-    return data;
   },
 
   getTotalBudget: async (userId: string) => {
     set({ loading: true });
-    const { data, error } = await supabase
-      .from("budgets")
-      .select("amount")
-      .eq("user_id", userId);
-    if (error) throw error;
-    const total = data.reduce((sum, budget) => sum + Number(budget.amount), 0);
-    set({ totalBudget: total, loading: false });
-    return total;
+    try {
+      const data = await db
+        .select({ amount: budgets.amount })
+        .from(budgets)
+        .where(eq(budgets.user_id, userId));
+
+      const total = data.reduce((sum, budget) => sum + Number(budget.amount), 0);
+      set({ totalBudget: total, loading: false });
+      return total;
+    } catch (error) {
+      set({ loading: false });
+      throw error;
+    }
   },
 
   updateBudget: async (budget: IBudget) => {
@@ -76,32 +92,38 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
       loading: true,
     }));
 
-    const { data, error } = await supabase
-      .from("budgets")
-      .update(budget)
-      .eq("id", budget.id)
-      .select()
-      .single();
+    try {
+      const [data] = await db
+        .update(budgets)
+        .set({
+          amount: budget.amount,
+          description: budget.description,
+        })
+        .where(eq(budgets.id, budget.id!))
+        .returning();
 
-    if (error) {
+      if (data) {
+        set((state) => ({
+          budgets: state.budgets.map((b) =>
+            b.id === budget.id ? (data as unknown as IBudget) : b,
+          ),
+          budget:
+            budget.id === (originalBudget?.id || -1)
+              ? (data as unknown as IBudget)
+              : originalBudget,
+          loading: false,
+        }));
+      } else {
+        set({ loading: false });
+      }
+
+      get().getTotalBudget(budget.user_id);
+      toast.success("Billetera actualizada");
+      if (typeof window !== "undefined") window.history.back();
+    } catch (error) {
       set({ budgets: originalBudgets, budget: originalBudget, loading: false });
       toast.error("Ocurrió un error al actualizar el presupuesto");
-      return;
     }
-
-    if (data) {
-      set((state) => ({
-        budgets: state.budgets.map((b) => (b.id === budget.id ? data : b)),
-        budget: budget.id === (originalBudget?.id || -1) ? data : originalBudget,
-        loading: false,
-      }));
-    } else {
-      set({ loading: false });
-    }
-
-    get().getTotalBudget(budget.user_id);
-    toast.success("Billetera actualizada");
-    if (typeof window !== "undefined") window.history.back();
   },
 
   deleteBudget: async (id: number) => {
@@ -113,30 +135,34 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
       loading: true,
     }));
 
-    const { error } = await supabase.from("budgets").delete().eq("id", id);
+    try {
+      await db.delete(budgets).where(eq(budgets.id, id));
 
-    if (error) {
+      if (deletedBudget?.user_id) {
+        get().getTotalBudget(deletedBudget.user_id);
+      }
+
+      set({ loading: false });
+      toast.success("Eliminado exitosamente");
+    } catch (error) {
       set({ budgets: originalBudgets, loading: false });
       toast.error("Error al eliminar ingreso");
-      return;
     }
-
-    if (deletedBudget?.user_id) {
-      get().getTotalBudget(deletedBudget.user_id);
-    }
-
-    set({ loading: false });
-    toast.success("Eliminado exitosamente");
   },
 
   getBudgets: async (userId: string) => {
     set({ loading: true });
-    const { data, error } = await supabase
-      .from("budgets")
-      .select("*")
-      .eq("user_id", userId);
-    if (error) throw error;
-    set({ budgets: data ?? [], loading: false });
+    try {
+      const data = await db
+        .select()
+        .from(budgets)
+        .where(eq(budgets.user_id, userId));
+
+      set({ budgets: (data as unknown as IBudget[]) ?? [], loading: false });
+    } catch (error) {
+      set({ loading: false });
+      throw error;
+    }
   },
 
   checkBudget: async (userId: string) => {

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useUser } from "@clerk/clerk-react";
+import { useNeonUser } from "@/hooks/useNeonUser";
 import { useEffect, useState } from "react";
 import Card from "@/components/dashboard/card";
 import { Expense } from "@/components/expense";
@@ -12,7 +12,7 @@ export const Route = createFileRoute("/_authenticated/")({
 });
 
 function DashboardPage() {
-  const { user } = useUser();
+  const { user } = useNeonUser();
   const { checkBudget } = useBudgetStore();
   const { getRecentExpenses, expenses } = useExpenseStore();
   const [showAll, setShowAll] = useState(false);

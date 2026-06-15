@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useUser } from "@clerk/clerk-react";
+import { useNeonUser } from "@/hooks/useNeonUser";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,7 @@ export const Route = createFileRoute("/_authenticated/wallet/edit/$id")({
 
 function EditBudgetPage() {
   const { id } = Route.useParams();
-  const { user } = useUser();
+  const { user } = useNeonUser();
   const { budget, getBudgetById, updateBudget } = useBudgetStore();
   const navigate = useNavigate();
 

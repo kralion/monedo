@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useUser } from "@clerk/clerk-react";
+import { useNeonUser } from "@/hooks/useNeonUser";
 import { useEffect } from "react";
 import { useCategoryStore } from "@/stores/category";
 
@@ -8,7 +8,7 @@ export const Route = createFileRoute("/_authenticated/profile/categories")({
 });
 
 function CategoriesPage() {
-  const { user } = useUser();
+  const { user } = useNeonUser();
   const { categories, getCategories } = useCategoryStore();
 
   useEffect(() => {

@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as Char43notFoundRouteImport } from './routes/+not-found'
@@ -25,6 +26,11 @@ import { Route as AuthenticatedProfileCategoriesRouteImport } from './routes/_au
 import { Route as AuthenticatedDetailsIdRouteImport } from './routes/_authenticated/details.$id'
 import { Route as AuthenticatedWalletEditIdRouteImport } from './routes/_authenticated/wallet/edit.$id'
 
+const SignUpRoute = SignUpRouteImport.update({
+  id: '/sign-up',
+  path: '/sign-up',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SignInRoute = SignInRouteImport.update({
   id: '/sign-in',
   path: '/sign-in',
@@ -111,6 +117,7 @@ export interface FileRoutesByFullPath {
   '/+not-found': typeof Char43notFoundRoute
   '/': typeof AuthenticatedIndexRoute
   '/sign-in': typeof SignInRoute
+  '/sign-up': typeof SignUpRoute
   '/add-expense': typeof AuthenticatedAddExpenseRoute
   '/buy-premium': typeof AuthenticatedBuyPremiumRoute
   '/statistics': typeof AuthenticatedStatisticsRoute
@@ -126,6 +133,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/+not-found': typeof Char43notFoundRoute
   '/sign-in': typeof SignInRoute
+  '/sign-up': typeof SignUpRoute
   '/add-expense': typeof AuthenticatedAddExpenseRoute
   '/buy-premium': typeof AuthenticatedBuyPremiumRoute
   '/statistics': typeof AuthenticatedStatisticsRoute
@@ -144,6 +152,7 @@ export interface FileRoutesById {
   '/+not-found': typeof Char43notFoundRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/sign-in': typeof SignInRoute
+  '/sign-up': typeof SignUpRoute
   '/_authenticated/add-expense': typeof AuthenticatedAddExpenseRoute
   '/_authenticated/buy-premium': typeof AuthenticatedBuyPremiumRoute
   '/_authenticated/statistics': typeof AuthenticatedStatisticsRoute
@@ -163,6 +172,7 @@ export interface FileRouteTypes {
     | '/+not-found'
     | '/'
     | '/sign-in'
+    | '/sign-up'
     | '/add-expense'
     | '/buy-premium'
     | '/statistics'
@@ -178,6 +188,7 @@ export interface FileRouteTypes {
   to:
     | '/+not-found'
     | '/sign-in'
+    | '/sign-up'
     | '/add-expense'
     | '/buy-premium'
     | '/statistics'
@@ -195,6 +206,7 @@ export interface FileRouteTypes {
     | '/+not-found'
     | '/_authenticated'
     | '/sign-in'
+    | '/sign-up'
     | '/_authenticated/add-expense'
     | '/_authenticated/buy-premium'
     | '/_authenticated/statistics'
@@ -213,10 +225,18 @@ export interface RootRouteChildren {
   Char43notFoundRoute: typeof Char43notFoundRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   SignInRoute: typeof SignInRoute
+  SignUpRoute: typeof SignUpRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sign-up': {
+      id: '/sign-up'
+      path: '/sign-up'
+      fullPath: '/sign-up'
+      preLoaderRoute: typeof SignUpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sign-in': {
       id: '/sign-in'
       path: '/sign-in'
@@ -363,6 +383,7 @@ const rootRouteChildren: RootRouteChildren = {
   Char43notFoundRoute: Char43notFoundRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   SignInRoute: SignInRoute,
+  SignUpRoute: SignUpRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

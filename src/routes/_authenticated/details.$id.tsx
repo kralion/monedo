@@ -14,10 +14,9 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { expensesIdentifiers } from "@/constants/ExpensesIdentifiers";
-import { supabase } from "@/lib/supabase";
 import { useBudgetStore } from "@/stores/budget";
 import { useExpenseStore } from "@/stores/expense";
-import { useUser } from "@clerk/clerk-react";
+import { useNeonUser } from "@/hooks/useNeonUser";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 
@@ -27,7 +26,7 @@ export const Route = createFileRoute("/_authenticated/details/$id")({
 
 function ExpenseDetailsPage() {
   const { id } = Route.useParams();
-  const { user } = useUser();
+  const { user } = useNeonUser();
   const {
     expense,
     getExpenseById,
@@ -47,21 +46,6 @@ function ExpenseDetailsPage() {
 
   useEffect(() => {
     getExpenseById(Number(id));
-    const channel = supabase
-      .channel("realtime-expenses")
-      .on(
-        "postgres_changes",
-        {
-          event: "*",
-          schema: "public",
-          table: "expenses",
-        },
-        () => getExpenseById(Number(id)),
-      )
-      .subscribe();
-    return () => {
-      channel.unsubscribe();
-    };
   }, [id]);
 
   const assetIndentificador =

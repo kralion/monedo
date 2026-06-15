@@ -1,7 +1,9 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
+import { db } from "@/db";
+import { payments } from "@/schema";
+import { eq, desc } from "drizzle-orm";
 
 export interface Payment {
   id: string;
@@ -52,9 +54,9 @@ export const usePaymentStore = create<PaymentState>()(
       addPayment: async (payment) => {
         try {
           set({ isLoading: true });
-          const { error, data } = await supabase
-            .from("payments")
-            .insert({
+          const [data] = await db
+            .insert(payments)
+            .values({
               amount: payment.amount,
               card_last4: payment.card_last4,
               card_type: payment.card_type,
@@ -62,12 +64,13 @@ export const usePaymentStore = create<PaymentState>()(
               plan: payment.plan,
               user_id: payment.user_id,
             })
-            .select()
-            .single();
+            .returning();
 
-          if (error) throw error;
+          if (!data) throw new Error("No data returned");
 
-          set((state) => ({ payments: [...state.payments, data] }));
+          set((state) => ({
+            payments: [...state.payments, data as unknown as Payment],
+          }));
           set({ isPayed: true });
 
           toast.success("Ahora eres premium !", {
@@ -84,15 +87,13 @@ export const usePaymentStore = create<PaymentState>()(
       getPayments: async (userId) => {
         try {
           set({ isLoading: true });
-          const { data, error } = await supabase
-            .from("payments")
-            .select("*")
-            .eq("user_id", userId)
-            .order("created_at", { ascending: false });
+          const data = await db
+            .select()
+            .from(payments)
+            .where(eq(payments.user_id, userId))
+            .orderBy(desc(payments.created_at));
 
-          if (error) throw error;
-
-          set({ payments: data || [] });
+          set({ payments: (data as unknown as Payment[]) || [] });
         } catch (error) {
           console.error("Error fetching payments:", error);
           toast.error("Error al obtener los pagos");
@@ -103,15 +104,12 @@ export const usePaymentStore = create<PaymentState>()(
 
       getPaymentById: async (id) => {
         try {
-          const { data, error } = await supabase
-            .from("payments")
-            .select("*")
-            .eq("id", id)
-            .single();
+          const [data] = await db
+            .select()
+            .from(payments)
+            .where(eq(payments.id, id));
 
-          if (error) throw error;
-
-          return data;
+          return (data as unknown as Payment) ?? null;
         } catch (error) {
           console.error("Error fetching payment:", error);
           toast.error("Error al obtener el pago");
@@ -122,12 +120,16 @@ export const usePaymentStore = create<PaymentState>()(
       updatePayment: async (id, updatedPayment) => {
         try {
           set({ isLoading: true });
-          const { error } = await supabase
-            .from("payments")
-            .update(updatedPayment)
-            .eq("id", id);
-
-          if (error) throw error;
+          await db
+            .update(payments)
+            .set({
+              ...(updatedPayment.amount !== undefined && { amount: updatedPayment.amount }),
+              ...(updatedPayment.card_last4 !== undefined && { card_last4: updatedPayment.card_last4 }),
+              ...(updatedPayment.card_type !== undefined && { card_type: updatedPayment.card_type }),
+              ...(updatedPayment.status !== undefined && { status: updatedPayment.status }),
+              ...(updatedPayment.plan !== undefined && { plan: updatedPayment.plan }),
+            })
+            .where(eq(payments.id, id));
 
           set((state) => ({
             payments: state.payments.map((payment) =>
@@ -147,12 +149,7 @@ export const usePaymentStore = create<PaymentState>()(
       deletePayment: async (id) => {
         try {
           set({ isLoading: true });
-          const { error } = await supabase
-            .from("payments")
-            .delete()
-            .eq("id", id);
-
-          if (error) throw error;
+          await db.delete(payments).where(eq(payments.id, id));
 
           set((state) => ({
             payments: state.payments.filter((payment) => payment.id !== id),
