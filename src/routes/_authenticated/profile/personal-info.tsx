@@ -1,11 +1,12 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useUser } from "@clerk/clerk-react";
+import { useNeonUser } from "@/hooks/useNeonUser";
+
 export const Route = createFileRoute("/_authenticated/profile/personal-info")({
   component: PersonalInfoPage,
 });
 
 function PersonalInfoPage() {
-  const { user } = useUser();
+  const { user } = useNeonUser();
 
   return (
     <div className="max-w-xl mx-auto p-4 pb-28">
@@ -15,7 +16,7 @@ function PersonalInfoPage() {
           {user?.firstName} {user?.lastName}
         </p>
         <p className="text-muted-foreground">
-          {user?.emailAddresses?.[0]?.emailAddress}
+          {user?.email}
         </p>
       </div>
     </div>

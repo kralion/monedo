@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, useNavigate } from "@tanstack/react-router";
-import { useAuth } from "@clerk/clerk-react";
 import { useEffect } from "react";
+import { authClient } from "@/auth";
 import { Sidebar } from "@/components/layout/sidebar";
 import { usePaymentStore } from "@/stores/payment";
 import confetti from "canvas-confetti";
@@ -10,15 +10,16 @@ export const Route = createFileRoute("/_authenticated")({
 });
 
 function AuthenticatedLayout() {
-  const { isLoaded, isSignedIn } = useAuth();
+  const { data, isPending } = authClient.useSession();
   const { isPayed, setIsPayed } = usePaymentStore();
   const navigate = useNavigate();
+  const isSignedIn = !!data;
 
   useEffect(() => {
-    if (isLoaded && !isSignedIn) {
+    if (!isPending && !isSignedIn) {
       navigate({ to: "/sign-in" });
     }
-  }, [isLoaded, isSignedIn, navigate]);
+  }, [isPending, isSignedIn, navigate]);
 
   useEffect(() => {
     if (isPayed) {
@@ -28,7 +29,7 @@ function AuthenticatedLayout() {
     }
   }, [isPayed, setIsPayed]);
 
-  if (!isLoaded) {
+  if (isPending) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />

@@ -6,12 +6,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
-export const Route = createFileRoute("/sign-in")({
-  component: SignInPage,
+export const Route = createFileRoute("/sign-up")({
+  component: SignUpPage,
 });
 
-function SignInPage() {
+function SignUpPage() {
   const navigate = useNavigate();
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,25 +22,29 @@ function SignInPage() {
     setLoading(true);
 
     try {
-      const { error } = await authClient.signIn.email({
+      const { error } = await authClient.signUp.email({
+        name,
         email,
         password,
       });
 
       if (error) {
-        toast.error(error.message ?? "Credenciales inválidas");
+        toast.error(error.message ?? "Error al crear cuenta");
         return;
       }
 
-      navigate({ to: "/" });
+      toast.success("Cuenta creada", {
+        description: "Inicia sesión para continuar",
+      });
+      navigate({ to: "/sign-in" });
     } catch {
-      toast.error("Error al iniciar sesión");
+      toast.error("Error al crear cuenta");
     } finally {
       setLoading(false);
     }
   }
 
-  async function handleGoogleSignIn() {
+  async function handleGoogleSignUp() {
     await authClient.signIn.social({
       provider: "google",
       callbackURL: "/",
@@ -58,12 +63,22 @@ function SignInPage() {
               (e.target as HTMLImageElement).style.display = "none";
             }}
           />
-          <h1 className="text-3xl font-bold text-center">Bienvenido a Monedo</h1>
+          <h1 className="text-3xl font-bold text-center">Crea tu cuenta</h1>
           <p className="text-center text-muted-foreground">
-            Inicia sesión para continuar
+            Empieza a controlar tus gastos
           </p>
         </div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <Label htmlFor="name">Nombre</Label>
+            <Input
+              id="name"
+              placeholder="Tu nombre"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
           <div className="flex flex-col gap-2">
             <Label htmlFor="email">Correo</Label>
             <Input
@@ -90,7 +105,7 @@ function SignInPage() {
             {loading ? (
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
             ) : (
-              "Iniciar Sesión"
+              "Crear Cuenta"
             )}
           </Button>
         </form>
@@ -108,14 +123,14 @@ function SignInPage() {
           variant="outline"
           size="lg"
           className="w-full"
-          onClick={handleGoogleSignIn}
+          onClick={handleGoogleSignUp}
         >
-          Continuar con Google
+          Registrarse con Google
         </Button>
         <p className="text-center text-sm text-muted-foreground mt-6">
-          ¿No tienes cuenta?{" "}
-          <Link to="/sign-up" className="text-primary hover:underline">
-            Regístrate
+          ¿Ya tienes cuenta?{" "}
+          <Link to="/sign-in" className="text-primary hover:underline">
+            Inicia sesión
           </Link>
         </p>
       </div>

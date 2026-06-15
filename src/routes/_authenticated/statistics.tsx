@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useUser } from "@clerk/clerk-react";
+import { useNeonUser } from "@/hooks/useNeonUser";
 import { useEffect, useState } from "react";
 import Chart from "@/components/statistics/chart";
 import PieChart from "@/components/statistics/pie-chart";
@@ -23,7 +23,7 @@ const queryFilters = [
 ];
 
 function StatisticsPage() {
-  const { user } = useUser();
+  const { user } = useNeonUser();
   const [expenses, setExpenses] = useState<IExpense[]>([]);
   const [chartType, _setChartType] = useState<"pie" | "line">("pie");
   const [timelineQuery, setTimelineQuery] = useState(getDateRange("diario"));

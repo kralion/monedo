@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useUser } from "@clerk/clerk-react";
+import { useNeonUser } from "@/hooks/useNeonUser";
 import { Loader2 } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -53,7 +53,7 @@ const detectCardType = (number: string): CardType => {
 };
 
 export default function Stripe() {
-  const { user } = useUser();
+  const { user } = useNeonUser();
   const { addPayment, isLoading } = usePaymentStore();
   const [cardType, setCardType] = React.useState<CardType>("unknown");
   const navigate = useNavigate();
@@ -120,12 +120,6 @@ export default function Stripe() {
         status: "success",
         plan: "premium",
         user_id: user.id,
-      });
-
-      await user.update({
-        unsafeMetadata: {
-          plan: "premium",
-        },
       });
 
       reset();

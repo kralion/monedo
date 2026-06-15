@@ -1,7 +1,9 @@
 import { ExpenseStore, IExpense } from "@/interfaces";
 import { toast } from "sonner";
 import { create } from "zustand";
-import { supabase } from "@/lib/supabase";
+import { db } from "@/db";
+import { expenses, categories } from "@/schema";
+import { eq, gte, lte, desc, and } from "drizzle-orm";
 
 const formatExpenseDate = (expense: Partial<IExpense>): string => {
   if (!expense.date) return new Date().toISOString();
@@ -21,19 +23,32 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
     const formattedExpense = { ...expense, date: formatExpenseDate(expense) };
     const tempExpense = { ...formattedExpense, id: timestamp };
 
-    set((state) => ({ expenses: [tempExpense, ...state.expenses], loading: true }));
+    set((state) => ({
+      expenses: [tempExpense, ...state.expenses],
+      loading: true,
+    }));
 
     try {
-      const { data, error } = await supabase
-        .from("expenses")
-        .insert(formattedExpense)
-        .select()
-        .single();
+      const [data] = await db
+        .insert(expenses)
+        .values({
+          amount: formattedExpense.amount,
+          currency: formattedExpense.currency,
+          date: formattedExpense.date,
+          description: formattedExpense.description,
+          id_category: formattedExpense.id_category,
+          number: formattedExpense.number,
+          periodicity: formattedExpense.periodicity,
+          user_id: formattedExpense.user_id,
+        })
+        .returning();
 
-      if (error) throw error;
+      if (!data) throw new Error("No data returned");
 
       set((state) => ({
-        expenses: state.expenses.map((e) => (e.id === timestamp ? data : e)),
+        expenses: state.expenses.map((e) =>
+          e.id === timestamp ? (data as unknown as IExpense) : e,
+        ),
         loading: false,
       }));
 
@@ -55,30 +70,45 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
     const formattedExpense = { ...expense, date: formatExpenseDate(expense) };
 
     set((state) => ({
-      expenses: state.expenses.map((e) => (e.id === expense.id ? formattedExpense : e)),
+      expenses: state.expenses.map((e) =>
+        e.id === expense.id ? formattedExpense : e,
+      ),
       expense: formattedExpense,
       loading: true,
     }));
 
     try {
-      const { data, error } = await supabase
-        .from("expenses")
-        .update(formattedExpense)
-        .eq("id", expense.id)
-        .select()
-        .single();
+      const [data] = await db
+        .update(expenses)
+        .set({
+          amount: formattedExpense.amount,
+          currency: formattedExpense.currency,
+          date: formattedExpense.date,
+          description: formattedExpense.description,
+          id_category: formattedExpense.id_category,
+          number: formattedExpense.number,
+          periodicity: formattedExpense.periodicity,
+        })
+        .where(eq(expenses.id, expense.id))
+        .returning();
 
-      if (error) throw error;
+      if (!data) throw new Error("No data returned");
 
       set((state) => ({
-        expenses: state.expenses.map((e) => (e.id === expense.id ? data : e)),
-        expense: data,
+        expenses: state.expenses.map((e) =>
+          e.id === expense.id ? (data as unknown as IExpense) : e,
+        ),
+        expense: data as unknown as IExpense,
         loading: false,
       }));
 
       await get().getRecentExpenses(expense.user_id);
     } catch (error) {
-      set({ expenses: originalExpenses, expense: originalExpense, loading: false });
+      set({
+        expenses: originalExpenses,
+        expense: originalExpense,
+        loading: false,
+      });
       console.error("Error updating expense:", error);
       toast.error("Ocurrió un error al actualizar el gasto");
     }
@@ -93,12 +123,13 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
       return;
     }
 
-    set((state) => ({ expenses: state.expenses.filter((e) => e.id !== id), loading: true }));
+    set((state) => ({
+      expenses: state.expenses.filter((e) => e.id !== id),
+      loading: true,
+    }));
 
     try {
-      const { error } = await supabase.from("expenses").delete().eq("id", id);
-
-      if (error) throw error;
+      await db.delete(expenses).where(eq(expenses.id, id));
 
       set({ loading: false });
       toast.success("Gasto eliminado exitosamente");
@@ -113,16 +144,27 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
   getExpenseById: async (id: number) => {
     set({ loading: true });
     try {
-      const { data, error } = await supabase
-        .from("expenses")
-        .select("*, categories:id_category(*)")
-        .eq("id", id)
-        .single();
+      const [data] = await db
+        .select({
+          id: expenses.id,
+          amount: expenses.amount,
+          currency: expenses.currency,
+          date: expenses.date,
+          description: expenses.description,
+          id_category: expenses.id_category,
+          number: expenses.number,
+          periodicity: expenses.periodicity,
+          user_id: expenses.user_id,
+          categories: categories,
+        })
+        .from(expenses)
+        .leftJoin(categories, eq(expenses.id_category, categories.id))
+        .where(eq(expenses.id, id));
 
-      if (error) throw error;
+      if (!data) throw new Error("Expense not found");
 
-      set({ expense: data, loading: false });
-      return data;
+      set({ expense: data as unknown as IExpense, loading: false });
+      return data as unknown as IExpense;
     } catch (error) {
       set({ loading: false });
       console.error("Error fetching expense:", error);
@@ -134,15 +176,25 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
   getExpensesByCategory: async (categoryId: number) => {
     set({ loading: true });
     try {
-      const { data, error } = await supabase
-        .from("expenses")
-        .select("*, categories:id_category(*)")
-        .eq("id_category", categoryId);
-
-      if (error) throw error;
+      const data = await db
+        .select({
+          id: expenses.id,
+          amount: expenses.amount,
+          currency: expenses.currency,
+          date: expenses.date,
+          description: expenses.description,
+          id_category: expenses.id_category,
+          number: expenses.number,
+          periodicity: expenses.periodicity,
+          user_id: expenses.user_id,
+          categories: categories,
+        })
+        .from(expenses)
+        .leftJoin(categories, eq(expenses.id_category, categories.id))
+        .where(eq(expenses.id_category, categoryId));
 
       set({ loading: false });
-      return data;
+      return data as unknown as IExpense[];
     } catch (error) {
       set({ loading: false });
       console.error("Error fetching expenses by category:", error);
@@ -153,16 +205,26 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
 
   getRecentExpenses: async (userId: string) => {
     try {
-      const { data, error } = await supabase
-        .from("expenses")
-        .select("*, categories:id_category(*)")
-        .eq("user_id", userId)
-        .order("date", { ascending: false })
+      const data = await db
+        .select({
+          id: expenses.id,
+          amount: expenses.amount,
+          currency: expenses.currency,
+          date: expenses.date,
+          description: expenses.description,
+          id_category: expenses.id_category,
+          number: expenses.number,
+          periodicity: expenses.periodicity,
+          user_id: expenses.user_id,
+          categories: categories,
+        })
+        .from(expenses)
+        .leftJoin(categories, eq(expenses.id_category, categories.id))
+        .where(eq(expenses.user_id, userId))
+        .orderBy(desc(expenses.date))
         .limit(20);
 
-      if (error) throw error;
-
-      const expensesData = data ?? [];
+      const expensesData = (data as unknown as IExpense[]) ?? [];
       set({ expenses: expensesData });
       return expensesData;
     } catch (error) {
@@ -175,17 +237,31 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
   getExpensesByPeriodicity: async ({ startTimeOfQuery, endTimeOfQuery }) => {
     set({ loading: true });
     try {
-      const { data, error } = await supabase
-        .from("expenses")
-        .select("*, categories:id_category(*)")
-        .gte("date", startTimeOfQuery.toISOString())
-        .lte("date", endTimeOfQuery.toISOString())
-        .order("amount", { ascending: false })
+      const data = await db
+        .select({
+          id: expenses.id,
+          amount: expenses.amount,
+          currency: expenses.currency,
+          date: expenses.date,
+          description: expenses.description,
+          id_category: expenses.id_category,
+          number: expenses.number,
+          periodicity: expenses.periodicity,
+          user_id: expenses.user_id,
+          categories: categories,
+        })
+        .from(expenses)
+        .leftJoin(categories, eq(expenses.id_category, categories.id))
+        .where(
+          and(
+            gte(expenses.date, startTimeOfQuery.toISOString()),
+            lte(expenses.date, endTimeOfQuery.toISOString()),
+          ),
+        )
+        .orderBy(desc(expenses.amount))
         .limit(15);
 
-      if (error) throw error;
-
-      const expensesData = data ?? [];
+      const expensesData = (data as unknown as IExpense[]) ?? [];
       set({ weeklyExpenses: expensesData, loading: false });
       return expensesData;
     } catch (error) {
@@ -197,12 +273,10 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
 
   sumOfAllOfExpenses: async (userId: string) => {
     try {
-      const { data, error } = await supabase
-        .from("expenses")
-        .select("amount")
-        .eq("user_id", userId);
-
-      if (error) throw error;
+      const data = await db
+        .select({ amount: expenses.amount })
+        .from(expenses)
+        .where(eq(expenses.user_id, userId));
 
       const total =
         data?.reduce((sum, expense) => sum + Number(expense.amount), 0) ?? 0;

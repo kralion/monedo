@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowDownCircle, ArrowUpCircle } from "lucide-react";
-import { useUser } from "@clerk/clerk-react";
+import { useNeonUser } from "@/hooks/useNeonUser";
 import { useUserPlan } from "@/hooks/useUserPlan";
 import { useBudgetStore } from "@/stores/budget";
 import { useExpenseStore } from "@/stores/expense";
@@ -9,7 +9,7 @@ import { useEffect } from "react";
 
 export default function Card() {
   const { planName, isPremium } = useUserPlan();
-  const { user } = useUser();
+  const { user } = useNeonUser();
   const { sumOfAllOfExpenses, totalExpenses } = useExpenseStore();
   const { totalBudget, isOutOfBudget, getTotalBudget } = useBudgetStore();
 

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useUser } from "@clerk/clerk-react";
+import { useNeonUser } from "@/hooks/useNeonUser";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
@@ -32,7 +32,7 @@ function AddExpensePage() {
   const [openCollapsible, setOpenCollapsible] = useState(false);
   const { isOutOfBudget, checkBudget } = useBudgetStore();
   const [category, setCategory] = useState<ICategory | undefined>();
-  const { user } = useUser();
+  const { user } = useNeonUser();
   const navigate = useNavigate();
 
   const { control, handleSubmit, reset, setValue } = useForm<IExpense>();

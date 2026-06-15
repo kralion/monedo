@@ -3,8 +3,8 @@
 ## 0. Project Stack
 
 - **Frontend:** React, Vite, Tanstack Start
-- **Backend/DB:** Supabase
-- **Auth:** Supabase Auth
+- **Backend/DB:** Neon with Drizzle ORM
+- **Auth:** Neon Auth
 - **Hosting:** Netlify
 - **UI:** Shadcn UI
 
@@ -20,6 +20,7 @@ Direct colleague tone. No fluff, no AI empathy, no filler.
 ## 2. Planning Protocol
 
 Before any non-trivial task:
+
 - State the plan: files to touch, approach, and any assumptions.
 - Never assume file structure, existing logic, or types — ask first.
 - Wait for explicit confirmation before starting implementation.
@@ -60,6 +61,7 @@ Always use **Bun**. Never use `npm` or `yarn`.
 ## 7. Pattern Replication
 
 For medium or complex tasks (new functionality, non-trivial integrations, multi-file changes):
+
 - Explore the codebase first and identify how similar problems are already solved.
 - Match existing patterns for: fetching, routing, state management, backend interaction, file structure, and component composition.
 - Never invent a new pattern if an existing one already covers the case.
@@ -88,7 +90,7 @@ All features live under `features/`. Each feature maps to a navigation item or a
 features/
   <feature-name>/
     api/
-      types.ts      # Re-exports or extends types from external generated sources (Supabase, Drizzle, Convex, etc.)
+      types.ts      # Re-exports or extends types from external generated sources (Drizzle, etc.)
       db.ts         # Direct backend calls (DB queries, server functions, API routes)
       services.ts   # Data transformation — raw backend data shaped for frontend consumption
       queries.ts    # TanStack Query hooks (or equivalent) — what components actually consume
@@ -111,9 +113,9 @@ features/
 
 This structure is stack-agnostic. Only the internals of `api/` change:
 
-| File | Supabase | Neon + Drizzle | Convex |
-|------|----------|----------------|--------|
-| `types.ts` | Re-exports from generated Supabase types | Re-exports Drizzle `$inferSelect`/`$inferInsert` | Re-exports Convex generated types + UI-only types |
-| `db.ts` | Supabase client calls | Drizzle queries or server actions | Convex functions (may be minimal) |
-| `services.ts` | Data transformers | Data transformers | Data transformers (if needed) |
-| `queries.ts` | TanStack Query hooks | TanStack Query hooks | Convex `useQuery`/`useMutation` or wrapped hooks |
+| File | Neon + Drizzle |
+|------|----------------|
+| `types.ts` | Re-exports Drizzle `$inferSelect`/`$inferInsert` |
+| `db.ts` | Drizzle queries or server actions |
+| `services.ts` | Data transformers |
+| `queries.ts` | TanStack Query hooks |
