@@ -5,7 +5,7 @@
 - **Frontend:** React, Vite
 - **Backend/DB:** Neon with Drizzle ORM
 - **Auth:** Neon Auth
-- **Hosting:** Vercel
+- **Hosting:** Netlify
 - **Others:** Shadcn UI, Tanstack query, Tanstack router, Tanstack Table
 
 ---
