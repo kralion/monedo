@@ -2,11 +2,11 @@
 
 ## 0. Project Stack
 
-- **Frontend:** React, Vite
+- **Frontend:** React, Vite, Tanstack Start
 - **Backend/DB:** Neon with Drizzle ORM
 - **Auth:** Neon Auth
 - **Hosting:** Netlify
-- **Others:** Shadcn UI, Tanstack query, Tanstack router, Tanstack Table
+- **UI:** Shadcn UI
 
 ---
 
@@ -90,7 +90,7 @@ All features live under `features/`. Each feature maps to a navigation item or a
 features/
   <feature-name>/
     api/
-      types.ts      # Re-exports or extends types from external generated sources (Supabase, Drizzle, Convex, etc.)
+      types.ts      # Re-exports or extends types from external generated sources (Drizzle, etc.)
       db.ts         # Direct backend calls (DB queries, server functions, API routes)
       services.ts   # Data transformation — raw backend data shaped for frontend consumption
       queries.ts    # TanStack Query hooks (or equivalent) — what components actually consume
@@ -111,11 +111,11 @@ features/
 
 ### Stack Adaptations
 
-This structure if for the `feature/api/` change:
+This structure is stack-agnostic. Only the internals of `api/` change:
 
-| File          | Neon + Drizzle                                   |
-| ------------- | ------------------------------------------------ |
-| `types.ts`    | Re-exports Drizzle `$inferSelect`/`$inferInsert` |
-| `db.ts`       | Drizzle queries or server actions                |
-| `services.ts` | Data transformers                                |
-| `queries.ts`  | TanStack Query hooks                             |
+| File | Neon + Drizzle |
+|------|----------------|
+| `types.ts` | Re-exports Drizzle `$inferSelect`/`$inferInsert` |
+| `db.ts` | Drizzle queries or server actions |
+| `services.ts` | Data transformers |
+| `queries.ts` | TanStack Query hooks |
