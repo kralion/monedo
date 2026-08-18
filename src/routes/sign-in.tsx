@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { authClient } from "@/auth";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,6 @@ export const Route = createFileRoute("/sign-in")({
 });
 
 function SignInPage() {
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -27,12 +26,15 @@ function SignInPage() {
       });
 
       if (error) {
+        console.error("[SignIn] Error:", error);
         toast.error(error.message ?? "Credenciales inválidas");
         return;
       }
 
-      navigate({ to: "/" });
-    } catch {
+      console.log("[SignIn] Sign-in successful, navigating to /" , { email });
+      window.location.href = "/";
+    } catch (err) {
+      console.error("[SignIn] Unexpected error:", err);
       toast.error("Error al iniciar sesión");
     } finally {
       setLoading(false);

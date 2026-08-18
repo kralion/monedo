@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useNeonUser } from "@/hooks/useNeonUser";
 import { useState } from "react";
 import {
@@ -7,7 +7,10 @@ import {
   UserSquare2,
   Settings,
   CheckCircle2,
+  LogOut,
 } from "lucide-react";
+import { authClient } from "@/auth";
+import { Button } from "@/components/ui/button";
 import { BuyPremiumModal } from "@/components/buy-premium";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -23,6 +26,12 @@ function ProfilePage() {
   const { user } = useNeonUser();
   const { planName, isPremium } = useUserPlan();
   const [buyPremiumOpen, setBuyPremiumOpen] = useState(false);
+  const navigate = useNavigate();
+
+  async function handleSignOut() {
+    await authClient.signOut();
+    navigate({ to: "/sign-in" });
+  }
 
   return (
     <div className="bg-white dark:bg-zinc-900 flex-1 max-w-4xl mx-auto overflow-y-auto pb-28 p-4">
@@ -113,6 +122,14 @@ function ProfilePage() {
       <p className="mx-10 text-center text-sm text-muted-foreground opacity-40">
         Versión 1.0.0
       </p>
+      <Button
+        variant="outline"
+        className="w-full mt-4"
+        onClick={handleSignOut}
+      >
+        <LogOut className="w-4 h-4 mr-2" />
+        Cerrar Sesión
+      </Button>
     </div>
   );
 }
