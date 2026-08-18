@@ -173,6 +173,17 @@ function AddExpensePage() {
           </span>
         )}
       </Button>
+      <Button
+        variant="destructive"
+        size="lg"
+        className="rounded-full"
+        onClick={() => {
+          reset();
+          navigate({ to: "/" });
+        }}
+      >
+        Cancelar
+      </Button>
     </div>
   );
 }

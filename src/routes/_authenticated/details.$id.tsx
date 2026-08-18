@@ -19,6 +19,7 @@ import { useExpenseStore } from "@/stores/expense";
 import { useNeonUser } from "@/hooks/useNeonUser";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
+import { ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/details/$id")({
   component: ExpenseDetailsPage,
@@ -71,16 +72,24 @@ function ExpenseDetailsPage() {
   }
 
   return (
-    <div className="bg-white dark:bg-zinc-900 max-w-xl mx-auto pt-16 pb-28">
+    <div className="bg-white dark:bg-zinc-900 max-w-xl mx-auto pb-20">
       <div className="flex flex-col gap-8 p-4">
+        <Button
+          variant="link"
+          className="w-fit pl-0"
+          onClick={() => navigate({ to: "/" })}
+        >
+          <ArrowLeft />
+          Volver atras
+        </Button>
         <div className="flex flex-col gap-4 items-center">
           <img
             src={assetIndentificador}
             alt=""
-            className="w-[150px] h-[150px] bg-zinc-100 dark:bg-zinc-800 rounded-full p-8 object-contain"
+            className="size-36 bg-zinc-100 dark:bg-zinc-800 rounded-full p-6 object-contain"
           />
           <p className="text-5xl font-bold tracking-tighter">
-            S/ {expense?.amount}
+            S/ {expense?.amount.toFixed(2)}
           </p>
           <p className="text-lg text-muted-foreground">{expense.description}</p>
         </div>

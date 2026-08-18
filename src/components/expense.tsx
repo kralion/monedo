@@ -15,28 +15,28 @@ export function Expense({ expense }: { expense: IExpense }) {
     <Link
       to="/details/$id"
       params={{ id: String(expense.id) }}
-      className="flex flex-row gap-2 items-center p-2 rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
+      className="flex flex-row gap-2 items-center  rounded-lg hover:bg-zinc-50 dark:hover:bg-zinc-800 transition-colors"
     >
       <img
         src={assetIndentificador}
         alt=""
-        className="w-12 h-12 md:w-14 md:h-14 bg-zinc-100 dark:bg-zinc-800 rounded-full p-2 object-contain"
+        className="size-10 bg-zinc-200 dark:bg-zinc-800 rounded-full p-1.5 object-contain"
       />
-      <div className="flex flex-row justify-between items-center flex-1 py-4">
-        <div className="flex flex-col gap-1">
-          <h3 className="text-xl font-semibold dark:text-white">
+      <div className="flex flex-row justify-between items-center flex-1 py-2">
+        <div className="flex flex-col">
+          <h3 className="text-lg font-semibold dark:text-white">
             {expense.categories?.label}
           </h3>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {expense.description.length > 25
               ? `${expense.description.slice(0, 25)}...`
               : expense.description}
           </p>
         </div>
         <div className="flex flex-row items-center gap-4">
-          <div className="flex flex-col items-end gap-1">
-            <p className="text-2xl font-semibold text-red-500 dark:text-red-400">
-              - S/{expense.amount}
+          <div className="flex flex-col items-end ">
+            <p className="text-xl font-semibold text-red-500 dark:text-red-400">
+              - S/{expense.amount.toFixed(2)}
             </p>
             <p className="text-xs text-muted-foreground">
               {formatDate(expense?.date as Date)}

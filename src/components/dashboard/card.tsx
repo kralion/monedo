@@ -1,4 +1,3 @@
-import { Link } from "@tanstack/react-router";
 import { ArrowDownCircle, ArrowUpCircle } from "lucide-react";
 import { useNeonUser } from "@/hooks/useNeonUser";
 import { useUserPlan } from "@/hooks/useUserPlan";
@@ -30,14 +29,14 @@ export default function Card() {
 
   const CardContent = (
     <div
-      className="relative w-full max-w-md mx-auto my-6 h-[200px] md:h-[220px] rounded-2xl p-4 flex flex-col justify-between shadow-lg border border-black/10"
+      className="relative w-full max-w-md mx-auto my-6 h-[200px] md:h-[220px] rounded-2xl p-4 flex flex-col justify-between  border border-black/10 shadow-xl"
       style={{ background: gradient }}
     >
       <div className="flex flex-row justify-between">
         <div className="flex flex-col gap-2">
-          <h2 className="text-xl text-white md:text-2xl">Balance</h2>
-          <p className="text-4xl font-bold text-white md:text-5xl">
-            S/ {balance}
+          <h2 className="text-xl text-white">Balance</h2>
+          <p className="text-4xl font-bold text-white">
+            S/. {balance.toFixed(2)}
           </p>
         </div>
         {!isPremium && (
@@ -50,24 +49,20 @@ export default function Card() {
         <div className="flex flex-col gap-2">
           <div className="flex flex-row gap-1 items-center">
             <ArrowDownCircle className="text-white w-4 h-4" />
-            <span className="text-white md:text-lg">Gastos</span>
+            <span className="text-white ">Gastos</span>
           </div>
-          <p className="text-xl text-white md:text-2xl">S/ {totalExpenses}</p>
+          <p className="text-xl text-white ">S/ {totalExpenses.toFixed(2)}</p>
         </div>
         <div className="flex flex-col gap-2 items-end">
           <div className="flex flex-row gap-1 items-center">
             <ArrowUpCircle className="text-white w-4 h-4" />
-            <span className="text-white md:text-lg">Billetera</span>
+            <span className="text-white ">Billetera</span>
           </div>
-          <p className="text-xl text-white md:text-2xl">S/ {totalBudget}</p>
+          <p className="text-xl text-white">S/ {totalBudget.toFixed(2)}</p>
         </div>
       </div>
     </div>
   );
 
-  return isPremium ? (
-    <div className="cursor-default">{CardContent}</div>
-  ) : (
-    <Link to="/buy-premium">{CardContent}</Link>
-  );
+  return <div className="cursor-default">{CardContent}</div>;
 }

@@ -10,8 +10,8 @@ const Tabs = [
     href: "/statistics",
     icon: BarChart3,
   },
-  { name: "profile", title: "Perfil", href: "/profile", icon: User },
   { name: "wallet", title: "Billetera", href: "/wallet", icon: Wallet },
+  { name: "profile", title: "Perfil", href: "/profile", icon: User },
 ];
 
 export function Sidebar() {
@@ -23,9 +23,10 @@ export function Sidebar() {
       {/* Desktop sidebar - hidden on mobile */}
       <aside className="hidden md:flex w-[260px] shrink-0 border-r border-zinc-200 dark:border-zinc-800 sticky top-0 h-screen flex-col">
         <div className="p-4 flex items-center gap-2">
-          <div className="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center">
-            <span className="text-xl font-bold text-primary">M</span>
-          </div>
+          <img
+            src="https://img.icons8.com/?size=100&id=FDN2ARbuPRR2&format=png&color=000000"
+            className="size-12"
+          />
           <span className="text-xl font-bold">Monedo</span>
         </div>
         <nav className="flex flex-col gap-1 p-2">
@@ -67,34 +68,11 @@ export function Sidebar() {
         </nav>
       </aside>
 
-      {/* Mobile bottom nav - visible only on mobile */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 h-16 border-t border-zinc-200 dark:border-zinc-800 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-xl flex items-center justify-around z-50">
-        {Tabs.map((tab) => {
-          const isActive =
-            pathname === tab.href ||
-            (tab.href !== "/" && pathname.startsWith(tab.href));
-          const Icon = tab.icon;
-          return (
-            <Link
-              key={tab.name}
-              to={tab.href}
-              className={cn(
-                "flex flex-col items-center justify-center gap-1 py-2 px-4",
-                isActive ? "text-primary" : "text-zinc-500",
-              )}
-            >
-              <Icon className="w-6 h-6" />
-              <span className="text-xs">{tab.title}</span>
-            </Link>
-          );
-        })}
-      </nav>
-
       {/* FAB - Add expense */}
       <Link
         to="/add-expense"
         search={{ id: undefined }}
-        className="fixed right-4 bottom-28 md:right-8 md:bottom-32 w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-lg hover:opacity-90 transition-opacity z-40"
+        className="fixed right-4 bottom-20 md:right-8 md:bottom-32 w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-lg hover:opacity-90 transition-opacity z-40"
       >
         <Plus className="w-8 h-8 text-white" />
       </Link>

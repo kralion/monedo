@@ -6,6 +6,9 @@ import { Expense } from "@/components/expense";
 import { groupExpensesByDate } from "@/helpers/groupExpenseByDate";
 import { useBudgetStore } from "@/stores/budget";
 import { useExpenseStore } from "@/stores/expense";
+import { Lock } from "lucide-react";
+import { BuyPremiumModal } from "@/components/buy-premium";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authenticated/")({
   component: DashboardPage,
@@ -16,6 +19,7 @@ function DashboardPage() {
   const { checkBudget } = useBudgetStore();
   const { getRecentExpenses, expenses } = useExpenseStore();
   const [showAll, setShowAll] = useState(false);
+  const [buyPremiumOpen, setBuyPremiumOpen] = useState(false);
 
   useEffect(() => {
     if (user?.id) {
@@ -42,25 +46,24 @@ function DashboardPage() {
       {showAll ? (
         <div className="overflow-y-auto pb-14">
           <div className="flex flex-col gap-4">
-            <div className="flex flex-row justify-end items-end px-4 md:px-6">
-              <button
+            <div className="flex flex-row justify-end items-end p-4 ">
+              <Button
                 onClick={() => setShowAll(false)}
-                className="text-muted-foreground px-1.5 opacity-50"
+                variant="ghost"
+                className="text-muted-foreground "
               >
                 Ver Menos
-              </button>
+              </Button>
             </div>
             {Object.entries(groupExpensesByDate(parsedExpenses)).map(
               ([dateLabel, dateExpenses]) => (
-                <div key={dateLabel}>
-                  <h2 className="px-4 text-lg text-muted-foreground md:px-6 md:text-xl">
-                    {dateLabel}
-                  </h2>
+                <div key={dateLabel} className="px-4 space-y-2">
+                  <h2 className="text-muted-foreground">{dateLabel}</h2>
                   <div className="space-y-0">
                     {dateExpenses.map((expense) => (
                       <div
                         key={expense.id}
-                        className="border-b border-zinc-200 dark:border-zinc-700 ml-[60px]"
+                        className="border-b border-zinc-200 dark:border-zinc-700 "
                       >
                         <Expense expense={expense} />
                       </div>
@@ -73,19 +76,41 @@ function DashboardPage() {
         </div>
       ) : (
         <div className="overflow-y-auto pb-28 px-4 md:px-6">
+          <div className="flex flex-row justify-between items-center py-4">
+            <div className="flex flex-col gap-1">
+              <h1 className="text-xl font-bold dark:text-white">
+                Hola {user?.firstName ?? ""} 👋🏻
+              </h1>
+              <p className="text-xs text-muted-foreground">
+                {new Date().toLocaleDateString("es-PE", {
+                  weekday: "long",
+                  day: "numeric",
+                  month: "long",
+                })}
+              </p>
+            </div>
+            <Button onClick={() => setBuyPremiumOpen(true)} variant="secondary">
+              <Lock />
+            </Button>
+          </div>
           <div className="rounded-b-3xl pb-10 md:pb-12">
             <Card />
           </div>
+          <BuyPremiumModal
+            open={buyPremiumOpen}
+            onOpenChange={setBuyPremiumOpen}
+          />
           <div className="flex flex-row justify-between items-center w-full md:mt-6">
             <h2 className="text-xl font-bold dark:text-white md:text-2xl">
               Historial de Gastos
             </h2>
-            <button
+            <Button
               onClick={() => setShowAll(true)}
-              className="text-muted-foreground dark:text-secondary px-1.5 opacity-50"
+              variant="ghost"
+              className="text-muted-foreground"
             >
               Ver más
-            </button>
+            </Button>
           </div>
           <div className="space-y-0 mt-4">
             {parsedExpenses.length === 0 ? (
@@ -101,7 +126,7 @@ function DashboardPage() {
               parsedExpenses.map((expense) => (
                 <div
                   key={expense.id}
-                  className="border-b border-zinc-200 dark:border-zinc-700 ml-[60px]"
+                  className="border-b border-zinc-200 dark:border-zinc-700 "
                 >
                   <Expense expense={expense} />
                 </div>

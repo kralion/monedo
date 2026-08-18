@@ -1,7 +1,5 @@
-import Stripe from "@/components/payment/stripe";
 import Yape from "@/components/payment/yape";
 import { Button } from "@/components/ui/button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 
@@ -37,7 +35,6 @@ const carouselData = [
 ];
 
 function BuyPremiumPage() {
-  const [value, setValue] = useState("yape");
   const [currentIndex, setCurrentIndex] = useState(0);
 
   return (
@@ -72,22 +69,7 @@ function BuyPremiumPage() {
 
         <h2 className="text-2xl font-bold">Método de Pago</h2>
 
-        <Tabs value={value} onValueChange={setValue} className="w-full">
-          <TabsList className="flex-row w-full rounded-xl">
-            <TabsTrigger value="yape" className="flex-1 rounded-lg">
-              Yape
-            </TabsTrigger>
-            <TabsTrigger value="card" className="flex-1 rounded-lg">
-              Tarjeta
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="yape">
-            <Yape />
-          </TabsContent>
-          <TabsContent value="card">
-            <Stripe />
-          </TabsContent>
-        </Tabs>
+        <Yape />
 
         <Link to="/">
           <Button variant="ghost" size="sm" className="mt-4">
