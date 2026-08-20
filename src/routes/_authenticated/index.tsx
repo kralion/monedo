@@ -2,29 +2,55 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useNeonUser } from "@/hooks/useNeonUser";
 import { useEffect, useState } from "react";
 import Card from "@/components/dashboard/card";
-import { Expense } from "@/components/expense";
-import { groupExpensesByDate } from "@/helpers/groupExpenseByDate";
+import { Transaction } from "@/components/transaction";
+import { Budget } from "@/components/wallet/budget";
+import {
+  groupTransactionsByDate,
+  Transaction as TransactionItem,
+  transactionDate,
+} from "@/helpers/groupTransactionsByDate";
 import { useBudgetStore } from "@/stores/budget";
 import { useExpenseStore } from "@/stores/expense";
 import { Lock } from "lucide-react";
 import { BuyPremiumModal } from "@/components/buy-premium";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export const Route = createFileRoute("/_authenticated/")({
   component: DashboardPage,
 });
 
+function TransactionRow({ t }: { t: TransactionItem }) {
+  return (
+    <div className="border-b border-zinc-200 dark:border-zinc-700">
+      {t.kind === "budget" ? (
+        <Budget budget={t.budget} />
+      ) : (
+        <Transaction expense={t.expense} />
+      )}
+    </div>
+  );
+}
+
 function DashboardPage() {
   const { user } = useNeonUser();
-  const { checkBudget } = useBudgetStore();
+  const { checkBudget, getBudgets, budgets } = useBudgetStore();
   const { getRecentExpenses, expenses } = useExpenseStore();
   const [showAll, setShowAll] = useState(false);
   const [buyPremiumOpen, setBuyPremiumOpen] = useState(false);
+  const [filter, setFilter] = useState<"all" | "expense" | "budget">("all");
 
   useEffect(() => {
     if (user?.id) {
       getRecentExpenses(user.id);
       checkBudget(user.id);
+      getBudgets(user.id);
     }
   }, [user?.id]);
 
@@ -32,6 +58,19 @@ function DashboardPage() {
     ...expense,
     date: new Date(expense.date),
   }));
+
+  const transactions: TransactionItem[] = [
+    ...(budgets ?? []).map((budget) => ({ kind: "budget" as const, budget })),
+    ...parsedExpenses.map((expense) => ({
+      kind: "expense" as const,
+      expense,
+    })),
+  ].sort((a, b) => transactionDate(b).getTime() - transactionDate(a).getTime());
+
+  const filteredTransactions =
+    filter === "all"
+      ? transactions
+      : transactions.filter((t) => t.kind === filter);
 
   if (!expenses) {
     return (
@@ -46,31 +85,56 @@ function DashboardPage() {
       {showAll ? (
         <div className="overflow-y-auto pb-14">
           <div className="flex flex-col gap-4">
-            <div className="flex flex-row justify-end items-end p-4 ">
+            <div className="flex flex-row justify-between items-center p-4">
+              <Select
+                value={filter}
+                onValueChange={(value) =>
+                  setFilter(value as "all" | "expense" | "budget")
+                }
+              >
+                <SelectTrigger className="w-[140px]">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Todos</SelectItem>
+                  <SelectItem value="expense">Gastos</SelectItem>
+                  <SelectItem value="budget">Ingresos</SelectItem>
+                </SelectContent>
+              </Select>
               <Button
                 onClick={() => setShowAll(false)}
                 variant="ghost"
-                className="text-muted-foreground "
+                className="text-muted-foreground"
               >
                 Ver Menos
               </Button>
             </div>
-            {Object.entries(groupExpensesByDate(parsedExpenses)).map(
-              ([dateLabel, dateExpenses]) => (
+            {filteredTransactions.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-12">
+                <p className="text-center text-xl text-muted-foreground md:text-2xl">
+                  No hay transacciones registradas
+                </p>
+              </div>
+            ) : (
+              Object.entries(groupTransactionsByDate(filteredTransactions)).map(
+              ([dateLabel, dateTransactions]) => (
                 <div key={dateLabel} className="px-4 space-y-2">
                   <h2 className="text-muted-foreground">{dateLabel}</h2>
                   <div className="space-y-0">
-                    {dateExpenses.map((expense) => (
-                      <div
-                        key={expense.id}
-                        className="border-b border-zinc-200 dark:border-zinc-700 "
-                      >
-                        <Expense expense={expense} />
-                      </div>
+                    {dateTransactions.map((t) => (
+                      <TransactionRow
+                        key={
+                          t.kind === "budget"
+                            ? `budget-${t.budget.id}`
+                            : `expense-${t.expense.id}`
+                        }
+                        t={t}
+                      />
                     ))}
                   </div>
                 </div>
               ),
+            )
             )}
           </div>
         </div>
@@ -93,7 +157,7 @@ function DashboardPage() {
               <Lock />
             </Button>
           </div>
-          <div className="rounded-b-3xl pb-10 md:pb-12">
+          <div className=" md:pb-8 pb-4">
             <Card />
           </div>
           <BuyPremiumModal
@@ -101,8 +165,8 @@ function DashboardPage() {
             onOpenChange={setBuyPremiumOpen}
           />
           <div className="flex flex-row justify-between items-center w-full md:mt-6">
-            <h2 className="text-xl font-bold dark:text-white md:text-2xl">
-              Historial de Gastos
+            <h2 className=" font-semibold dark:text-white">
+              Transacciones Recientes
             </h2>
             <Button
               onClick={() => setShowAll(true)}
@@ -113,23 +177,25 @@ function DashboardPage() {
             </Button>
           </div>
           <div className="space-y-0 mt-4">
-            {parsedExpenses.length === 0 ? (
+            {transactions.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-12">
                 <p className="text-center text-xl text-muted-foreground md:text-2xl">
-                  No hay gastos registrados
+                  No hay transacciones registradas
                 </p>
                 <p className="text-center text-sm text-muted-foreground md:text-base">
-                  Haz click en el botón "+" para registrar un gasto
+                  Haz click en el botón "+" para registrar una transacción
                 </p>
               </div>
             ) : (
-              parsedExpenses.map((expense) => (
-                <div
-                  key={expense.id}
-                  className="border-b border-zinc-200 dark:border-zinc-700 "
-                >
-                  <Expense expense={expense} />
-                </div>
+              transactions.map((t) => (
+                <TransactionRow
+                  key={
+                    t.kind === "budget"
+                      ? `budget-${t.budget.id}`
+                      : `expense-${t.expense.id}`
+                  }
+                  t={t}
+                />
               ))
             )}
           </div>

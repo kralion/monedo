@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, BarChart3, User, Wallet, Plus } from "lucide-react";
+import { Home, BarChart3, User, Plus } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const Tabs = [
@@ -10,7 +10,6 @@ const Tabs = [
     href: "/statistics",
     icon: BarChart3,
   },
-  { name: "wallet", title: "Billetera", href: "/wallet", icon: Wallet },
   { name: "profile", title: "Perfil", href: "/profile", icon: User },
 ];
 
@@ -68,9 +67,9 @@ export function Sidebar() {
         </nav>
       </aside>
 
-      {/* FAB - Add expense */}
+      {/* FAB - Add transaction */}
       <Link
-        to="/add-expense"
+        to="/add-transaction"
         search={{ id: undefined }}
         className="fixed right-4 bottom-20 md:right-8 md:bottom-32 w-16 h-16 rounded-full bg-primary flex items-center justify-center shadow-lg hover:opacity-90 transition-opacity z-40"
       >

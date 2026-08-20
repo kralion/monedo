@@ -16,15 +16,14 @@ import { Route as Char43notFoundRouteImport } from './routes/+not-found'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedStatisticsRouteImport } from './routes/_authenticated/statistics'
 import { Route as AuthenticatedBuyPremiumRouteImport } from './routes/_authenticated/buy-premium'
-import { Route as AuthenticatedAddExpenseRouteImport } from './routes/_authenticated/add-expense'
-import { Route as AuthenticatedWalletIndexRouteImport } from './routes/_authenticated/wallet/index'
+import { Route as AuthenticatedAddTransactionRouteImport } from './routes/_authenticated/add-transaction'
 import { Route as AuthenticatedProfileIndexRouteImport } from './routes/_authenticated/profile/index'
+import { Route as AuthenticatedTransactionIdRouteImport } from './routes/_authenticated/transaction.$id'
 import { Route as AuthenticatedProfileSettingsRouteImport } from './routes/_authenticated/profile/settings'
 import { Route as AuthenticatedProfilePersonalInfoRouteImport } from './routes/_authenticated/profile/personal-info'
 import { Route as AuthenticatedProfileMembershipRouteImport } from './routes/_authenticated/profile/membership'
 import { Route as AuthenticatedProfileCategoriesRouteImport } from './routes/_authenticated/profile/categories'
-import { Route as AuthenticatedDetailsIdRouteImport } from './routes/_authenticated/details.$id'
-import { Route as AuthenticatedWalletEditIdRouteImport } from './routes/_authenticated/wallet/edit.$id'
+import { Route as AuthenticatedEditIdRouteImport } from './routes/_authenticated/edit.$id'
 
 const SignUpRoute = SignUpRouteImport.update({
   id: '/sign-up',
@@ -60,21 +59,22 @@ const AuthenticatedBuyPremiumRoute = AuthenticatedBuyPremiumRouteImport.update({
   path: '/buy-premium',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedAddExpenseRoute = AuthenticatedAddExpenseRouteImport.update({
-  id: '/add-expense',
-  path: '/add-expense',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedWalletIndexRoute =
-  AuthenticatedWalletIndexRouteImport.update({
-    id: '/wallet/',
-    path: '/wallet/',
+const AuthenticatedAddTransactionRoute =
+  AuthenticatedAddTransactionRouteImport.update({
+    id: '/add-transaction',
+    path: '/add-transaction',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedProfileIndexRoute =
   AuthenticatedProfileIndexRouteImport.update({
     id: '/profile/',
     path: '/profile/',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedTransactionIdRoute =
+  AuthenticatedTransactionIdRouteImport.update({
+    id: '/transaction/$id',
+    path: '/transaction/$id',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedProfileSettingsRoute =
@@ -101,51 +101,43 @@ const AuthenticatedProfileCategoriesRoute =
     path: '/profile/categories',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedDetailsIdRoute = AuthenticatedDetailsIdRouteImport.update({
-  id: '/details/$id',
-  path: '/details/$id',
+const AuthenticatedEditIdRoute = AuthenticatedEditIdRouteImport.update({
+  id: '/edit/$id',
+  path: '/edit/$id',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedWalletEditIdRoute =
-  AuthenticatedWalletEditIdRouteImport.update({
-    id: '/wallet/edit/$id',
-    path: '/wallet/edit/$id',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
 
 export interface FileRoutesByFullPath {
   '/+not-found': typeof Char43notFoundRoute
   '/': typeof AuthenticatedIndexRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
-  '/add-expense': typeof AuthenticatedAddExpenseRoute
+  '/add-transaction': typeof AuthenticatedAddTransactionRoute
   '/buy-premium': typeof AuthenticatedBuyPremiumRoute
   '/statistics': typeof AuthenticatedStatisticsRoute
-  '/details/$id': typeof AuthenticatedDetailsIdRoute
+  '/edit/$id': typeof AuthenticatedEditIdRoute
   '/profile/categories': typeof AuthenticatedProfileCategoriesRoute
   '/profile/membership': typeof AuthenticatedProfileMembershipRoute
   '/profile/personal-info': typeof AuthenticatedProfilePersonalInfoRoute
   '/profile/settings': typeof AuthenticatedProfileSettingsRoute
+  '/transaction/$id': typeof AuthenticatedTransactionIdRoute
   '/profile/': typeof AuthenticatedProfileIndexRoute
-  '/wallet/': typeof AuthenticatedWalletIndexRoute
-  '/wallet/edit/$id': typeof AuthenticatedWalletEditIdRoute
 }
 export interface FileRoutesByTo {
   '/+not-found': typeof Char43notFoundRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
-  '/add-expense': typeof AuthenticatedAddExpenseRoute
+  '/add-transaction': typeof AuthenticatedAddTransactionRoute
   '/buy-premium': typeof AuthenticatedBuyPremiumRoute
   '/statistics': typeof AuthenticatedStatisticsRoute
   '/': typeof AuthenticatedIndexRoute
-  '/details/$id': typeof AuthenticatedDetailsIdRoute
+  '/edit/$id': typeof AuthenticatedEditIdRoute
   '/profile/categories': typeof AuthenticatedProfileCategoriesRoute
   '/profile/membership': typeof AuthenticatedProfileMembershipRoute
   '/profile/personal-info': typeof AuthenticatedProfilePersonalInfoRoute
   '/profile/settings': typeof AuthenticatedProfileSettingsRoute
+  '/transaction/$id': typeof AuthenticatedTransactionIdRoute
   '/profile': typeof AuthenticatedProfileIndexRoute
-  '/wallet': typeof AuthenticatedWalletIndexRoute
-  '/wallet/edit/$id': typeof AuthenticatedWalletEditIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -153,18 +145,17 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
-  '/_authenticated/add-expense': typeof AuthenticatedAddExpenseRoute
+  '/_authenticated/add-transaction': typeof AuthenticatedAddTransactionRoute
   '/_authenticated/buy-premium': typeof AuthenticatedBuyPremiumRoute
   '/_authenticated/statistics': typeof AuthenticatedStatisticsRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
-  '/_authenticated/details/$id': typeof AuthenticatedDetailsIdRoute
+  '/_authenticated/edit/$id': typeof AuthenticatedEditIdRoute
   '/_authenticated/profile/categories': typeof AuthenticatedProfileCategoriesRoute
   '/_authenticated/profile/membership': typeof AuthenticatedProfileMembershipRoute
   '/_authenticated/profile/personal-info': typeof AuthenticatedProfilePersonalInfoRoute
   '/_authenticated/profile/settings': typeof AuthenticatedProfileSettingsRoute
+  '/_authenticated/transaction/$id': typeof AuthenticatedTransactionIdRoute
   '/_authenticated/profile/': typeof AuthenticatedProfileIndexRoute
-  '/_authenticated/wallet/': typeof AuthenticatedWalletIndexRoute
-  '/_authenticated/wallet/edit/$id': typeof AuthenticatedWalletEditIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -173,52 +164,49 @@ export interface FileRouteTypes {
     | '/'
     | '/sign-in'
     | '/sign-up'
-    | '/add-expense'
+    | '/add-transaction'
     | '/buy-premium'
     | '/statistics'
-    | '/details/$id'
+    | '/edit/$id'
     | '/profile/categories'
     | '/profile/membership'
     | '/profile/personal-info'
     | '/profile/settings'
+    | '/transaction/$id'
     | '/profile/'
-    | '/wallet/'
-    | '/wallet/edit/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/+not-found'
     | '/sign-in'
     | '/sign-up'
-    | '/add-expense'
+    | '/add-transaction'
     | '/buy-premium'
     | '/statistics'
     | '/'
-    | '/details/$id'
+    | '/edit/$id'
     | '/profile/categories'
     | '/profile/membership'
     | '/profile/personal-info'
     | '/profile/settings'
+    | '/transaction/$id'
     | '/profile'
-    | '/wallet'
-    | '/wallet/edit/$id'
   id:
     | '__root__'
     | '/+not-found'
     | '/_authenticated'
     | '/sign-in'
     | '/sign-up'
-    | '/_authenticated/add-expense'
+    | '/_authenticated/add-transaction'
     | '/_authenticated/buy-premium'
     | '/_authenticated/statistics'
     | '/_authenticated/'
-    | '/_authenticated/details/$id'
+    | '/_authenticated/edit/$id'
     | '/_authenticated/profile/categories'
     | '/_authenticated/profile/membership'
     | '/_authenticated/profile/personal-info'
     | '/_authenticated/profile/settings'
+    | '/_authenticated/transaction/$id'
     | '/_authenticated/profile/'
-    | '/_authenticated/wallet/'
-    | '/_authenticated/wallet/edit/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -279,18 +267,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedBuyPremiumRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/add-expense': {
-      id: '/_authenticated/add-expense'
-      path: '/add-expense'
-      fullPath: '/add-expense'
-      preLoaderRoute: typeof AuthenticatedAddExpenseRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/wallet/': {
-      id: '/_authenticated/wallet/'
-      path: '/wallet'
-      fullPath: '/wallet/'
-      preLoaderRoute: typeof AuthenticatedWalletIndexRouteImport
+    '/_authenticated/add-transaction': {
+      id: '/_authenticated/add-transaction'
+      path: '/add-transaction'
+      fullPath: '/add-transaction'
+      preLoaderRoute: typeof AuthenticatedAddTransactionRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/profile/': {
@@ -298,6 +279,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile/'
       preLoaderRoute: typeof AuthenticatedProfileIndexRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/transaction/$id': {
+      id: '/_authenticated/transaction/$id'
+      path: '/transaction/$id'
+      fullPath: '/transaction/$id'
+      preLoaderRoute: typeof AuthenticatedTransactionIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/profile/settings': {
@@ -328,51 +316,42 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProfileCategoriesRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/details/$id': {
-      id: '/_authenticated/details/$id'
-      path: '/details/$id'
-      fullPath: '/details/$id'
-      preLoaderRoute: typeof AuthenticatedDetailsIdRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/wallet/edit/$id': {
-      id: '/_authenticated/wallet/edit/$id'
-      path: '/wallet/edit/$id'
-      fullPath: '/wallet/edit/$id'
-      preLoaderRoute: typeof AuthenticatedWalletEditIdRouteImport
+    '/_authenticated/edit/$id': {
+      id: '/_authenticated/edit/$id'
+      path: '/edit/$id'
+      fullPath: '/edit/$id'
+      preLoaderRoute: typeof AuthenticatedEditIdRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
   }
 }
 
 interface AuthenticatedRouteChildren {
-  AuthenticatedAddExpenseRoute: typeof AuthenticatedAddExpenseRoute
+  AuthenticatedAddTransactionRoute: typeof AuthenticatedAddTransactionRoute
   AuthenticatedBuyPremiumRoute: typeof AuthenticatedBuyPremiumRoute
   AuthenticatedStatisticsRoute: typeof AuthenticatedStatisticsRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
-  AuthenticatedDetailsIdRoute: typeof AuthenticatedDetailsIdRoute
+  AuthenticatedEditIdRoute: typeof AuthenticatedEditIdRoute
   AuthenticatedProfileCategoriesRoute: typeof AuthenticatedProfileCategoriesRoute
   AuthenticatedProfileMembershipRoute: typeof AuthenticatedProfileMembershipRoute
   AuthenticatedProfilePersonalInfoRoute: typeof AuthenticatedProfilePersonalInfoRoute
   AuthenticatedProfileSettingsRoute: typeof AuthenticatedProfileSettingsRoute
+  AuthenticatedTransactionIdRoute: typeof AuthenticatedTransactionIdRoute
   AuthenticatedProfileIndexRoute: typeof AuthenticatedProfileIndexRoute
-  AuthenticatedWalletIndexRoute: typeof AuthenticatedWalletIndexRoute
-  AuthenticatedWalletEditIdRoute: typeof AuthenticatedWalletEditIdRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
-  AuthenticatedAddExpenseRoute: AuthenticatedAddExpenseRoute,
+  AuthenticatedAddTransactionRoute: AuthenticatedAddTransactionRoute,
   AuthenticatedBuyPremiumRoute: AuthenticatedBuyPremiumRoute,
   AuthenticatedStatisticsRoute: AuthenticatedStatisticsRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
-  AuthenticatedDetailsIdRoute: AuthenticatedDetailsIdRoute,
+  AuthenticatedEditIdRoute: AuthenticatedEditIdRoute,
   AuthenticatedProfileCategoriesRoute: AuthenticatedProfileCategoriesRoute,
   AuthenticatedProfileMembershipRoute: AuthenticatedProfileMembershipRoute,
   AuthenticatedProfilePersonalInfoRoute: AuthenticatedProfilePersonalInfoRoute,
   AuthenticatedProfileSettingsRoute: AuthenticatedProfileSettingsRoute,
+  AuthenticatedTransactionIdRoute: AuthenticatedTransactionIdRoute,
   AuthenticatedProfileIndexRoute: AuthenticatedProfileIndexRoute,
-  AuthenticatedWalletIndexRoute: AuthenticatedWalletIndexRoute,
-  AuthenticatedWalletEditIdRoute: AuthenticatedWalletEditIdRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

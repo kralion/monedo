@@ -3,7 +3,7 @@ import { useNeonUser } from "@/hooks/useNeonUser";
 import { useEffect, useState } from "react";
 import Chart from "@/components/statistics/chart";
 import PieChart from "@/components/statistics/pie-chart";
-import { Expense } from "@/components/expense";
+import { Transaction } from "@/components/transaction";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { getDateRange } from "@/lib/rangeDate";
@@ -111,7 +111,7 @@ function StatisticsPage() {
                   key={expense.id}
                   className="border-b border-zinc-200 dark:border-zinc-600"
                 >
-                  <Expense expense={expense} />
+                  <Transaction expense={expense} />
                 </div>
               ))
             )}

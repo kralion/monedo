@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { IBudget } from "@/interfaces";
 import { useBudgetStore } from "@/stores/budget";
-import { useNavigate } from "@tanstack/react-router";
+import { useNavigate, useRouter } from "@tanstack/react-router";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ArrowLeft } from "lucide-react";
 
-export const Route = createFileRoute("/_authenticated/wallet/edit/$id")({
+export const Route = createFileRoute("/_authenticated/edit/$id")({
   component: EditBudgetPage,
 });
 
@@ -32,6 +32,7 @@ function EditBudgetPage() {
   const { budget, getBudgetById, updateBudget, deleteBudget } =
     useBudgetStore();
   const navigate = useNavigate();
+  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
 
   const {
@@ -61,14 +62,14 @@ function EditBudgetPage() {
       ...data,
       user_id: user.id,
       id: Number(id),
-      created_At: budget!.created_At,
+      created_at: budget!.created_at,
     });
-    navigate({ to: "/wallet" });
+    navigate({ to: "/" });
   }
 
   const handleDelete = () => {
     deleteBudget(Number(id));
-    navigate({ to: "/wallet" });
+    navigate({ to: "/" });
   };
 
   if (!budget) {
@@ -79,7 +80,7 @@ function EditBudgetPage() {
     );
   }
 
-  const formattedDate = new Date(budget.created_At).toLocaleDateString(
+  const formattedDate = new Date(budget.created_at).toLocaleDateString(
     "es-PE",
     {
       month: "long",
@@ -89,12 +90,12 @@ function EditBudgetPage() {
   );
 
   return (
-    <div className="bg-white dark:bg-zinc-900 max-w-xl mx-auto pt-16 pb-28">
+    <div className="bg-white dark:bg-zinc-900 max-w-xl mx-auto pb-20">
       <div className="flex flex-col gap-8 p-4">
         <Button
           variant="link"
           className="w-fit pl-0"
-          onClick={() => navigate({ to: "/wallet" })}
+          onClick={() => router.history.back()}
         >
           <ArrowLeft />
           Volver atras
@@ -103,7 +104,7 @@ function EditBudgetPage() {
           <img
             src="https://img.icons8.com/?size=100&id=KV6GFslVNJhZ&format=png&color=000000"
             alt=""
-            className="w-[150px] h-[150px] bg-zinc-100 dark:bg-zinc-800 rounded-full p-8 object-contain"
+            className="size-36 bg-zinc-100 dark:bg-zinc-800 rounded-full p-6 object-contain"
           />
         </div>
         {isEditing ? (
@@ -123,14 +124,15 @@ function EditBudgetPage() {
             </div>
             <div className="flex flex-col gap-2">
               <Label>Monto (S/)</Label>
-              <Input
+              <input
                 type="number"
+                className="h-36 text-5xl text-center font-bold dark:text-white bg-transparent border-none focus:outline-none w-full"
+                placeholder="S/ 50.00"
                 {...register("amount", {
                   required: true,
                   min: 1,
                   valueAsNumber: true,
                 })}
-                placeholder="0.00"
               />
               {errors.amount && (
                 <p className="text-sm text-red-500">Monto inválido</p>
@@ -158,7 +160,7 @@ function EditBudgetPage() {
           <>
             <div className="flex flex-col gap-4 items-center">
               <p className="text-5xl font-bold tracking-tighter">
-                S/. {budget.amount.toFixed(2)}
+                S/ {budget.amount.toFixed(2)}
               </p>
               <p className="text-lg text-muted-foreground">
                 {budget.description}

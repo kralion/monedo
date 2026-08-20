@@ -13,7 +13,8 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
   totalBudget: 0,
   isOutOfBudget: false,
   addBudget: async (budget: IBudget) => {
-    const tempBudget = { ...budget, id: Date.now() };
+    const today = new Date();
+    const tempBudget = { ...budget, created_at: today, id: Date.now() };
 
     set((state) => ({ budgets: [...state.budgets, tempBudget], loading: true }));
 
@@ -24,6 +25,7 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
           amount: budget.amount,
           description: budget.description,
           user_id: budget.user_id,
+          created_at: today,
         })
         .returning();
 

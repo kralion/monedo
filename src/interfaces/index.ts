@@ -14,7 +14,7 @@ export interface IExpense {
 export interface IBudget {
   id?: number;
   user_id: string;
-  created_At: Date;
+  created_at: Date;
   description: string;
   amount: number;
 }
