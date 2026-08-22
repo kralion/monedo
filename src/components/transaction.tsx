@@ -2,8 +2,10 @@ import { Link } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
 import { expensesIdentifiers } from "@/constants/ExpensesIdentifiers";
 import { formatDate } from "@/helpers/dateFormatter";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { IExpense } from "@/interfaces";
 export function Transaction({ expense }: { expense: IExpense }) {
+  const isMobile = useIsMobile();
   const assetIndentificador =
     expensesIdentifiers.find(
       (icon) =>
@@ -26,8 +28,8 @@ export function Transaction({ expense }: { expense: IExpense }) {
       <div className="flex flex-row justify-between items-center flex-1">
         <div className="flex flex-col">
           <h3 className="md:text-lg dark:text-white">
-            {expense.description.length > 25
-              ? `${expense.description.slice(0, 25)}...`
+            {expense.description.length > (isMobile ? 15 : 30)
+              ? `${expense.description.slice(0, isMobile ? 15 : 30)}...`
               : expense.description}
           </h3>
           <p className="text-xs text-muted-foreground">

@@ -12,11 +12,11 @@ import {
 import { authClient } from "@/auth";
 import { Button } from "@/components/ui/button";
 import { BuyPremiumModal } from "@/components/buy-premium";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { useUserPlan } from "@/hooks/useUserPlan";
 import { Card } from "@/components/ui/card";
+import { ProfileImageUpload } from "@/features/profile";
 
 export const Route = createFileRoute("/_authenticated/profile/")({
   component: ProfilePage,
@@ -36,10 +36,7 @@ function ProfilePage() {
   return (
     <div className="bg-white dark:bg-zinc-900 flex-1 max-w-4xl mx-auto overflow-y-auto pb-28 p-4">
       <div className="flex flex-col items-center mt-8 gap-4">
-        <Avatar className="bg-teal-500 self-center w-36 h-36 md:w-40 md:h-40">
-          <AvatarImage src={user?.image ?? undefined} />
-          <AvatarFallback className="rounded-xl bg-slate-500" />
-        </Avatar>
+        <ProfileImageUpload image={user?.image} userId={user?.id ?? ""} />
         <div className="flex flex-col items-center gap-2 md:mt-2">
           <h1 className="text-center text-xl font-bold dark:text-white md:text-3xl">
             {`${user?.firstName ?? ""} ${user?.lastName ?? ""}`}

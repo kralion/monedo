@@ -1,8 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
+import { useIsMobile } from "@/hooks/useIsMobile";
 import { IBudget } from "@/interfaces";
 
 export function Budget({ budget }: { budget: IBudget }) {
+  const isMobile = useIsMobile();
   const date = new Date(budget.created_at);
   const formattedDate = date.toLocaleDateString("es-ES", {
     month: "2-digit",
@@ -26,8 +28,8 @@ export function Budget({ budget }: { budget: IBudget }) {
           />
           <div className="flex flex-col">
             <p className="md:text-lg">
-              {budget.description.length > 25
-                ? `${budget.description.slice(0, 25)}...`
+              {budget.description.length > (isMobile ? 15 : 30)
+                ? `${budget.description.slice(0, isMobile ? 15 : 30)}...`
                 : budget.description}
             </p>
             <p className="text-xs text-muted-foreground">{formattedDate}</p>
