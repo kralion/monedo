@@ -21,15 +21,20 @@ function SignInPage() {
     setLoading(true);
 
     try {
-      const { error } = await authClient.signIn.email({
+      const result = await authClient.signIn.email({
         email,
         password,
       });
 
-      if (error) {
-        toast.error(error.message ?? "Credenciales inválidas");
+      console.log("[SignIn] result:", JSON.stringify(result));
+
+      if (result.error) {
+        toast.error(result.error.message ?? "Credenciales inválidas");
         return;
       }
+
+      const session = await authClient.getSession();
+      console.log("[SignIn] session after signIn:", JSON.stringify(session));
 
       navigate({ to: "/" });
     } catch {
