@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 import { authClient } from "@/auth";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,8 @@ export const Route = createFileRoute("/sign-in")({
 });
 
 function SignInPage() {
+  const navigate = useNavigate();
+  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -31,8 +33,16 @@ function SignInPage() {
         return;
       }
 
-      console.log("[SignIn] Sign-in successful, navigating to /" , { email });
-      window.location.href = "/";
+      const sessionAfterSignIn = await authClient.getSession();
+      console.log("[SignIn] Session after signIn:", sessionAfterSignIn);
+
+      console.log("[SignIn] Invalidating router...");
+      await router.invalidate();
+      console.log("[SignIn] Router invalidated");
+
+      console.log("[SignIn] Navigating to /");
+      navigate({ to: "/" });
+      console.log("[SignIn] navigate() called");
     } catch (err) {
       console.error("[SignIn] Unexpected error:", err);
       toast.error("Error al iniciar sesión");

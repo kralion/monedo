@@ -16,8 +16,12 @@ function AuthenticatedLayout() {
   const navigate = useNavigate();
   const isSignedIn = !!data;
 
+  console.log("[_authenticated] Rendering - isPending:", isPending, "isSignedIn:", isSignedIn, "data:", data);
+
   useEffect(() => {
+    console.log("[_authenticated] useEffect - isPending:", isPending, "isSignedIn:", isSignedIn);
     if (!isPending && !isSignedIn) {
+      console.log("[_authenticated] Redirecting to /sign-in");
       navigate({ to: "/sign-in" });
     }
   }, [isPending, isSignedIn, navigate]);
