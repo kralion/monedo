@@ -33,16 +33,21 @@ function SignInPage() {
         return;
       }
 
-      const sessionAfterSignIn = await authClient.getSession();
-      console.log("[SignIn] Session after signIn:", sessionAfterSignIn);
+      let session = await authClient.getSession();
+      let attempts = 0;
+      while (!session.data && attempts < 10) {
+        await new Promise((r) => setTimeout(r, 100));
+        session = await authClient.getSession();
+        attempts++;
+      }
 
-      console.log("[SignIn] Invalidating router...");
+      if (!session.data) {
+        toast.error("No se pudo establecer la sesión");
+        return;
+      }
+
       await router.invalidate();
-      console.log("[SignIn] Router invalidated");
-
-      console.log("[SignIn] Navigating to /");
       navigate({ to: "/" });
-      console.log("[SignIn] navigate() called");
     } catch (err) {
       console.error("[SignIn] Unexpected error:", err);
       toast.error("Error al iniciar sesión");
