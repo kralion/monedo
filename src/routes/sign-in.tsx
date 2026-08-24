@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { authClient } from "@/auth";
 import { Button } from "@/components/ui/button";
@@ -11,7 +11,6 @@ export const Route = createFileRoute("/sign-in")({
 });
 
 function SignInPage() {
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -21,22 +20,17 @@ function SignInPage() {
     setLoading(true);
 
     try {
-      const result = await authClient.signIn.email({
+      const { error } = await authClient.signIn.email({
         email,
         password,
       });
 
-      console.log("[SignIn] result:", JSON.stringify(result));
-
-      if (result.error) {
-        toast.error(result.error.message ?? "Credenciales inválidas");
+      if (error) {
+        toast.error(error.message ?? "Credenciales inválidas");
         return;
       }
 
-      const session = await authClient.getSession();
-      console.log("[SignIn] session after signIn:", JSON.stringify(session));
-
-      navigate({ to: "/" });
+      window.location.href = "/";
     } catch {
       toast.error("Error al iniciar sesión");
     } finally {
