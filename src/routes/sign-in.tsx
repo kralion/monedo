@@ -5,6 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export const Route = createFileRoute("/sign-in")({
   component: SignInPage,
@@ -16,40 +22,56 @@ function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [debugLogs, setDebugLogs] = useState<string[]>([]);
+  const [debugOpen, setDebugOpen] = useState(false);
+
+  function log(msg: string) {
+    setDebugLogs((prev) => [...prev, `[${new Date().toISOString()}] ${msg}`]);
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
+    setDebugLogs([]);
 
     try {
+      log("Starting signIn.email...");
       const { error } = await authClient.signIn.email({
         email,
         password,
       });
 
       if (error) {
-        console.error("[SignIn] Error:", error);
+        log(`SignIn error: ${JSON.stringify(error)}`);
         toast.error(error.message ?? "Credenciales inválidas");
         return;
       }
 
+      log("signIn.email success, polling session...");
+
       let session = await authClient.getSession();
-      let attempts = 0;
+      log(`getSession attempt 1: data=${JSON.stringify(session.data)}, error=${JSON.stringify(session.error)}`);
+
+      let attempts = 1;
       while (!session.data && attempts < 10) {
-        await new Promise((r) => setTimeout(r, 100));
+        await new Promise((r) => setTimeout(r, 200));
         session = await authClient.getSession();
         attempts++;
+        log(`getSession attempt ${attempts}: data=${JSON.stringify(session.data)}, error=${JSON.stringify(session.error)}`);
       }
 
       if (!session.data) {
-        toast.error("No se pudo establecer la sesión");
+        log("No session after 10 attempts");
+        setDebugOpen(true);
         return;
       }
 
+      log("Session found, invalidating router...");
       await router.invalidate();
+      log("Router invalidated, navigating to /");
       navigate({ to: "/" });
     } catch (err) {
-      console.error("[SignIn] Unexpected error:", err);
+      log(`Unexpected error: ${JSON.stringify(err)}`);
       toast.error("Error al iniciar sesión");
     } finally {
       setLoading(false);
@@ -136,6 +158,20 @@ function SignInPage() {
           </Link>
         </p>
       </div>
+
+      <Dialog open={debugOpen} onOpenChange={setDebugOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Debug Logs</DialogTitle>
+          </DialogHeader>
+          <div className="max-h-[60vh] overflow-auto bg-zinc-100 dark:bg-zinc-800 rounded p-3 text-xs font-mono whitespace-pre-wrap">
+            {debugLogs.join("\n")}
+          </div>
+          <Button onClick={() => setDebugOpen(false)} className="w-full">
+            Cerrar
+          </Button>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
