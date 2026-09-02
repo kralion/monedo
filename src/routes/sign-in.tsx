@@ -15,28 +15,32 @@ function SignInPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setLoading(true);
+ async function handleSubmit(e: React.FormEvent) {
+  e.preventDefault();
+  setLoading(true);
 
-    try {
-      const { error } = await authClient.signIn.email({
-        email,
-        password,
-      });
+  try {
+    const { error } = await authClient.signIn.email({
+      email,
+      password,
+    });
 
-      if (error) {
-        toast.error(error.message ?? "Credenciales inválidas");
-        return;
-      }
+    console.log('SignIn result:', { error });
 
-      window.location.href = "/";
-    } catch {
-      toast.error("Error al iniciar sesión");
-    } finally {
-      setLoading(false);
+    if (error) {
+      toast.error(error.message ?? "Credenciales inválidas");
+      return;
     }
+
+    // Redirect explícito tras login exitoso
+    window.location.href = "/";
+  } catch (err) {
+    console.error('Login exception:', err);
+    toast.error("Error al iniciar sesión");
+  } finally {
+    setLoading(false);
   }
+}
 
   async function handleGoogleSignIn() {
     await authClient.signIn.social({
