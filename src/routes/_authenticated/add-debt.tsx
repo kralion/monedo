@@ -14,7 +14,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { DatePicker } from "@/components/ui/date-picker";
 import { IDebt } from "@/interfaces";
 import { useDebtStore } from "@/stores/debt";
 
@@ -44,7 +43,6 @@ function AddDebtPage() {
       setValue("original_amount", debt.original_amount ?? undefined);
       setValue("creditor", debt.creditor ?? undefined);
       setValue("notes", debt.notes ?? undefined);
-      setValue("due_date", debt.due_date ?? undefined);
       setValue("status", debt.status);
     }
   }, [id, debt]);
@@ -90,7 +88,7 @@ function AddDebtPage() {
             rules={{ required: true }}
             render={({ field: { onChange, value } }) => (
               <Input
-                placeholder="Ej: Préstamo bancario"
+                placeholder="Ej: Juan Pérez"
                 value={value ?? ""}
                 onChange={(e) => onChange(e.target.value)}
               />
@@ -129,7 +127,7 @@ function AddDebtPage() {
           />
         </div>
         <div className="flex flex-col gap-2">
-          <Label>Acreedor</Label>
+          <Label>Deudor</Label>
           <Controller
             control={control}
             name="creditor"
@@ -159,19 +157,6 @@ function AddDebtPage() {
                   <SelectItem value="partial">Parcial</SelectItem>
                 </SelectContent>
               </Select>
-            )}
-          />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label>Fecha de vencimiento</Label>
-          <Controller
-            control={control}
-            name="due_date"
-            render={({ field: { onChange, value } }) => (
-              <DatePicker
-                date={value ? new Date(value) : undefined}
-                onDateChange={(date) => onChange(date?.toISOString() ?? null)}
-              />
             )}
           />
         </div>

@@ -65,7 +65,6 @@ export const useDebtStore = create<DebtStore>((set, get) => ({
           original_amount: debt.original_amount,
           creditor: debt.creditor,
           notes: debt.notes,
-          due_date: debt.due_date,
           status: debt.status,
         })
         .returning();
@@ -109,7 +108,6 @@ export const useDebtStore = create<DebtStore>((set, get) => ({
           original_amount: debt.original_amount,
           creditor: debt.creditor,
           notes: debt.notes,
-          due_date: debt.due_date,
           status: debt.status,
           updated_at: new Date(),
         })

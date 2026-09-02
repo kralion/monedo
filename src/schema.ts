@@ -53,7 +53,6 @@ export const debts = pgTable("debts", {
   original_amount: integer("original_amount"),
   creditor: text("creditor"),
   notes: text("notes"),
-  due_date: text("due_date"),
   status: debtStatusEnum("status").notNull().default("active"),
   created_at: timestamp("created_at").notNull().defaultNow(),
   updated_at: timestamp("updated_at"),

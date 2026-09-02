@@ -146,7 +146,6 @@ export interface IDebt {
   original_amount?: number | null;
   creditor?: string | null;
   notes?: string | null;
-  due_date?: string | null;
   status: "active" | "paid" | "overdue" | "partial";
   created_at: Date;
   updated_at?: Date | null;

@@ -73,15 +73,6 @@ function DebtsPage() {
                 </div>
                 <div className="flex flex-row justify-between items-center">
                   <p className="text-2xl font-bold">S/ {debt.amount.toFixed(2)}</p>
-                  {debt.due_date && (
-                    <p className="text-sm text-muted-foreground">
-                      Vence: {new Date(debt.due_date).toLocaleDateString("es-PE", {
-                        day: "numeric",
-                        month: "short",
-                        year: "numeric",
-                      })}
-                    </p>
-                  )}
                 </div>
               </Link>
             ))

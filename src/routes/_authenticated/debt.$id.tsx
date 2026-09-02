@@ -97,21 +97,7 @@ function DebtDetailsPage() {
               <Separator />
             </>
           )}
-          {debt.due_date && (
-            <>
-              <div className="flex flex-row justify-between items-center">
-                <span className="text-muted-foreground">Fecha de vencimiento</span>
-                <span>
-                  {new Date(debt.due_date).toLocaleDateString("es-PE", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </span>
-              </div>
-              <Separator />
-            </>
-          )}
+
           <div className="flex flex-row justify-between items-center">
             <span className="text-muted-foreground">Fecha de creación</span>
             <span>
