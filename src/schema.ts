@@ -6,7 +6,6 @@ import {
   serial,
   text,
   timestamp,
-  uuid,
 } from "drizzle-orm/pg-core";
 
 export const notificationTypeEnum = pgEnum("notification_type", [
@@ -15,20 +14,13 @@ export const notificationTypeEnum = pgEnum("notification_type", [
   "errpr",
 ]);
 
-export const paymentStatusEnum = pgEnum("payment_status", [
-  "success",
-  "failed",
-  "pending",
-]);
-
-export const planEnum = pgEnum("plan", ["free", "premium"]);
-
-export const budgets = pgTable("budgets", {
+export const incomes = pgTable("incomes", {
   id: serial("id").primaryKey(),
   amount: integer("amount").notNull(),
   created_at: timestamp("created_At").notNull().defaultNow(),
   description: text("description").notNull(),
   user_id: text("user_id").notNull(),
+  id_debt: integer("id_debt").references(() => debts.id),
 });
 
 export const categories = pgTable("categories", {
@@ -51,19 +43,24 @@ export const expenses = pgTable("expenses", {
   user_id: text("user_id").notNull(),
 });
 
-export const payments = pgTable("payments", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  amount: integer("amount"),
-  card_last4: text("card_last4"),
-  card_type: text("card_type"),
+export const debtStatusEnum = pgEnum("debt_status", ["active", "paid", "overdue", "partial"]);
+
+export const debts = pgTable("debts", {
+  id: serial("id").primaryKey(),
+  user_id: text("user_id").notNull(),
+  name: text("name").notNull(),
+  amount: integer("amount").notNull(),
+  original_amount: integer("original_amount"),
+  creditor: text("creditor"),
+  notes: text("notes"),
+  due_date: text("due_date"),
+  status: debtStatusEnum("status").notNull().default("active"),
   created_at: timestamp("created_at").notNull().defaultNow(),
-  plan: planEnum("plan").notNull(),
-  status: paymentStatusEnum("status"),
-  user_id: text("user_id"),
+  updated_at: timestamp("updated_at"),
 });
 
-export type InsertBudget = typeof budgets.$inferInsert;
-export type SelectBudget = typeof budgets.$inferSelect;
+export type InsertIncome = typeof incomes.$inferInsert;
+export type SelectIncome = typeof incomes.$inferSelect;
 
 export type InsertCategory = typeof categories.$inferInsert;
 export type SelectCategory = typeof categories.$inferSelect;
@@ -71,5 +68,7 @@ export type SelectCategory = typeof categories.$inferSelect;
 export type InsertExpense = typeof expenses.$inferInsert;
 export type SelectExpense = typeof expenses.$inferSelect;
 
-export type InsertPayment = typeof payments.$inferInsert;
-export type SelectPayment = typeof payments.$inferSelect;
+export type InsertDebt = typeof debts.$inferInsert;
+export type SelectDebt = typeof debts.$inferSelect;
+
+

@@ -1,6 +1,6 @@
 import { ArrowDown, ArrowUp, Eye, EyeOff } from "lucide-react";
 import { useNeonUser } from "@/hooks/useNeonUser";
-import { useBudgetStore } from "@/stores/budget";
+import { useIncomeStore } from "@/stores/income";
 import { useExpenseStore } from "@/stores/expense";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
@@ -8,17 +8,17 @@ import { useEffect, useState } from "react";
 export default function Card() {
   const { user } = useNeonUser();
   const { sumOfAllOfExpenses, totalExpenses } = useExpenseStore();
-  const { totalBudget, getTotalBudget } = useBudgetStore();
+  const { totalIncome, getTotalIncome } = useIncomeStore();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     if (user?.id) {
       sumOfAllOfExpenses(user.id);
-      getTotalBudget(user.id);
+      getTotalIncome(user.id);
     }
   }, [user?.id]);
 
-  const balance = totalBudget - totalExpenses;
+  const balance = totalIncome - totalExpenses;
 
   const gradient =
     balance < 0
@@ -62,7 +62,7 @@ export default function Card() {
             <span className="text-white ">Ingresos</span>
           </div>
           <p className="md:text-xl text-lg text-white">
-            S/. {isVisible ? totalBudget.toFixed(2) : "*".repeat(8)}
+            S/. {isVisible ? totalIncome.toFixed(2) : "*".repeat(8)}
           </p>
         </div>
       </div>

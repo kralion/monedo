@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { IBudget } from "@/interfaces";
-import { useBudgetStore } from "@/stores/budget";
+import { IIncome } from "@/interfaces";
+import { useIncomeStore } from "@/stores/income";
 import { useNavigate, useRouter } from "@tanstack/react-router";
 import {
   AlertDialog,
@@ -23,14 +23,14 @@ import {
 import { ArrowLeft } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/edit/$id")({
-  component: EditBudgetPage,
+  component: EditIncomePage,
 });
 
-function EditBudgetPage() {
+function EditIncomePage() {
   const { id } = Route.useParams();
   const { user } = useNeonUser();
-  const { budget, getBudgetById, updateBudget, deleteBudget } =
-    useBudgetStore();
+  const { income, getIncomeById, updateIncome, deleteIncome } =
+    useIncomeStore();
   const navigate = useNavigate();
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
@@ -40,39 +40,39 @@ function EditBudgetPage() {
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm<IBudget>();
+  } = useForm<IIncome>();
 
   useEffect(() => {
-    getBudgetById(Number(id));
+    getIncomeById(Number(id));
   }, [id]);
 
   useEffect(() => {
-    if (budget) {
+    if (income) {
       reset({
-        description: budget.description,
-        amount: budget.amount,
+        description: income.description,
+        amount: income.amount,
       });
     }
-  }, [budget, reset]);
+  }, [income, reset]);
 
-  async function onSubmit(data: IBudget) {
+  async function onSubmit(data: IIncome) {
     if (!user?.id) return;
-    await updateBudget({
-      ...budget!,
+    await updateIncome({
+      ...income!,
       ...data,
       user_id: user.id,
       id: Number(id),
-      created_at: budget!.created_at,
+      created_at: income!.created_at,
     });
     navigate({ to: "/" });
   }
 
   const handleDelete = () => {
-    deleteBudget(Number(id));
+    deleteIncome(Number(id));
     navigate({ to: "/" });
   };
 
-  if (!budget) {
+  if (!income) {
     return (
       <div className="flex items-center justify-center min-h-[200px]">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
@@ -80,7 +80,7 @@ function EditBudgetPage() {
     );
   }
 
-  const formattedDate = new Date(budget.created_at).toLocaleDateString(
+  const formattedDate = new Date(income.created_at).toLocaleDateString(
     "es-PE",
     {
       month: "long",
@@ -147,8 +147,8 @@ function EditBudgetPage() {
               size="lg"
               onClick={() => {
                 reset({
-                  description: budget.description,
-                  amount: budget.amount,
+                  description: income.description,
+                  amount: income.amount,
                 });
                 setIsEditing(false);
               }}
@@ -160,10 +160,10 @@ function EditBudgetPage() {
           <>
             <div className="flex flex-col gap-4 items-center">
               <p className="text-5xl font-bold tracking-tighter">
-                S/ {budget.amount.toFixed(2)}
+                S/ {income.amount.toFixed(2)}
               </p>
               <p className="text-lg text-muted-foreground">
-                {budget.description}
+                {income.description}
               </p>
             </div>
             <div className="flex flex-col gap-4 bg-zinc-100 dark:bg-zinc-800 rounded-lg p-4">
@@ -195,7 +195,7 @@ function EditBudgetPage() {
                   <AlertDialogHeader>
                     <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      Esta acción eliminará el presupuesto seleccionado y no se
+                      Esta acción eliminará el ingreso seleccionado y no se
                       puede deshacer
                     </AlertDialogDescription>
                   </AlertDialogHeader>

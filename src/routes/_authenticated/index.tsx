@@ -1,18 +1,18 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useNeonUser } from "@/hooks/useNeonUser";
 import { useEffect, useState } from "react";
 import Card from "@/components/dashboard/card";
 import { Transaction } from "@/components/transaction";
-import { Budget } from "@/components/wallet/budget";
+import { Income } from "@/components/wallet/income";
 import {
   groupTransactionsByDate,
   Transaction as TransactionItem,
   transactionDate,
 } from "@/helpers/groupTransactionsByDate";
-import { useBudgetStore } from "@/stores/budget";
+import { useIncomeStore } from "@/stores/income";
 import { useExpenseStore } from "@/stores/expense";
-import { Lock } from "lucide-react";
-import { BuyPremiumModal } from "@/components/buy-premium";
+import { useColorScheme } from "@/lib/useColorScheme";
+import { authClient } from "@/auth";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -21,6 +21,18 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import {
+  Avatar,
+  AvatarImage,
+  AvatarFallback,
+} from "@/components/ui/avatar";
+import { User, Bookmark, Sun, Moon, LogOut } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/")({
   component: DashboardPage,
@@ -29,8 +41,8 @@ export const Route = createFileRoute("/_authenticated/")({
 function TransactionRow({ t }: { t: TransactionItem }) {
   return (
     <div className="border-b border-zinc-200 dark:border-zinc-700">
-      {t.kind === "budget" ? (
-        <Budget budget={t.budget} />
+      {t.kind === "income" ? (
+        <Income income={t.income} />
       ) : (
         <Transaction expense={t.expense} />
       )}
@@ -40,17 +52,22 @@ function TransactionRow({ t }: { t: TransactionItem }) {
 
 function DashboardPage() {
   const { user } = useNeonUser();
-  const { checkBudget, getBudgets, budgets } = useBudgetStore();
+  const { getIncomes, incomes } = useIncomeStore();
   const { getRecentExpenses, expenses } = useExpenseStore();
   const [showAll, setShowAll] = useState(false);
-  const [buyPremiumOpen, setBuyPremiumOpen] = useState(false);
-  const [filter, setFilter] = useState<"all" | "expense" | "budget">("all");
+  const [filter, setFilter] = useState<"all" | "expense" | "income">("all");
+  const { colorScheme, setColorScheme } = useColorScheme();
+  const navigate = useNavigate();
+
+  async function handleSignOut() {
+    await authClient.signOut();
+    navigate({ to: "/sign-in" });
+  }
 
   useEffect(() => {
     if (user?.id) {
       getRecentExpenses(user.id);
-      checkBudget(user.id);
-      getBudgets(user.id);
+      getIncomes(user.id);
     }
   }, [user?.id]);
 
@@ -60,7 +77,7 @@ function DashboardPage() {
   }));
 
   const transactions: TransactionItem[] = [
-    ...(budgets ?? []).map((budget) => ({ kind: "budget" as const, budget })),
+    ...(incomes ?? []).map((income) => ({ kind: "income" as const, income })),
     ...parsedExpenses.map((expense) => ({
       kind: "expense" as const,
       expense,
@@ -89,7 +106,7 @@ function DashboardPage() {
               <Select
                 value={filter}
                 onValueChange={(value) =>
-                  setFilter(value as "all" | "expense" | "budget")
+                  setFilter(value as "all" | "expense" | "income")
                 }
               >
                 <SelectTrigger className="w-[140px]">
@@ -97,8 +114,7 @@ function DashboardPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Todos</SelectItem>
-                  <SelectItem value="expense">Gastos</SelectItem>
-                  <SelectItem value="budget">Ingresos</SelectItem>
+                  <SelectItem value="expense">Gastos</SelectItem>                   <SelectItem value="income">Ingresos</SelectItem>
                 </SelectContent>
               </Select>
               <Button
@@ -123,9 +139,8 @@ function DashboardPage() {
                   <div className="space-y-0">
                     {dateTransactions.map((t) => (
                       <TransactionRow
-                        key={
-                          t.kind === "budget"
-                            ? `budget-${t.budget.id}`
+                        key={                           t.kind === "income"
+                            ? `income-${t.income.id}`
                             : `expense-${t.expense.id}`
                         }
                         t={t}
@@ -153,17 +168,43 @@ function DashboardPage() {
                 })}
               </p>
             </div>
-            <Button onClick={() => setBuyPremiumOpen(true)} variant="secondary">
-              <Lock />
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Avatar className="size-9 cursor-pointer">
+                  <AvatarImage src={user?.image ?? undefined} alt={user?.firstName ?? ""} />
+                  <AvatarFallback>
+                    {(user?.firstName?.[0] ?? "") + (user?.lastName?.[0] ?? "")}
+                  </AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end">
+                <DropdownMenuItem asChild>
+                  <Link to="/personal-info" className="flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    Mis datos
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/categories" className="flex items-center gap-2">
+                    <Bookmark className="w-4 h-4" />
+                    Categorías
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={() => setColorScheme(colorScheme === "light" ? "dark" : "light")}>
+                  {colorScheme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+                  Tema {colorScheme === "light" ? "oscuro" : "claro"}
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleSignOut}>
+                  <LogOut className="w-4 h-4" />
+                  Cerrar sesión
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
           <div className=" md:pb-8 pb-4">
             <Card />
           </div>
-          <BuyPremiumModal
-            open={buyPremiumOpen}
-            onOpenChange={setBuyPremiumOpen}
-          />
+
           <div className="flex flex-row justify-between items-center w-full md:mt-6">
             <h2 className=" font-semibold dark:text-white">
               Transacciones Recientes
@@ -190,8 +231,8 @@ function DashboardPage() {
               transactions.map((t) => (
                 <TransactionRow
                   key={
-                    t.kind === "budget"
-                      ? `budget-${t.budget.id}`
+                    t.kind === "income"
+                      ? `income-${t.income.id}`
                       : `expense-${t.expense.id}`
                   }
                   t={t}

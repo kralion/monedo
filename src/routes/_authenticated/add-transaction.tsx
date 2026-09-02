@@ -14,10 +14,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { DatePicker } from "@/components/ui/date-picker";
 import { ICategory, IExpense } from "@/interfaces";
-import { useBudgetStore } from "@/stores/budget";
+import { useIncomeStore } from "@/stores/income";
 import { useExpenseStore } from "@/stores/expense";
 import { useCategoryStore } from "@/stores/category";
+import { useDebtStore } from "@/stores/debt";
 
 export const Route = createFileRoute("/_authenticated/add-transaction")({
   component: AddTransactionPage,
@@ -30,32 +32,39 @@ function AddTransactionPage() {
   const { addExpense, loading, expense, updateExpense, getExpenseById } =
     useExpenseStore();
   const {
-    addBudget,
-    loading: budgetLoading,
-    checkBudget,
-    isOutOfBudget,
-  } = useBudgetStore();
+    addIncome,
+    loading: incomeLoading,
+  } = useIncomeStore();
   const { id } = Route.useSearch();
   const { categories, getCategories } = useCategoryStore();
   const [category, setCategory] = useState<ICategory | undefined>();
   const { user } = useNeonUser();
   const navigate = useNavigate();
 
-  const { control, handleSubmit, reset, setValue } = useForm<IExpense>();
-  const [budgetDescription, setBudgetDescription] = useState("");
-  const [budgetAmount, setBudgetAmount] = useState("");
+  const { control, handleSubmit, reset, setValue } = useForm<IExpense>({
+    defaultValues: { date: new Date() },
+  });
+  const [incomeDescription, setIncomeDescription] = useState("");
+  const [incomeAmount, setIncomeAmount] = useState("");
+  const [incomeDate, setIncomeDate] = useState<Date>(new Date());
+  const [incomeDebtId, setIncomeDebtId] = useState<number | null>(null);
+  const { debts, getDebts } = useDebtStore();
 
   useEffect(() => {
     if (id && expense) {
       setValue("description", expense.description);
       setValue("amount", expense.amount);
       setValue("id_category", expense.id_category);
+      setValue("date", new Date(expense.date));
       setCategory(categories.find((c) => c.id === expense.id_category));
     }
   }, [id, expense]);
 
   useEffect(() => {
-    if (user?.id) getCategories(user.id);
+    if (user?.id) {
+      getCategories(user.id);
+      getDebts(user.id);
+    }
   }, [user?.id]);
 
   useEffect(() => {
@@ -63,10 +72,6 @@ function AddTransactionPage() {
   }, [id]);
 
   async function onSubmit(data: IExpense) {
-    if (isOutOfBudget) {
-      toast.error("No tienes suficiente fondos para registrar este gasto");
-      return;
-    }
     if (!category?.id) {
       toast.error("Debes seleccionar una categoría");
       return;
@@ -90,23 +95,24 @@ function AddTransactionPage() {
 
     reset();
     navigate({ to: "/" });
-    if (user?.id) checkBudget(user.id);
   }
 
-  async function onBudgetSubmit() {
-    if (!budgetDescription.trim() || !budgetAmount) return;
+  async function onIncomeSubmit() {
+    if (!incomeDescription.trim() || !incomeAmount) return;
 
-    await addBudget({
-      description: budgetDescription.trim(),
-      amount: Number(budgetAmount),
+    await addIncome({
+      description: incomeDescription.trim(),
+      amount: Number(incomeAmount),
       user_id: user?.id as string,
-      created_at: new Date(),
+      created_at: incomeDate,
+      id_debt: incomeDebtId,
     });
 
-    setBudgetDescription("");
-    setBudgetAmount("");
+    setIncomeDescription("");
+    setIncomeAmount("");
+    setIncomeDate(new Date());
+    setIncomeDebtId(null);
     navigate({ to: "/" });
-    if (user?.id) checkBudget(user.id);
   }
 
   return (
@@ -171,6 +177,16 @@ function AddTransactionPage() {
               />
             )}
           />
+          <Controller
+            control={control}
+            name="date"
+            render={({ field: { onChange, value } }) => (
+              <DatePicker
+                date={value ? new Date(value) : undefined}
+                onDateChange={onChange}
+              />
+            )}
+          />
           <Button
             className="rounded-full"
             onClick={handleSubmit(onSubmit)}
@@ -203,25 +219,52 @@ function AddTransactionPage() {
             autoFocus
             className="h-36 text-5xl text-center font-bold dark:text-white bg-transparent border-none focus:outline-none w-full"
             placeholder="S/ 50.00"
-            value={budgetAmount}
-            onChange={(e) => setBudgetAmount(e.target.value)}
+            value={incomeAmount}
+            onChange={(e) => setIncomeAmount(e.target.value)}
           />
           <div className="flex flex-col gap-2">
             <Label>Descripción</Label>
             <Textarea
               placeholder="Ej: Salario mensual"
-              value={budgetDescription}
-              onChange={(e) => setBudgetDescription(e.target.value)}
+              value={incomeDescription}
+              onChange={(e) => setIncomeDescription(e.target.value)}
               className="min-h-[100px]"
             />
           </div>
+          <div className="flex flex-col gap-2">
+            <Label>Vincular a deuda (opcional)</Label>
+            <Select
+              value={incomeDebtId ? String(incomeDebtId) : "none"}
+              onValueChange={(value) =>
+                setIncomeDebtId(value === "none" ? null : Number(value))
+              }
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Ninguna" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="none">Ninguna</SelectItem>
+                {debts
+                  .filter((d) => d.status !== "paid")
+                  .map((debt) => (
+                    <SelectItem key={debt.id} value={String(debt.id)}>
+                      {debt.name} — S/. {debt.amount.toFixed(2)}
+                    </SelectItem>
+                  ))}
+              </SelectContent>
+            </Select>
+          </div>
+          <div className="flex flex-col gap-2">
+            <Label>Fecha</Label>
+            <DatePicker date={incomeDate} onDateChange={(d) => setIncomeDate(d ?? new Date())} />
+          </div>
           <Button
             className="rounded-full"
-            onClick={onBudgetSubmit}
+            onClick={onIncomeSubmit}
             size="lg"
-            disabled={budgetLoading}
+            disabled={incomeLoading}
           >
-            {budgetLoading ? (
+            {incomeLoading ? (
               <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white" />
             ) : (
               <span className="dark:text-black">Registrar</span>

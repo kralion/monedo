@@ -50,14 +50,12 @@ function SignInPage() {
       <div className="w-full max-w-md">
         <div className="flex flex-col items-center gap-4 mb-8">
           <img
-            src="/logo.png"
-            alt="Monedo"
-            className="w-24 h-24"
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = "none";
-            }}
+            src="https://img.icons8.com/?size=100&id=FDN2ARbuPRR2&format=png&color=000000"
+            className="size-20"
           />
-          <h1 className="text-3xl font-bold text-center">Bienvenido a Monedo</h1>
+          <h1 className="text-2xl font-bold text-center">
+            Bienvenido a Monedo
+          </h1>
           <p className="text-center text-muted-foreground">
             Inicia sesión para continuar
           </p>

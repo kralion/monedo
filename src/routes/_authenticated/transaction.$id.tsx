@@ -14,8 +14,9 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { expensesIdentifiers } from "@/constants/ExpensesIdentifiers";
-import { useBudgetStore } from "@/stores/budget";
+import { useIncomeStore } from "@/stores/income";
 import { useExpenseStore } from "@/stores/expense";
+import { useDebtStore } from "@/stores/debt";
 import { useNeonUser } from "@/hooks/useNeonUser";
 import {
   createFileRoute,
@@ -28,7 +29,7 @@ import { ArrowLeft } from "lucide-react";
 import { z } from "zod";
 
 const transactionTypeSchema = z.object({
-  type: z.enum(["budget", "expense"]).default("expense"),
+  type: z.enum(["income", "expense"]).default("expense"),
 });
 
 export const Route = createFileRoute("/_authenticated/transaction/$id")({
@@ -49,25 +50,32 @@ function TransactionDetailsPage() {
     totalExpenses,
     deleteExpense,
   } = useExpenseStore();
-  const { budget, getBudgetById, getTotalBudget, totalBudget, deleteBudget } =
-    useBudgetStore();
+  const { income, getIncomeById, getTotalIncome, totalIncome, deleteIncome } =
+    useIncomeStore();
+  const { debt, getDebtById } = useDebtStore();
 
   useEffect(() => {
     if (type === "expense") {
       getExpenseById(Number(id));
     } else {
-      getBudgetById(Number(id));
+      getIncomeById(Number(id));
     }
   }, [id, type]);
 
   useEffect(() => {
+    if (type === "income" && income?.id_debt) {
+      getDebtById(income.id_debt);
+    }
+  }, [type, income?.id_debt]);
+
+  useEffect(() => {
     if (user?.id && type === "expense") {
-      getTotalBudget(user.id);
+      getTotalIncome(user.id);
       sumOfAllOfExpenses(user.id);
     }
   }, [user?.id, type]);
 
-  const isLoading = type === "expense" ? !expense : !budget;
+  const isLoading = type === "expense" ? !expense : !income;
 
   if (isLoading) {
     return (
@@ -82,7 +90,7 @@ function TransactionDetailsPage() {
       deleteExpense(expense?.id as number);
       navigate({ to: "/" });
     } else {
-      deleteBudget(budget?.id as number);
+      deleteIncome(income?.id as number);
       navigate({ to: "/" });
     }
   };
@@ -94,10 +102,10 @@ function TransactionDetailsPage() {
     )?.iconHref ||
     "https://img.icons8.com/?size=160&id=MjAYkOMsbYOO&format=png";
 
-  const percentage = totalBudget > 0 ? (totalExpenses / totalBudget) * 100 : 0;
+  const percentage = totalIncome > 0 ? (totalExpenses / totalIncome) * 100 : 0;
 
-  const formattedBudgetDate = budget?.created_at
-    ? new Date(budget.created_at).toLocaleDateString("es-PE", {
+  const formattedIncomeDate = income?.created_at
+    ? new Date(income.created_at).toLocaleDateString("es-PE", {
         month: "long",
         day: "numeric",
         year: "numeric",
@@ -216,25 +224,34 @@ function TransactionDetailsPage() {
                 className="size-36 bg-zinc-100 dark:bg-zinc-800 rounded-full p-6 object-contain"
               />
               <p className="text-5xl font-bold tracking-tighter">
-                S/ {budget?.amount.toFixed(2)}
+                S/ {income?.amount.toFixed(2)}
               </p>
               <p className="text-lg text-muted-foreground">
-                {budget?.description}
+                {income?.description}
               </p>
             </div>
             <div className="flex flex-col gap-4 bg-zinc-100 dark:bg-zinc-800 rounded-lg p-4">
               <div className="flex flex-row justify-between items-center">
                 <span className="text-muted-foreground">Fecha</span>
-                <span>{formattedBudgetDate}</span>
+                <span>{formattedIncomeDate}</span>
               </div>
               <Separator />
               <div className="flex flex-row justify-between items-center">
                 <span className="text-muted-foreground">Tipo</span>
                 <span>Ingreso</span>
               </div>
+              {income?.id_debt && debt && (
+                <>
+                  <Separator />
+                  <div className="flex flex-row justify-between items-center">
+                    <span className="text-muted-foreground">Deuda</span>
+                    <Badge variant="outline">{debt.name}</Badge>
+                  </div>
+                </>
+              )}
             </div>
             <div className="flex flex-col gap-4">
-              <Link to="/edit/$id" params={{ id: String(budget?.id) }}>
+              <Link to="/edit/$id" params={{ id: String(income?.id) }}>
                 <Button size="lg" className="w-full">
                   Editar
                 </Button>
@@ -249,7 +266,7 @@ function TransactionDetailsPage() {
                   <AlertDialogHeader>
                     <AlertDialogTitle>¿Estás seguro?</AlertDialogTitle>
                     <AlertDialogDescription>
-                      Esta acción eliminará el presupuesto seleccionado y no se
+                      Esta acción eliminará el ingreso seleccionado y no se
                       puede deshacer
                     </AlertDialogDescription>
                   </AlertDialogHeader>

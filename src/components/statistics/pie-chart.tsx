@@ -3,37 +3,29 @@ import {
   Pie,
   Cell,
   ResponsiveContainer,
+  Tooltip,
 } from "recharts";
-import { IExpense } from "@/interfaces";
+import { IExpense, TransactionType } from "@/interfaces";
 
 type ChartProps = {
-  timelineQuery: {
-    value: string;
-    label: string;
-    startTimeOfQuery: Date;
-    endTimeOfQuery: Date;
-  };
-  data: IExpense[];
+  transactionType: TransactionType;
+  expenses: IExpense[];
+  totalIncome: number;
+  totalExpenses: number;
 };
 
-export default function PieChart({ timelineQuery, data }: ChartProps) {
-  const filterExpensesByTimeline = (expenses: IExpense[]) => {
-    return expenses.filter((expense) => {
-      const expenseDate = new Date(expense.date);
-      return (
-        expenseDate >= timelineQuery.startTimeOfQuery &&
-        expenseDate <= timelineQuery.endTimeOfQuery
-      );
-    });
-  };
-
-  const aggregateByCategory = (expenses: IExpense[]) => {
-    const filteredExpenses = filterExpensesByTimeline(expenses);
+export default function PieChart({
+  transactionType,
+  expenses,
+  totalIncome,
+  totalExpenses,
+}: ChartProps) {
+  const aggregateByCategory = (expenseData: IExpense[]) => {
     const categoryTotals = new Map<number, number>();
     const categoryNames = new Map<number, string>();
     const categoryColors = new Map<number, string>();
 
-    filteredExpenses.forEach((expense) => {
+    expenseData.forEach((expense) => {
       const current = categoryTotals.get(expense.id_category) || 0;
       categoryTotals.set(expense.id_category, current + expense.amount);
       categoryNames.set(expense.id_category, expense.categories?.label || "");
@@ -58,7 +50,28 @@ export default function PieChart({ timelineQuery, data }: ChartProps) {
       .filter(({ percentage }) => percentage >= 2);
   };
 
-  const pieData = aggregateByCategory(data);
+  const getTodosData = () => {
+    const total = totalIncome + totalExpenses;
+    if (total === 0) return [];
+
+    return [
+      {
+        value: totalIncome,
+        percentage: Math.round((totalIncome / total) * 100),
+        name: "Ingresos",
+        color: "#22c55e",
+      },
+      {
+        value: totalExpenses,
+        percentage: Math.round((totalExpenses / total) * 100),
+        name: "Gastos",
+        color: "#ef4444",
+      },
+    ];
+  };
+
+  const pieData =
+    transactionType === "todos" ? getTodosData() : aggregateByCategory(expenses);
 
   if (pieData.length === 0) {
     return (
@@ -80,12 +93,22 @@ export default function PieChart({ timelineQuery, data }: ChartProps) {
             outerRadius={120}
             paddingAngle={2}
             dataKey="value"
-            label={({ name, percentage }) => `${name} ${percentage}%`}
           >
             {pieData.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.color} />
             ))}
           </Pie>
+          <Tooltip
+            content={({ payload }) => {
+              if (!payload?.length) return null;
+              const value = Number(payload[0].value);
+              return (
+                <div className="bg-white dark:bg-zinc-800 border rounded-lg px-3 py-2 shadow-lg">
+                  <p>S/. {value.toFixed(2)}</p>
+                </div>
+              );
+            }}
+          />
         </RechartsPie>
       </ResponsiveContainer>
     </div>

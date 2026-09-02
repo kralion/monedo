@@ -1,11 +1,11 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Home, BarChart3, User } from "lucide-react";
+import { Home, BarChart3, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const Tabs = [
   { name: "index", title: "Dashboard", href: "/", icon: Home },
   { name: "statistics", title: "Estadísticas", href: "/statistics", icon: BarChart3 },
-  { name: "profile", title: "Perfil", href: "/profile", icon: User },
+  { name: "debts", title: "Deudas", href: "/debts", icon: Wallet },
 ];
 
 function TabItem({ tab, isActive }: { tab: (typeof Tabs)[number]; isActive: boolean }) {

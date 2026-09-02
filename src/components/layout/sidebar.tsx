@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, BarChart3, User, Plus } from "lucide-react";
+import { Home, BarChart3, Plus, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const Tabs = [
@@ -10,7 +10,12 @@ const Tabs = [
     href: "/statistics",
     icon: BarChart3,
   },
-  { name: "profile", title: "Perfil", href: "/profile", icon: User },
+  {
+    name: "debts",
+    title: "Deudas",
+    href: "/debts",
+    icon: Wallet,
+  },
 ];
 
 export function Sidebar() {
@@ -20,7 +25,7 @@ export function Sidebar() {
   return (
     <>
       {/* Desktop sidebar - hidden on mobile */}
-      <aside className="hidden md:flex w-[260px] shrink-0 border-r border-zinc-200 dark:border-zinc-800 sticky top-0 h-screen flex-col">
+      <aside className="hidden md:flex w-[260px] shrink-0 border-r border-sidebar-border bg-sidebar text-sidebar-foreground sticky top-0 h-screen flex-col">
         <div className="p-4 flex items-center gap-2">
           <img
             src="https://img.icons8.com/?size=100&id=FDN2ARbuPRR2&format=png&color=000000"
@@ -40,23 +45,23 @@ export function Sidebar() {
                 to={tab.href}
                 className={cn(
                   "flex items-center gap-3 rounded-lg px-4 py-2.5 transition-colors",
-                  isActive
-                    ? "bg-zinc-100 dark:bg-zinc-700"
-                    : "hover:bg-zinc-100 dark:hover:bg-zinc-800",
+                  isActive ? "bg-sidebar-accent" : "hover:bg-sidebar-accent/60",
                 )}
               >
                 <Icon
                   className={cn(
                     "w-5 h-5",
-                    isActive ? "text-primary" : "opacity-70",
+                    isActive
+                      ? "text-sidebar-foreground"
+                      : "text-sidebar-foreground/70",
                   )}
                 />
                 <span
                   className={cn(
                     "text-base",
                     isActive
-                      ? "font-semibold text-foreground"
-                      : "text-muted-foreground",
+                      ? "font-semibold text-sidebar-foreground"
+                      : "text-sidebar-foreground/70",
                   )}
                 >
                   {tab.title}

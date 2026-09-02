@@ -1,13 +1,13 @@
 import { format, isToday, isYesterday } from "date-fns";
-import { IBudget, IExpense } from "@/interfaces";
+import { IIncome, IExpense } from "@/interfaces";
 import { es } from "date-fns/locale";
 
 export type Transaction =
-  | { kind: "budget"; budget: IBudget }
+  | { kind: "income"; income: IIncome }
   | { kind: "expense"; expense: IExpense };
 
 export const transactionDate = (t: Transaction): Date =>
-  new Date(t.kind === "budget" ? t.budget.created_at : t.expense.date);
+  new Date(t.kind === "income" ? t.income.created_at : t.expense.date);
 
 export const groupTransactionsByDate = (transactions: Transaction[]) => {
   return transactions.reduce((groups: { [key: string]: Transaction[] }, t) => {

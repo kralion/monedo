@@ -1,3 +1,5 @@
+export type TransactionType = "todos" | "ingresos" | "gastos";
+
 export interface IExpense {
   description: string;
   id: number;
@@ -11,12 +13,13 @@ export interface IExpense {
   currency: string;
 }
 
-export interface IBudget {
+export interface IIncome {
   id?: number;
   user_id: string;
   created_at: Date;
   description: string;
   amount: number;
+  id_debt?: number | null;
 }
 
 export interface IUser {
@@ -49,19 +52,18 @@ export interface IGoal {
   ahorro_actual: number;
   meta_ahorro: number;
 }
-export interface BudgetStore {
-  budgets: IBudget[];
-  budget: IBudget | null;
-  isOutOfBudget: boolean;
+export interface IncomeStore {
+  incomes: IIncome[];
+  income: IIncome | null;
   loading: boolean;
-  checkBudget: (userId: string) => void;
-  totalBudget: number;
-  addBudget: (budget: IBudget) => Promise<void>;
-  updateBudget: (budget: IBudget) => Promise<void>;
-  deleteBudget: (id: number) => Promise<void>;
-  getBudgets: (userId: string) => Promise<void>;
-  getTotalBudget: (userId: string) => Promise<number>;
-  getBudgetById: (id: number) => Promise<IBudget>;
+  totalIncome: number;
+  addIncome: (income: IIncome) => Promise<void>;
+  updateIncome: (income: IIncome) => Promise<void>;
+  deleteIncome: (id: number) => Promise<void>;
+  getIncomes: (userId: string) => Promise<void>;
+  getIncomesSortedByAmount: (userId: string) => Promise<IIncome[]>;
+  getTotalIncome: (userId: string) => Promise<number>;
+  getIncomeById: (id: number) => Promise<IIncome>;
 }
 export interface ExpenseStore {
   addExpense: (expense: IExpense) => void;
@@ -83,6 +85,7 @@ export interface ExpenseStore {
     startTimeOfQuery: Date;
     endTimeOfQuery: Date;
   }) => Promise<IExpense[] | null>;
+  getAllExpensesSortedByAmount: (userId: string) => Promise<IExpense[]>;
   getRecentExpenses: (userId: string) => Promise<IExpense[]>;
 }
 export interface CategoryStore {
@@ -96,26 +99,24 @@ export interface CategoryStore {
   getCategories: (userId: string) => Promise<void>;
 }
 
-export interface IBudgetContextProvider {
-  addBudget: (budget: IBudget) => void;
-  getTotalBudget: () => Promise<number>;
+export interface IIncomeContextProvider {
+  addIncome: (income: IIncome) => void;
+  getTotalIncome: () => Promise<number>;
   loading: boolean;
-  budgets: IBudget[];
-  getBudgetById: (id: number) => Promise<IBudget>;
-  setBudget: (budget: IBudget) => void;
-  budget: IBudget;
-  getCurrentBudget: () => Promise<IBudget | null>;
-  updateBudget: (budget: IBudget) => void;
-  deleteBudget: (id: number) => void;
-  getBudgets: () => Promise<IBudget[] | null>;
+  incomes: IIncome[];
+  getIncomeById: (id: number) => Promise<IIncome>;
+  setIncome: (income: IIncome) => void;
+  income: IIncome;
+  getCurrentIncome: () => Promise<IIncome | null>;
+  updateIncome: (income: IIncome) => void;
+  deleteIncome: (id: number) => void;
+  getIncomes: () => Promise<IIncome[] | null>;
 }
 
 export interface IExpenseContextProvider {
   addExpense: (expense: IExpense) => void;
   getWeeklyExpenses: () => Promise<IExpense[]>;
-  isOutOfBudget: boolean;
   deleteExpense: (id: number) => void;
-  checkBudget: () => void;
   weeklyExpenses: IExpense[];
   loading: boolean;
   expense: IExpense;
@@ -135,4 +136,29 @@ export interface IGoalContextProvider {
   goals: IGoal[];
   updateGoal: (meta: IGoal) => void;
   getRecentGoals: () => Promise<IGoal[]>;
+}
+
+export interface IDebt {
+  id: number;
+  user_id: string;
+  name: string;
+  amount: number;
+  original_amount?: number | null;
+  creditor?: string | null;
+  notes?: string | null;
+  due_date?: string | null;
+  status: "active" | "paid" | "overdue" | "partial";
+  created_at: Date;
+  updated_at?: Date | null;
+}
+
+export interface DebtStore {
+  debts: IDebt[];
+  debt: IDebt | null;
+  loading: boolean;
+  getDebts: (userId: string) => Promise<void>;
+  getDebtById: (id: number) => Promise<IDebt>;
+  addDebt: (debt: IDebt) => Promise<void>;
+  updateDebt: (debt: IDebt) => Promise<void>;
+  deleteDebt: (id: number) => Promise<void>;
 }

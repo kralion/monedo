@@ -271,6 +271,37 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
     }
   },
 
+  getAllExpensesSortedByAmount: async (userId: string) => {
+    set({ loading: true });
+    try {
+      const data = await db
+        .select({
+          id: expenses.id,
+          amount: expenses.amount,
+          currency: expenses.currency,
+          date: expenses.date,
+          description: expenses.description,
+          id_category: expenses.id_category,
+          number: expenses.number,
+          periodicity: expenses.periodicity,
+          user_id: expenses.user_id,
+          categories: categories,
+        })
+        .from(expenses)
+        .leftJoin(categories, eq(expenses.id_category, categories.id))
+        .where(eq(expenses.user_id, userId))
+        .orderBy(desc(expenses.amount));
+
+      const expensesData = (data as unknown as IExpense[]) ?? [];
+      set({ expenses: expensesData, loading: false });
+      return expensesData;
+    } catch (error) {
+      set({ loading: false });
+      toast.error("Error al obtener los gastos");
+      return [];
+    }
+  },
+
   sumOfAllOfExpenses: async (userId: string) => {
     try {
       const data = await db

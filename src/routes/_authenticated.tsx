@@ -3,8 +3,6 @@ import { useEffect } from "react";
 import { authClient } from "@/auth";
 import { Sidebar } from "@/components/layout/sidebar";
 import AppBottomTabs from "@/components/layout/app-bottomtabs";
-import { usePaymentStore } from "@/stores/payment";
-import confetti from "canvas-confetti";
 
 export const Route = createFileRoute("/_authenticated")({
   component: AuthenticatedLayout,
@@ -12,7 +10,6 @@ export const Route = createFileRoute("/_authenticated")({
 
 function AuthenticatedLayout() {
   const { data, isPending } = authClient.useSession();
-  const { isPayed, setIsPayed } = usePaymentStore();
   const navigate = useNavigate();
   const isSignedIn = !!data;
 
@@ -21,14 +18,6 @@ function AuthenticatedLayout() {
       navigate({ to: "/sign-in" });
     }
   }, [isPending, isSignedIn, navigate]);
-
-  useEffect(() => {
-    if (isPayed) {
-      confetti({ particleCount: 300, spread: 70, origin: { y: 0.6 } });
-      const t = setTimeout(() => setIsPayed(false), 4000);
-      return () => clearTimeout(t);
-    }
-  }, [isPayed, setIsPayed]);
 
   if (isPending) {
     return (
