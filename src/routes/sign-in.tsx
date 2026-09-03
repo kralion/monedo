@@ -15,32 +15,32 @@ function SignInPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
- async function handleSubmit(e: React.FormEvent) {
-  e.preventDefault();
-  setLoading(true);
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setLoading(true);
 
-  try {
-    const { error } = await authClient.signIn.email({
-      email,
-      password,
-    });
+    try {
+      const { error } = await authClient.signIn.email({
+        email,
+        password,
+      });
 
-    console.log('SignIn result:', { error });
+      console.log("SignIn result:", { error });
 
-    if (error) {
-      toast.error(error.message ?? "Credenciales inválidas");
-      return;
+      if (error) {
+        toast.error(error.message ?? "Credenciales inválidas");
+        return;
+      }
+
+      // Redirect explícito tras login exitoso
+      window.location.href = "/";
+    } catch (err) {
+      console.error("Login exception:", err);
+      toast.error("Error al iniciar sesión");
+    } finally {
+      setLoading(false);
     }
-
-    // Redirect explícito tras login exitoso
-    window.location.href = "/";
-  } catch (err) {
-    console.error('Login exception:', err);
-    toast.error("Error al iniciar sesión");
-  } finally {
-    setLoading(false);
   }
-}
 
   async function handleGoogleSignIn() {
     await authClient.signIn.social({
@@ -57,9 +57,7 @@ function SignInPage() {
             src="https://img.icons8.com/?size=100&id=FDN2ARbuPRR2&format=png&color=000000"
             className="size-20"
           />
-          <h1 className="text-2xl font-bold text-center">
-            Bienvenido a Monedo
-          </h1>
+          <h1 className="text-2xl font-bold text-center">Monedo</h1>
           <p className="text-center text-muted-foreground">
             Inicia sesión para continuar
           </p>
