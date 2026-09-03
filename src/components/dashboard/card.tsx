@@ -53,7 +53,7 @@ export default function Card() {
             <span className="text-white ">Gastos</span>
           </div>
           <p className="md:text-xl text-lg text-white ">
-            S/. {isVisible ? totalExpenses.toFixed(2) : "*".repeat(8)}
+            {isVisible ? totalExpenses.toFixed(2) : "*".repeat(8)}
           </p>
         </div>
         <div className="flex flex-col gap-2 items-end">
@@ -62,7 +62,7 @@ export default function Card() {
             <span className="text-white ">Ingresos</span>
           </div>
           <p className="md:text-xl text-lg text-white">
-            S/. {isVisible ? totalIncome.toFixed(2) : "*".repeat(8)}
+            {isVisible ? totalIncome.toFixed(2) : "*".repeat(8)}
           </p>
         </div>
       </div>

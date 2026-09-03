@@ -1,6 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { Home, BarChart3, Plus, Wallet } from "lucide-react";
 import { cn } from "@/lib/utils";
+import logo from "@/assets/logo.png";
 
 const Tabs = [
   { name: "index", title: "Dashboard", href: "/", icon: Home },
@@ -27,10 +28,7 @@ export function Sidebar() {
       {/* Desktop sidebar - hidden on mobile */}
       <aside className="hidden md:flex w-[260px] shrink-0 border-r border-sidebar-border bg-sidebar text-sidebar-foreground sticky top-0 h-screen flex-col">
         <div className="p-4 flex items-center gap-2">
-          <img
-            src="https://img.icons8.com/?size=100&id=FDN2ARbuPRR2&format=png&color=000000"
-            className="size-12"
-          />
+          <img src={logo} alt="Monedo" className="size-12" />
           <span className="text-xl font-bold">Monedo</span>
         </div>
         <nav className="flex flex-col gap-1 p-2">

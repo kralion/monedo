@@ -11,13 +11,11 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
 import { expensesIdentifiers } from "@/constants/ExpensesIdentifiers";
 import { useIncomeStore } from "@/stores/income";
 import { useExpenseStore } from "@/stores/expense";
 import { useDebtStore } from "@/stores/debt";
-import { useNeonUser } from "@/hooks/useNeonUser";
 import {
   createFileRoute,
   Link,
@@ -40,18 +38,10 @@ export const Route = createFileRoute("/_authenticated/transaction/$id")({
 function TransactionDetailsPage() {
   const { id } = Route.useParams();
   const { type } = Route.useSearch();
-  const { user } = useNeonUser();
   const router = useRouter();
   const navigate = useNavigate();
-  const {
-    expense,
-    getExpenseById,
-    sumOfAllOfExpenses,
-    totalExpenses,
-    deleteExpense,
-  } = useExpenseStore();
-  const { income, getIncomeById, getTotalIncome, totalIncome, deleteIncome } =
-    useIncomeStore();
+  const { expense, getExpenseById, deleteExpense } = useExpenseStore();
+  const { income, getIncomeById, deleteIncome } = useIncomeStore();
   const { debt, getDebtById } = useDebtStore();
 
   useEffect(() => {
@@ -68,13 +58,6 @@ function TransactionDetailsPage() {
     }
   }, [type, income?.id_debt]);
 
-  useEffect(() => {
-    if (user?.id && type === "expense") {
-      getTotalIncome(user.id);
-      sumOfAllOfExpenses(user.id);
-    }
-  }, [user?.id, type]);
-
   const isLoading = type === "expense" ? !expense : !income;
 
   if (isLoading) {
@@ -85,14 +68,13 @@ function TransactionDetailsPage() {
     );
   }
 
-  const handleDelete = () => {
+  const handleDelete = async () => {
     if (type === "expense") {
-      deleteExpense(expense?.id as number);
-      navigate({ to: "/" });
+      await deleteExpense(expense?.id as number);
     } else {
-      deleteIncome(income?.id as number);
-      navigate({ to: "/" });
+      await deleteIncome(income?.id as number);
     }
+    navigate({ to: "/" });
   };
 
   const assetIndentificador =
@@ -101,8 +83,6 @@ function TransactionDetailsPage() {
         icon.label.toLowerCase() === expense?.categories?.label?.toLowerCase(),
     )?.iconHref ||
     "https://img.icons8.com/?size=160&id=MjAYkOMsbYOO&format=png";
-
-  const percentage = totalIncome > 0 ? (totalExpenses / totalIncome) * 100 : 0;
 
   const formattedIncomeDate = income?.created_at
     ? new Date(income.created_at).toLocaleDateString("es-PE", {
@@ -132,7 +112,7 @@ function TransactionDetailsPage() {
                 className="size-36 bg-zinc-100 dark:bg-zinc-800 rounded-full p-6 object-contain"
               />
               <p className="text-5xl font-bold tracking-tighter">
-                S/ {expense?.amount.toFixed(2)}
+                S/. {expense?.amount.toFixed(2)}
               </p>
               <p className="text-lg text-muted-foreground">
                 {expense.description}
@@ -163,23 +143,6 @@ function TransactionDetailsPage() {
               <div className="flex flex-row justify-between items-center">
                 <span className="text-muted-foreground">Categoria</span>
                 <Badge variant="outline">{expense?.categories?.label}</Badge>
-              </div>
-              <div className="flex flex-col gap-3">
-                <Progress
-                  value={Number((percentage / 10).toFixed(2))}
-                  className="w-full"
-                />
-                <div className="flex flex-row justify-between items-center">
-                  <span>0%</span>
-                  <span>100%</span>
-                </div>
-                <p className="text-center text-sm text-muted-foreground">
-                  Consumido{" "}
-                  <span className="font-bold text-primary">
-                    {Number((percentage / 10).toFixed(2))}%
-                  </span>{" "}
-                  del presupuesto para el mes actual.
-                </p>
               </div>
             </div>
             <div className="flex flex-col gap-4">

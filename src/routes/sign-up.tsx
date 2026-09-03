@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import logo from "@/assets/logo.png";
 
 export const Route = createFileRoute("/sign-up")({
   component: SignUpPage,
@@ -52,18 +53,13 @@ function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-zinc-900 p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-b from-teal-100 to-white dark:from-teal-900 dark:to-zinc-900 p-4">
       <div className="w-full max-w-md">
-        <div className="flex flex-col items-center gap-4 mb-8">
-          <img
-            src="/logo.png"
-            alt="Monedo"
-            className="w-24 h-24"
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = "none";
-            }}
-          />
-          <h1 className="text-3xl font-bold text-center">Crea tu cuenta</h1>
+        <div className="flex flex-col items-center mb-8">
+          <img src={logo} alt="Monedo" className="w-24 h-24" />
+          <h1 className="text-3xl font-bold tracking-tight text-center">
+            Crea tu cuenta
+          </h1>
           <p className="text-center text-muted-foreground">
             Empieza a controlar tus gastos
           </p>
@@ -109,7 +105,7 @@ function SignUpPage() {
             )}
           </Button>
         </form>
-        <div className="relative my-6">
+        <div className="relative my-3">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t" />
           </div>
@@ -122,9 +118,13 @@ function SignUpPage() {
         <Button
           variant="outline"
           size="lg"
-          className="w-full"
+          className="w-full flex gap-2 items-center"
           onClick={handleGoogleSignUp}
         >
+          <img
+            src="https://img.icons8.com/?size=96&id=17949&format=png"
+            className="size-4"
+          />
           Registrarse con Google
         </Button>
         <p className="text-center text-sm text-muted-foreground mt-6">

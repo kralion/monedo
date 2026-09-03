@@ -38,7 +38,7 @@ export function Transaction({ expense }: { expense: IExpense }) {
         </div>
         <div className="flex flex-row items-center gap-4">
           <p className="md:text-xl font-semibold text-red-500 dark:text-red-400">
-            S/{expense.amount.toFixed(2)}
+            S/. {expense.amount.toFixed(2)}
           </p>
           <ChevronRight className="w-5 h-5 text-gray-500" />
         </div>

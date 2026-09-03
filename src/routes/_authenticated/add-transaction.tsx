@@ -107,7 +107,6 @@ function AddTransactionPage() {
       created_at: incomeDate,
       id_debt: incomeDebtId,
     });
-
     setIncomeDescription("");
     setIncomeAmount("");
     setIncomeDate(new Date());

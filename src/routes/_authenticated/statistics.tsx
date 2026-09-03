@@ -13,7 +13,7 @@ import { IExpense, IIncome, TransactionType } from "@/interfaces";
 import { formatDate } from "@/helpers/dateFormatter";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { Link } from "@tanstack/react-router";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Loader2 } from "lucide-react";
 
 export const Route = createFileRoute("/_authenticated/statistics")({
   component: StatisticsPage,
@@ -109,7 +109,11 @@ function StatisticsPage() {
     }
     if (transactionType === "todos" || transactionType === "gastos") {
       expenses.forEach((exp) =>
-        transactionList.push({ type: "expense", data: exp, amount: exp.amount }),
+        transactionList.push({
+          type: "expense",
+          data: exp,
+          amount: exp.amount,
+        }),
       );
     }
 
@@ -131,8 +135,8 @@ function StatisticsPage() {
 
   return (
     <div className="py-4 bg-white dark:bg-zinc-900 max-w-4xl mx-auto">
-      <div className="flex flex-col gap-8">
-        <div className="flex flex-row justify-between px-4 pt-7">
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-row justify-between p-4">
           <h1 className="text-4xl font-bold md:text-5xl">Estadísticas</h1>
         </div>
         <div className="flex flex-col gap-4">
@@ -141,9 +145,7 @@ function StatisticsPage() {
               <Button
                 key={item.value}
                 size="sm"
-                variant={
-                  transactionType === item.value ? "default" : "outline"
-                }
+                variant={transactionType === item.value ? "default" : "outline"}
                 onClick={() => setTransactionType(item.value)}
                 className="rounded-full shrink-0"
               >
@@ -158,7 +160,7 @@ function StatisticsPage() {
         <div className="flex flex-col gap-4 mt-4">
           {loading ? (
             <div className="h-[300px] flex items-center justify-center">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+              <Loader2 className="animate-spin" />
             </div>
           ) : transactionType === "ingresos" ? (
             <div className="mt-4">
@@ -205,7 +207,7 @@ function StatisticsPage() {
             </>
           )}
 
-          <h2 className="mt-12 text-xl font-bold md:text-2xl">
+          <h2 className="mt-12 text-xl font-semibold md:text-2xl">
             {getChartTitle()}
           </h2>
           <div className="space-y-0">
@@ -216,7 +218,7 @@ function StatisticsPage() {
                 </p>
               </div>
             ) : (
-              sortedTransactions.map((item) => (
+              sortedTransactions.slice(0, 10).map((item) => (
                 <div
                   key={`${item.type}-${item.data.id}`}
                   className="border-b border-zinc-200 dark:border-zinc-600"

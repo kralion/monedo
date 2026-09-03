@@ -15,6 +15,7 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as Char43notFoundRouteImport } from './routes/+not-found'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedStatisticsRouteImport } from './routes/_authenticated/statistics'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedPersonalInfoRouteImport } from './routes/_authenticated/personal-info'
 import { Route as AuthenticatedDebtsRouteImport } from './routes/_authenticated/debts'
 import { Route as AuthenticatedCategoriesRouteImport } from './routes/_authenticated/categories'
@@ -51,6 +52,11 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
 const AuthenticatedStatisticsRoute = AuthenticatedStatisticsRouteImport.update({
   id: '/statistics',
   path: '/statistics',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AuthenticatedPersonalInfoRoute =
@@ -107,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/categories': typeof AuthenticatedCategoriesRoute
   '/debts': typeof AuthenticatedDebtsRoute
   '/personal-info': typeof AuthenticatedPersonalInfoRoute
+  '/profile': typeof AuthenticatedProfileRoute
   '/statistics': typeof AuthenticatedStatisticsRoute
   '/debt/$id': typeof AuthenticatedDebtIdRoute
   '/edit/$id': typeof AuthenticatedEditIdRoute
@@ -121,6 +128,7 @@ export interface FileRoutesByTo {
   '/categories': typeof AuthenticatedCategoriesRoute
   '/debts': typeof AuthenticatedDebtsRoute
   '/personal-info': typeof AuthenticatedPersonalInfoRoute
+  '/profile': typeof AuthenticatedProfileRoute
   '/statistics': typeof AuthenticatedStatisticsRoute
   '/': typeof AuthenticatedIndexRoute
   '/debt/$id': typeof AuthenticatedDebtIdRoute
@@ -138,6 +146,7 @@ export interface FileRoutesById {
   '/_authenticated/categories': typeof AuthenticatedCategoriesRoute
   '/_authenticated/debts': typeof AuthenticatedDebtsRoute
   '/_authenticated/personal-info': typeof AuthenticatedPersonalInfoRoute
+  '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/statistics': typeof AuthenticatedStatisticsRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/debt/$id': typeof AuthenticatedDebtIdRoute
@@ -156,6 +165,7 @@ export interface FileRouteTypes {
     | '/categories'
     | '/debts'
     | '/personal-info'
+    | '/profile'
     | '/statistics'
     | '/debt/$id'
     | '/edit/$id'
@@ -170,6 +180,7 @@ export interface FileRouteTypes {
     | '/categories'
     | '/debts'
     | '/personal-info'
+    | '/profile'
     | '/statistics'
     | '/'
     | '/debt/$id'
@@ -186,6 +197,7 @@ export interface FileRouteTypes {
     | '/_authenticated/categories'
     | '/_authenticated/debts'
     | '/_authenticated/personal-info'
+    | '/_authenticated/profile'
     | '/_authenticated/statistics'
     | '/_authenticated/'
     | '/_authenticated/debt/$id'
@@ -242,6 +254,13 @@ declare module '@tanstack/react-router' {
       path: '/statistics'
       fullPath: '/statistics'
       preLoaderRoute: typeof AuthenticatedStatisticsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/personal-info': {
@@ -309,6 +328,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedCategoriesRoute: typeof AuthenticatedCategoriesRoute
   AuthenticatedDebtsRoute: typeof AuthenticatedDebtsRoute
   AuthenticatedPersonalInfoRoute: typeof AuthenticatedPersonalInfoRoute
+  AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedStatisticsRoute: typeof AuthenticatedStatisticsRoute
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedDebtIdRoute: typeof AuthenticatedDebtIdRoute
@@ -322,6 +342,7 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedCategoriesRoute: AuthenticatedCategoriesRoute,
   AuthenticatedDebtsRoute: AuthenticatedDebtsRoute,
   AuthenticatedPersonalInfoRoute: AuthenticatedPersonalInfoRoute,
+  AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedStatisticsRoute: AuthenticatedStatisticsRoute,
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedDebtIdRoute: AuthenticatedDebtIdRoute,

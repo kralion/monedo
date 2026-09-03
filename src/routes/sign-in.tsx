@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import logo from "@/assets/logo.png";
 
 export const Route = createFileRoute("/sign-in")({
   component: SignInPage,
@@ -50,16 +51,13 @@ function SignInPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-zinc-900 p-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-b from-teal-100 to-white dark:from-teal-900 dark:to-zinc-900 p-4">
       <div className="w-full max-w-md">
-        <div className="flex flex-col items-center gap-4 mb-8">
-          <img
-            src="https://img.icons8.com/?size=100&id=FDN2ARbuPRR2&format=png&color=000000"
-            className="size-20"
-          />
+        <div className="flex flex-col items-center mb-8">
+          <img src={logo} alt="Monedo" className="size-20" />
           <h1 className="text-2xl font-bold text-center">Monedo</h1>
           <p className="text-center text-muted-foreground">
-            Inicia sesión para continuar
+            Gestiona tu dinero desde tu bolsillo.
           </p>
         </div>
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -93,7 +91,7 @@ function SignInPage() {
             )}
           </Button>
         </form>
-        <div className="relative my-6">
+        <div className="relative my-3">
           <div className="absolute inset-0 flex items-center">
             <div className="w-full border-t" />
           </div>
@@ -106,9 +104,13 @@ function SignInPage() {
         <Button
           variant="outline"
           size="lg"
-          className="w-full"
+          className="w-full flex gap-2 items-center"
           onClick={handleGoogleSignIn}
         >
+          <img
+            src="https://img.icons8.com/?size=96&id=17949&format=png"
+            className="size-4"
+          />
           Continuar con Google
         </Button>
         <p className="text-center text-sm text-muted-foreground mt-6">

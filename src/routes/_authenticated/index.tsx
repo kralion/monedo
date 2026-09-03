@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useNeonUser } from "@/hooks/useNeonUser";
 import { useEffect, useState } from "react";
 import Card from "@/components/dashboard/card";
@@ -11,8 +11,6 @@ import {
 } from "@/helpers/groupTransactionsByDate";
 import { useIncomeStore } from "@/stores/income";
 import { useExpenseStore } from "@/stores/expense";
-import { useColorScheme } from "@/lib/useColorScheme";
-import { authClient } from "@/auth";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -21,18 +19,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import {
-  Avatar,
-  AvatarImage,
-  AvatarFallback,
-} from "@/components/ui/avatar";
-import { User, Bookmark, Sun, Moon, LogOut } from "lucide-react";
+import { ProfileDropdown } from "@/components/dashboard/profile-dropdown";
 
 export const Route = createFileRoute("/_authenticated/")({
   component: DashboardPage,
@@ -56,13 +43,6 @@ function DashboardPage() {
   const { getRecentExpenses, expenses } = useExpenseStore();
   const [showAll, setShowAll] = useState(false);
   const [filter, setFilter] = useState<"all" | "expense" | "income">("all");
-  const { colorScheme, setColorScheme } = useColorScheme();
-  const navigate = useNavigate();
-
-  async function handleSignOut() {
-    await authClient.signOut();
-    navigate({ to: "/sign-in" });
-  }
 
   useEffect(() => {
     if (user?.id) {
@@ -89,14 +69,6 @@ function DashboardPage() {
       ? transactions
       : transactions.filter((t) => t.kind === filter);
 
-  if (!expenses) {
-    return (
-      <div className="flex items-center justify-center min-h-[200px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
-      </div>
-    );
-  }
-
   return (
     <div className="flex-1 bg-white dark:bg-zinc-900 max-w-4xl mx-auto">
       {showAll ? (
@@ -114,7 +86,8 @@ function DashboardPage() {
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Todos</SelectItem>
-                  <SelectItem value="expense">Gastos</SelectItem>                   <SelectItem value="income">Ingresos</SelectItem>
+                  <SelectItem value="expense">Gastos</SelectItem>{" "}
+                  <SelectItem value="income">Ingresos</SelectItem>
                 </SelectContent>
               </Select>
               <Button
@@ -133,23 +106,24 @@ function DashboardPage() {
               </div>
             ) : (
               Object.entries(groupTransactionsByDate(filteredTransactions)).map(
-              ([dateLabel, dateTransactions]) => (
-                <div key={dateLabel} className="px-4 space-y-2">
-                  <h2 className="text-muted-foreground">{dateLabel}</h2>
-                  <div className="space-y-0">
-                    {dateTransactions.map((t) => (
-                      <TransactionRow
-                        key={                           t.kind === "income"
-                            ? `income-${t.income.id}`
-                            : `expense-${t.expense.id}`
-                        }
-                        t={t}
-                      />
-                    ))}
+                ([dateLabel, dateTransactions]) => (
+                  <div key={dateLabel} className="px-4 space-y-2">
+                    <h2 className="text-muted-foreground">{dateLabel}</h2>
+                    <div className="space-y-0">
+                      {dateTransactions.map((t) => (
+                        <TransactionRow
+                          key={
+                            t.kind === "income"
+                              ? `income-${t.income.id}`
+                              : `expense-${t.expense.id}`
+                          }
+                          t={t}
+                        />
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ),
-            )
+                ),
+              )
             )}
           </div>
         </div>
@@ -168,47 +142,14 @@ function DashboardPage() {
                 })}
               </p>
             </div>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Avatar className="size-9 cursor-pointer">
-                  <AvatarImage src={user?.image ?? undefined} alt={user?.firstName ?? ""} />
-                  <AvatarFallback>
-                    {(user?.firstName?.[0] ?? "") + (user?.lastName?.[0] ?? "")}
-                  </AvatarFallback>
-                </Avatar>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuItem asChild>
-                  <Link to="/personal-info" className="flex items-center gap-2">
-                    <User className="w-4 h-4" />
-                    Mis datos
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/categories" className="flex items-center gap-2">
-                    <Bookmark className="w-4 h-4" />
-                    Categorías
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={() => setColorScheme(colorScheme === "light" ? "dark" : "light")}>
-                  {colorScheme === "light" ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
-                  Tema {colorScheme === "light" ? "oscuro" : "claro"}
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleSignOut}>
-                  <LogOut className="w-4 h-4" />
-                  Cerrar sesión
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <ProfileDropdown user={user} />
           </div>
           <div className=" md:pb-8 pb-4">
             <Card />
           </div>
 
           <div className="flex flex-row justify-between items-center w-full md:mt-6">
-            <h2 className=" font-semibold dark:text-white">
-              Transacciones Recientes
-            </h2>
+            <h2 className=" font-semibold dark:text-white">Recientes</h2>
             <Button
               onClick={() => setShowAll(true)}
               variant="ghost"

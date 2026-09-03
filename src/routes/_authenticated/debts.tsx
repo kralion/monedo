@@ -6,7 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 
-const statusLabels: Record<string, { label: string; variant: "default" | "secondary" | "destructive" | "outline" }> = {
+const statusLabels: Record<
+  string,
+  {
+    label: string;
+    variant: "default" | "secondary" | "destructive" | "outline";
+  }
+> = {
   active: { label: "Activa", variant: "default" },
   paid: { label: "Pagada", variant: "secondary" },
   overdue: { label: "Vencida", variant: "destructive" },
@@ -29,10 +35,15 @@ function DebtsPage() {
     <div className="bg-white dark:bg-zinc-900 max-w-4xl mx-auto">
       <div className="flex flex-col gap-8">
         <div className="flex flex-row justify-between items-center p-4 pt-7">
-          <h1 className="text-4xl font-bold md:text-5xl">Deudas</h1>
+          <div>
+            <h1 className="text-3xl font-bold md:text-5xl">Deudas</h1>
+            <span className="text-sm md:text-md">
+              Gestiona el dinero que te deben.
+            </span>
+          </div>
           <Link to="/add-debt" search={{ id: undefined }}>
             <Button size="icon">
-              <Plus className="w-5 h-5" />
+              <Plus />
             </Button>
           </Link>
         </div>
@@ -64,15 +75,21 @@ function DebtsPage() {
                   <div className="flex flex-col gap-1">
                     <p className="text-lg font-semibold">{debt.name}</p>
                     {debt.creditor && (
-                      <p className="text-sm text-muted-foreground">{debt.creditor}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {debt.creditor}
+                      </p>
                     )}
                   </div>
-                  <Badge variant={statusLabels[debt.status]?.variant ?? "default"}>
+                  <Badge
+                    variant={statusLabels[debt.status]?.variant ?? "default"}
+                  >
                     {statusLabels[debt.status]?.label ?? debt.status}
                   </Badge>
                 </div>
                 <div className="flex flex-row justify-between items-center">
-                  <p className="text-2xl font-bold">S/ {debt.amount.toFixed(2)}</p>
+                  <p className="text-2xl font-bold">
+                    S/ {debt.amount.toFixed(2)}
+                  </p>
                 </div>
               </Link>
             ))

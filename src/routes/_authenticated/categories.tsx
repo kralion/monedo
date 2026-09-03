@@ -3,6 +3,8 @@ import { useNeonUser } from "@/hooks/useNeonUser";
 import { useEffect, useState } from "react";
 import { useCategoryStore } from "@/stores/category";
 import { ICategory } from "@/interfaces";
+import { db } from "@/db";
+import { categories as categoriesTable } from "@/schema";
 import { Plus, Pencil, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -34,8 +36,14 @@ export const Route = createFileRoute("/_authenticated/categories")({
 
 function CategoriesPage() {
   const { user } = useNeonUser();
-  const { categories, getCategories, addCategory, updateCategory, deleteCategory, loading } =
-    useCategoryStore();
+  const {
+    categories,
+    getCategories,
+    addCategory,
+    updateCategory,
+    deleteCategory,
+    loading,
+  } = useCategoryStore();
   const [open, setOpen] = useState(false);
   const [label, setLabel] = useState("");
   const [color, setColor] = useState(PRESET_COLORS[0]);
@@ -45,7 +53,28 @@ function CategoriesPage() {
   const [editCategory, setEditCategory] = useState<ICategory | null>(null);
 
   useEffect(() => {
-    if (user?.id) getCategories(user.id);
+    if (user?.id) {
+      getCategories(user.id).then(() => {
+        if (useCategoryStore.getState().categories.length === 0) {
+          const defaults = [
+            { label: "Hogar", color: "#41D29B", user_id: user.id },
+            { label: "Transporte", color: "#10B981", user_id: user.id },
+            { label: "Salud", color: "#3B82F6", user_id: user.id },
+            { label: "Alimentación", color: "#F59E0B", user_id: user.id },
+            { label: "Finanzas", color: "#EF4444", user_id: user.id },
+            { label: "Educación", color: "#8B5CF6", user_id: user.id },
+            { label: "Personal", color: "#EC4899", user_id: user.id },
+            { label: "Ropa", color: "#14B8A6", user_id: user.id },
+            { label: "Casuales", color: "#41D29B", user_id: user.id },
+          ];
+          db.insert(categoriesTable)
+            .values(defaults)
+            .then(() => {
+              getCategories(user.id);
+            });
+        }
+      });
+    }
   }, [user?.id]);
 
   async function handleSubmit() {
@@ -84,15 +113,18 @@ function CategoriesPage() {
 
   return (
     <div className="max-w-xl mx-auto p-4 pb-28">
-      <Link to="/" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4">
+      <Link
+        to="/"
+        className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-4"
+      >
         <ArrowLeft className="w-4 h-4" />
         Volver
       </Link>
-      <div className="flex flex-row items-center justify-between mb-4">
-        <h1 className="text-2xl font-bold">Categorías</h1>
+      <div className="flex flex-row items-center justify-between mb-8">
+        <h1 className="text-3xl md:text-5xl font-bold">Categorías</h1>
         <Dialog open={open} onOpenChange={setOpen}>
           <DialogTrigger asChild>
-            <Button variant="outline" size="icon">
+            <Button size="icon">
               <Plus />
             </Button>
           </DialogTrigger>
@@ -114,9 +146,7 @@ function CategoriesPage() {
                   key={preset}
                   type="button"
                   className={`w-8 h-8 rounded-full ${
-                    color === preset
-                      ? "ring-2 ring-ring ring-offset-2"
-                      : ""
+                    color === preset ? "ring-2 ring-ring ring-offset-2" : ""
                   }`}
                   style={{ backgroundColor: preset }}
                   onClick={() => setColor(preset)}
@@ -174,9 +204,7 @@ function CategoriesPage() {
                 key={preset}
                 type="button"
                 className={`w-8 h-8 rounded-full ${
-                  editColor === preset
-                    ? "ring-2 ring-ring ring-offset-2"
-                    : ""
+                  editColor === preset ? "ring-2 ring-ring ring-offset-2" : ""
                 }`}
                 style={{ backgroundColor: preset }}
                 onClick={() => setEditColor(preset)}
