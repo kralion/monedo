@@ -82,35 +82,51 @@ export default function PieChart({
   }
 
   return (
-    <div className="w-full max-w-md h-[300px] mx-auto">
-      <ResponsiveContainer width="100%" height="100%">
-        <RechartsPie>
-          <Pie
-            data={pieData}
-            cx="50%"
-            cy="50%"
-            innerRadius={60}
-            outerRadius={120}
-            paddingAngle={2}
-            dataKey="value"
+    <div className="w-full max-w-md mx-auto">
+      <div className="h-[300px]">
+        <ResponsiveContainer width="100%" height="100%">
+          <RechartsPie>
+            <Pie
+              data={pieData}
+              cx="50%"
+              cy="50%"
+              innerRadius={60}
+              outerRadius={120}
+              paddingAngle={2}
+              dataKey="value"
+            >
+              {pieData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.color} />
+              ))}
+            </Pie>
+            <Tooltip
+              content={({ payload }) => {
+                if (!payload?.length) return null;
+                const value = Number(payload[0].value);
+                return (
+                  <div className="bg-white dark:bg-zinc-800 border rounded-lg px-3 py-2 shadow-lg">
+                    <p>S/. {value.toFixed(2)}</p>
+                  </div>
+                );
+              }}
+            />
+          </RechartsPie>
+        </ResponsiveContainer>
+      </div>
+      <div className="flex flex-wrap gap-4 justify-center mt-4">
+        {pieData.map((entry, index) => (
+          <div
+            key={`legend-${index}`}
+            className="flex flex-row items-center gap-2"
           >
-            {pieData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={entry.color} />
-            ))}
-          </Pie>
-          <Tooltip
-            content={({ payload }) => {
-              if (!payload?.length) return null;
-              const value = Number(payload[0].value);
-              return (
-                <div className="bg-white dark:bg-zinc-800 border rounded-lg px-3 py-2 shadow-lg">
-                  <p>S/. {value.toFixed(2)}</p>
-                </div>
-              );
-            }}
-          />
-        </RechartsPie>
-      </ResponsiveContainer>
+            <div
+              className="w-4 h-4 rounded-full"
+              style={{ backgroundColor: entry.color }}
+            />
+            <span className="text-gray-700">{entry.name}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

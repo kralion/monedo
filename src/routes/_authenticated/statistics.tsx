@@ -35,9 +35,11 @@ function IncomeTransaction({ income }: { income: IIncome }) {
       search={{ type: "income" }}
       className="flex flex-1 py-2 flex-row gap-2 items-center rounded-lg hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors"
     >
-      <div className="size-10 bg-zinc-200 dark:bg-zinc-800 rounded-full p-1.5 flex items-center justify-center">
-        <div className="w-5 h-5 rounded-full bg-green-500" />
-      </div>
+      <img
+        src="https://img.icons8.com/?size=100&id=BHX6wRnikXL8&format=png&color=000000"
+        alt=""
+        className="size-10 bg-zinc-200 dark:bg-zinc-800 rounded-full p-1.5 object-contain"
+      />
       <div className="flex flex-row justify-between items-center flex-1">
         <div className="flex flex-col">
           <h3 className="md:text-lg dark:text-white">
@@ -70,7 +72,7 @@ function StatisticsPage() {
     useExpenseStore();
   const { loading: incomesLoading, getIncomesSortedByAmount } =
     useIncomeStore();
-  const { categories, getCategories } = useCategoryStore();
+  const { getCategories } = useCategoryStore();
 
   const loading = expensesLoading || incomesLoading;
 
@@ -122,14 +124,14 @@ function StatisticsPage() {
 
   const sortedTransactions = getSortedTransactions();
 
-  const getChartTitle = () => {
+  const getListTitle = () => {
     switch (transactionType) {
       case "todos":
-        return "Resumen";
+        return "Top Transacciones";
       case "ingresos":
-        return "Ingresos Recientes";
+        return "Top Ingresos";
       case "gastos":
-        return "Gastos por Categoría";
+        return "Top Gastos";
     }
   };
 
@@ -175,40 +177,12 @@ function StatisticsPage() {
                   totalIncome={totalIncome}
                   totalExpenses={totalExpenses}
                 />
-                {transactionType === "gastos" && (
-                  <div className="flex flex-wrap gap-4 justify-center mt-4">
-                    {categories.map((item) => (
-                      <div
-                        key={item.id}
-                        className="flex flex-row items-center gap-2"
-                      >
-                        <div
-                          className="w-4 h-4 rounded-full"
-                          style={{ backgroundColor: item.color }}
-                        />
-                        <span className="text-gray-700">{item.label}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {transactionType === "todos" && (
-                  <div className="flex flex-wrap gap-4 justify-center mt-4">
-                    <div className="flex flex-row items-center gap-2">
-                      <div className="w-4 h-4 rounded-full bg-green-500" />
-                      <span className="text-gray-700">Ingresos</span>
-                    </div>
-                    <div className="flex flex-row items-center gap-2">
-                      <div className="w-4 h-4 rounded-full bg-red-500" />
-                      <span className="text-gray-700">Gastos</span>
-                    </div>
-                  </div>
-                )}
               </div>
             </>
           )}
 
           <h2 className="mt-12 text-xl font-semibold md:text-2xl">
-            {getChartTitle()}
+            {getListTitle()}
           </h2>
           <div className="space-y-0">
             {sortedTransactions.length === 0 ? (

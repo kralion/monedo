@@ -13,11 +13,18 @@ export const expensesIdentifiers: expenseIcon[] = [
   },
   {
     label: "Salud",
-    iconHref: "https://img.icons8.com/?size=160&id=9shlfoGKqCS7&format=png",
+    iconHref:
+      "https://img.icons8.com/?size=100&id=78394&format=png&color=000000",
+  },
+  {
+    label: "Alimentacion",
+    iconHref:
+      "https://img.icons8.com/?size=100&id=12015&format=png&color=000000",
   },
   {
     label: "Alimentación",
-    iconHref: "https://img.icons8.com/?size=160&id=dkL9eYC61t89&format=png",
+    iconHref:
+      "https://img.icons8.com/?size=100&id=12015&format=png&color=000000",
   },
   {
     label: "Finanzas",

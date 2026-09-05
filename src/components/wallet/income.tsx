@@ -23,7 +23,7 @@ export function Income({ income }: { income: IIncome }) {
       >
         <div className="flex flex-row items-center gap-2">
           <img
-            src="https://img.icons8.com/?size=100&id=KV6GFslVNJhZ&format=png&color=000000"
+            src="https://img.icons8.com/?size=100&id=BHX6wRnikXL8&format=png&color=000000"
             alt=""
             className="size-10 bg-zinc-200 dark:bg-zinc-800 rounded-full p-1.5 object-contain"
           />

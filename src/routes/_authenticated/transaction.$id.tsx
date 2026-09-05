@@ -182,7 +182,7 @@ function TransactionDetailsPage() {
           <>
             <div className="flex flex-col gap-4 items-center">
               <img
-                src="https://img.icons8.com/?size=100&id=KV6GFslVNJhZ&format=png&color=000000"
+                src="https://img.icons8.com/?size=100&id=BHX6wRnikXL8&format=png&color=000000"
                 alt=""
                 className="size-36 bg-zinc-100 dark:bg-zinc-800 rounded-full p-6 object-contain"
               />
