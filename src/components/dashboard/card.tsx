@@ -4,19 +4,28 @@ import { useIncomeStore } from "@/stores/income";
 import { useExpenseStore } from "@/stores/expense";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
+
+export function CardSkeleton() {
+  return (
+    <Skeleton className="w-full max-w-md mx-auto my-6 h-[200px] md:h-[220px] rounded-xl md:rounded-2xl" />
+  );
+}
 
 export default function Card() {
   const { user } = useNeonUser();
   const { sumOfAllOfExpenses, totalExpenses } = useExpenseStore();
   const { totalIncome, getTotalIncome } = useIncomeStore();
   const [isVisible, setIsVisible] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    if (user?.id) {
-      sumOfAllOfExpenses(user.id);
-      getTotalIncome(user.id);
-    }
-  }, [user?.id]);
+    if (!user?.id) return;
+    setIsLoading(true);
+    Promise.all([sumOfAllOfExpenses(user.id), getTotalIncome(user.id)]).finally(
+      () => setIsLoading(false),
+    );
+  }, [user?.id, sumOfAllOfExpenses, getTotalIncome]);
 
   const balance = totalIncome - totalExpenses;
 
@@ -24,6 +33,10 @@ export default function Card() {
     balance < 0
       ? "linear-gradient(135deg, #FF0000, #FF7F7F)"
       : "linear-gradient(135deg, #14B8A6, #0F766E)";
+
+  if (isLoading) {
+    return <CardSkeleton />;
+  }
 
   const CardContent = (
     <div

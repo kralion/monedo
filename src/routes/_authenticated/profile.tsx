@@ -3,6 +3,17 @@ import { useNeonUser } from "@/hooks/useNeonUser";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -38,7 +49,7 @@ function ProfilePage() {
         lastName: user.lastName ?? "",
       });
     }
-  }, [user, reset]);
+  }, [user?.id, user?.firstName, user?.lastName, reset]);
 
   async function onSubmit(data: ProfileForm) {
     setSaving(true);
@@ -63,12 +74,16 @@ function ProfilePage() {
     navigate({ to: "/sign-in" });
   }
 
-  if (isPending || !user) {
+  if (isPending) {
     return (
       <div className="flex items-center justify-center min-h-[50vh]">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
       </div>
     );
+  }
+
+  if (!user) {
+    return null;
   }
 
   return (
@@ -105,15 +120,28 @@ function ProfilePage() {
       </form>
 
       <div className="mt-12">
-        <Button
-          variant="destructive"
-          size="lg"
-          className="w-full"
-          onClick={handleSignOut}
-        >
-          <LogOut className="w-4 h-4 mr-2" />
-          Cerrar sesión
-        </Button>
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button variant="destructive" size="lg" className="w-full">
+              <LogOut className="w-4 h-4 mr-2" />
+              Cerrar sesión
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>¿Cerrar sesión?</AlertDialogTitle>
+              <AlertDialogDescription>
+                ¿Estás seguro de que quieres cerrar sesión?
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancelar</AlertDialogCancel>
+              <AlertDialogAction onClick={handleSignOut}>
+                Cerrar sesión
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );

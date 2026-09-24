@@ -64,6 +64,7 @@ export interface IncomeStore {
   getIncomesSortedByAmount: (userId: string) => Promise<IIncome[]>;
   getTotalIncome: (userId: string) => Promise<number>;
   getIncomeById: (id: number) => Promise<IIncome>;
+  getIncomesPaginated: (userId: string, limit: number, offset: number) => Promise<IIncome[]>;
 }
 export interface ExpenseStore {
   addExpense: (expense: IExpense) => void;
@@ -87,6 +88,7 @@ export interface ExpenseStore {
   }) => Promise<IExpense[] | null>;
   getAllExpensesSortedByAmount: (userId: string) => Promise<IExpense[]>;
   getRecentExpenses: (userId: string) => Promise<IExpense[]>;
+  getExpensesPaginated: (userId: string, limit: number, offset: number) => Promise<IExpense[]>;
 }
 export interface CategoryStore {
   categories: ICategory[];

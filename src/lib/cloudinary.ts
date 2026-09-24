@@ -47,11 +47,6 @@ export const uploadToCloudinary = async ({
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("Cloudinary API Error:", {
-        status: response.status,
-        statusText: response.statusText,
-        body: errorText,
-      });
       throw new Error(
         `Upload failed with status: ${response.status} - ${errorText}`,
       );
@@ -65,7 +60,6 @@ export const uploadToCloudinary = async ({
 
     return data.secure_url;
   } catch (error) {
-    console.error("Cloudinary upload error:", error);
     throw error;
   }
 };
@@ -84,7 +78,12 @@ export const uploadImageFromUri = async (
   publicId?: string,
 ): Promise<string> => {
   try {
-    // Convert URI to base64
+    if (imageUri.startsWith("data:")) {
+      const base64Data = imageUri.split(",")[1];
+      if (!base64Data) throw new Error("Invalid data URL");
+      return uploadToCloudinary({ base64Image: base64Data, folder, publicId });
+    }
+
     const response = await fetch(imageUri);
     const blob = await response.blob();
 
@@ -93,7 +92,7 @@ export const uploadImageFromUri = async (
       reader.onloadend = async () => {
         try {
           const base64 = reader.result as string;
-          const base64Data = base64.split(",")[1]; // Remove data:image/jpeg;base64, prefix
+          const base64Data = base64.split(",")[1];
 
           const secureUrl = await uploadToCloudinary({
             base64Image: base64Data,
@@ -110,7 +109,6 @@ export const uploadImageFromUri = async (
       reader.readAsDataURL(blob);
     });
   } catch (error) {
-    console.error("Error converting URI to base64:", error);
     throw error;
   }
 };

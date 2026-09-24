@@ -43,6 +43,16 @@ function DebtDetailsPage() {
     getDebtById(Number(id));
   }, [id]);
 
+  const handleDelete = async () => {
+    if (!debt) return;
+    try {
+      await deleteDebt(debt.id);
+      navigate({ to: "/debts" });
+    } catch {
+      // error ya manejado en el store con toast
+    }
+  };
+
   const isLoading = !debt;
 
   if (isLoading) {
@@ -52,11 +62,6 @@ function DebtDetailsPage() {
       </div>
     );
   }
-
-  const handleDelete = () => {
-    deleteDebt(debt.id);
-    navigate({ to: "/debts" });
-  };
 
   return (
     <div className="bg-white dark:bg-zinc-900 max-w-xl mx-auto pb-20">

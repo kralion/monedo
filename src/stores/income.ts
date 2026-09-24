@@ -1,10 +1,16 @@
 import { IncomeStore, IIncome } from "@/interfaces";
-import { desc } from "drizzle-orm";
 import { toast } from "sonner";
 import { create } from "zustand";
-import { db } from "@/db";
-import { incomes, debts } from "@/schema";
-import { eq } from "drizzle-orm";
+import {
+  addIncomeFn,
+  deleteIncomeFn,
+  getIncomeByIdFn,
+  getIncomesFn,
+  getIncomesPaginatedFn,
+  getIncomesSortedByAmountFn,
+  getTotalIncomeFn,
+  updateIncomeFn,
+} from "@/server/incomes";
 
 export const useIncomeStore = create<IncomeStore>((set, get) => ({
   incomes: [],
@@ -14,137 +20,41 @@ export const useIncomeStore = create<IncomeStore>((set, get) => ({
 
   addIncome: async (income: IIncome) => {
     const createdAt = income.created_at ?? new Date();
-
     set({ loading: true });
+    const tempId = Date.now();
+    const tempIncome = { ...income, created_at: createdAt, id: tempId } as IIncome;
+    // optimistic for simple case; server handles debt logic atomically
+    set((state) => ({ incomes: [...state.incomes, tempIncome] }));
 
     try {
-      if (income.id_debt) {
-        // Get the debt to check remaining amount
-        const [debt] = await db
-          .select()
-          .from(debts)
-          .where(eq(debts.id, income.id_debt));
+      const rows = await addIncomeFn({
+        data: {
+          amount: String(income.amount),
+          description: income.description,
+          user_id: income.user_id,
+          created_at: createdAt.toISOString(),
+          id_debt: income.id_debt ?? null,
+        },
+      });
 
-        if (!debt) throw new Error("Debt not found");
+      // rows is array (1 or 2 items when debt overflow)
+      const normalized = (rows as unknown as IIncome[]).map((r) => ({
+        ...r,
+        amount: Number(r.amount as unknown as string),
+      }));
 
-        const remaining = debt.amount;
-
-        if (income.amount <= remaining) {
-          // Fits within debt — single income linked to debt
-          const tempIncome = { ...income, created_at: createdAt, id: Date.now() };
-          set((state) => ({ incomes: [...state.incomes, tempIncome] }));
-
-          const [data] = await db
-            .insert(incomes)
-            .values({
-              amount: income.amount,
-              description: income.description,
-              user_id: income.user_id,
-              created_at: createdAt,
-              id_debt: income.id_debt,
-            })
-            .returning();
-
-          if (!data) throw new Error("No data returned");
-
-          set((state) => ({
-            incomes: state.incomes.map((b) =>
-              b.id === tempIncome.id ? (data as unknown as IIncome) : b,
-            ),
-          }));
-
-          // Decrease debt amount
-          const newAmount = remaining - income.amount;
-          const newStatus = newAmount === 0 ? "paid" : debt.status;
-          await db
-            .update(debts)
-            .set({ amount: newAmount, status: newStatus, updated_at: new Date() })
-            .where(eq(debts.id, income.id_debt!));
-        } else {
-          // Overpayment — split into two incomes
-          const linkedIncome: Omit<IIncome, "id"> = {
-            ...income,
-            amount: remaining,
-            id_debt: income.id_debt,
-          };
-          const overflowIncome: Omit<IIncome, "id"> = {
-            ...income,
-            amount: income.amount - remaining,
-            description: `Sobre pago de deuda ${debt.name}`,
-            id_debt: null,
-          };
-
-          const tempLinked = { ...linkedIncome, created_at: createdAt, id: Date.now() };
-          const tempOverflow = { ...overflowIncome, created_at: createdAt, id: Date.now() + 1 };
-
-          set((state) => ({
-            incomes: [...state.incomes, tempLinked, tempOverflow],
-          }));
-
-          const [dataLinked] = await db
-            .insert(incomes)
-            .values({
-              amount: linkedIncome.amount,
-              description: linkedIncome.description,
-              user_id: linkedIncome.user_id,
-              created_at: createdAt,
-              id_debt: linkedIncome.id_debt,
-            })
-            .returning();
-
-          const [dataOverflow] = await db
-            .insert(incomes)
-            .values({
-              amount: overflowIncome.amount,
-              description: overflowIncome.description,
-              user_id: overflowIncome.user_id,
-              created_at: createdAt,
-            })
-            .returning();
-
-          set((state) => ({
-            incomes: state.incomes.map((b) => {
-              if (b.id === tempLinked.id && dataLinked) return dataLinked as unknown as IIncome;
-              if (b.id === tempOverflow.id && dataOverflow) return dataOverflow as unknown as IIncome;
-              return b;
-            }),
-          }));
-
-          // Debt fully paid
-          await db
-            .update(debts)
-            .set({ amount: 0, status: "paid", updated_at: new Date() })
-            .where(eq(debts.id, income.id_debt!));
-        }
-      } else {
-        // No debt linked — simple insert
-        const tempIncome = { ...income, created_at: createdAt, id: Date.now() };
-        set((state) => ({ incomes: [...state.incomes, tempIncome] }));
-
-        const [data] = await db
-          .insert(incomes)
-          .values({
-            amount: income.amount,
-            description: income.description,
-            user_id: income.user_id,
-            created_at: createdAt,
-          })
-          .returning();
-
-        if (!data) throw new Error("No data returned");
-
-        set((state) => ({
-          incomes: state.incomes.map((b) =>
-            b.id === tempIncome.id ? (data as unknown as IIncome) : b,
-          ),
-        }));
-      }
+      set((state) => ({
+        incomes: [...state.incomes.filter((b) => b.id !== tempId), ...normalized],
+        loading: false,
+      }));
 
       get().getTotalIncome(income.user_id);
-      set({ loading: false });
       toast.success("Registro exitoso");
     } catch (error) {
-      set({ loading: false });
+      set((state) => ({
+        incomes: state.incomes.filter((b) => b.id !== tempId && b.id !== tempId + 1),
+        loading: false,
+      }));
       console.error("Error adding income:", error);
       toast.error("Ocurrió un error al registrar el ingreso");
     }
@@ -153,15 +63,10 @@ export const useIncomeStore = create<IncomeStore>((set, get) => ({
   getIncomeById: async (id: number) => {
     set({ loading: true });
     try {
-      const [data] = await db
-        .select()
-        .from(incomes)
-        .where(eq(incomes.id, id));
-
-      if (!data) throw new Error("Income not found");
-
-      set({ income: data as unknown as IIncome, loading: false });
-      return data as unknown as IIncome;
+      const data = await getIncomeByIdFn({ data: { id } });
+      const normalized = { ...data, amount: Number(data.amount as unknown as string) } as unknown as IIncome;
+      set({ income: normalized, loading: false });
+      return normalized;
     } catch (error) {
       set({ loading: false });
       throw error;
@@ -171,12 +76,7 @@ export const useIncomeStore = create<IncomeStore>((set, get) => ({
   getTotalIncome: async (userId: string) => {
     set({ loading: true });
     try {
-      const data = await db
-        .select({ amount: incomes.amount })
-        .from(incomes)
-        .where(eq(incomes.user_id, userId));
-
-      const total = data.reduce((sum, income) => sum + Number(income.amount), 0);
+      const total = await getTotalIncomeFn({ data: { userId } });
       set({ totalIncome: total, loading: false });
       return total;
     } catch (error) {
@@ -196,29 +96,15 @@ export const useIncomeStore = create<IncomeStore>((set, get) => ({
     }));
 
     try {
-      const [data] = await db
-        .update(incomes)
-        .set({
-          amount: income.amount,
-          description: income.description,
-        })
-        .where(eq(incomes.id, income.id!))
-        .returning();
-
-      if (data) {
-        set((state) => ({
-          incomes: state.incomes.map((b) =>
-            b.id === income.id ? (data as unknown as IIncome) : b,
-          ),
-          income:
-            income.id === (originalIncome?.id || -1)
-              ? (data as unknown as IIncome)
-              : originalIncome,
-          loading: false,
-        }));
-      } else {
-        set({ loading: false });
-      }
+      const data = await updateIncomeFn({
+        data: { id: income.id!, amount: String(income.amount), description: income.description },
+      });
+      const normalized = { ...data, amount: Number(data.amount as unknown as string) } as unknown as IIncome;
+      set((state) => ({
+        incomes: state.incomes.map((b) => (b.id === income.id ? normalized : b)),
+        income: income.id === (originalIncome?.id || -1) ? normalized : originalIncome,
+        loading: false,
+      }));
 
       get().getTotalIncome(income.user_id);
       toast.success("Ingreso actualizado");
@@ -239,24 +125,7 @@ export const useIncomeStore = create<IncomeStore>((set, get) => ({
     }));
 
     try {
-      // If income was linked to a debt, restore the debt amount
-      if (deletedIncome?.id_debt) {
-        const [debt] = await db
-          .select()
-          .from(debts)
-          .where(eq(debts.id, deletedIncome.id_debt));
-
-        if (debt) {
-          const restoredAmount = debt.amount + deletedIncome.amount;
-          const newStatus = debt.status === "paid" ? "active" : debt.status;
-          await db
-            .update(debts)
-            .set({ amount: restoredAmount, status: newStatus, updated_at: new Date() })
-            .where(eq(debts.id, deletedIncome.id_debt));
-        }
-      }
-
-      await db.delete(incomes).where(eq(incomes.id, id));
+      await deleteIncomeFn({ data: { id } });
 
       if (deletedIncome?.user_id) {
         get().getTotalIncome(deletedIncome.user_id);
@@ -273,12 +142,12 @@ export const useIncomeStore = create<IncomeStore>((set, get) => ({
   getIncomes: async (userId: string) => {
     set({ loading: true });
     try {
-      const data = await db
-        .select()
-        .from(incomes)
-        .where(eq(incomes.user_id, userId));
-
-      set({ incomes: (data as unknown as IIncome[]) ?? [], loading: false });
+      const data = await getIncomesFn({ data: { userId } });
+      const normalized = (data as unknown as IIncome[]).map((i) => ({
+        ...i,
+        amount: Number(i.amount as unknown as string),
+      }));
+      set({ incomes: normalized ?? [], loading: false });
     } catch (error) {
       set({ loading: false });
       throw error;
@@ -288,18 +157,31 @@ export const useIncomeStore = create<IncomeStore>((set, get) => ({
   getIncomesSortedByAmount: async (userId: string) => {
     set({ loading: true });
     try {
-      const data = await db
-        .select()
-        .from(incomes)
-        .where(eq(incomes.user_id, userId))
-        .orderBy(desc(incomes.amount));
-
-      const incomesData = (data as unknown as IIncome[]) ?? [];
-      set({ incomes: incomesData, loading: false });
-      return incomesData;
+      const data = await getIncomesSortedByAmountFn({ data: { userId } });
+      const normalized = (data as unknown as IIncome[]).map((i) => ({
+        ...i,
+        amount: Number(i.amount as unknown as string),
+      }));
+      set({ incomes: normalized ?? [], loading: false });
+      return normalized;
     } catch (error) {
       set({ loading: false });
       throw error;
+    }
+  },
+
+  getIncomesPaginated: async (userId: string, limit: number, offset: number) => {
+    try {
+      const data = await getIncomesPaginatedFn({ data: { userId, limit, offset } });
+      const normalized = (data as unknown as IIncome[]).map((i) => ({
+        ...i,
+        amount: Number(i.amount as unknown as string),
+      }));
+      return normalized;
+    } catch (error) {
+      console.error("Error fetching paginated incomes:", error);
+      toast.error("Error al obtener ingresos paginados");
+      return [];
     }
   },
 }));

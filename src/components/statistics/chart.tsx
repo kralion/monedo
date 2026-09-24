@@ -8,6 +8,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { memo, useMemo } from "react";
 
 type ChartProps = {
   incomes: IIncome[];
@@ -18,13 +19,14 @@ function formatDate(date: Date | string): string {
   return d.toLocaleDateString("es-ES", { day: "2-digit", month: "short" });
 }
 
-export default function Chart({ incomes }: ChartProps) {
-  const last10Incomes = incomes.slice(0, 10).reverse();
-
-  const chartData = last10Incomes.map((income) => ({
-    name: formatDate(income.created_at),
-    value: income.amount,
-  }));
+function ChartComponent({ incomes }: ChartProps) {
+  const chartData = useMemo(() => {
+    const last10Incomes = incomes.slice(0, 10).reverse();
+    return last10Incomes.map((income) => ({
+      name: formatDate(income.created_at),
+      value: Number(income.amount),
+    }));
+  }, [incomes]);
 
   if (chartData.length === 0) {
     return (
@@ -57,9 +59,12 @@ export default function Chart({ incomes }: ChartProps) {
             stroke="#22c55e"
             strokeWidth={2}
             dot={{ fill: "#22c55e", strokeWidth: 2 }}
+            isAnimationActive={false}
           />
         </LineChart>
       </ResponsiveContainer>
     </div>
   );
 }
+
+export default memo(ChartComponent);

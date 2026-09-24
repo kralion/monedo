@@ -41,7 +41,7 @@ export function Income({ income }: { income: IIncome }) {
         </div>
         <div className="flex flex-row items-center gap-2">
           <p className="font-bold md:text-xl text-green-600 dark:text-green-400">
-            S/. {income.amount.toFixed(2)}
+            S/. {Number(income.amount).toFixed(2)}
           </p>
           <ChevronRight className="w-5 h-5 text-gray-500" />
         </div>

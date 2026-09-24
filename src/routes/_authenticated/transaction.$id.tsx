@@ -112,7 +112,7 @@ function TransactionDetailsPage() {
                 className="size-36 bg-zinc-100 dark:bg-zinc-800 rounded-full p-6 object-contain"
               />
               <p className="text-5xl font-bold tracking-tighter">
-                S/. {expense?.amount.toFixed(2)}
+                S/. {Number(expense?.amount).toFixed(2)}
               </p>
               <p className="text-lg text-muted-foreground">
                 {expense.description}
@@ -187,7 +187,7 @@ function TransactionDetailsPage() {
                 className="size-36 bg-zinc-100 dark:bg-zinc-800 rounded-full p-6 object-contain"
               />
               <p className="text-5xl font-bold tracking-tighter">
-                S/ {income?.amount.toFixed(2)}
+                S/ {Number(income?.amount).toFixed(2)}
               </p>
               <p className="text-lg text-muted-foreground">
                 {income?.description}

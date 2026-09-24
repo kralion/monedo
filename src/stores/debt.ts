@@ -1,9 +1,13 @@
 import { DebtStore, IDebt } from "@/interfaces";
 import { toast } from "sonner";
 import { create } from "zustand";
-import { db } from "@/db";
-import { debts } from "@/schema";
-import { eq, desc } from "drizzle-orm";
+import {
+  addDebtFn,
+  deleteDebtFn,
+  getDebtByIdFn,
+  getDebtsFn,
+  updateDebtFn,
+} from "@/server/debts";
 
 export const useDebtStore = create<DebtStore>((set, get) => ({
   debts: [],
@@ -13,12 +17,7 @@ export const useDebtStore = create<DebtStore>((set, get) => ({
   getDebts: async (userId: string) => {
     set({ loading: true });
     try {
-      const data = await db
-        .select()
-        .from(debts)
-        .where(eq(debts.user_id, userId))
-        .orderBy(desc(debts.created_at));
-
+      const data = await getDebtsFn({ data: { userId } });
       set({ debts: (data as unknown as IDebt[]) ?? [], loading: false });
     } catch (error) {
       set({ loading: false });
@@ -30,13 +29,7 @@ export const useDebtStore = create<DebtStore>((set, get) => ({
   getDebtById: async (id: number) => {
     set({ loading: true });
     try {
-      const [data] = await db
-        .select()
-        .from(debts)
-        .where(eq(debts.id, id));
-
-      if (!data) throw new Error("Debt not found");
-
+      const data = await getDebtByIdFn({ data: { id } });
       set({ debt: data as unknown as IDebt, loading: false });
       return data as unknown as IDebt;
     } catch (error) {
@@ -56,9 +49,8 @@ export const useDebtStore = create<DebtStore>((set, get) => ({
     }));
 
     try {
-      const [data] = await db
-        .insert(debts)
-        .values({
+      const data = await addDebtFn({
+        data: {
           user_id: debt.user_id,
           name: debt.name,
           amount: debt.amount,
@@ -66,10 +58,8 @@ export const useDebtStore = create<DebtStore>((set, get) => ({
           creditor: debt.creditor,
           notes: debt.notes,
           status: debt.status,
-        })
-        .returning();
-
-      if (!data) throw new Error("No data returned");
+        },
+      });
 
       set((state) => ({
         debts: state.debts.map((d) =>
@@ -100,21 +90,17 @@ export const useDebtStore = create<DebtStore>((set, get) => ({
     }));
 
     try {
-      const [data] = await db
-        .update(debts)
-        .set({
+      const data = await updateDebtFn({
+        data: {
+          id: debt.id,
           name: debt.name,
           amount: debt.amount,
           original_amount: debt.original_amount,
           creditor: debt.creditor,
           notes: debt.notes,
           status: debt.status,
-          updated_at: new Date(),
-        })
-        .where(eq(debts.id, debt.id))
-        .returning();
-
-      if (!data) throw new Error("No data returned");
+        },
+      });
 
       set((state) => ({
         debts: state.debts.map((d) =>
@@ -141,6 +127,7 @@ export const useDebtStore = create<DebtStore>((set, get) => ({
 
   deleteDebt: async (id: number) => {
     const originalDebts = [...get().debts];
+    const originalDebt = get().debt;
 
     set((state) => ({
       debts: state.debts.filter((d) => d.id !== id),
@@ -148,15 +135,18 @@ export const useDebtStore = create<DebtStore>((set, get) => ({
     }));
 
     try {
-      await db.delete(debts).where(eq(debts.id, id));
+      await deleteDebtFn({ data: { id } });
 
-      set({ loading: false });
+      set((state) => ({
+        loading: false,
+        debt: state.debt?.id === id ? null : state.debt,
+      }));
       toast.success("Deuda eliminada exitosamente");
-      if (typeof window !== "undefined") window.history.back();
     } catch (error) {
-      set({ debts: originalDebts, loading: false });
+      set({ debts: originalDebts, debt: originalDebt, loading: false });
       console.error("Error deleting debt:", error);
       toast.error("Ocurrió un error al eliminar la deuda");
+      throw error;
     }
   },
 }));

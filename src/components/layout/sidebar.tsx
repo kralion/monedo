@@ -41,6 +41,7 @@ export function Sidebar() {
               <Link
                 key={tab.name}
                 to={tab.href}
+                preload={tab.href === "/statistics" ? false : undefined}
                 className={cn(
                   "flex items-center gap-3 rounded-lg px-4 py-2.5 transition-colors",
                   isActive ? "bg-sidebar-accent" : "hover:bg-sidebar-accent/60",

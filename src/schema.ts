@@ -1,6 +1,7 @@
 import {
   boolean,
   integer,
+  numeric,
   pgEnum,
   pgTable,
   serial,
@@ -16,7 +17,7 @@ export const notificationTypeEnum = pgEnum("notification_type", [
 
 export const incomes = pgTable("incomes", {
   id: serial("id").primaryKey(),
-  amount: integer("amount").notNull(),
+  amount: numeric("amount", { precision: 12, scale: 2 }).notNull(),
   created_at: timestamp("created_At").notNull().defaultNow(),
   description: text("description").notNull(),
   user_id: text("user_id").notNull(),
@@ -33,7 +34,7 @@ export const categories = pgTable("categories", {
 
 export const expenses = pgTable("expenses", {
   id: serial("id").primaryKey(),
-  amount: integer("amount").notNull(),
+  amount: numeric("amount", { precision: 12, scale: 2 }).notNull(),
   currency: text("currency"),
   date: text("date"),
   description: text("description"),

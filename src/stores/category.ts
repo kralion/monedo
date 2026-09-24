@@ -1,9 +1,13 @@
 import { CategoryStore, ICategory } from "@/interfaces";
 import { toast } from "sonner";
 import { create } from "zustand";
-import { db } from "@/db";
-import { categories } from "@/schema";
-import { eq } from "drizzle-orm";
+import {
+  addCategoryFn,
+  deleteCategoryFn,
+  getCategoriesFn,
+  getCategoryByIdFn,
+  updateCategoryFn,
+} from "@/server/categories";
 
 export const useCategoryStore = create<CategoryStore>((set, get) => ({
   categories: [],
@@ -18,22 +22,13 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
     }));
 
     try {
-      const [data] = await db
-        .insert(categories)
-        .values({
-          label: category.label,
-          color: category.color,
-          user_id: category.user_id,
-        })
-        .returning();
-
-      if (!data) throw new Error("No data returned");
+      const data = await addCategoryFn({
+        data: { label: category.label, color: category.color, user_id: category.user_id },
+      });
 
       set((state) => ({
         categories: state.categories.map((c) =>
-          c.id === tempCategory.id
-            ? { ...data, created_at: data.created_at } as ICategory
-            : c,
+          c.id === tempCategory.id ? ({ ...data, created_at: data.created_at } as ICategory) : c,
         ),
         loading: false,
       }));
@@ -51,13 +46,7 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
   getCategoryById: async (id: number) => {
     set({ loading: true });
     try {
-      const [data] = await db
-        .select()
-        .from(categories)
-        .where(eq(categories.id, id));
-
-      if (!data) throw new Error("Category not found");
-
+      const data = await getCategoryByIdFn({ data: { id } });
       set({ loading: false, category: data as ICategory });
       return data as ICategory;
     } catch (error) {
@@ -79,26 +68,17 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
     }));
 
     try {
-      const [data] = await db
-        .update(categories)
-        .set({
-          label: category.label,
-          color: category.color,
-        })
-        .where(eq(categories.id, category.id))
-        .returning();
+      const data = await updateCategoryFn({
+        data: { id: category.id, label: category.label, color: category.color },
+      });
 
-      if (data) {
-        set((state) => ({
-          categories: state.categories.map((c) =>
-            c.id === category.id ? ({ ...data } as ICategory) : c,
-          ),
-          category: { ...data } as ICategory,
-          loading: false,
-        }));
-      } else {
-        set({ loading: false });
-      }
+      set((state) => ({
+        categories: state.categories.map((c) =>
+          c.id === category.id ? ({ ...data } as ICategory) : c,
+        ),
+        category: { ...data } as ICategory,
+        loading: false,
+      }));
 
       toast.success("Categoría actualizada exitosamente");
       if (typeof window !== "undefined") window.history.back();
@@ -121,7 +101,7 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
     }));
 
     try {
-      await db.delete(categories).where(eq(categories.id, id));
+      await deleteCategoryFn({ data: { id } });
 
       set({ loading: false });
       toast.success("Categoría eliminada exitosamente");
@@ -135,11 +115,7 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
   getCategories: async (userId: string) => {
     set({ loading: true });
     try {
-      const data = await db
-        .select()
-        .from(categories)
-        .where(eq(categories.user_id, userId));
-
+      const data = await getCategoriesFn({ data: { userId } });
       set({ categories: (data as ICategory[]) ?? [], loading: false });
     } catch (error) {
       set({ loading: false });

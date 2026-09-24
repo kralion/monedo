@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { HeadContent, Scripts, createRootRoute } from "@tanstack/react-router";
 import { AuthProvider } from "@/store/auth";
 import { Toaster } from "sonner";
-import appCss from "../styles.css?url";
+import "../styles.css";
 import { seo } from "@/lib/seo";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SWUpdateProvider } from "@/hooks/use-sw-update";
@@ -27,7 +27,6 @@ export const Route = createRootRoute({
       }),
     ],
     links: [
-      { rel: "stylesheet", href: appCss },
       {
         rel: "apple-touch-icon",
         sizes: "180x180",

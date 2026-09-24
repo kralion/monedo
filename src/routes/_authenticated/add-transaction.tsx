@@ -20,6 +20,7 @@ import { useIncomeStore } from "@/stores/income";
 import { useExpenseStore } from "@/stores/expense";
 import { useCategoryStore } from "@/stores/category";
 import { useDebtStore } from "@/stores/debt";
+import Confetti from "react-confetti";
 
 export const Route = createFileRoute("/_authenticated/add-transaction")({
   component: AddTransactionPage,
@@ -49,6 +50,16 @@ function AddTransactionPage() {
   const [incomeDate, setIncomeDate] = useState<Date>(new Date());
   const [incomeDebtId, setIncomeDebtId] = useState<number | null>(null);
   const { debts, getDebts } = useDebtStore();
+  const [showConfetti, setShowConfetti] = useState(false);
+  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    const updateSize = () =>
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    updateSize();
+    window.addEventListener("resize", updateSize);
+    return () => window.removeEventListener("resize", updateSize);
+  }, []);
 
   useEffect(() => {
     if (id && expense) {
@@ -107,15 +118,28 @@ function AddTransactionPage() {
       created_at: incomeDate,
       id_debt: incomeDebtId,
     });
-    setIncomeDescription("");
-    setIncomeAmount("");
-    setIncomeDate(new Date());
-    setIncomeDebtId(null);
-    navigate({ to: "/" });
+    setShowConfetti(true);
+    setTimeout(() => {
+      setIncomeDescription("");
+      setIncomeAmount("");
+      setIncomeDate(new Date());
+      setIncomeDebtId(null);
+      navigate({ to: "/" });
+    }, 2500);
   }
 
   return (
     <div className="flex flex-col gap-4 bg-white dark:bg-zinc-900 max-w-xl mx-auto p-4 pb-28">
+      {showConfetti && (
+        <Confetti
+          width={windowSize.width}
+          height={windowSize.height}
+          recycle={false}
+          numberOfPieces={400}
+          gravity={0.25}
+          style={{ position: "fixed", top: 0, left: 0, zIndex: 50, pointerEvents: "none" }}
+        />
+      )}
       <Tabs defaultValue="gasto" className="w-full">
         <TabsList className="w-full">
           <TabsTrigger value="gasto" className="flex-1">
@@ -129,11 +153,13 @@ function AddTransactionPage() {
           <Controller
             control={control}
             name="amount"
-            rules={{ required: true, min: 1 }}
+            rules={{ required: true, min: 0.01 }}
             render={({ field: { onChange, value } }) => (
               <input
                 type="number"
                 autoFocus
+                step="0.01"
+                inputMode="decimal"
                 className="h-36 text-5xl text-center font-bold dark:text-white bg-transparent border-none focus:outline-none w-full"
                 placeholder="S/ 50.00"
                 value={value ?? ""}
@@ -216,6 +242,8 @@ function AddTransactionPage() {
           <input
             type="number"
             autoFocus
+            step="0.01"
+            inputMode="decimal"
             className="h-36 text-5xl text-center font-bold dark:text-white bg-transparent border-none focus:outline-none w-full"
             placeholder="S/ 50.00"
             value={incomeAmount}

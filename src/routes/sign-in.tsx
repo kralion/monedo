@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import authBg from "@/assets/auth-bg.jpg";
 import logo from "@/assets/logo.png";
 
 export const Route = createFileRoute("/sign-in")({
@@ -51,10 +52,18 @@ function SignInPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-linear-to-b from-teal-100 to-white dark:from-teal-900 dark:to-zinc-900 p-4">
-      <div className="w-full max-w-md">
-        <div className="flex flex-col items-center mb-8">
-          <img src={logo} alt="Monedo" className="size-20" />
+    <div
+      className="min-h-screen flex flex-col items-center justify-center p-4 relative bg-cover bg-center"
+      style={{ backgroundImage: `url(${authBg})` }}
+    >
+      <div className="absolute inset-0 bg-white/60 dark:bg-zinc-900/60 backdrop-blur-sm" aria-hidden />
+      <div className="w-full max-w-md relative bg-card rounded-xl border p-6 sm:p-8 shadow-lg animate-in fade-in zoom-in-95 duration-400">
+        <div className="flex flex-col items-center mb-8 [perspective:600px]">
+          <img
+            src={logo}
+            alt="Monedo"
+            className="size-20 [animation:flip-y_700ms_ease-in-out_400ms_both] [transform-style:preserve-3d] [backface-visibility:hidden]"
+          />
           <h1 className="text-2xl font-bold text-center">Monedo</h1>
           <p className="text-center text-muted-foreground">
             Gestiona tu dinero desde tu bolsillo.
@@ -96,7 +105,7 @@ function SignInPage() {
             <div className="w-full border-t" />
           </div>
           <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-white dark:bg-zinc-900 px-2 text-muted-foreground">
+            <span className="bg-card px-2 text-muted-foreground">
               O
             </span>
           </div>

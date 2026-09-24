@@ -5,73 +5,60 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from "recharts";
-import { IExpense, TransactionType } from "@/interfaces";
+import { TransactionType } from "@/interfaces";
+import { memo, useMemo } from "react";
+
+type CategoryAggregate = {
+  id_category: number;
+  name: string;
+  color: string;
+  value: number;
+};
 
 type ChartProps = {
   transactionType: TransactionType;
-  expenses: IExpense[];
+  expensesByCategory: CategoryAggregate[];
   totalIncome: number;
   totalExpenses: number;
 };
 
-export default function PieChart({
+function PieChartComponent({
   transactionType,
-  expenses,
+  expensesByCategory,
   totalIncome,
   totalExpenses,
 }: ChartProps) {
-  const aggregateByCategory = (expenseData: IExpense[]) => {
-    const categoryTotals = new Map<number, number>();
-    const categoryNames = new Map<number, string>();
-    const categoryColors = new Map<number, string>();
+  const pieData = useMemo(() => {
+    if (transactionType === "todos") {
+      const total = totalIncome + totalExpenses;
+      if (total === 0) return [];
+      return [
+        {
+          value: totalIncome,
+          percentage: Math.round((totalIncome / total) * 100),
+          name: "Ingresos",
+          color: "#22c55e",
+        },
+        {
+          value: totalExpenses,
+          percentage: Math.round((totalExpenses / total) * 100),
+          name: "Gastos",
+          color: "#ef4444",
+        },
+      ];
+    }
 
-    expenseData.forEach((expense) => {
-      const current = categoryTotals.get(expense.id_category) || 0;
-      categoryTotals.set(expense.id_category, current + expense.amount);
-      categoryNames.set(expense.id_category, expense.categories?.label || "");
-      categoryColors.set(
-        expense.id_category,
-        expense.categories?.color || "#41D29B",
-      );
-    });
-
-    const total = Array.from(categoryTotals.values()).reduce(
-      (sum, amount) => sum + amount,
-      0,
-    );
-
-    return Array.from(categoryTotals.entries())
-      .map(([categoryId, amount]) => ({
-        value: amount,
-        percentage: Math.round((amount / total) * 100),
-        name: categoryNames.get(categoryId) || "",
-        color: categoryColors.get(categoryId) || "#41D29B",
+    const total = expensesByCategory.reduce((sum, c) => sum + c.value, 0);
+    if (total === 0) return [];
+    return expensesByCategory
+      .map((c) => ({
+        value: c.value,
+        percentage: Math.round((c.value / total) * 100),
+        name: c.name,
+        color: c.color,
       }))
       .filter(({ percentage }) => percentage >= 2);
-  };
-
-  const getTodosData = () => {
-    const total = totalIncome + totalExpenses;
-    if (total === 0) return [];
-
-    return [
-      {
-        value: totalIncome,
-        percentage: Math.round((totalIncome / total) * 100),
-        name: "Ingresos",
-        color: "#22c55e",
-      },
-      {
-        value: totalExpenses,
-        percentage: Math.round((totalExpenses / total) * 100),
-        name: "Gastos",
-        color: "#ef4444",
-      },
-    ];
-  };
-
-  const pieData =
-    transactionType === "todos" ? getTodosData() : aggregateByCategory(expenses);
+  }, [transactionType, expensesByCategory, totalIncome, totalExpenses]);
 
   if (pieData.length === 0) {
     return (
@@ -94,6 +81,7 @@ export default function PieChart({
               outerRadius={120}
               paddingAngle={2}
               dataKey="value"
+              isAnimationActive={false}
             >
               {pieData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={entry.color} />
@@ -130,3 +118,5 @@ export default function PieChart({
     </div>
   );
 }
+
+export default memo(PieChartComponent);

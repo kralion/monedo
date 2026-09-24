@@ -1,9 +1,18 @@
 import { ExpenseStore, IExpense } from "@/interfaces";
 import { toast } from "sonner";
 import { create } from "zustand";
-import { db } from "@/db";
-import { expenses, categories } from "@/schema";
-import { eq, gte, lte, desc, and } from "drizzle-orm";
+import {
+  addExpenseFn,
+  deleteExpenseFn,
+  getAllExpensesSortedByAmountFn,
+  getExpenseByIdFn,
+  getExpensesByCategoryFn,
+  getExpensesByPeriodicityFn,
+  getExpensesPaginatedFn,
+  getRecentExpensesFn,
+  getTotalExpensesFn,
+  updateExpenseFn,
+} from "@/server/expenses";
 
 const formatExpenseDate = (expense: Partial<IExpense>): string => {
   if (!expense.date) return new Date().toISOString();
@@ -29,10 +38,9 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
     }));
 
     try {
-      const [data] = await db
-        .insert(expenses)
-        .values({
-          amount: formattedExpense.amount,
+      const data = await addExpenseFn({
+        data: {
+          amount: String(formattedExpense.amount),
           currency: formattedExpense.currency,
           date: formattedExpense.date,
           description: formattedExpense.description,
@@ -40,10 +48,8 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
           number: formattedExpense.number,
           periodicity: formattedExpense.periodicity,
           user_id: formattedExpense.user_id,
-        })
-        .returning();
-
-      if (!data) throw new Error("No data returned");
+        },
+      });
 
       set((state) => ({
         expenses: state.expenses.map((e) =>
@@ -78,27 +84,23 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
     }));
 
     try {
-      const [data] = await db
-        .update(expenses)
-        .set({
-          amount: formattedExpense.amount,
+      const data = await updateExpenseFn({
+        data: {
+          id: expense.id,
+          amount: String(formattedExpense.amount),
           currency: formattedExpense.currency,
           date: formattedExpense.date,
           description: formattedExpense.description,
           id_category: formattedExpense.id_category,
           number: formattedExpense.number,
           periodicity: formattedExpense.periodicity,
-        })
-        .where(eq(expenses.id, expense.id))
-        .returning();
+        },
+      });
 
-      if (!data) throw new Error("No data returned");
-
+      const normalized = data as unknown as IExpense;
       set((state) => ({
-        expenses: state.expenses.map((e) =>
-          e.id === expense.id ? (data as unknown as IExpense) : e,
-        ),
-        expense: data as unknown as IExpense,
+        expenses: state.expenses.map((e) => (e.id === expense.id ? normalized : e)),
+        expense: normalized,
         loading: false,
       }));
 
@@ -129,7 +131,7 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
     }));
 
     try {
-      await db.delete(expenses).where(eq(expenses.id, id));
+      await deleteExpenseFn({ data: { id } });
 
       set({ loading: false });
       toast.success("Gasto eliminado exitosamente");
@@ -144,27 +146,10 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
   getExpenseById: async (id: number) => {
     set({ loading: true });
     try {
-      const [data] = await db
-        .select({
-          id: expenses.id,
-          amount: expenses.amount,
-          currency: expenses.currency,
-          date: expenses.date,
-          description: expenses.description,
-          id_category: expenses.id_category,
-          number: expenses.number,
-          periodicity: expenses.periodicity,
-          user_id: expenses.user_id,
-          categories: categories,
-        })
-        .from(expenses)
-        .leftJoin(categories, eq(expenses.id_category, categories.id))
-        .where(eq(expenses.id, id));
-
-      if (!data) throw new Error("Expense not found");
-
-      set({ expense: data as unknown as IExpense, loading: false });
-      return data as unknown as IExpense;
+      const data = await getExpenseByIdFn({ data: { id } });
+      const normalized = data as unknown as IExpense;
+      set({ expense: normalized, loading: false });
+      return normalized;
     } catch (error) {
       set({ loading: false });
       console.error("Error fetching expense:", error);
@@ -176,25 +161,13 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
   getExpensesByCategory: async (categoryId: number) => {
     set({ loading: true });
     try {
-      const data = await db
-        .select({
-          id: expenses.id,
-          amount: expenses.amount,
-          currency: expenses.currency,
-          date: expenses.date,
-          description: expenses.description,
-          id_category: expenses.id_category,
-          number: expenses.number,
-          periodicity: expenses.periodicity,
-          user_id: expenses.user_id,
-          categories: categories,
-        })
-        .from(expenses)
-        .leftJoin(categories, eq(expenses.id_category, categories.id))
-        .where(eq(expenses.id_category, categoryId));
-
+      const data = await getExpensesByCategoryFn({ data: { categoryId } });
+      const normalized = (data as unknown as IExpense[]).map((e) => ({
+        ...e,
+        amount: Number(e.amount as unknown as string),
+      }));
       set({ loading: false });
-      return data as unknown as IExpense[];
+      return normalized;
     } catch (error) {
       set({ loading: false });
       console.error("Error fetching expenses by category:", error);
@@ -205,26 +178,11 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
 
   getRecentExpenses: async (userId: string) => {
     try {
-      const data = await db
-        .select({
-          id: expenses.id,
-          amount: expenses.amount,
-          currency: expenses.currency,
-          date: expenses.date,
-          description: expenses.description,
-          id_category: expenses.id_category,
-          number: expenses.number,
-          periodicity: expenses.periodicity,
-          user_id: expenses.user_id,
-          categories: categories,
-        })
-        .from(expenses)
-        .leftJoin(categories, eq(expenses.id_category, categories.id))
-        .where(eq(expenses.user_id, userId))
-        .orderBy(desc(expenses.date))
-        .limit(20);
-
-      const expensesData = (data as unknown as IExpense[]) ?? [];
+      const data = await getRecentExpensesFn({ data: { userId } });
+      const expensesData = (data as unknown as IExpense[]).map((e) => ({
+        ...e,
+        amount: Number(e.amount as unknown as string),
+      }));
       set({ expenses: expensesData });
       return expensesData;
     } catch (error) {
@@ -237,31 +195,16 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
   getExpensesByPeriodicity: async ({ startTimeOfQuery, endTimeOfQuery }) => {
     set({ loading: true });
     try {
-      const data = await db
-        .select({
-          id: expenses.id,
-          amount: expenses.amount,
-          currency: expenses.currency,
-          date: expenses.date,
-          description: expenses.description,
-          id_category: expenses.id_category,
-          number: expenses.number,
-          periodicity: expenses.periodicity,
-          user_id: expenses.user_id,
-          categories: categories,
-        })
-        .from(expenses)
-        .leftJoin(categories, eq(expenses.id_category, categories.id))
-        .where(
-          and(
-            gte(expenses.date, startTimeOfQuery.toISOString()),
-            lte(expenses.date, endTimeOfQuery.toISOString()),
-          ),
-        )
-        .orderBy(desc(expenses.amount))
-        .limit(15);
-
-      const expensesData = (data as unknown as IExpense[]) ?? [];
+      const data = await getExpensesByPeriodicityFn({
+        data: {
+          startTimeOfQuery: startTimeOfQuery.toISOString(),
+          endTimeOfQuery: endTimeOfQuery.toISOString(),
+        },
+      });
+      const expensesData = (data as unknown as IExpense[]).map((e) => ({
+        ...e,
+        amount: Number(e.amount as unknown as string),
+      }));
       set({ weeklyExpenses: expensesData, loading: false });
       return expensesData;
     } catch (error) {
@@ -274,25 +217,11 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
   getAllExpensesSortedByAmount: async (userId: string) => {
     set({ loading: true });
     try {
-      const data = await db
-        .select({
-          id: expenses.id,
-          amount: expenses.amount,
-          currency: expenses.currency,
-          date: expenses.date,
-          description: expenses.description,
-          id_category: expenses.id_category,
-          number: expenses.number,
-          periodicity: expenses.periodicity,
-          user_id: expenses.user_id,
-          categories: categories,
-        })
-        .from(expenses)
-        .leftJoin(categories, eq(expenses.id_category, categories.id))
-        .where(eq(expenses.user_id, userId))
-        .orderBy(desc(expenses.amount));
-
-      const expensesData = (data as unknown as IExpense[]) ?? [];
+      const data = await getAllExpensesSortedByAmountFn({ data: { userId } });
+      const expensesData = (data as unknown as IExpense[]).map((e) => ({
+        ...e,
+        amount: Number(e.amount as unknown as string),
+      }));
       set({ expenses: expensesData, loading: false });
       return expensesData;
     } catch (error) {
@@ -304,20 +233,28 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
 
   sumOfAllOfExpenses: async (userId: string) => {
     try {
-      const data = await db
-        .select({ amount: expenses.amount })
-        .from(expenses)
-        .where(eq(expenses.user_id, userId));
-
-      const total =
-        data?.reduce((sum, expense) => sum + Number(expense.amount), 0) ?? 0;
-
+      const total = await getTotalExpensesFn({ data: { userId } });
       set({ totalExpenses: total });
       return total;
     } catch (error) {
       console.error("Error calculating sum of expenses:", error);
       toast.error("Error al calcular el total de gastos");
       return 0;
+    }
+  },
+
+  getExpensesPaginated: async (userId: string, limit: number, offset: number) => {
+    try {
+      const data = await getExpensesPaginatedFn({ data: { userId, limit, offset } });
+      const normalized = (data as unknown as IExpense[]).map((e) => ({
+        ...e,
+        amount: Number(e.amount as unknown as string),
+      }));
+      return normalized;
+    } catch (error) {
+      console.error("Error fetching paginated expenses:", error);
+      toast.error("Error al obtener gastos paginados");
+      return [];
     }
   },
 }));

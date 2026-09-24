@@ -11,14 +11,20 @@ export default defineConfig({
     tsconfigPaths: true,
   },
   build: {
-    sourcemap: true,
+    sourcemap: process.env.NODE_ENV !== "production",
   },
   plugins: [
-    devtools(),
-    netlify(),
     tailwindcss(),
     tanstackStart(),
     viteReact(),
+    devtools(),
+    netlify({
+      dev: {
+        edgeFunctions: { enabled: false },
+        blobs: { enabled: false },
+        database: { enabled: false },
+      },
+    }),
     VitePWA({
       registerType: "prompt",
       injectRegister: "auto",

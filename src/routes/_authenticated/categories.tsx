@@ -3,8 +3,7 @@ import { useNeonUser } from "@/hooks/useNeonUser";
 import { useEffect, useState } from "react";
 import { useCategoryStore } from "@/stores/category";
 import { ICategory } from "@/interfaces";
-import { db } from "@/db";
-import { categories as categoriesTable } from "@/schema";
+import { seedDefaultCategoriesFn } from "@/server/categories";
 import { Plus, Pencil, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -56,22 +55,9 @@ function CategoriesPage() {
     if (user?.id) {
       getCategories(user.id).then(() => {
         if (useCategoryStore.getState().categories.length === 0) {
-          const defaults = [
-            { label: "Hogar", color: "#41D29B", user_id: user.id },
-            { label: "Transporte", color: "#10B981", user_id: user.id },
-            { label: "Salud", color: "#3B82F6", user_id: user.id },
-            { label: "Alimentación", color: "#F59E0B", user_id: user.id },
-            { label: "Finanzas", color: "#EF4444", user_id: user.id },
-            { label: "Educación", color: "#8B5CF6", user_id: user.id },
-            { label: "Personal", color: "#EC4899", user_id: user.id },
-            { label: "Ropa", color: "#14B8A6", user_id: user.id },
-            { label: "Casuales", color: "#41D29B", user_id: user.id },
-          ];
-          db.insert(categoriesTable)
-            .values(defaults)
-            .then(() => {
-              getCategories(user.id);
-            });
+          seedDefaultCategoriesFn({ data: { userId: user.id } }).then(() => {
+            getCategories(user.id);
+          });
         }
       });
     }

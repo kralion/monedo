@@ -1,5 +1,6 @@
 import { useRef } from "react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 import { useProfileStore } from "../stores/profile";
 import { Camera } from "lucide-react";
 
@@ -32,17 +33,17 @@ export function ProfileImageUpload({ image, userId }: ProfileImageUploadProps) {
 
   return (
     <div className="relative self-center" onClick={handleClick}>
-      <Avatar className="bg-teal-500 w-36 h-36 md:w-40 md:h-40 cursor-pointer">
-        <AvatarImage src={image ?? undefined} />
-        <AvatarFallback className="rounded-xl bg-slate-500" />
-      </Avatar>
-      <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-full opacity-0 hover:opacity-100 transition-opacity cursor-pointer">
-        <Camera className="w-8 h-8 text-white" />
-      </div>
-      {uploading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full">
-          <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin" />
-        </div>
+      {uploading ? (
+        <Skeleton className="w-36 h-36 md:w-40 md:h-40 rounded-full" />
+      ) : (
+        <>
+          <Avatar className="w-36 h-36 md:w-40 md:h-40 cursor-pointer">
+            <AvatarImage src={image ?? undefined} />
+          </Avatar>
+          <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded-full opacity-0 hover:opacity-100 transition-opacity cursor-pointer">
+            <Camera className="w-8 h-8 text-white" />
+          </div>
+        </>
       )}
       <input
         ref={fileInputRef}

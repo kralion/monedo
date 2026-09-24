@@ -14,6 +14,7 @@ function TabItem({ tab, isActive }: { tab: (typeof Tabs)[number]; isActive: bool
   return (
     <Link
       to={tab.href}
+      preload={tab.href === "/statistics" ? false : undefined}
       className={cn(
         "relative flex flex-1 cursor-pointer flex-col items-center justify-center gap-0.5 py-2 transition-colors",
         isActive ? "text-primary" : "text-muted-foreground",

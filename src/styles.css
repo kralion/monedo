@@ -185,3 +185,12 @@
     @apply font-sans;
   }
 }
+
+@keyframes flip-y {
+  from {
+    transform: perspective(600px) rotateY(0deg);
+  }
+  to {
+    transform: perspective(600px) rotateY(360deg);
+  }
+}

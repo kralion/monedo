@@ -126,11 +126,13 @@ function EditIncomePage() {
               <Label>Monto (S/)</Label>
               <input
                 type="number"
+                step="0.01"
+                inputMode="decimal"
                 className="h-36 text-5xl text-center font-bold dark:text-white bg-transparent border-none focus:outline-none w-full"
                 placeholder="S/ 50.00"
                 {...register("amount", {
                   required: true,
-                  min: 1,
+                  min: 0.01,
                   valueAsNumber: true,
                 })}
               />
@@ -160,7 +162,7 @@ function EditIncomePage() {
           <>
             <div className="flex flex-col gap-4 items-center">
               <p className="text-5xl font-bold tracking-tighter">
-                S/ {income.amount.toFixed(2)}
+                S/ {Number(income.amount).toFixed(2)}
               </p>
               <p className="text-lg text-muted-foreground">
                 {income.description}
