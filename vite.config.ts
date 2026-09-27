@@ -1,8 +1,7 @@
 import { defineConfig } from "vite";
 import { devtools } from "@tanstack/devtools-vite";
-import { tanstackStart } from "@tanstack/react-start/plugin/vite";
+import { tanstackRouter } from "@tanstack/router-plugin/vite";
 import viteReact from "@vitejs/plugin-react";
-import netlify from "@netlify/vite-plugin-tanstack-start";
 import tailwindcss from "@tailwindcss/vite";
 import { VitePWA } from "vite-plugin-pwa";
 
@@ -14,17 +13,10 @@ export default defineConfig({
     sourcemap: process.env.NODE_ENV !== "production",
   },
   plugins: [
+    tanstackRouter({ target: "react", autoCodeSplitting: true }),
     tailwindcss(),
-    tanstackStart(),
     viteReact(),
     devtools(),
-    netlify({
-      dev: {
-        edgeFunctions: { enabled: false },
-        blobs: { enabled: false },
-        database: { enabled: false },
-      },
-    }),
     VitePWA({
       registerType: "prompt",
       injectRegister: "auto",

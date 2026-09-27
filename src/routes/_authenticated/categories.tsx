@@ -3,7 +3,7 @@ import { useNeonUser } from "@/hooks/useNeonUser";
 import { useEffect, useState } from "react";
 import { useCategoryStore } from "@/stores/category";
 import { ICategory } from "@/interfaces";
-import { seedDefaultCategoriesFn } from "@/server/categories";
+import { seedDefaultCategories } from "@/api/categories";
 import { Plus, Pencil, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,6 +27,14 @@ const PRESET_COLORS = [
   "#8B5CF6",
   "#EC4899",
   "#14B8A6",
+  "#6366F1",
+  "#0EA5E9",
+  "#06B6D4",
+  "#22C55E",
+  "#84CC16",
+  "#EAB308",
+  "#F97316",
+  "#F43F5E",
 ];
 
 export const Route = createFileRoute("/_authenticated/categories")({
@@ -55,7 +63,7 @@ function CategoriesPage() {
     if (user?.id) {
       getCategories(user.id).then(() => {
         if (useCategoryStore.getState().categories.length === 0) {
-          seedDefaultCategoriesFn({ data: { userId: user.id } }).then(() => {
+          seedDefaultCategories(user.id).then(() => {
             getCategories(user.id);
           });
         }
@@ -126,12 +134,12 @@ function CategoriesPage() {
               value={label}
               onChange={(e) => setLabel(e.target.value)}
             />
-            <div className="flex flex-row flex-wrap gap-2">
+            <div className="grid grid-cols-8 gap-2">
               {PRESET_COLORS.map((preset) => (
                 <button
                   key={preset}
                   type="button"
-                  className={`w-8 h-8 rounded-full ${
+                  className={`w-full aspect-square rounded-full ${
                     color === preset ? "ring-2 ring-ring ring-offset-2" : ""
                   }`}
                   style={{ backgroundColor: preset }}
@@ -184,12 +192,12 @@ function CategoriesPage() {
             value={editLabel}
             onChange={(e) => setEditLabel(e.target.value)}
           />
-          <div className="flex flex-row flex-wrap gap-2">
+          <div className="grid grid-cols-8 gap-2">
             {PRESET_COLORS.map((preset) => (
               <button
                 key={preset}
                 type="button"
-                className={`w-8 h-8 rounded-full ${
+                className={`w-full aspect-square rounded-full ${
                   editColor === preset ? "ring-2 ring-ring ring-offset-2" : ""
                 }`}
                 style={{ backgroundColor: preset }}

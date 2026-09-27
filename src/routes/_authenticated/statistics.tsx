@@ -11,7 +11,7 @@ import { formatDate } from "@/helpers/dateFormatter";
 import { useIsMobile } from "@/hooks/useIsMobile";
 import { Link } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
-import { getStatisticsDataFn } from "@/server/statistics";
+import { getStatisticsData } from "@/api/statistics";
 import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/_authenticated/statistics")({
@@ -141,7 +141,7 @@ function StatisticsPage() {
     if (!user?.id) return;
     let cancelled = false;
     setLoading(true);
-    getStatisticsDataFn({ data: { userId: user.id } })
+    getStatisticsData(user.id)
       .then((data) => {
         if (cancelled) return;
         setTotalIncome(data.totalIncome);

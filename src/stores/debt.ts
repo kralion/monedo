@@ -2,12 +2,12 @@ import { DebtStore, IDebt } from "@/interfaces";
 import { toast } from "sonner";
 import { create } from "zustand";
 import {
-  addDebtFn,
-  deleteDebtFn,
-  getDebtByIdFn,
-  getDebtsFn,
-  updateDebtFn,
-} from "@/server/debts";
+  addDebt,
+  deleteDebt,
+  getDebtById,
+  getDebts,
+  updateDebt,
+} from "@/api/debts";
 
 export const useDebtStore = create<DebtStore>((set, get) => ({
   debts: [],
@@ -17,7 +17,7 @@ export const useDebtStore = create<DebtStore>((set, get) => ({
   getDebts: async (userId: string) => {
     set({ loading: true });
     try {
-      const data = await getDebtsFn({ data: { userId } });
+      const data = await getDebts(userId);
       set({ debts: (data as unknown as IDebt[]) ?? [], loading: false });
     } catch (error) {
       set({ loading: false });
@@ -29,7 +29,7 @@ export const useDebtStore = create<DebtStore>((set, get) => ({
   getDebtById: async (id: number) => {
     set({ loading: true });
     try {
-      const data = await getDebtByIdFn({ data: { id } });
+      const data = await getDebtById(id);
       set({ debt: data as unknown as IDebt, loading: false });
       return data as unknown as IDebt;
     } catch (error) {
@@ -49,16 +49,14 @@ export const useDebtStore = create<DebtStore>((set, get) => ({
     }));
 
     try {
-      const data = await addDebtFn({
-        data: {
-          user_id: debt.user_id,
-          name: debt.name,
-          amount: debt.amount,
-          original_amount: debt.original_amount,
-          creditor: debt.creditor,
-          notes: debt.notes,
-          status: debt.status,
-        },
+      const data = await addDebt({
+        user_id: debt.user_id,
+        name: debt.name,
+        amount: debt.amount,
+        original_amount: debt.original_amount,
+        creditor: debt.creditor,
+        notes: debt.notes,
+        status: debt.status,
       });
 
       set((state) => ({
@@ -90,16 +88,14 @@ export const useDebtStore = create<DebtStore>((set, get) => ({
     }));
 
     try {
-      const data = await updateDebtFn({
-        data: {
-          id: debt.id,
-          name: debt.name,
-          amount: debt.amount,
-          original_amount: debt.original_amount,
-          creditor: debt.creditor,
-          notes: debt.notes,
-          status: debt.status,
-        },
+      const data = await updateDebt({
+        id: debt.id,
+        name: debt.name,
+        amount: debt.amount,
+        original_amount: debt.original_amount,
+        creditor: debt.creditor,
+        notes: debt.notes,
+        status: debt.status,
       });
 
       set((state) => ({
@@ -135,7 +131,7 @@ export const useDebtStore = create<DebtStore>((set, get) => ({
     }));
 
     try {
-      await deleteDebtFn({ data: { id } });
+      await deleteDebt(id);
 
       set((state) => ({
         loading: false,

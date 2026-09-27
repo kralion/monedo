@@ -2,12 +2,12 @@ import { CategoryStore, ICategory } from "@/interfaces";
 import { toast } from "sonner";
 import { create } from "zustand";
 import {
-  addCategoryFn,
-  deleteCategoryFn,
-  getCategoriesFn,
-  getCategoryByIdFn,
-  updateCategoryFn,
-} from "@/server/categories";
+  addCategory,
+  deleteCategory,
+  getCategories,
+  getCategoryById,
+  updateCategory,
+} from "@/api/categories";
 
 export const useCategoryStore = create<CategoryStore>((set, get) => ({
   categories: [],
@@ -22,8 +22,10 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
     }));
 
     try {
-      const data = await addCategoryFn({
-        data: { label: category.label, color: category.color, user_id: category.user_id },
+      const data = await addCategory({
+        label: category.label,
+        color: category.color,
+        user_id: category.user_id,
       });
 
       set((state) => ({
@@ -46,7 +48,7 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
   getCategoryById: async (id: number) => {
     set({ loading: true });
     try {
-      const data = await getCategoryByIdFn({ data: { id } });
+      const data = await getCategoryById(id);
       set({ loading: false, category: data as ICategory });
       return data as ICategory;
     } catch (error) {
@@ -68,8 +70,10 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
     }));
 
     try {
-      const data = await updateCategoryFn({
-        data: { id: category.id, label: category.label, color: category.color },
+      const data = await updateCategory({
+        id: category.id,
+        label: category.label,
+        color: category.color,
       });
 
       set((state) => ({
@@ -101,7 +105,7 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
     }));
 
     try {
-      await deleteCategoryFn({ data: { id } });
+      await deleteCategory(id);
 
       set({ loading: false });
       toast.success("Categoría eliminada exitosamente");
@@ -115,7 +119,7 @@ export const useCategoryStore = create<CategoryStore>((set, get) => ({
   getCategories: async (userId: string) => {
     set({ loading: true });
     try {
-      const data = await getCategoriesFn({ data: { userId } });
+      const data = await getCategories(userId);
       set({ categories: (data as ICategory[]) ?? [], loading: false });
     } catch (error) {
       set({ loading: false });

@@ -2,17 +2,17 @@ import { ExpenseStore, IExpense } from "@/interfaces";
 import { toast } from "sonner";
 import { create } from "zustand";
 import {
-  addExpenseFn,
-  deleteExpenseFn,
-  getAllExpensesSortedByAmountFn,
-  getExpenseByIdFn,
-  getExpensesByCategoryFn,
-  getExpensesByPeriodicityFn,
-  getExpensesPaginatedFn,
-  getRecentExpensesFn,
-  getTotalExpensesFn,
-  updateExpenseFn,
-} from "@/server/expenses";
+  addExpense,
+  deleteExpense,
+  getAllExpensesSortedByAmount,
+  getExpenseById,
+  getExpensesByCategory,
+  getExpensesByPeriodicity,
+  getExpensesPaginated,
+  getRecentExpenses,
+  getTotalExpenses,
+  updateExpense,
+} from "@/api/expenses";
 
 const formatExpenseDate = (expense: Partial<IExpense>): string => {
   if (!expense.date) return new Date().toISOString();
@@ -38,17 +38,15 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
     }));
 
     try {
-      const data = await addExpenseFn({
-        data: {
-          amount: String(formattedExpense.amount),
-          currency: formattedExpense.currency,
-          date: formattedExpense.date,
-          description: formattedExpense.description,
-          id_category: formattedExpense.id_category,
-          number: formattedExpense.number,
-          periodicity: formattedExpense.periodicity,
-          user_id: formattedExpense.user_id,
-        },
+      const data = await addExpense({
+        amount: String(formattedExpense.amount),
+        currency: formattedExpense.currency,
+        date: formattedExpense.date,
+        description: formattedExpense.description,
+        id_category: formattedExpense.id_category,
+        number: formattedExpense.number,
+        periodicity: formattedExpense.periodicity,
+        user_id: formattedExpense.user_id,
       });
 
       set((state) => ({
@@ -84,17 +82,15 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
     }));
 
     try {
-      const data = await updateExpenseFn({
-        data: {
-          id: expense.id,
-          amount: String(formattedExpense.amount),
-          currency: formattedExpense.currency,
-          date: formattedExpense.date,
-          description: formattedExpense.description,
-          id_category: formattedExpense.id_category,
-          number: formattedExpense.number,
-          periodicity: formattedExpense.periodicity,
-        },
+      const data = await updateExpense({
+        id: expense.id,
+        amount: String(formattedExpense.amount),
+        currency: formattedExpense.currency,
+        date: formattedExpense.date,
+        description: formattedExpense.description,
+        id_category: formattedExpense.id_category,
+        number: formattedExpense.number,
+        periodicity: formattedExpense.periodicity,
       });
 
       const normalized = data as unknown as IExpense;
@@ -131,7 +127,7 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
     }));
 
     try {
-      await deleteExpenseFn({ data: { id } });
+      await deleteExpense(id);
 
       set({ loading: false });
       toast.success("Gasto eliminado exitosamente");
@@ -146,7 +142,7 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
   getExpenseById: async (id: number) => {
     set({ loading: true });
     try {
-      const data = await getExpenseByIdFn({ data: { id } });
+      const data = await getExpenseById(id);
       const normalized = data as unknown as IExpense;
       set({ expense: normalized, loading: false });
       return normalized;
@@ -161,7 +157,7 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
   getExpensesByCategory: async (categoryId: number) => {
     set({ loading: true });
     try {
-      const data = await getExpensesByCategoryFn({ data: { categoryId } });
+      const data = await getExpensesByCategory(categoryId);
       const normalized = (data as unknown as IExpense[]).map((e) => ({
         ...e,
         amount: Number(e.amount as unknown as string),
@@ -178,7 +174,7 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
 
   getRecentExpenses: async (userId: string) => {
     try {
-      const data = await getRecentExpensesFn({ data: { userId } });
+      const data = await getRecentExpenses(userId);
       const expensesData = (data as unknown as IExpense[]).map((e) => ({
         ...e,
         amount: Number(e.amount as unknown as string),
@@ -195,11 +191,9 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
   getExpensesByPeriodicity: async ({ startTimeOfQuery, endTimeOfQuery }) => {
     set({ loading: true });
     try {
-      const data = await getExpensesByPeriodicityFn({
-        data: {
-          startTimeOfQuery: startTimeOfQuery.toISOString(),
-          endTimeOfQuery: endTimeOfQuery.toISOString(),
-        },
+      const data = await getExpensesByPeriodicity({
+        startTimeOfQuery: startTimeOfQuery.toISOString(),
+        endTimeOfQuery: endTimeOfQuery.toISOString(),
       });
       const expensesData = (data as unknown as IExpense[]).map((e) => ({
         ...e,
@@ -217,7 +211,7 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
   getAllExpensesSortedByAmount: async (userId: string) => {
     set({ loading: true });
     try {
-      const data = await getAllExpensesSortedByAmountFn({ data: { userId } });
+      const data = await getAllExpensesSortedByAmount(userId);
       const expensesData = (data as unknown as IExpense[]).map((e) => ({
         ...e,
         amount: Number(e.amount as unknown as string),
@@ -233,7 +227,7 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
 
   sumOfAllOfExpenses: async (userId: string) => {
     try {
-      const total = await getTotalExpensesFn({ data: { userId } });
+      const total = await getTotalExpenses(userId);
       set({ totalExpenses: total });
       return total;
     } catch (error) {
@@ -245,7 +239,7 @@ export const useExpenseStore = create<ExpenseStore>((set, get) => ({
 
   getExpensesPaginated: async (userId: string, limit: number, offset: number) => {
     try {
-      const data = await getExpensesPaginatedFn({ data: { userId, limit, offset } });
+      const data = await getExpensesPaginated(userId, limit, offset);
       const normalized = (data as unknown as IExpense[]).map((e) => ({
         ...e,
         amount: Number(e.amount as unknown as string),

@@ -2,8 +2,8 @@
 
 ## 0. Project Stack
 
-- **Frontend:** React, Vite, Tanstack Start
-- **Backend/DB:** Neon with Drizzle ORM
+- **Frontend:** React, Vite, TanStack Router (client-only SPA, no SSR)
+- **Backend/DB:** Neon with Drizzle ORM (queried from the browser via the Neon HTTP driver)
 - **Auth:** Neon Auth
 - **Hosting:** Netlify
 - **UI:** Shadcn UI
@@ -91,7 +91,7 @@ features/
   <feature-name>/
     api/
       types.ts      # Re-exports or extends types from external generated sources (Drizzle, etc.)
-      db.ts         # Direct backend calls (DB queries, server functions, API routes)
+      db.ts         # Direct data access (Drizzle queries against Neon)
       services.ts   # Data transformation — raw backend data shaped for frontend consumption
       queries.ts    # TanStack Query hooks (or equivalent) — what components actually consume
       schemas.ts    # Form validation schemas (Zod, etc.)
@@ -102,7 +102,7 @@ features/
 
 ### Rules
 
-- `db.ts` is the only file that talks to the backend. Never call the backend directly from components or services.
+- `db.ts` is the only file that talks to the database. Never query the database directly from components or services.
 - `services.ts` never imports from `queries.ts`. Data flows one way: `db → services → queries → components`.
 - `types.ts` centralizes all types the feature needs, regardless of where they originate.
 - `stores/` is for UI state only. No backend interaction, no derived server data.
@@ -116,6 +116,6 @@ This structure is stack-agnostic. Only the internals of `api/` change:
 | File | Neon + Drizzle |
 |------|----------------|
 | `types.ts` | Re-exports Drizzle `$inferSelect`/`$inferInsert` |
-| `db.ts` | Drizzle queries or server actions |
+| `db.ts` | Drizzle queries over the Neon HTTP driver (runs in the browser) |
 | `services.ts` | Data transformers |
 | `queries.ts` | TanStack Query hooks |

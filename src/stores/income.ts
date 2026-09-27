@@ -2,15 +2,15 @@ import { IncomeStore, IIncome } from "@/interfaces";
 import { toast } from "sonner";
 import { create } from "zustand";
 import {
-  addIncomeFn,
-  deleteIncomeFn,
-  getIncomeByIdFn,
-  getIncomesFn,
-  getIncomesPaginatedFn,
-  getIncomesSortedByAmountFn,
-  getTotalIncomeFn,
-  updateIncomeFn,
-} from "@/server/incomes";
+  addIncome,
+  deleteIncome,
+  getIncomeById,
+  getIncomes,
+  getIncomesPaginated,
+  getIncomesSortedByAmount,
+  getTotalIncome,
+  updateIncome,
+} from "@/api/incomes";
 
 export const useIncomeStore = create<IncomeStore>((set, get) => ({
   incomes: [],
@@ -27,14 +27,12 @@ export const useIncomeStore = create<IncomeStore>((set, get) => ({
     set((state) => ({ incomes: [...state.incomes, tempIncome] }));
 
     try {
-      const rows = await addIncomeFn({
-        data: {
-          amount: String(income.amount),
-          description: income.description,
-          user_id: income.user_id,
-          created_at: createdAt.toISOString(),
-          id_debt: income.id_debt ?? null,
-        },
+      const rows = await addIncome({
+        amount: String(income.amount),
+        description: income.description,
+        user_id: income.user_id,
+        created_at: createdAt.toISOString(),
+        id_debt: income.id_debt ?? null,
       });
 
       // rows is array (1 or 2 items when debt overflow)
@@ -63,7 +61,7 @@ export const useIncomeStore = create<IncomeStore>((set, get) => ({
   getIncomeById: async (id: number) => {
     set({ loading: true });
     try {
-      const data = await getIncomeByIdFn({ data: { id } });
+      const data = await getIncomeById(id);
       const normalized = { ...data, amount: Number(data.amount as unknown as string) } as unknown as IIncome;
       set({ income: normalized, loading: false });
       return normalized;
@@ -76,7 +74,7 @@ export const useIncomeStore = create<IncomeStore>((set, get) => ({
   getTotalIncome: async (userId: string) => {
     set({ loading: true });
     try {
-      const total = await getTotalIncomeFn({ data: { userId } });
+      const total = await getTotalIncome(userId);
       set({ totalIncome: total, loading: false });
       return total;
     } catch (error) {
@@ -96,8 +94,10 @@ export const useIncomeStore = create<IncomeStore>((set, get) => ({
     }));
 
     try {
-      const data = await updateIncomeFn({
-        data: { id: income.id!, amount: String(income.amount), description: income.description },
+      const data = await updateIncome({
+        id: income.id!,
+        amount: String(income.amount),
+        description: income.description,
       });
       const normalized = { ...data, amount: Number(data.amount as unknown as string) } as unknown as IIncome;
       set((state) => ({
@@ -125,7 +125,7 @@ export const useIncomeStore = create<IncomeStore>((set, get) => ({
     }));
 
     try {
-      await deleteIncomeFn({ data: { id } });
+      await deleteIncome(id);
 
       if (deletedIncome?.user_id) {
         get().getTotalIncome(deletedIncome.user_id);
@@ -142,7 +142,7 @@ export const useIncomeStore = create<IncomeStore>((set, get) => ({
   getIncomes: async (userId: string) => {
     set({ loading: true });
     try {
-      const data = await getIncomesFn({ data: { userId } });
+      const data = await getIncomes(userId);
       const normalized = (data as unknown as IIncome[]).map((i) => ({
         ...i,
         amount: Number(i.amount as unknown as string),
@@ -157,7 +157,7 @@ export const useIncomeStore = create<IncomeStore>((set, get) => ({
   getIncomesSortedByAmount: async (userId: string) => {
     set({ loading: true });
     try {
-      const data = await getIncomesSortedByAmountFn({ data: { userId } });
+      const data = await getIncomesSortedByAmount(userId);
       const normalized = (data as unknown as IIncome[]).map((i) => ({
         ...i,
         amount: Number(i.amount as unknown as string),
@@ -172,7 +172,7 @@ export const useIncomeStore = create<IncomeStore>((set, get) => ({
 
   getIncomesPaginated: async (userId: string, limit: number, offset: number) => {
     try {
-      const data = await getIncomesPaginatedFn({ data: { userId, limit, offset } });
+      const data = await getIncomesPaginated(userId, limit, offset);
       const normalized = (data as unknown as IIncome[]).map((i) => ({
         ...i,
         amount: Number(i.amount as unknown as string),

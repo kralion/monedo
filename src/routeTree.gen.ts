@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SignUpRouteImport } from './routes/sign-up'
 import { Route as SignInRouteImport } from './routes/sign-in'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
-import { Route as Char43notFoundRouteImport } from './routes/+not-found'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedStatisticsRouteImport } from './routes/_authenticated/statistics'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
@@ -37,11 +36,6 @@ const SignInRoute = SignInRouteImport.update({
 } as any)
 const AuthenticatedRoute = AuthenticatedRouteImport.update({
   id: '/_authenticated',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const Char43notFoundRoute = Char43notFoundRouteImport.update({
-  id: '/+not-found',
-  path: '/+not-found',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
@@ -104,7 +98,6 @@ const AuthenticatedDebtIdRoute = AuthenticatedDebtIdRouteImport.update({
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/+not-found': typeof Char43notFoundRoute
   '/': typeof AuthenticatedIndexRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
@@ -120,7 +113,6 @@ export interface FileRoutesByFullPath {
   '/transaction/$id': typeof AuthenticatedTransactionIdRoute
 }
 export interface FileRoutesByTo {
-  '/+not-found': typeof Char43notFoundRoute
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
   '/add-debt': typeof AuthenticatedAddDebtRoute
@@ -137,7 +129,6 @@ export interface FileRoutesByTo {
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/+not-found': typeof Char43notFoundRoute
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/sign-in': typeof SignInRoute
   '/sign-up': typeof SignUpRoute
@@ -156,7 +147,6 @@ export interface FileRoutesById {
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    | '/+not-found'
     | '/'
     | '/sign-in'
     | '/sign-up'
@@ -172,7 +162,6 @@ export interface FileRouteTypes {
     | '/transaction/$id'
   fileRoutesByTo: FileRoutesByTo
   to:
-    | '/+not-found'
     | '/sign-in'
     | '/sign-up'
     | '/add-debt'
@@ -188,7 +177,6 @@ export interface FileRouteTypes {
     | '/transaction/$id'
   id:
     | '__root__'
-    | '/+not-found'
     | '/_authenticated'
     | '/sign-in'
     | '/sign-up'
@@ -206,7 +194,6 @@ export interface FileRouteTypes {
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  Char43notFoundRoute: typeof Char43notFoundRoute
   AuthenticatedRoute: typeof AuthenticatedRouteWithChildren
   SignInRoute: typeof SignInRoute
   SignUpRoute: typeof SignUpRoute
@@ -233,13 +220,6 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/+not-found': {
-      id: '/+not-found'
-      path: '/+not-found'
-      fullPath: '/+not-found'
-      preLoaderRoute: typeof Char43notFoundRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/': {
@@ -355,7 +335,6 @@ const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(
 )
 
 const rootRouteChildren: RootRouteChildren = {
-  Char43notFoundRoute: Char43notFoundRoute,
   AuthenticatedRoute: AuthenticatedRouteWithChildren,
   SignInRoute: SignInRoute,
   SignUpRoute: SignUpRoute,
@@ -363,12 +342,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}

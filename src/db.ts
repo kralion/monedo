@@ -1,18 +1,21 @@
-// TODO: Migrate all `import { db } from "@/db"` to serverFns using lib/db dot server.
-// This file is client-bundled and exposes DATABASE_URL — do not add new usages.
-// New code must use db from lib/db.server inside createServerFn only.
 import { drizzle } from "drizzle-orm/neon-http";
 import { neon } from "@neondatabase/serverless";
 
-function getUrl(): string {
-  const serverUrl =
-    typeof process !== "undefined" ? process.env.DATABASE_URL : undefined;
-  const viteUrl = (import.meta as unknown as { env: Record<string, string> })
-    .env?.VITE_DATABASE_URL;
-  const url = serverUrl ?? viteUrl;
-  if (!url) throw new Error("DATABASE_URL / VITE_DATABASE_URL missing");
+// Client-side Drizzle instance. There is no server layer anymore, so every
+// query runs in the browser with the credentials below. `VITE_DATABASE_URL`
+// is inlined into the bundle at build time — do not use a role that has more
+// access than the app needs.
+function getDatabaseUrl(): string {
+  const url = import.meta.env.VITE_DATABASE_URL;
+
+  if (!url) {
+    throw new Error(
+      "VITE_DATABASE_URL is not set. Define it in .env so the client can reach the database.",
+    );
+  }
+
   return url;
 }
 
-const sql = neon(getUrl());
+const sql = neon(getDatabaseUrl());
 export const db = drizzle({ client: sql });
