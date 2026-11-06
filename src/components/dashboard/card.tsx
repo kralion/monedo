@@ -1,10 +1,19 @@
-import { ArrowDown, ArrowUp, Eye, EyeOff } from "lucide-react";
+import { ArrowDown, ArrowUp, Eye, Menu, RotateCcw } from "lucide-react";
 import { useNeonUser } from "@/hooks/useNeonUser";
 import { useIncomeStore } from "@/stores/income";
 import { useExpenseStore } from "@/stores/expense";
+import { useBalanceAdjustmentStore } from "@/stores/balance-adjustment";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
+import { BalanceAdjustmentDialog } from "./balance-adjustment-dialog";
 
 export function CardSkeleton() {
   return (
@@ -16,21 +25,26 @@ export default function Card() {
   const { user } = useNeonUser();
   const { sumOfAllOfExpenses, totalExpenses } = useExpenseStore();
   const { totalIncome, getTotalIncome } = useIncomeStore();
+  const { balanceAdjustment, getBalanceAdjustment } = useBalanceAdjustmentStore();
   const [isVisible, setIsVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [showRebalanceDialog, setShowRebalanceDialog] = useState(false);
 
   useEffect(() => {
     if (!user?.id) return;
     setIsLoading(true);
-    Promise.all([sumOfAllOfExpenses(user.id), getTotalIncome(user.id)]).finally(
-      () => setIsLoading(false),
-    );
-  }, [user?.id, sumOfAllOfExpenses, getTotalIncome]);
+    Promise.all([
+      sumOfAllOfExpenses(user.id),
+      getTotalIncome(user.id),
+      getBalanceAdjustment(user.id),
+    ]).finally(() => setIsLoading(false));
+  }, [user?.id, sumOfAllOfExpenses, getTotalIncome, getBalanceAdjustment]);
 
   const balance = totalIncome - totalExpenses;
+  const adjustedBalance = balance + balanceAdjustment;
 
   const gradient =
-    balance < 0
+    adjustedBalance < 0
       ? "linear-gradient(135deg, #FF0000, #FF7F7F)"
       : "linear-gradient(135deg, #14B8A6, #0F766E)";
 
@@ -47,17 +61,40 @@ export default function Card() {
         <div className="flex flex-col gap-2">
           <h2 className="text-xl text-white">Balance</h2>
           <p className="text-4xl font-bold text-white">
-            S/. {isVisible ? balance.toFixed(2) : "*".repeat(8)}
+            S/. {isVisible ? adjustedBalance.toFixed(2) : "*".repeat(8)}
           </p>
+          {balanceAdjustment !== 0 && (
+            <span className="text-xs text-white/80 flex items-center gap-1">
+              <RotateCcw className="w-3 h-3" />
+              Reajuste: {balanceAdjustment > 0 ? "+" : ""}{balanceAdjustment.toFixed(2)}
+            </span>
+          )}
         </div>
-        <Button
-          size="icon"
-          variant="ghost"
-          className="rounded-full text-white hover:bg-white/20 hover:text-white"
-          onClick={() => setIsVisible(!isVisible)}
-        >
-          {isVisible ? <EyeOff /> : <Eye />}
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              size="icon"
+              variant="ghost"
+              className="rounded-full text-white hover:bg-white/20 hover:text-white"
+            >
+              <Menu className="w-5 h-5" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => setIsVisible(!isVisible)}>
+              <Eye className="w-4 h-4" />
+              Ver cifras
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              onClick={() => setShowRebalanceDialog(true)}
+              className="text-primary focus:text-primary"
+            >
+              <RotateCcw className="w-4 h-4" />
+              Rebalance
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
       <div className="flex flex-row justify-between">
         <div className="flex flex-col gap-2">
@@ -82,5 +119,10 @@ export default function Card() {
     </div>
   );
 
-  return <div className="cursor-default">{CardContent}</div>;
+  return (
+    <div className="cursor-default">
+      {CardContent}
+      <BalanceAdjustmentDialog open={showRebalanceDialog} onOpenChange={setShowRebalanceDialog} />
+    </div>
+  );
 }

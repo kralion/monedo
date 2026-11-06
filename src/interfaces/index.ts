@@ -153,6 +153,23 @@ export interface IDebt {
   updated_at?: Date | null;
 }
 
+export interface IBalanceAdjustment {
+  id: number;
+  user_id: string;
+  amount: number;
+  description?: string | null;
+  created_at: Date;
+  updated_at?: Date | null;
+}
+
+export interface BalanceAdjustmentStore {
+  balanceAdjustment: number;
+  loading: boolean;
+  getBalanceAdjustment: (userId: string) => Promise<number>;
+  setBalanceAdjustment: (userId: string, amount: number, description?: string) => Promise<void>;
+  clearBalanceAdjustment: (userId: string) => Promise<void>;
+}
+
 export interface DebtStore {
   debts: IDebt[];
   debt: IDebt | null;

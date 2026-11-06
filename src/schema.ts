@@ -46,6 +46,15 @@ export const expenses = pgTable("expenses", {
 
 export const debtStatusEnum = pgEnum("debt_status", ["active", "paid", "overdue", "partial"]);
 
+export const balanceAdjustments = pgTable("balance_adjustments", {
+  id: serial("id").primaryKey(),
+  user_id: text("user_id").notNull(),
+  amount: numeric("amount", { precision: 12, scale: 2 }).notNull(),
+  description: text("description"),
+  created_at: timestamp("created_at").notNull().defaultNow(),
+  updated_at: timestamp("updated_at"),
+});
+
 export const debts = pgTable("debts", {
   id: serial("id").primaryKey(),
   user_id: text("user_id").notNull(),
@@ -70,5 +79,8 @@ export type SelectExpense = typeof expenses.$inferSelect;
 
 export type InsertDebt = typeof debts.$inferInsert;
 export type SelectDebt = typeof debts.$inferSelect;
+
+export type InsertBalanceAdjustment = typeof balanceAdjustments.$inferInsert;
+export type SelectBalanceAdjustment = typeof balanceAdjustments.$inferSelect;
 
 
