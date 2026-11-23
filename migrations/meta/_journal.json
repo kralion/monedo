@@ -43,6 +43,13 @@
       "when": 1790283857669,
       "tag": "0005_curvy_captain_universe",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1795436094994,
+      "tag": "0006_foamy_genesis",
+      "breakpoints": true
     }
   ]
 }
