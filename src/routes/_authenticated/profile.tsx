@@ -20,6 +20,7 @@ import { Label } from "@/components/ui/label";
 import { ArrowLeft, LogOut } from "lucide-react";
 import { authClient } from "@/auth";
 import { ProfileImageUpload } from "@/components/profile/components/ProfileImageUpload";
+import { PurgeDialog } from "@/features/data-purge";
 
 export const Route = createFileRoute("/_authenticated/profile")({
   component: ProfilePage,
@@ -34,6 +35,7 @@ function ProfilePage() {
   const { user, isPending } = useNeonUser();
   const navigate = useNavigate();
   const [saving, setSaving] = useState(false);
+  const [showPurgeDialog, setShowPurgeDialog] = useState(false);
 
   const { register, handleSubmit, reset } = useForm<ProfileForm>({
     defaultValues: {
@@ -118,6 +120,23 @@ function ProfilePage() {
           {saving ? "Guardando..." : "Guardar"}
         </Button>
       </form>
+
+      <div className="mt-12">
+        <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">
+          Datos
+        </h2>
+        <Button
+          variant="destructive"
+          onClick={() => setShowPurgeDialog(true)}
+          className="w-full"
+        >
+          Purgar datos antiguos {"> "}30 días
+        </Button>
+        <PurgeDialog
+          open={showPurgeDialog}
+          onOpenChange={setShowPurgeDialog}
+        />
+      </div>
 
       <div className="mt-12">
         <AlertDialog>

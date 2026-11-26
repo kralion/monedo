@@ -6,7 +6,8 @@
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "db:types": "bun run scripts/generate-types.ts"
   },
   "dependencies": {
     "@fontsource-variable/geist": "^5.2.8",
